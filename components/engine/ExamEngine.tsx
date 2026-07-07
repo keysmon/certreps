@@ -24,7 +24,9 @@ export function ExamEngine({ mode, domain }: { mode: Mode; domain?: string }) {
     if (mode === "mock") return sampleMock(bank, meta);
     return [];
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // sampled once per mount
+  }, []);
+  // Sampled once per mount; callers must key ExamEngine by mode+domain (see PracticeClient,
+  // Task 15) - prop changes without remount are ignored.
 
   // Contract C1 (Task 5 review): saveAttempt exactly once here; recordResult/finishAttempt thereafter.
   // NEVER re-save the engine-held copy - it would clobber recorded results.
@@ -40,6 +42,8 @@ export function ExamEngine({ mode, domain }: { mode: Mode; domain?: string }) {
 
   const [index, setIndex] = useState(0);
   const [phase, setPhase] = useState<"question" | "results">("question");
+  // In-memory UI projection of attempt.results (write-through journal); a future resume feature
+  // seeds this from getAttempt(...).results - do not read storage during render.
   const [graded, setGraded] = useState<Record<string, { chosen: number[]; correct: boolean }>>({});
   const elapsedRef = useRef(0);
   const pausesRef = useRef(0);
@@ -70,6 +74,7 @@ export function ExamEngine({ mode, domain }: { mode: Mode; domain?: string }) {
     return (
       <div className="card">
         <p>{mode === "retry" ? "No missed questions yet - take a practice run first." : "No questions available."}</p>
+        <a className="btn btn-ghost" href={`/aws/${meta.certId}`}>Back to {meta.examCode}</a>
       </div>
     );
   }
