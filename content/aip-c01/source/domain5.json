@@ -1,0 +1,101 @@
+[
+  {
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A team has fine-tuned a model that generates support-ticket summaries. Before each weekly release they must score summary quality across a few thousand of their own historical tickets on dimensions like coherence, faithfulness, and conciseness, and the scoring must run automatically every release. Which approach is the MOST effective and scalable way to produce these quality scores?",
+    "options": [
+      "Configure an Amazon Bedrock human evaluation workflow and route all of the few thousand summaries to an internal work team for every release.",
+      "Rely only on the Amazon Bedrock automatic evaluation built-in metrics such as BERTScore and F1, which by themselves fully capture coherence and faithfulness.",
+      "Create an Amazon Bedrock model evaluation job that uses an LLM-as-a-judge, supplying the team's own prompt dataset and the specific quality dimensions to score.",
+      "Publish each generated summary to Amazon CloudWatch as a custom metric and set an alarm on the average summary length."
+    ],
+    "correct": [2],
+    "explanation": "<b>LLM-as-a-judge</b> in an Amazon Bedrock model evaluation job lets you bring your own prompt dataset and automatically score nuanced dimensions like coherence and faithfulness at scale, so it can run on every release. Human evaluation is accurate but too slow and costly to repeat on thousands of items each release. Reference-based automatic metrics such as BERTScore and F1 require gold reference summaries and poorly capture faithfulness. A CloudWatch alarm on summary length measures nothing about quality."
+  },
+  {
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "An Amazon Bedrock Knowledge Bases RAG evaluation job reports high context relevance, meaning the retrieved passages are on-topic, but low groundedness for the generated answers. The answer relevance scores are acceptable. What does this result MOST likely indicate?",
+    "options": [
+      "The vector index is returning irrelevant chunks, so the embeddings model should be replaced.",
+      "The model is generating answers that are not fully supported by the retrieved passages, so it is adding unsupported content.",
+      "The user questions are ambiguous, so answer relevance must be fixed before anything else.",
+      "The knowledge base needs many more documents ingested to raise context relevance."
+    ],
+    "correct": [1],
+    "explanation": "<b>Groundedness</b> measures whether the generated answer is supported by the retrieved passages. High context relevance means retrieval is working, so low groundedness points to the generator adding unsupported content, which is a hallucination during generation rather than a retrieval problem. Because context relevance is already high, replacing embeddings or ingesting more documents would not help, and answer relevance is acceptable so the questions are not the issue. Remedies include a grounding-focused prompt, lower temperature, or a contextual grounding guardrail."
+  },
+  {
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A customer-facing RAG assistant built on Amazon Bedrock occasionally returns confident answers that are not supported by the documents retrieved from its knowledge base, and the business requires that such ungrounded responses be blocked before they reach users. Which approach is the MOST effective way to enforce this at inference time?",
+    "options": [
+      "Increase the model temperature so the model produces more varied phrasings of the retrieved content.",
+      "Add more few-shot examples to the system prompt instructing the model to always be truthful.",
+      "Switch to a larger foundation model, which eliminates hallucinations entirely.",
+      "Attach an Amazon Bedrock guardrail with the contextual grounding check enabled, setting grounding and relevance thresholds to filter out ungrounded answers."
+    ],
+    "correct": [3],
+    "explanation": "An Amazon Bedrock <b>guardrail with the contextual grounding check</b> scores each response for grounding against the retrieved source and for relevance to the query, and it blocks or filters responses that fall below your configured thresholds, giving an enforceable inference-time control. Raising temperature increases hallucination, extra few-shot instructions help but cannot deterministically block ungrounded answers, and no larger model eliminates hallucination entirely."
+  },
+  {
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A production application invokes an on-demand Amazon Bedrock foundation model. During peak hours a growing share of InvokeModel calls fail with ThrottlingException, while the same code succeeds off-peak. Which action is the MOST appropriate response?",
+    "options": [
+      "Implement retries with exponential backoff and jitter, and if sustained demand exceeds the account limit, request a service quota increase or purchase Provisioned Throughput.",
+      "Grant the application's IAM role the bedrock:InvokeModel permission, which is missing during peak load.",
+      "Reduce the max_tokens value in each request so the prompt fits within the model's context window.",
+      "Enable Amazon Bedrock model invocation logging so that throttled requests are retried automatically."
+    ],
+    "correct": [0],
+    "explanation": "A ThrottlingException means requests are exceeding the account's per-model rate, so the correct response is client-side <b>exponential backoff with jitter</b> plus, for sustained demand, a service quota increase or <b>Provisioned Throughput</b>. A missing bedrock:InvokeModel permission would fail every call with AccessDeniedException, not intermittently at peak. Reducing max_tokens addresses context-length ValidationExceptions. Model invocation logging records calls but does not retry them."
+  },
+  {
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A developer adds a newly released third-party foundation model to an existing Amazon Bedrock application. The IAM role already allows bedrock:InvokeModel on all models and other models work fine, yet every call to the new model immediately fails with AccessDeniedException. What is the MOST likely cause?",
+    "options": [
+      "The account has exceeded its requests-per-minute quota for the new model.",
+      "The request body is malformed for the new model's input schema.",
+      "Access to the new model has not been granted for the account and Region in the Amazon Bedrock model access settings.",
+      "The prompt exceeds the new model's maximum context length."
+    ],
+    "correct": [2],
+    "explanation": "With IAM already allowing InvokeModel and other models working, a specific new model failing with <b>AccessDeniedException</b> almost always means model access was never granted for that model in the account and Region under Bedrock model access, which is a separate step from IAM. Exceeding a quota raises ThrottlingException, and a malformed body or an over-length prompt raises ValidationException, so neither of those produces AccessDeniedException."
+  },
+  {
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A team has a new system-prompt version that already passed an offline evaluation on a curated dataset. Before committing all users to it, they want to measure its effect on real production traffic, both answer quality and business metrics, while strictly limiting the blast radius if it underperforms. Which release strategy is the BEST fit?",
+    "options": [
+      "Replace the prompt for 100 percent of traffic immediately and roll back only if CloudWatch error-rate metrics spike.",
+      "Run a canary or A-B deployment that routes a small percentage of live traffic to the new prompt and compares quality and business metrics against the current prompt before ramping up.",
+      "Repeat the offline model evaluation on a progressively larger curated dataset until the scores plateau, then switch all traffic at once.",
+      "Purchase Provisioned Throughput for the new prompt so that latency stays constant during the change."
+    ],
+    "correct": [1],
+    "explanation": "A <b>canary or A-B deployment</b> exposes only a small slice of live traffic to the new prompt and compares real quality and business metrics against the current version, which limits the blast radius and validates behavior that offline tests cannot capture. Switching 100 percent immediately maximizes risk and error-rate metrics do not measure answer quality. Rerunning offline evaluation never touches production behavior and still cuts everyone over at once, and Provisioned Throughput addresses latency, not quality or rollout risk."
+  },
+  {
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "multi",
+    "stem": "An operations team must (1) capture the full prompt and completion payload of every Amazon Bedrock invocation for offline quality and compliance review, and (2) be automatically alerted when invocation latency or server-side error rates exceed defined thresholds. Which TWO actions together meet these requirements? (Select TWO.)",
+    "options": [
+      "Enable Amazon Bedrock model invocation logging and deliver the request and response data to Amazon S3 and Amazon CloudWatch Logs.",
+      "Rely on AWS CloudTrail management events, which record the full request and response bodies of each InvokeModel call.",
+      "Enable VPC Flow Logs on the application subnet to capture the model input and output payloads.",
+      "Create Amazon CloudWatch alarms on the Bedrock InvocationLatency and InvocationServerErrors metrics.",
+      "Turn on AWS X-Ray tracing, which persists the complete model input and output for every request."
+    ],
+    "correct": [0, 3],
+    "explanation": "<b>Model invocation logging</b> is the only listed feature that captures the full prompt and completion payloads, delivering them to Amazon S3 and CloudWatch Logs, and <b>CloudWatch alarms</b> on the InvocationLatency and InvocationServerErrors metrics provide the automated threshold alerting. CloudTrail records API activity metadata but not the request and response bodies, VPC Flow Logs capture only IP-level traffic metadata over encrypted connections, and X-Ray stores trace segments, so none of those persist the model input and output payloads."
+  }
+]

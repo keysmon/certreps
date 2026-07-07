@@ -1,0 +1,244 @@
+[
+  {
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A company's Bedrock Agent must trigger an action that runs on an on-premises inventory system reachable only from the company's private data center, which AWS Lambda functions cannot reach. The team wants the agent to decide when the action is needed but have their existing on-prem client application actually perform the call. Which action group configuration meets this with the LEAST re-architecture?",
+    "options": [
+      "Configure the action group with a Lambda function executor and connect the Lambda to the data center over a VPN",
+      "Configure the action group to return control to the caller so the agent hands back the function name and parameters for the client application to execute",
+      "Replace the agent with a direct InvokeModel call and hard-code the inventory logic in the client",
+      "Store the inventory operations as documents in a Knowledge Base and let the agent retrieve them"
+    ],
+    "correct": [1],
+    "explanation": "<b>Return of control</b> lets the agent emit the chosen function and parameters back to the caller so the existing on-prem client executes the action -- no new connectivity needed. A Lambda executor over VPN is real re-architecture and still requires network access the team wants to avoid. A raw InvokeModel call throws away the agent's orchestration. A Knowledge Base only retrieves text; it cannot <em>execute</em> an action."
+  },
+  {
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A developer maintains a chat service that currently calls Anthropic Claude on Amazon Bedrock through InvokeModel with model-specific JSON request and response bodies. The team wants to A/B test Claude against Amazon Nova and Meta Llama models without rewriting request-building and response-parsing code for each model family. Which approach requires the FEWEST ongoing code changes?",
+    "options": [
+      "Switch to the Bedrock Converse API, which exposes a consistent request and response structure across supported models",
+      "Write a separate InvokeModel adapter class per model family and select one at runtime",
+      "Use the Bedrock batch inference API to submit prompts to all models at once",
+      "Deploy each model to an Amazon SageMaker endpoint and standardize on the SageMaker runtime API"
+    ],
+    "correct": [0],
+    "explanation": "The <b>Converse API</b> normalizes messages, system prompts, and inference parameters across models, so swapping model IDs needs no per-model parsing code. Per-family InvokeModel adapters are exactly the code the team wants to eliminate. Batch inference is for large asynchronous jobs, not low-latency chat. Self-hosting on SageMaker adds operational overhead and does not standardize Bedrock model access."
+  },
+  {
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A document-analysis application sends the same 8,000-token instruction block and reference style guide as the leading portion of every request to Claude on Bedrock, followed by a short user-specific question. Both input-token cost and time-to-first-token are high. Which change reduces cost and latency with the LEAST change to the prompt content?",
+    "options": [
+      "Move the style guide into a Bedrock Knowledge Base and retrieve it on every request",
+      "Reduce the model's maximum output tokens",
+      "Enable prompt caching and place a cache checkpoint after the static instruction and style-guide portion of the prompt",
+      "Switch from Converse to InvokeModel to avoid serialization overhead"
+    ],
+    "correct": [2],
+    "explanation": "<b>Prompt caching</b> stores the large static prefix so repeated requests reuse it, cutting input-token cost and time-to-first-token while leaving the prompt text intact. A Knowledge Base adds a retrieval round-trip and does not cache the instructions. Lowering max output tokens affects generation length, not the expensive static input. InvokeModel versus Converse does not address the repeated input cost."
+  },
+  {
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A Lambda function that calls the Bedrock Converse API begins receiving intermittent ThrottlingException errors during peak hours. The team wants a client-side strategy that maximizes successful completion while avoiding synchronized retry storms across many concurrent function instances. What should they implement?",
+    "options": [
+      "Immediately retry the request in a tight loop until it succeeds",
+      "Fail fast and return an error to the user on the first ThrottlingException",
+      "Retry on a fixed one-second interval for up to five attempts",
+      "Retry with exponential backoff and randomized jitter, capping the number of attempts"
+    ],
+    "correct": [3],
+    "explanation": "<b>Exponential backoff with jitter</b> spreads retries over time and de-synchronizes concurrent callers, which is the recommended handling for ThrottlingException. A tight loop worsens the overload. Failing fast needlessly drops recoverable requests. A fixed one-second interval still lets many instances retry in lockstep, recreating the storm."
+  },
+  {
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "An integration must extract invoice fields from free-text emails and pass a strictly typed JSON object (defined field names and types) to a downstream billing API. The team wants Claude on Bedrock to return output that reliably conforms to that schema with minimal post-processing. Which approach is BEST?",
+    "options": [
+      "Ask the model in plain English to respond only in JSON and parse whatever text it returns",
+      "Define the schema as a tool in the Converse API tool configuration and use tool use so the model returns arguments matching the schema",
+      "Set temperature to 1.0 to increase the diversity of JSON formats produced",
+      "Use InvokeModelWithResponseStream and concatenate the streamed tokens into a string"
+    ],
+    "correct": [1],
+    "explanation": "Declaring the structure as a <b>tool</b> and using Converse <b>tool use</b> makes the model emit arguments that conform to the defined schema, which the parser can consume directly. A plain-English JSON request offers no structural guarantee. Raising temperature makes output less consistent, not more. Streaming only changes delivery of tokens; it does not enforce schema conformance."
+  },
+  {
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A team is building semantic search over a corpus of support articles. They need to convert each article into a numerical vector that captures its meaning so semantically similar articles sit close together for nearest-neighbor retrieval. Which Bedrock capability produces these vectors?",
+    "options": [
+      "A text-generation model such as Claude invoked with a summarization prompt",
+      "Bedrock Guardrails contextual grounding checks",
+      "An embeddings model such as Amazon Titan Text Embeddings that returns a fixed-length vector for input text",
+      "The Bedrock Converse API configured with tool use"
+    ],
+    "correct": [2],
+    "explanation": "An <b>embeddings model</b> like Amazon Titan Text Embeddings maps text to a dense fixed-length vector suitable for cosine or dot-product similarity search. A generation model produces prose, not comparable vectors. Guardrails enforce safety and grounding policies. Converse tool use handles function calling, not vectorization."
+  },
+  {
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A chatbot backend runs on AWS Lambda and calls ConverseStream to stream Claude tokens. The frontend currently reaches the Lambda through an Amazon API Gateway REST API, and users see the full answer only after generation finishes. The team wants tokens to reach the browser incrementally with the LEAST additional infrastructure. What should they do?",
+    "options": [
+      "Invoke the Lambda through a Lambda function URL configured with response streaming and forward the ConverseStream chunks to the client",
+      "Keep the REST API and raise the API Gateway integration timeout to 29 seconds",
+      "Buffer all chunks in the Lambda and return them in a single REST response",
+      "Move the model call to Bedrock batch inference and poll for completed results"
+    ],
+    "correct": [0],
+    "explanation": "A <b>Lambda function URL with response streaming</b> delivers the ConverseStream chunks to the browser incrementally without adding WebSocket or extra services. A REST API buffers the full response, so raising the timeout still delays the first token. Buffering chunks defeats streaming entirely. Batch inference is asynchronous and the wrong tool for interactive chat."
+  },
+  {
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A content pipeline must run several sequential and conditional generative steps -- classify a document, branch to one of three specialized summarization prompts, call an external translation API, then write results to Amazon S3 -- with built-in retries and clear visibility into where failures occur. Which service orchestrates this with the LEAST custom orchestration code?",
+    "options": [
+      "A single large Lambda function containing every step plus try/except blocks",
+      "Amazon EventBridge rules chaining each step through custom events",
+      "Amazon SQS queues placed between each processing stage",
+      "AWS Step Functions with a state machine defining the steps, choices, retries, and error handling"
+    ],
+    "correct": [3],
+    "explanation": "<b>Step Functions</b> models branching, retries, and error handling declaratively and gives a visual execution history for pinpointing failures, minimizing custom orchestration code. One giant Lambda hand-codes all control flow and risks timeouts. EventBridge and SQS can connect stages but require you to build the conditional logic, retries, and observability yourself."
+  },
+  {
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A prompt sends a lengthy contract plus a set of reviewer instructions to Claude on Bedrock. The model sometimes confuses the two and follows sentences that appear inside the contract text. Which prompt-engineering technique BEST helps Claude separate the instructions from the source document?",
+    "options": [
+      "Increase the temperature so the model is more creative when separating sections",
+      "Concatenate the instructions and contract into a single paragraph with no delimiters",
+      "Wrap the contract in XML tags such as <document>...</document> and keep the reviewer instructions outside the tags",
+      "Send the contract first and the instructions in a completely separate request"
+    ],
+    "correct": [2],
+    "explanation": "Claude responds well to <b>XML tags</b> that delimit source material, so wrapping the contract in tags clearly marks it as data rather than instructions. Higher temperature adds randomness, not structure. Removing delimiters makes the confusion worse. Splitting into separate requests loses the shared context the reviewer instructions need to act on the contract."
+  },
+  {
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A Bedrock Agent powers a multi-turn troubleshooting assistant. Across turns in the same conversation it must remember details the user already gave (device model, symptoms) without the developer manually re-sending that history on every request. Which native Bedrock Agents capability supports this?",
+    "options": [
+      "Provisioned Throughput for the underlying foundation model",
+      "Agent memory and session state, which retain context across turns within a session",
+      "A Bedrock Guardrail attached to the agent",
+      "Model invocation logging to Amazon CloudWatch"
+    ],
+    "correct": [1],
+    "explanation": "<b>Agent memory and session state</b> let the agent carry forward earlier turn details automatically within a session. Provisioned Throughput reserves capacity but stores no conversation context. Guardrails enforce content policy. CloudWatch invocation logging records requests for observability, not for feeding context back into the conversation."
+  },
+  {
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A Bedrock Agent action group invokes a Lambda that submits payment transactions. Because the agent or client retries can occasionally send the same action twice, the team must ensure a duplicate invocation does not charge the customer twice. What is the MOST reliable way to prevent double execution?",
+    "options": [
+      "Lower the agent's temperature so it is less likely to repeat the action",
+      "Wrap the Lambda in a try/except block that ignores the second error",
+      "Increase the Lambda timeout so the first call finishes before any retry",
+      "Have the Lambda accept an idempotency key and use conditional writes so a repeated key is processed only once"
+    ],
+    "correct": [3],
+    "explanation": "An <b>idempotency key</b> combined with a conditional write guarantees that a repeated request maps to the same single result regardless of how many times it arrives. Temperature does not control retry behavior of the surrounding system. Swallowing an error does not stop a second real charge. A longer timeout does not prevent a duplicate request from executing again."
+  },
+  {
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A developer is defining a Bedrock Agent action group with three simple operations, each taking a couple of scalar parameters. They want to describe the actions to the agent with the LEAST authoring overhead and without maintaining a full REST specification. Which action group definition should they use?",
+    "options": [
+      "Function definitions (a function schema listing each function's name, description, and parameters)",
+      "A complete OpenAPI 3.0 schema uploaded to Amazon S3",
+      "An Amazon SageMaker inference component definition",
+      "An IAM policy document describing the allowed actions"
+    ],
+    "correct": [0],
+    "explanation": "For simple actions, a <b>function schema</b> lets you list names, descriptions, and parameters directly with minimal authoring and no REST spec to maintain. A full OpenAPI schema is heavier than needed here. A SageMaker inference component is unrelated to agent action definitions. An IAM policy governs permissions, not the action interface the agent reasons over."
+  },
+  {
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A Bedrock Agent already performs booking actions through a Lambda action group. Stakeholders now want the same agent to also answer policy questions grounded in the company's PDF handbooks and cite the source passages, without building a separate retrieval service. What is the LEAST-effort way to add this?",
+    "options": [
+      "Fine-tune the agent's foundation model on the handbook PDFs",
+      "Paste the entire handbook text into the agent's instruction prompt",
+      "Associate a Bedrock Knowledge Base built from the handbooks with the agent so it can retrieve and cite passages",
+      "Add a second Lambda action group that returns raw PDF bytes to the agent"
+    ],
+    "correct": [2],
+    "explanation": "<b>Associating a Knowledge Base</b> with the agent adds managed retrieval and citations over the handbooks with no custom retrieval service. Fine-tuning is costly, slow to update, and does not produce citations. Pasting whole handbooks bloats the prompt and does not scale. Returning raw PDF bytes leaves parsing, chunking, and grounding for the team to build."
+  },
+  {
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "multi",
+    "stem": "A production service calling Bedrock repeatedly hits its account requests-per-minute quota during marketing campaigns, producing ThrottlingException errors. The team wants durable improvements beyond simply catching the error. Which TWO actions BEST increase throughput and resilience? (Select TWO.)",
+    "options": [
+      "Request a Service Quotas increase for the model's requests-per-minute and tokens-per-minute limits",
+      "Set the model temperature to 0 so requests complete faster",
+      "Implement retries with exponential backoff and jitter, and route overflow through a cross-Region inference profile",
+      "Increase the Lambda function's allocated memory",
+      "Replace the Converse API with InvokeModel to bypass throttling"
+    ],
+    "correct": [0, 2],
+    "explanation": "Raising the <b>Service Quotas</b> ceiling gives sustained headroom, and <b>backoff with jitter plus a cross-Region inference profile</b> smooths spikes and distributes load. Temperature does not affect rate limits. More Lambda memory speeds compute but not Bedrock quota. InvokeModel is throttled by the same account limits as Converse, so it bypasses nothing."
+  },
+  {
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "multi",
+    "stem": "A developer needs Claude on Bedrock to return output that conforms exactly to a required JSON structure for a downstream parser that rejects malformed input. Which TWO techniques most reliably enforce well-formed, schema-conformant JSON? (Select TWO.)",
+    "options": [
+      "Define the desired structure as a tool in the Converse API tool configuration and use tool use so returned arguments match the schema",
+      "Raise temperature and top_p to encourage varied output",
+      "Prefill the assistant turn with the opening brace so the model continues valid JSON",
+      "Ask for JSON only in a user message with no schema and hope the model complies",
+      "Disable the system prompt entirely"
+    ],
+    "correct": [0, 2],
+    "explanation": "<b>Tool use</b> constrains output to the declared schema, and <b>prefilling the assistant turn</b> with an opening brace steers Claude to emit valid JSON immediately. Raising temperature and top_p makes output less predictable. A schema-free plain request gives no structural guarantee. Removing the system prompt discards useful instructions and does nothing to enforce structure."
+  },
+  {
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "multi",
+    "stem": "An architect is configuring a Bedrock Agent that must both take actions (create tickets through an internal API) and answer questions grounded in internal documentation with citations. Which TWO components must be configured on the agent to satisfy BOTH requirements? (Select TWO.)",
+    "options": [
+      "Provisioned Throughput for the foundation model",
+      "An action group backed by a Lambda executor or return of control for the ticket operations",
+      "Amazon CloudWatch model invocation logging",
+      "A Bedrock Guardrail to block profanity",
+      "An associated Bedrock Knowledge Base for grounded, cited answers"
+    ],
+    "correct": [1, 4],
+    "explanation": "An <b>action group</b> gives the agent the ability to create tickets, and an associated <b>Knowledge Base</b> supplies grounded, cited answers from the documentation -- together they cover both requirements. Provisioned Throughput is a capacity option, not a functional requirement. CloudWatch logging aids observability only. A Guardrail enforces safety but neither performs actions nor grounds answers."
+  },
+  {
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "multi",
+    "stem": "A retailer wants semantic product search: a shopper's natural-language query should return catalog items with similar meaning rather than only keyword matches. The team already runs Amazon Aurora PostgreSQL. Which TWO steps implement this using managed AWS building blocks? (Select TWO.)",
+    "options": [
+      "Generate an embedding for each product description using an Amazon Titan Text Embeddings model and store the vectors",
+      "Fine-tune a large language model on the catalog so it memorizes every item",
+      "At query time, embed the shopper's query with the same model and retrieve nearest vectors using Aurora PostgreSQL pgvector similarity search",
+      "Index product titles in Amazon RDS and rely solely on SQL LIKE pattern matching",
+      "Use Bedrock Guardrails to rank the products by relevance"
+    ],
+    "correct": [0, 2],
+    "explanation": "<b>Embedding each product</b> with Titan Text Embeddings and <b>embedding the query, then running pgvector similarity search</b> in Aurora delivers semantic matching on infrastructure the team already runs. Fine-tuning an LLM does not build a searchable vector index and is costly to keep current. SQL LIKE is keyword matching, exactly what they want to move beyond. Guardrails enforce policy and cannot rank relevance."
+  }
+]

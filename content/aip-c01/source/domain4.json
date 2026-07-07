@@ -1,0 +1,115 @@
+[
+  {
+    "domain": "Operational Efficiency & Optimization",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A customer-support chatbot on Amazon Bedrock sends the same 4,000-token company policy and tool-usage instructions as a static prefix on every turn of a multi-turn conversation, followed by a short user message. The team wants to reduce per-invocation cost and time-to-first-token without changing the model or degrading answer quality. Which approach is MOST cost-effective?",
+    "options": [
+      "Enable prompt caching so the static instruction prefix is cached and reused across invocations, and only the changing user turn is billed at full input rates.",
+      "Move the chatbot to Provisioned Throughput so the large prompt is served from dedicated capacity at a flat hourly rate.",
+      "Submit each conversation turn through a Bedrock batch inference job to obtain the 50 percent batch discount on input tokens.",
+      "Fine-tune the model on the policy document so the instructions no longer need to be sent in the prompt."
+    ],
+    "correct": [0],
+    "explanation": "<b>Prompt caching</b> is designed exactly for a large, static, repeated prefix: cached input tokens are billed at a large discount and cache reads lower time-to-first-token, with no model or quality change. <b>Provisioned Throughput</b> reserves capacity by the hour and does not discount a repeated prefix; it is for guaranteed throughput, not for a low-traffic chatbot. <b>Batch inference</b> is asynchronous with results delivered later, which breaks an interactive chatbot. <b>Fine-tuning</b> on policy text is costly, does not reliably eliminate instruction prompts, and produces a custom model that then REQUIRES Provisioned Throughput to serve."
+  },
+  {
+    "domain": "Operational Efficiency & Optimization",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A team fine-tuned Anthropic Claude on Amazon Bedrock to match their internal writing style and validated it in a development account. When they try to invoke the resulting custom model with the standard on-demand InvokeModel call in production, every request fails because the custom model has no on-demand endpoint. What must they do to serve the fine-tuned model in production?",
+    "options": [
+      "Request a service quota increase for on-demand InvokeModel requests on the custom model ID.",
+      "Purchase Provisioned Throughput for the custom model to create dedicated capacity that can serve inference requests.",
+      "Enable cross-Region inference so the custom model is routed to a Region that offers on-demand serving.",
+      "Re-run the fine-tuning job with the on-demand serving option enabled in the training configuration."
+    ],
+    "correct": [1],
+    "explanation": "Custom (fine-tuned) models on Bedrock cannot be called on-demand; you must buy <b>Provisioned Throughput</b> (model units) to get a dedicated endpoint that serves the custom model. A <b>quota increase</b> cannot create an on-demand path that does not exist for custom models. <b>Cross-Region inference</b> applies to supported on-demand base/system-defined models, not to serving your private custom model. There is no <b>training flag</b> that grants on-demand serving; serving mode is a deployment decision (Provisioned Throughput), not a fine-tuning parameter."
+  },
+  {
+    "domain": "Operational Efficiency & Optimization",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A real-time voice assistant built on Amazon Bedrock must minimize end-to-end response time for short conversational replies. The team is already using response streaming and has selected a capable model, but tail latency during peak hours is still too high for their SLA. Which additional Bedrock capability will MOST directly reduce inference latency for these interactive requests?",
+    "options": [
+      "Switch the workload to Bedrock batch inference to smooth out peak-hour demand.",
+      "Increase the max_tokens parameter so the model returns complete responses in fewer round trips.",
+      "Add an Amazon SQS queue in front of the model so requests are processed as capacity frees up.",
+      "Enable the latency-optimized inference option for the supported model to serve requests on infrastructure tuned for lower response time."
+    ],
+    "correct": [3],
+    "explanation": "<b>Latency-optimized inference</b> runs supported models on infrastructure specifically tuned to lower response latency, directly targeting the SLA problem for interactive traffic. <b>Batch inference</b> is asynchronous and higher-latency, the opposite of what a real-time assistant needs. Raising <b>max_tokens</b> only sets an upper bound on output length; it does not speed up token generation and longer outputs increase latency. An <b>SQS queue</b> adds buffering and delay, worsening interactive latency rather than reducing it."
+  },
+  {
+    "domain": "Operational Efficiency & Optimization",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A document-classification service on Amazon Bedrock currently uses a large frontier model and meets accuracy targets, but inference cost is far above budget at the millions-of-requests-per-day volume the team now runs. The task is narrow and well-defined, and a large labeled dataset of prompts and ideal responses already exists. Which approach BEST reduces ongoing per-request cost while preserving task accuracy?",
+    "options": [
+      "Keep the large model but move all traffic to Provisioned Throughput to lock in a lower flat rate.",
+      "Route every request through Bedrock batch inference to obtain the batch pricing discount.",
+      "Use model distillation to transfer the large teacher model's behavior into a smaller, cheaper student model fine-tuned for this task, then serve the distilled model.",
+      "Increase the temperature parameter so the model produces shorter, cheaper completions."
+    ],
+    "correct": [2],
+    "explanation": "<b>Model distillation</b> uses the large teacher to train a smaller student that retains task accuracy while costing far less per token to run at high volume, which is exactly the high-throughput narrow-task scenario. <b>Provisioned Throughput on the large model</b> reserves capacity but does not change the model's high per-token cost and can be expensive for spiky or very high volume. <b>Batch inference</b> only helps asynchronous bulk jobs and is not for a real-time classification API. <b>Temperature</b> controls randomness, not length or cost, so it does not lower spend."
+  },
+  {
+    "domain": "Operational Efficiency & Optimization",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A production application invoking an on-demand foundation model on Amazon Bedrock in a single Region is intermittently receiving ThrottlingException errors during traffic spikes, even though average load is well within limits. The team wants to raise effective throughput and improve resilience with the LEAST application re-architecture. What is the BEST approach?",
+    "options": [
+      "Enable a cross-Region inference profile so requests are automatically distributed across multiple Regions, increasing available throughput and resilience.",
+      "Wrap every call in a tight retry loop with no backoff so throttled requests are immediately resubmitted.",
+      "Switch the model to Provisioned Throughput sized for the average request rate to eliminate throttling.",
+      "Re-architect the application to queue all requests and process them later through batch inference."
+    ],
+    "correct": [0],
+    "explanation": "A <b>cross-Region inference profile</b> lets Bedrock route on-demand requests across multiple Regions, raising the effective quota and adding resilience during spikes with essentially no application redesign. <b>Tight retries without backoff</b> amplify throttling and can worsen the storm; exponential backoff with jitter is the correct retry pattern. <b>Provisioned Throughput sized for the average rate</b> would still throttle at the spike (spikes exceed the average) and requires committing to reserved capacity. <b>Batch inference</b> abandons the real-time path entirely, which is a large re-architecture and changes behavior."
+  },
+  {
+    "domain": "Operational Efficiency & Optimization",
+    "tag": "Domain 4",
+    "type": "multi",
+    "stem": "A FinOps team must monitor and control spend on a growing fleet of Amazon Bedrock applications across several accounts. They want proactive alerts before spend overruns occur and the ability to attribute cost and token usage to individual teams. Which TWO actions BEST meet these requirements? (Select TWO.)",
+    "options": [
+      "Create AWS Budgets with alert thresholds on Bedrock cost so stakeholders are notified as actual or forecasted spend approaches the limit.",
+      "Use Amazon CloudWatch Bedrock metrics such as InputTokenCount and OutputTokenCount, dimensioned appropriately, to track and alarm on token consumption per model.",
+      "Enable AWS Shield Advanced to cap the number of model invocations each account can make per month.",
+      "Turn on Bedrock Guardrails to block requests once a monthly dollar amount is reached.",
+      "Rely on the AWS Free Tier dashboard to project long-term generative AI spending across all accounts."
+    ],
+    "correct": [0, 1],
+    "explanation": "<b>AWS Budgets</b> provides proactive actual-and-forecasted cost alerts and is the standard control for warning before overruns. <b>CloudWatch Bedrock metrics</b> (InputTokenCount, OutputTokenCount, Invocations) let the team track token usage and set alarms, supporting attribution and monitoring. <b>Shield Advanced</b> is DDoS protection and does not cap invocations or spend. <b>Guardrails</b> filter content and enforce policy on prompts and responses; they do not track dollars or stop spend at a budget. The <b>Free Tier dashboard</b> is not a multi-account cost-forecasting or spend-control tool."
+  },
+  {
+    "domain": "Operational Efficiency & Optimization",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A steady, predictable production workload calls a foundation model on Amazon Bedrock at a high and consistent volume 24 hours a day. Finance has observed that the accumulated on-demand token charges are consistently higher than a reserved commitment would cost at this utilization. Which change is MOST cost-effective for this usage pattern?",
+    "options": [
+      "Keep on-demand pricing but enable cross-Region inference to lower the per-token rate.",
+      "Convert the real-time workload to batch inference to capture the batch discount during business hours only.",
+      "Reduce cost by lowering the top_p sampling parameter on every request.",
+      "Move the workload to Provisioned Throughput with a term commitment, since sustained high, predictable utilization makes reserved capacity cheaper than on-demand."
+    ],
+    "correct": [3],
+    "explanation": "<b>Provisioned Throughput with a committed term</b> becomes cheaper than on-demand precisely when utilization is high, steady, and predictable around the clock, which matches this profile. <b>Cross-Region inference</b> improves throughput and resilience but does not reduce the per-token price. <b>Batch inference</b> is asynchronous and cannot serve a continuous real-time workload, and it does not apply only during business hours. <b>top_p</b> controls sampling diversity, not cost, so changing it has no material effect on spend."
+  },
+  {
+    "domain": "Operational Efficiency & Optimization",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A Retrieval Augmented Generation application on Amazon Bedrock retrieves large document chunks and stuffs all of them into the prompt on every request. Costs are dominated by input tokens, and profiling shows many retrieved chunks are redundant or irrelevant to the user's question. The team wants to cut input-token spend while maintaining answer quality. Which optimization is MOST effective?",
+    "options": [
+      "Increase max_tokens so the model can reason over the large context in one pass.",
+      "Switch to Provisioned Throughput so the large prompts are billed at a flat rate regardless of token count.",
+      "Apply reranking and tighter top-k retrieval so only the most relevant chunks are placed in the prompt, reducing input tokens per request.",
+      "Raise the temperature to encourage the model to ignore irrelevant retrieved context."
+    ],
+    "correct": [2],
+    "explanation": "The cost driver is redundant input tokens, so <b>reranking plus a tighter top-k</b> keeps only the most relevant chunks in the prompt, directly shrinking input tokens while preserving or improving answer quality. <b>Increasing max_tokens</b> raises the output ceiling and does nothing to reduce the bloated input context. <b>Provisioned Throughput</b> reserves capacity but does not make oversized prompts cheaper and is unrelated to the token-bloat problem. <b>Temperature</b> affects randomness, not which context is sent or billed, so it neither cuts tokens nor reliably improves grounding."
+  }
+]

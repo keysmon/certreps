@@ -1,0 +1,330 @@
+[
+  {
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A legal-tech company needs to analyze entire merger agreements that often exceed 250 pages in a single pass, extracting obligations and cross-referencing clauses that appear far apart in the document. They want the Amazon Bedrock model with the largest context window and strong reasoning. Which model is MOST appropriate?",
+    "options": [
+      "Amazon Titan Text Express",
+      "Anthropic Claude with a 200K-token context window",
+      "Cohere Command R",
+      "Amazon Nova Micro"
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Claude with a 200K-token context window</b> can ingest a very long document in one pass and reason across distant clauses. Titan Text Express, Command R, and especially Nova Micro have far smaller effective context windows and are tuned for short, low-cost tasks, so they would force truncation or chunking that breaks cross-clause reasoning."
+  },
+  {
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A customer-support platform classifies millions of very short chat messages per day into a fixed set of intents. Reasoning depth is minimal, but the team needs the lowest possible cost per token and the lowest latency. Which Bedrock model is MOST cost-effective for this workload?",
+    "options": [
+      "Anthropic Claude Opus for maximum accuracy",
+      "Meta Llama 3 70B",
+      "Anthropic Claude Sonnet",
+      "Amazon Nova Micro"
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Amazon Nova Micro</b> is a text-only, ultra-low-cost, low-latency model ideal for high-volume, lightweight tasks such as short-message intent classification. Claude Opus and Sonnet and Llama 3 70B are larger, more expensive, higher-latency models whose reasoning strength is wasted on a simple classification task at this volume."
+  },
+  {
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A Bedrock Knowledge Base ingests structured technical manuals with nested sections and subsections. Retrieval must match on small, precise units for accuracy while still supplying the broader parent-section context to the model so relevance stays high. Which chunking strategy BEST fits this requirement?",
+    "options": [
+      "Hierarchical chunking",
+      "Fixed-size chunking with 300-token chunks and no overlap",
+      "No chunking, indexing one chunk per file",
+      "Fixed-size chunking with very large overlap"
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Hierarchical chunking</b> creates parent and child chunks: search matches the small child chunks for precision, and Bedrock returns the larger associated parent chunk to the model so it has fuller section context. Fixed-size chunking ignores document structure, one-chunk-per-file destroys precision and can exceed limits, and large overlap only inflates cost without preserving true hierarchy."
+  },
+  {
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A company's source documents are long-form narrative research reports where topic boundaries do not align with fixed token counts. Fixed-size chunking keeps splitting ideas mid-thought, which is hurting retrieval quality. Which chunking approach MOST improves the semantic coherence of the chunks?",
+    "options": [
+      "Fixed-size chunking with even smaller chunks",
+      "Hierarchical chunking with fixed parent and child sizes",
+      "Semantic chunking",
+      "Disabling chunking so each document is one chunk"
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Semantic chunking</b> splits text at natural meaning boundaries by using embedding similarity, so related sentences stay together in one chunk. Smaller fixed chunks fragment ideas further, hierarchical chunking still relies on fixed sizes at each level, and disabling chunking produces oversized chunks that dilute retrieval relevance."
+  },
+  {
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A Bedrock Knowledge Base must support semantic search across documents written in English, French, Arabic, and Japanese, using a single embeddings model to keep the architecture simple. Which embeddings choice is BEST?",
+    "options": [
+      "Amazon Titan Multimodal Embeddings",
+      "Cohere Embed Multilingual",
+      "Separate Amazon Titan text-embedding indexes, one per language",
+      "Lexical BM25 keyword search instead of embeddings"
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Cohere Embed Multilingual</b> maps many languages into one shared vector space, enabling cross-lingual semantic search from a single model and index. Titan Multimodal Embeddings targets image-plus-text, not multilingual text retrieval; per-language indexes add operational overhead and block cross-lingual matching; and BM25 is lexical, not semantic."
+  },
+  {
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A Knowledge Base is backed by an S3 bucket holding 2 million objects, of which only a small number change each day. After updates, the team wants the sync to reflect only changed files with the LEAST cost and time rather than reprocessing everything. What should they configure?",
+    "options": [
+      "Recreate the Knowledge Base after every change",
+      "Set chunking to no-chunking so re-embedding is skipped",
+      "Migrate the data source from S3 to DynamoDB",
+      "Run an incremental data source sync that processes only added, modified, and deleted objects"
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>An incremental ingestion sync</b> compares the source against the last sync and only re-embeds added, modified, or deleted objects, minimizing cost and time. Recreating the Knowledge Base reprocesses all 2 million objects, no-chunking does not reduce which files are scanned, and DynamoDB is not the appropriate document source here."
+  },
+  {
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A RAG application serves several business units from one Bedrock Knowledge Base. A user in the Finance unit must only retrieve chunks from Finance documents, and the team wants to avoid maintaining a separate index per unit. What is the BEST approach?",
+    "options": [
+      "Attach metadata such as department to each document and apply metadata filtering at query time",
+      "Create one Knowledge Base per department",
+      "Retrieve all chunks and post-filter them in the application layer",
+      "Configure a Guardrail to block content from other departments"
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Metadata filtering</b> attaches attributes like department to documents so queries only match the allowed subset, giving isolation from a single index. One Knowledge Base per department multiplies operational overhead; post-filtering still retrieves other units' data into the app, risking leakage and waste; and Guardrails enforce content policy, not document-level access scoping."
+  },
+  {
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A team already runs a transactional workload on Amazon Aurora PostgreSQL and wants to add vector search for a moderate-sized RAG corpus. They prefer not to introduce a new managed service or a standalone vector database and want to keep operations consolidated. Which vector store choice is MOST appropriate?",
+    "options": [
+      "Pinecone",
+      "Amazon OpenSearch Serverless",
+      "Aurora PostgreSQL with the pgvector extension",
+      "Amazon Neptune"
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Aurora PostgreSQL with pgvector</b> adds vector similarity search inside the database the team already operates, avoiding a new service for a moderate corpus. Pinecone and OpenSearch Serverless are capable but add another system to manage and integrate, and Neptune is a graph database, not a vector store."
+  },
+  {
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A real-time recommendation feature needs vector similarity lookups with single-digit millisecond latency, and the team already runs an in-memory data platform for caching that they would like to reuse for vector search. Which vector store BEST meets the latency requirement?",
+    "options": [
+      "Amazon S3 Vectors",
+      "Redis Enterprise with vector search",
+      "Aurora PostgreSQL with pgvector",
+      "Amazon Athena"
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Redis Enterprise</b> keeps vectors in memory and supports vector similarity search, delivering the single-digit millisecond latency the real-time feature needs while reusing the existing platform. S3 Vectors optimizes cost for large, latency-tolerant corpora; pgvector on Aurora is disk-backed and slower for this target; and Athena is an interactive SQL query service, not a low-latency vector store."
+  },
+  {
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A pharmaceutical firm wants a base model to internalize a large corpus of unlabeled proprietary research text and domain vocabulary so it produces more fluent domain language. They do not have labeled prompt-and-completion pairs. Which Bedrock customization approach is MOST appropriate?",
+    "options": [
+      "Fine-tuning with labeled JSONL prompt-and-completion pairs",
+      "Retrieval-Augmented Generation only",
+      "Prompt engineering with few-shot examples",
+      "Continued pre-training on the unlabeled corpus"
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Continued pre-training</b> consumes large unlabeled corpora to teach a model domain vocabulary and style without requiring labeled pairs, exactly matching the firm's situation. Fine-tuning needs labeled prompt-and-completion data they lack, RAG injects retrieved facts at inference but does not change the model's internal language, and few-shot prompting cannot absorb an entire proprietary corpus."
+  },
+  {
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A company needs a model to consistently emit outputs in a very specific proprietary format and tone that prompt instructions alone fail to enforce reliably. They have thousands of high-quality labeled examples, and the underlying knowledge rarely changes. Which approach is BEST?",
+    "options": [
+      "Fine-tuning the model on the labeled examples",
+      "RAG over the example documents",
+      "Continued pre-training on the examples",
+      "Adding more few-shot examples to every request's context window"
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Fine-tuning</b> on thousands of labeled examples is the right tool when the goal is reliable format and tone rather than fresh knowledge, and the domain is stable so the tuned model stays valid. RAG targets changing or large knowledge, continued pre-training needs an unlabeled corpus and does not sharpen output formatting, and stuffing few-shot examples into every request raises cost and latency while remaining less consistent."
+  },
+  {
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "An ML engineer is preparing a dataset to fine-tune an Amazon Bedrock text model. Which option describes the CORRECT training-data preparation format?",
+    "options": [
+      "A CSV file with one column for features and one for labels",
+      "A single JSON object that contains all examples inside one array",
+      "A JSONL file where each line is a JSON object with prompt and completion fields",
+      "Raw text files uploaded directly with no structure"
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>A JSONL file</b> with one JSON object per line containing prompt and completion fields is the expected format for Bedrock fine-tuning. CSV is not the accepted schema, a single JSON array is not line-delimited JSONL, and unstructured raw text provides no supervised prompt-and-completion pairs for the tuning job."
+  },
+  {
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A regulated bank must ensure that all data stored by its Bedrock Knowledge Base and any custom model artifacts is encrypted at rest with keys the bank controls, can audit through CloudTrail, and can revoke. What should they configure?",
+    "options": [
+      "Rely on the default Bedrock service-owned encryption",
+      "Encrypt with a customer managed AWS KMS key",
+      "Encrypt client-side with a key hardcoded in the application",
+      "Disable encryption and restrict access only with security groups"
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>A customer managed AWS KMS key</b> gives the bank control over key policy, rotation, auditing via CloudTrail, and the ability to disable or revoke the key. Service-owned default keys are not customer-controlled or auditable at the key level, a hardcoded application key is insecure and unmanageable, and security groups do not provide encryption at rest."
+  },
+  {
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A healthcare company must call Amazon Bedrock from workloads running in a private subnet so that traffic never traverses the public internet and stays entirely on the AWS network. What is the BEST solution?",
+    "options": [
+      "Route Bedrock calls through a NAT gateway to the public endpoint",
+      "Place the Bedrock endpoint behind an internet-facing Application Load Balancer",
+      "Whitelist Bedrock public IP ranges in the subnet's security group",
+      "Create an interface VPC endpoint using AWS PrivateLink for Bedrock"
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>An interface VPC endpoint (AWS PrivateLink)</b> exposes Bedrock as a private ENI in the VPC so API calls stay on the AWS network without internet exposure. A NAT gateway still sends traffic to the public endpoint over the internet, you cannot front a managed Bedrock API with your own ALB, and whitelisting public IPs still uses the public path."
+  },
+  {
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A European company subject to strict data residency rules must keep Bedrock inference requests and data within EU Regions. They are considering enabling cross-Region inference to gain extra throughput during spikes. What is the MOST important consideration?",
+    "options": [
+      "Cross-Region inference may route requests to Regions outside the EU, so they should use an EU-scoped inference profile or avoid cross-Region routing to keep data in-Region",
+      "Cross-Region inference always keeps data in the original source Region",
+      "Data residency is guaranteed automatically by Bedrock regardless of configuration",
+      "They must fine-tune a custom model to enforce data residency"
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Cross-Region inference can move requests across Regions</b> within an inference profile's geography, so an EU-scoped profile (which only routes among EU Regions) or disabling cross-Region routing preserves residency. It does not always pin data to the source Region, residency is not automatic irrespective of configuration, and fine-tuning does not control where inference is routed."
+  },
+  {
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A digital health startup wants to process protected health information through Amazon Bedrock. Which statement reflects a CORRECT compliance understanding for building a HIPAA-eligible workload?",
+    "options": [
+      "Bedrock uses customer prompts and completions to train the base foundation models, so PHI must never be sent",
+      "HIPAA eligibility requires the startup to self-host the model on EC2 instead of using Bedrock",
+      "Bedrock is a HIPAA-eligible service under an AWS BAA, and Amazon does not use your prompts or outputs to train the base foundation models",
+      "Enabling Guardrails alone is sufficient to make any Bedrock workload HIPAA compliant"
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Bedrock is HIPAA-eligible under an AWS Business Associate Addendum</b>, and Amazon does not use your inputs or outputs to train the base models, which supports PHI workloads with proper controls. Bedrock does not train base models on customer data, self-hosting on EC2 is not required, and Guardrails are one control but do not by themselves establish HIPAA compliance."
+  },
+  {
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "multi",
+    "stem": "A startup is choosing a foundation model in the Bedrock catalog for an application that must accept product images alongside text and generate responses, while keeping cost reasonable at high volume. Which TWO models natively support image (multimodal) inputs and are valid candidates to evaluate? (Select TWO.)",
+    "options": [
+      "Anthropic Claude with vision capability",
+      "Amazon Titan Text Embeddings V2",
+      "Cohere Command Light",
+      "Amazon Nova multimodal understanding models",
+      "Amazon Titan Text Lite"
+    ],
+    "correct": [
+      0,
+      3
+    ],
+    "explanation": "<b>Claude vision models</b> and <b>Amazon Nova multimodal models</b> both accept image inputs alongside text and generate responses, so both belong in the evaluation. Titan Text Embeddings V2 produces embeddings rather than generating responses, and Cohere Command Light and Titan Text Lite are text-only generation models that cannot ingest images."
+  },
+  {
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "multi",
+    "stem": "A financial services team must harden a Bedrock RAG application so that data at rest is encrypted with keys they control and API traffic never leaves the AWS network. Which TWO controls should they implement? (Select TWO.)",
+    "options": [
+      "Send all Bedrock traffic over the public internet secured only with TLS",
+      "Create an interface VPC endpoint using AWS PrivateLink for Bedrock",
+      "Store the vector embeddings in a public S3 bucket for easy access",
+      "Grant the bedrock full-access wildcard permission to every role for simplicity",
+      "Encrypt data at rest with a customer managed AWS KMS key"
+    ],
+    "correct": [
+      1,
+      4
+    ],
+    "explanation": "<b>An interface VPC endpoint (PrivateLink)</b> keeps Bedrock API traffic on the AWS network, and a <b>customer managed KMS key</b> encrypts data at rest with keys the team controls. Public internet plus TLS still traverses the internet, a public S3 bucket exposes sensitive embeddings, and a wildcard permission violates least privilege."
+  },
+  {
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "multi",
+    "stem": "A RAG application built on a Bedrock Knowledge Base is returning only loosely relevant chunks, which lowers answer quality. Without changing the foundation model, which TWO changes are MOST likely to improve retrieval relevance? (Select TWO.)",
+    "options": [
+      "Increase the model's maximum output tokens",
+      "Lower the generation temperature to 0",
+      "Add metadata filtering to narrow candidates to the relevant documents",
+      "Switch to a smaller, cheaper generation model",
+      "Adopt a chunking strategy such as semantic or hierarchical that better matches the document structure"
+    ],
+    "correct": [
+      2,
+      4
+    ],
+    "explanation": "<b>Metadata filtering</b> restricts retrieval to documents that are actually relevant, and a <b>chunking strategy matched to the document structure</b> produces more semantically coherent chunks, both directly improving what is retrieved. Increasing output tokens, lowering temperature, and swapping the generation model only affect the generation step, not which chunks the retriever returns."
+  },
+  {
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "multi",
+    "stem": "A compliance officer is reviewing how Amazon Bedrock handles customer data for a GDPR-sensitive deployment. Which TWO statements are TRUE? (Select TWO.)",
+    "options": [
+      "Amazon does not use your inference inputs or outputs to train the underlying base foundation models",
+      "Model invocation logging must be enabled or Bedrock will not serve requests",
+      "You can restrict Bedrock usage to specific Regions to support data residency requirements",
+      "Bedrock automatically shares your fine-tuning data with the third-party model provider",
+      "Customer managed KMS keys cannot be used to encrypt Bedrock data"
+    ],
+    "correct": [
+      0,
+      2
+    ],
+    "explanation": "<b>Amazon does not train base models on your inputs or outputs</b>, and <b>you can scope Bedrock usage to chosen Regions</b> to support data residency, both of which are accurate. Invocation logging is optional rather than required to serve requests, fine-tuning data is not shared with model providers, and customer managed KMS keys are in fact supported for encrypting Bedrock data."
+  }
+]

@@ -1,0 +1,591 @@
+<title>AIP-C01 Full Mock Exam (65Q)</title>
+
+<style>
+  :root {
+    --ink: #0D1520;
+    --panel: #14202E;
+    --panel-2: #1B2A3B;
+    --panel-3: #223448;
+    --line: rgba(130, 168, 205, 0.16);
+    --line-strong: rgba(130, 168, 205, 0.30);
+    --text: #EAF1F8;
+    --muted: #8FA3B8;
+    --faint: #5E7188;
+    --gold: #E9B44C;
+    --gold-dim: #b98c34;
+    --gold-soft: rgba(233, 180, 76, 0.12);
+    --emerald: #3FCF8E;
+    --emerald-soft: rgba(63, 207, 142, 0.12);
+    --rose: #F26D6D;
+    --rose-soft: rgba(242, 109, 109, 0.12);
+    --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, Roboto, sans-serif;
+    --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+    --radius: 14px;
+    --radius-sm: 10px;
+  }
+
+  * { box-sizing: border-box; }
+
+  .exam {
+    font-family: var(--font-sans);
+    background:
+      radial-gradient(1200px 600px at 50% -10%, rgba(233, 180, 76, 0.06), transparent 60%),
+      var(--ink);
+    color: var(--text);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.55;
+    padding-bottom: 64px;
+  }
+  .exam a { color: var(--gold); }
+
+  /* ---------- Status bar ---------- */
+  .statusbar {
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(13, 21, 32, 0.86);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .statusbar-inner {
+    max-width: 820px; margin: 0 auto; padding: 14px 24px 0;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  }
+  .brand { display: flex; align-items: baseline; gap: 10px; min-width: 0; }
+  .brand-code {
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.14em;
+    color: var(--gold); border: 1px solid var(--gold-dim); border-radius: 6px;
+    padding: 3px 7px; white-space: nowrap;
+  }
+  .brand-name { font-size: 13.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .metrics {
+    display: flex; align-items: center; gap: 18px;
+    font-family: var(--font-mono); font-size: 13px; font-variant-numeric: tabular-nums; white-space: nowrap;
+  }
+  .metric-label { color: var(--faint); font-size: 10px; letter-spacing: 0.13em; display: block; }
+  .metric-val { color: var(--text); font-size: 15px; }
+  .metric-val.score { color: var(--gold); }
+
+  /* ---------- Continuous progress bar (scales to 65) ---------- */
+  .track { max-width: 820px; margin: 12px auto 0; padding: 0 24px 14px; }
+  .track-bar { height: 5px; border-radius: 4px; background: var(--line); overflow: hidden; }
+  .track-fill { height: 100%; width: 0%; border-radius: 4px; background: linear-gradient(90deg, var(--gold-dim), var(--gold)); transition: width 0.35s cubic-bezier(0.2,0.7,0.2,1); }
+
+  /* ---------- Layout shell ---------- */
+  .stage { max-width: 720px; margin: 0 auto; padding: 34px 24px 0; }
+
+  /* ---------- Intro ---------- */
+  .eyebrow { font-family: var(--font-mono); font-size: 11.5px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin: 0 0 14px; }
+  .intro h1 { font-size: clamp(28px, 5vw, 40px); line-height: 1.1; letter-spacing: -0.02em; margin: 0 0 10px; text-wrap: balance; font-weight: 650; }
+  .intro .sub { font-family: var(--font-mono); color: var(--muted); font-size: 13.5px; margin: 0 0 26px; letter-spacing: 0.02em; }
+
+  .facts {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1px;
+    background: var(--line); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; margin-bottom: 22px;
+  }
+  .fact { background: var(--panel); padding: 16px 18px; }
+  .fact .k { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.13em; text-transform: uppercase; color: var(--faint); margin-bottom: 6px; }
+  .fact .v { font-size: 15px; font-weight: 550; }
+  .fact .v small { color: var(--muted); font-weight: 400; font-size: 12.5px; }
+
+  .coverage { margin-bottom: 22px; }
+  .coverage h2 { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); font-weight: 500; margin: 0 0 14px; }
+  .dom-row { display: flex; align-items: center; gap: 12px; padding: 6px 0; }
+  .dom-bar { flex: 1; height: 6px; background: var(--line); border-radius: 4px; overflow: hidden; }
+  .dom-bar span { display: block; height: 100%; background: linear-gradient(90deg, var(--gold-dim), var(--gold)); border-radius: 4px; }
+  .dom-name { font-size: 13px; width: 48%; color: var(--text); }
+  .dom-pct { font-family: var(--font-mono); font-size: 12px; color: var(--muted); width: 62px; text-align: right; font-variant-numeric: tabular-nums; }
+
+  .persist-note { display: flex; gap: 10px; align-items: flex-start; font-size: 12.5px; border-radius: var(--radius-sm); padding: 12px 14px; margin-bottom: 18px; line-height: 1.5; }
+  .persist-note.ok { background: var(--emerald-soft); border: 1px solid rgba(63,207,142,0.35); color: #bfe6d3; }
+  .persist-note.warn { background: var(--gold-soft); border: 1px solid var(--gold-dim); color: #f0d9a8; }
+  .persist-note .pn-ico { font-family: var(--font-mono); flex-shrink: 0; }
+
+  .disclaimer { font-size: 12px; color: var(--faint); border-left: 2px solid var(--line-strong); padding-left: 12px; margin: 0 0 26px; line-height: 1.5; }
+
+  /* ---------- Resume banner ---------- */
+  .resume { background: var(--panel-2); border: 1px solid var(--gold-dim); border-radius: var(--radius); padding: 18px 20px; margin-bottom: 22px; }
+  .resume h3 { margin: 0 0 6px; font-size: 16px; }
+  .resume p { margin: 0 0 14px; color: var(--muted); font-size: 13.5px; }
+  .resume-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+  /* ---------- Buttons ---------- */
+  .btn { font-family: var(--font-sans); font-size: 15px; font-weight: 600; border: none; border-radius: var(--radius-sm); padding: 13px 24px; cursor: pointer; transition: transform 0.08s ease, background 0.15s ease, box-shadow 0.15s ease; display: inline-flex; align-items: center; gap: 9px; }
+  .btn:active { transform: translateY(1px); }
+  .btn-primary { background: var(--gold); color: #23180a; box-shadow: 0 6px 20px -8px rgba(233, 180, 76, 0.6); }
+  .btn-primary:hover { background: #f2c05f; }
+  .btn-primary:disabled { background: var(--panel-3); color: var(--faint); cursor: not-allowed; box-shadow: none; }
+  .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--line-strong); }
+  .btn-ghost:hover { background: var(--panel-2); }
+  .btn-sm { padding: 8px 14px; font-size: 13px; }
+  .btn .arrow { font-family: var(--font-mono); }
+
+  /* ---------- Question card ---------- */
+  .qcard { animation: rise 0.34s cubic-bezier(0.2, 0.7, 0.2, 1); }
+  @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  .qmeta { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+  .qtag { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); background: var(--gold-soft); border: 1px solid var(--gold-dim); border-radius: 20px; padding: 4px 11px; }
+  .qnum { font-family: var(--font-mono); font-size: 12px; color: var(--faint); letter-spacing: 0.08em; margin-left: auto; font-variant-numeric: tabular-nums; }
+  .qstem { font-size: 18px; line-height: 1.5; letter-spacing: -0.01em; margin: 0 0 6px; text-wrap: pretty; }
+  .qhint { font-family: var(--font-mono); font-size: 11.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold); margin: 0 0 20px; }
+
+  .options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+  .option { display: flex; align-items: flex-start; gap: 13px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 15px 16px; cursor: pointer; transition: border-color 0.15s ease, background 0.15s ease; position: relative; }
+  .option:hover { border-color: var(--line-strong); background: var(--panel-2); }
+  .option input { position: absolute; opacity: 0; pointer-events: none; }
+  .marker { flex-shrink: 0; width: 22px; height: 22px; border: 1.5px solid var(--line-strong); display: grid; place-items: center; font-family: var(--font-mono); font-size: 12px; color: var(--muted); margin-top: 1px; transition: all 0.15s ease; }
+  .single .marker { border-radius: 50%; }
+  .multi .marker { border-radius: 6px; }
+  .option.selected { border-color: var(--gold); background: var(--gold-soft); }
+  .option.selected .marker { border-color: var(--gold); background: var(--gold); color: #23180a; font-weight: 700; }
+  .otext { font-size: 15px; line-height: 1.45; padding-top: 1px; }
+  .option.correct { border-color: var(--emerald); background: var(--emerald-soft); }
+  .option.correct .marker { border-color: var(--emerald); background: var(--emerald); color: #06210f; }
+  .option.incorrect { border-color: var(--rose); background: var(--rose-soft); }
+  .option.incorrect .marker { border-color: var(--rose); background: var(--rose); color: #2a0808; }
+  .option.locked { cursor: default; }
+  .option.locked:hover { background: var(--panel); border-color: var(--line); }
+  .option.locked.correct:hover { background: var(--emerald-soft); border-color: var(--emerald); }
+  .option.locked.incorrect:hover { background: var(--rose-soft); border-color: var(--rose); }
+  .option.dim { opacity: 0.5; }
+
+  .explain { border-radius: var(--radius-sm); padding: 18px 18px 18px 20px; margin-bottom: 24px; background: var(--panel); border: 1px solid var(--line); border-left-width: 3px; animation: rise 0.3s ease; }
+  .explain.right { border-left-color: var(--emerald); }
+  .explain.wrong { border-left-color: var(--rose); }
+  .explain .verdict { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; margin: 0 0 9px; font-weight: 600; }
+  .explain.right .verdict { color: var(--emerald); }
+  .explain.wrong .verdict { color: var(--rose); }
+  .explain p { margin: 0; font-size: 14.5px; line-height: 1.6; color: #d6e0ea; }
+  .explain b { color: var(--text); font-weight: 650; }
+
+  .qfooter { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding-bottom: 12px; }
+  .qfooter .left { display: flex; gap: 10px; }
+
+  /* ---------- Results ---------- */
+  .results { animation: rise 0.4s ease; text-align: center; }
+  .score-ring { width: 168px; height: 168px; margin: 8px auto 20px; position: relative; display: grid; place-items: center; }
+  .score-ring svg { transform: rotate(-90deg); position: absolute; inset: 0; }
+  .score-num { font-size: 46px; font-weight: 680; letter-spacing: -0.02em; line-height: 1; font-variant-numeric: tabular-nums; }
+  .score-den { font-family: var(--font-mono); font-size: 13px; color: var(--muted); margin-top: 4px; }
+  .verdict-pill { display: inline-block; font-family: var(--font-mono); font-size: 12.5px; letter-spacing: 0.08em; text-transform: uppercase; padding: 7px 16px; border-radius: 20px; margin-bottom: 8px; }
+  .verdict-pill.pass { color: var(--emerald); background: var(--emerald-soft); border: 1px solid var(--emerald); }
+  .verdict-pill.fail { color: var(--gold); background: var(--gold-soft); border: 1px solid var(--gold-dim); }
+  .results .rsub { color: var(--muted); font-size: 14px; margin: 0 0 32px; }
+  .results .rsub b { color: var(--text); }
+  .breakdown { text-align: left; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; margin-bottom: 20px; }
+  .breakdown h3 { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); font-weight: 500; margin: 0 0 18px; }
+  .brow { display: flex; align-items: center; gap: 12px; padding: 8px 0; }
+  .brow .bn { font-size: 13px; width: 50%; }
+  .brow .bbar { flex: 1; height: 7px; background: var(--line); border-radius: 4px; overflow: hidden; }
+  .brow .bbar span { display: block; height: 100%; border-radius: 4px; transition: width 0.7s cubic-bezier(0.2,0.7,0.2,1); }
+  .brow .bsc { font-family: var(--font-mono); font-size: 12.5px; color: var(--muted); width: 42px; text-align: right; font-variant-numeric: tabular-nums; }
+  .recap { text-align: left; margin-bottom: 30px; }
+  .recap h3 { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); font-weight: 500; margin: 0 0 12px; }
+  .recap-item { display: flex; align-items: center; gap: 11px; padding: 9px 0; border-bottom: 1px solid var(--line); font-size: 13px; }
+  .recap-item:last-child { border-bottom: none; }
+  .recap-item .ri { font-family: var(--font-mono); font-size: 12px; width: 20px; flex-shrink: 0; }
+  .recap-item .ri.ok { color: var(--emerald); }
+  .recap-item .ri.no { color: var(--rose); }
+  .recap-item .rd { color: var(--muted); font-size: 11.5px; margin-left: auto; font-family: var(--font-mono); white-space: nowrap; }
+  .recap-item .rq { color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .results-actions { display: flex; gap: 12px; justify-content: center; }
+
+  .hidden { display: none !important; }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+  @media (max-width: 560px) { .metrics { gap: 14px; } .brand-name { display: none; } .dom-name { width: 52%; font-size: 12px; } .stage { padding-top: 24px; } }
+</style>
+
+<div class="exam">
+  <div class="statusbar">
+    <div class="statusbar-inner">
+      <div class="brand">
+        <span class="brand-code">AIP&#8209;C01</span>
+        <span class="brand-name">Generative AI Developer &middot; Professional &middot; Set 2</span>
+      </div>
+      <div class="metrics" id="metrics" style="visibility:hidden">
+        <div><span class="metric-label">Time</span><span class="metric-val" id="timer">00:00</span></div>
+        <div><span class="metric-label">Score</span><span class="metric-val score" id="scoreDisplay">0 / 0</span></div>
+      </div>
+    </div>
+    <div class="track"><div class="track-bar"><div class="track-fill" id="trackFill"></div></div></div>
+  </div>
+
+  <div class="stage">
+    <section id="intro" class="intro">
+      <p class="eyebrow">AWS Certification &middot; Full-Length Mock</p>
+      <h1>Generative AI Developer &mdash; Professional</h1>
+      <p class="sub">AIP&#8209;C01 &middot; Set 2 &middot; 65 questions &middot; immediate feedback</p>
+
+      <div id="resumeSlot"></div>
+
+      <div class="facts">
+        <div class="fact"><div class="k">This exam</div><div class="v">65 questions</div></div>
+        <div class="fact"><div class="k">Format</div><div class="v">Scenario-based <small>13 multi-response</small></div></div>
+        <div class="fact"><div class="k">Real time limit</div><div class="v">~180 min</div></div>
+        <div class="fact"><div class="k">Real pass mark</div><div class="v">750 / 1000 <small>(~75%)</small></div></div>
+      </div>
+
+      <div class="coverage">
+        <h2>Domain coverage (mirrors real weightings)</h2>
+        <div class="dom-row"><span class="dom-name">Foundation Model Integration &amp; Compliance</span><span class="dom-bar"><span style="width:100%"></span></span><span class="dom-pct">31% &middot; 20Q</span></div>
+        <div class="dom-row"><span class="dom-name">Implementation &amp; Integration</span><span class="dom-bar"><span style="width:84%"></span></span><span class="dom-pct">26% &middot; 17Q</span></div>
+        <div class="dom-row"><span class="dom-name">AI Safety, Security &amp; Governance</span><span class="dom-bar"><span style="width:65%"></span></span><span class="dom-pct">20% &middot; 13Q</span></div>
+        <div class="dom-row"><span class="dom-name">Operational Efficiency &amp; Optimization</span><span class="dom-bar"><span style="width:39%"></span></span><span class="dom-pct">12% &middot; 8Q</span></div>
+        <div class="dom-row"><span class="dom-name">Testing, Validation &amp; Troubleshooting</span><span class="dom-bar"><span style="width:35%"></span></span><span class="dom-pct">11% &middot; 7Q</span></div>
+      </div>
+
+      <div id="persistNote"></div>
+
+      <p class="disclaimer">Practice questions written in AWS scenario style to convey format and difficulty. Independent study material &mdash; not official AWS content, and not actual exam questions. Answer keys were cross-checked by an independent review pass, but verify anything surprising against the official exam guide.</p>
+
+      <button class="btn btn-primary" id="startBtn">Start exam <span class="arrow">&rarr;</span></button>
+    </section>
+
+    <section id="quiz" class="hidden"></section>
+    <section id="results" class="hidden"></section>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var QUESTIONS = __QUESTIONS_JSON__;
+
+  var DOMAINS = [
+    "Foundation Model Integration & Compliance",
+    "Implementation & Integration",
+    "AI Safety, Security & Governance",
+    "Operational Efficiency & Optimization",
+    "Testing, Validation & Troubleshooting"
+  ];
+  var LETTERS = ["A", "B", "C", "D", "E"];
+  var PASS_THRESHOLD = 0.75;
+  var STORE_KEY = "aip_c01_set2_progress_v1";
+  var CHECK = String.fromCharCode(10003);
+  var CROSS = String.fromCharCode(10007);
+
+  // ---- Feature-detected storage: localStorage -> window.storage -> in-memory ----
+  var Store = (function () {
+    try {
+      var k = "__probe_" + (1 + 1);
+      window.localStorage.setItem(k, "1");
+      window.localStorage.removeItem(k);
+      return {
+        get: function (key) { try { return window.localStorage.getItem(key); } catch (e) { return null; } },
+        set: function (key, v) { try { window.localStorage.setItem(key, v); return true; } catch (e) { return false; } },
+        del: function (key) { try { window.localStorage.removeItem(key); } catch (e) {} },
+        persistent: true, kind: "localStorage"
+      };
+    } catch (e) {}
+    try {
+      var ws = window.storage;
+      if (ws && typeof ws.getItem === "function" && typeof ws.setItem === "function") {
+        var probe = ws.getItem("__probe__");
+        if (!(probe && typeof probe.then === "function")) { // skip if async/Promise
+          return {
+            get: function (key) { try { return ws.getItem(key); } catch (e) { return null; } },
+            set: function (key, v) { try { ws.setItem(key, v); return true; } catch (e) { return false; } },
+            del: function (key) { try { ws.removeItem && ws.removeItem(key); } catch (e) {} },
+            persistent: true, kind: "window.storage"
+          };
+        }
+      }
+    } catch (e) {}
+    var mem = {};
+    return {
+      get: function (key) { return Object.prototype.hasOwnProperty.call(mem, key) ? mem[key] : null; },
+      set: function (key, v) { mem[key] = v; return true; },
+      del: function (key) { delete mem[key]; },
+      persistent: false, kind: "memory"
+    };
+  })();
+
+  var state = null, timerId = null, lastSaveTick = 0;
+
+  var els = {
+    intro: document.getElementById("intro"),
+    quiz: document.getElementById("quiz"),
+    results: document.getElementById("results"),
+    trackFill: document.getElementById("trackFill"),
+    metrics: document.getElementById("metrics"),
+    timer: document.getElementById("timer"),
+    scoreDisplay: document.getElementById("scoreDisplay"),
+    startBtn: document.getElementById("startBtn"),
+    resumeSlot: document.getElementById("resumeSlot"),
+    persistNote: document.getElementById("persistNote")
+  };
+
+  function freshState() {
+    return { v: 1, index: 0, answered: new Array(QUESTIONS.length), elapsed: 0, finished: false };
+  }
+  function save() {
+    if (!state) return;
+    Store.set(STORE_KEY, JSON.stringify(state));
+  }
+  function loadSaved() {
+    var raw = Store.get(STORE_KEY);
+    if (!raw) return null;
+    try {
+      var s = JSON.parse(raw);
+      if (!s || s.v !== 1 || !Array.isArray(s.answered) || s.answered.length !== QUESTIONS.length) return null;
+      return s;
+    } catch (e) { return null; }
+  }
+  function answeredCount(s) {
+    var n = 0; for (var i = 0; i < s.answered.length; i++) if (s.answered[i]) n++; return n;
+  }
+  function scoreSoFar() {
+    var n = 0; for (var i = 0; i < state.answered.length; i++) if (state.answered[i] && state.answered[i].correct) n++; return n;
+  }
+  function submittedCount() {
+    return answeredCount(state);
+  }
+
+  function updateHUD() {
+    els.scoreDisplay.textContent = scoreSoFar() + " / " + submittedCount();
+    var prog = state.finished ? 1 : (state.index) / QUESTIONS.length;
+    els.trackFill.style.width = (Math.max(prog, 0) * 100).toFixed(1) + "%";
+  }
+  function pad(n) { return (n < 10 ? "0" : "") + n; }
+  function fmt(secs) { return pad(Math.floor(secs / 60)) + ":" + pad(secs % 60); }
+  function tick() {
+    state.elapsed += 1;
+    els.timer.textContent = fmt(state.elapsed);
+    if (state.elapsed - lastSaveTick >= 10) { lastSaveTick = state.elapsed; save(); }
+  }
+  function startTimer() {
+    if (timerId) clearInterval(timerId);
+    els.timer.textContent = fmt(state.elapsed);
+    timerId = setInterval(tick, 1000);
+  }
+  function arraysEqual(a, b) {
+    if (a.length !== b.length) return false;
+    var sa = a.slice().sort(), sb = b.slice().sort();
+    for (var i = 0; i < sa.length; i++) if (sa[i] !== sb[i]) return false;
+    return true;
+  }
+  function escapeHtml(s) {
+    return s.replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; });
+  }
+
+  function renderPersistNote() {
+    if (Store.persistent) {
+      els.persistNote.innerHTML = '<div class="persist-note ok"><span class="pn-ico">' + CHECK + '</span>' +
+        '<span>Your progress saves automatically in this browser. If you close or refresh, you can pick up where you left off.</span></div>';
+    } else {
+      els.persistNote.innerHTML = '<div class="persist-note warn"><span class="pn-ico">!</span>' +
+        '<span>This viewer blocks in-browser saving, so a refresh here will restart the exam. To keep progress across refreshes, open the downloaded HTML file locally instead.</span></div>';
+    }
+  }
+
+  function renderResumeBanner() {
+    var s = loadSaved();
+    if (!s || s.finished || answeredCount(s) === 0) { els.resumeSlot.innerHTML = ""; return; }
+    var done = answeredCount(s);
+    var pos = Math.min(s.index + 1, QUESTIONS.length);
+    var box = document.createElement("div");
+    box.className = "resume";
+    box.innerHTML = '<h3>Resume your exam?</h3><p>You have ' + done + ' of ' + QUESTIONS.length +
+      ' questions answered. Continue from question ' + pos + ', or start over.</p>' +
+      '<div class="resume-actions">' +
+      '<button class="btn btn-primary btn-sm" id="resumeBtn">Resume from Q' + pos + '</button>' +
+      '<button class="btn btn-ghost btn-sm" id="freshBtn">Start over</button></div>';
+    els.resumeSlot.innerHTML = "";
+    els.resumeSlot.appendChild(box);
+    document.getElementById("resumeBtn").addEventListener("click", function () { state = s; beginExam(); });
+    document.getElementById("freshBtn").addEventListener("click", function () { Store.del(STORE_KEY); state = freshState(); beginExam(); });
+  }
+
+  function beginExam() {
+    els.intro.classList.add("hidden");
+    els.results.classList.add("hidden");
+    els.quiz.classList.remove("hidden");
+    els.metrics.style.visibility = "visible";
+    lastSaveTick = state.elapsed;
+    updateHUD();
+    startTimer();
+    save();
+    renderQuestion();
+  }
+
+  function renderQuestion() {
+    var q = QUESTIONS[state.index];
+    var isMulti = q.type === "multi";
+    var prior = state.answered[state.index]; // if already answered, show graded
+    updateHUD();
+
+    var chosen = [];
+    var card = document.createElement("div");
+    card.className = "qcard " + (isMulti ? "multi" : "single");
+
+    var meta = document.createElement("div");
+    meta.className = "qmeta";
+    var tag = document.createElement("span"); tag.className = "qtag"; tag.textContent = q.tag;
+    var num = document.createElement("span"); num.className = "qnum"; num.textContent = "Question " + (state.index + 1) + " of " + QUESTIONS.length;
+    meta.appendChild(tag); meta.appendChild(num); card.appendChild(meta);
+
+    var stem = document.createElement("p"); stem.className = "qstem"; stem.textContent = q.stem; card.appendChild(stem);
+    if (isMulti) { var hint = document.createElement("p"); hint.className = "qhint"; hint.textContent = "Select TWO"; card.appendChild(hint); }
+
+    var optWrap = document.createElement("div"); optWrap.className = "options";
+    var optEls = [];
+    q.options.forEach(function (text, oi) {
+      var label = document.createElement("label"); label.className = "option";
+      var input = document.createElement("input"); input.type = isMulti ? "checkbox" : "radio"; input.name = "q" + state.index; input.value = oi;
+      var marker = document.createElement("span"); marker.className = "marker"; marker.textContent = LETTERS[oi];
+      var otext = document.createElement("span"); otext.className = "otext"; otext.textContent = text;
+      label.appendChild(input); label.appendChild(marker); label.appendChild(otext);
+      input.addEventListener("change", function () {
+        if (isMulti) {
+          chosen = optEls.reduce(function (acc, o, idx) { if (o.input.checked) acc.push(idx); return acc; }, []);
+          if (chosen.length > 2) { input.checked = false; chosen = chosen.filter(function (c) { return c !== oi; }); }
+        } else { chosen = [oi]; }
+        optEls.forEach(function (o, idx) { o.label.classList.toggle("selected", chosen.indexOf(idx) !== -1); });
+        submitBtn.disabled = chosen.length === 0;
+      });
+      optWrap.appendChild(label);
+      optEls.push({ label: label, input: input, marker: marker });
+    });
+    card.appendChild(optWrap);
+
+    var explainSlot = document.createElement("div"); card.appendChild(explainSlot);
+
+    var footer = document.createElement("div"); footer.className = "qfooter";
+    var left = document.createElement("div"); left.className = "left";
+    if (state.index > 0) {
+      var backBtn = document.createElement("button"); backBtn.className = "btn btn-ghost btn-sm"; backBtn.textContent = "Back";
+      backBtn.addEventListener("click", function () { state.index--; save(); renderQuestion(); });
+      left.appendChild(backBtn);
+    }
+    footer.appendChild(left);
+    var submitBtn = document.createElement("button"); submitBtn.className = "btn btn-primary"; submitBtn.textContent = "Submit answer"; submitBtn.disabled = true;
+    footer.appendChild(submitBtn);
+    card.appendChild(footer);
+
+    function showGraded(chosenIdx) {
+      var correct = arraysEqual(chosenIdx, q.correct);
+      optEls.forEach(function (o, idx) {
+        o.input.disabled = true;
+        o.label.classList.add("locked"); o.label.classList.remove("selected");
+        var isKey = q.correct.indexOf(idx) !== -1;
+        var wasChosen = chosenIdx.indexOf(idx) !== -1;
+        if (isKey) { o.label.classList.add("correct"); o.marker.textContent = CHECK; }
+        else if (wasChosen) { o.label.classList.add("incorrect"); o.marker.textContent = CROSS; }
+        else { o.label.classList.add("dim"); }
+      });
+      var ex = document.createElement("div"); ex.className = "explain " + (correct ? "right" : "wrong");
+      var v = document.createElement("p"); v.className = "verdict"; v.textContent = correct ? (CHECK + " Correct") : (CROSS + " Not quite");
+      var body = document.createElement("p"); body.innerHTML = q.explanation;
+      ex.appendChild(v); ex.appendChild(body); explainSlot.appendChild(ex);
+      // swap submit -> next
+      if (submitBtn.parentNode) footer.removeChild(submitBtn);
+      var nextBtn = document.createElement("button"); nextBtn.className = "btn btn-primary";
+      var last = state.index === QUESTIONS.length - 1;
+      nextBtn.innerHTML = last ? ("See results <span class=\"arrow\">&rarr;</span>") : ("Next question <span class=\"arrow\">&rarr;</span>");
+      footer.appendChild(nextBtn);
+      nextBtn.addEventListener("click", function () {
+        if (last) { finishExam(); }
+        else { state.index++; save(); renderQuestion(); }
+      });
+    }
+
+    submitBtn.addEventListener("click", function () {
+      if (chosen.length === 0) return;
+      var correct = arraysEqual(chosen, q.correct);
+      state.answered[state.index] = { chosen: chosen.slice(), correct: correct };
+      save();
+      updateHUD();
+      showGraded(chosen.slice());
+    });
+
+    els.quiz.innerHTML = "";
+    els.quiz.appendChild(card);
+
+    // If this question was already answered (resume / back), show it graded immediately.
+    if (prior && prior.chosen) {
+      optEls.forEach(function (o, idx) { o.input.checked = prior.chosen.indexOf(idx) !== -1; });
+      showGraded(prior.chosen.slice());
+    }
+  }
+
+  function finishExam() {
+    state.finished = true;
+    if (timerId) clearInterval(timerId);
+    save();
+    renderResults();
+  }
+
+  function renderResults() {
+    els.quiz.classList.add("hidden");
+    els.results.classList.remove("hidden");
+    updateHUD();
+
+    var total = QUESTIONS.length;
+    var score = scoreSoFar();
+    var pct = Math.round((score / total) * 100);
+    var passed = (score / total) >= PASS_THRESHOLD;
+
+    var dom = {};
+    DOMAINS.forEach(function (d) { dom[d] = { c: 0, t: 0 }; });
+    QUESTIONS.forEach(function (q, i) {
+      if (!dom[q.domain]) dom[q.domain] = { c: 0, t: 0 };
+      dom[q.domain].t++;
+      if (state.answered[i] && state.answered[i].correct) dom[q.domain].c++;
+    });
+
+    var timeStr = fmt(state.elapsed);
+    var ringColor = passed ? "#3FCF8E" : "#E9B44C";
+    var circ = 2 * Math.PI * 76;
+    var dash = (score / total) * circ;
+
+    var domRows = DOMAINS.map(function (d) {
+      var c = dom[d].c, t = dom[d].t, p = t ? Math.round((c / t) * 100) : 0;
+      var col = p >= 75 ? "var(--emerald)" : (p >= 50 ? "var(--gold)" : "var(--rose)");
+      return '<div class="brow"><span class="bn">' + escapeHtml(d) + '</span>' +
+        '<span class="bbar"><span style="width:' + p + '%;background:' + col + '"></span></span>' +
+        '<span class="bsc">' + c + '/' + t + '</span></div>';
+    }).join("");
+
+    var recapRows = QUESTIONS.map(function (q, i) {
+      var a = state.answered[i];
+      var ok = a && a.correct;
+      return '<div class="recap-item"><span class="ri ' + (ok ? "ok" : "no") + '">' + (ok ? CHECK : CROSS) + '</span>' +
+        '<span class="rq">Q' + (i + 1) + ' &middot; ' + escapeHtml(q.stem.slice(0, 58)) + '&hellip;</span>' +
+        '<span class="rd">' + escapeHtml(q.tag) + '</span></div>';
+    }).join("");
+
+    els.results.innerHTML =
+      '<div class="results">' +
+        '<div class="score-ring"><svg width="168" height="168" viewBox="0 0 168 168">' +
+          '<circle cx="84" cy="84" r="76" fill="none" stroke="rgba(130,168,205,0.16)" stroke-width="10"></circle>' +
+          '<circle cx="84" cy="84" r="76" fill="none" stroke="' + ringColor + '" stroke-width="10" stroke-linecap="round" stroke-dasharray="' + dash + ' ' + circ + '"></circle>' +
+          '</svg><div><div class="score-num">' + pct + '%</div><div class="score-den">' + score + ' / ' + total + ' correct</div></div></div>' +
+        '<div class="verdict-pill ' + (passed ? "pass" : "fail") + '">' + (passed ? "Above the ~75% line" : "Below the ~75% pass line") + '</div>' +
+        '<p class="rsub">Real-exam pass mark is ~75%. You finished in <b>' + timeStr + '</b>. Use the domain breakdown to target weak areas.</p>' +
+        '<div class="breakdown"><h3>Performance by domain</h3>' + domRows + '</div>' +
+        '<div class="recap"><h3>Question recap</h3>' + recapRows + '</div>' +
+        '<div class="results-actions"><button class="btn btn-primary" id="restartBtn">Retake exam</button></div>' +
+      '</div>';
+
+    document.getElementById("restartBtn").addEventListener("click", function () {
+      Store.del(STORE_KEY);
+      state = freshState();
+      window.scrollTo({ top: 0, behavior: "auto" });
+      beginExam();
+    });
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  // ---- init ----
+  renderPersistNote();
+  renderResumeBanner();
+  els.startBtn.addEventListener("click", function () {
+    var saved = loadSaved();
+    if (saved && !saved.finished && answeredCount(saved) > 0) { state = saved; }
+    else { Store.del(STORE_KEY); state = freshState(); }
+    beginExam();
+  });
+  window.addEventListener("beforeunload", save);
+  document.addEventListener("visibilitychange", function () { if (document.hidden) save(); });
+})();
+</script>

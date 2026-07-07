@@ -1,0 +1,187 @@
+[
+  {
+    "domain": "AI Safety, Security & Governance",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A company serves an open-weight model that it self-hosts on Amazon SageMaker, plus a third-party model reached over a public API. Governance requires the exact same content-safety policy already built in Amazon Bedrock Guardrails to be enforced on both models' prompts and responses. What is the MOST effective way to reuse that guardrail?",
+    "options": [
+      "Reimplement the guardrail's filters as custom regular-expression and keyword code inside each application.",
+      "Route every request through the Bedrock InvokeModel API so the guardrail is applied automatically, even for the external models.",
+      "Call the Amazon Bedrock ApplyGuardrail API to evaluate each model's input and output text independently of any Bedrock model invocation.",
+      "Place AWS WAF in front of both model endpoints to filter unsafe content."
+    ],
+    "correct": [2],
+    "explanation": "The <b>ApplyGuardrail API</b> evaluates arbitrary text against an existing Bedrock guardrail without invoking a Bedrock model, so the same policy can wrap a self-hosted or third-party model. <b>Reimplementing filters</b> duplicates work and drifts from the managed policy. <b>InvokeModel</b> only runs Bedrock-hosted models -- it cannot execute your SageMaker or external model. <b>WAF</b> inspects HTTP/network traffic, not semantic model content."
+  },
+  {
+    "domain": "AI Safety, Security & Governance",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A financial firm's assistant may answer general product-feature questions but must refuse to give personalized investment or tax advice, no matter how the user phrases the request. Which Bedrock Guardrails capability BEST enforces this?",
+    "options": [
+      "Enumerate every possible phrasing of an investment question in a Guardrails word filter.",
+      "Define a denied topic that describes personalized investment and tax advice in natural language with a few sample phrases.",
+      "Lower the model temperature so it naturally avoids the subject.",
+      "Configure a Guardrails sensitive-information (PII) policy to block the subject."
+    ],
+    "correct": [1],
+    "explanation": "<b>Denied topics</b> let you describe a subject area in natural language so the guardrail generalizes across phrasings and refuses it. A <b>word filter</b> matches only exact terms and cannot enumerate every phrasing of a concept. <b>Temperature</b> controls randomness, not topic avoidance. A <b>sensitive-information/PII policy</b> targets personal identifiers, not conversational topics."
+  },
+  {
+    "domain": "AI Safety, Security & Governance",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A marketing chatbot must guarantee that a fixed list of profane terms and a set of unreleased internal project code names never appear in any response. The list is exact and known in advance. Which control is MOST appropriate?",
+    "options": [
+      "Create a denied topic named 'profanity and secret projects'.",
+      "Add the terms to the system prompt as words the model should avoid.",
+      "Enable contextual grounding checks to catch the terms.",
+      "Configure Bedrock Guardrails word filters with a custom word list containing those exact terms, plus the managed profanity filter."
+    ],
+    "correct": [3],
+    "explanation": "<b>Word filters</b> with a custom word list block specific, known strings deterministically, and the managed profanity filter adds a curated list -- exactly the right tool for an exact blocklist. A <b>denied topic</b> targets broad subjects, not precise strings such as code names. A <b>system-prompt instruction</b> is not an enforced control and can be bypassed. <b>Contextual grounding checks</b> measure whether a response is supported by source context, which is unrelated to blocking specific terms."
+  },
+  {
+    "domain": "AI Safety, Security & Governance",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A retrieval-augmented assistant occasionally produces answers that are not supported by the retrieved passages. The team already uses Bedrock Guardrails and wants to block these ungrounded answers while still allowing well-supported ones. What is the BEST action?",
+    "options": [
+      "Enable the Guardrails contextual grounding check and raise its grounding threshold (with a suitable relevance threshold) so responses that score below the threshold are blocked.",
+      "Increase max_tokens so the model can restate more of the source text.",
+      "Add a denied topic called 'hallucinations' to the guardrail.",
+      "Disable retrieval and let the model answer from its parametric knowledge."
+    ],
+    "correct": [0],
+    "explanation": "The <b>contextual grounding check</b> scores each response from 0 to 1 for how well it is supported by the source; a response is blocked when it scores below the configured threshold, so raising the <b>grounding threshold</b> makes the check stricter and stops ungrounded answers. <b>max_tokens</b> only bounds length. A <b>denied topic</b> targets subjects, not hallucinations. <b>Disabling retrieval</b> removes the grounding source entirely and increases hallucination."
+  },
+  {
+    "domain": "AI Safety, Security & Governance",
+    "tag": "Domain 3",
+    "type": "multi",
+    "stem": "A public-facing agent built on Amazon Bedrock can call internal tools through action groups. Security wants layered defenses so that prompt-injection attempts in user input are both detected and unable to cause damage if one slips through. Which TWO actions best achieve this? (Select TWO.)",
+    "options": [
+      "Enable the Amazon Bedrock Guardrails prompt-attack (jailbreak/prompt-injection) filter on the input.",
+      "Scope the agent's action-group tools and IAM permissions to least privilege so a successful injection cannot trigger high-impact actions.",
+      "Add a sentence to the system prompt telling the model to ignore any malicious instructions.",
+      "Switch to a larger foundation model because larger models are immune to prompt injection.",
+      "Raise the temperature so the model's behavior is harder for an attacker to predict."
+    ],
+    "correct": [0, 1],
+    "explanation": "The <b>prompt-attack filter</b> detects and blocks injection/jailbreak patterns in input, and <b>least-privilege scoping of the action-group tools and IAM permissions</b> limits the blast radius if an attack still gets through -- defense in depth. A <b>system-prompt instruction</b> is easily overridden and is not an enforced control. <b>Larger models are not immune</b> to injection. <b>Higher temperature</b> adds randomness without adding security."
+  },
+  {
+    "domain": "AI Safety, Security & Governance",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A bank's compliance team must be assured that the prompts and completions its application sends to Amazon Bedrock are not used to train Amazon's base foundation models, are not shared with the model providers, and are not retained by the service. Which statement reflects the correct, LEAST-overhead way to meet this?",
+    "options": [
+      "Fine-tune a private copy of the model so that no inference data ever leaves the account.",
+      "Enable Bedrock model invocation logging so there is a record proving the data was later deleted.",
+      "Rely on Amazon Bedrock's data-protection posture -- your inputs and outputs are not used to train the base foundation models and are not shared with providers -- and keep model invocation logging disabled (using a zero-data-retention arrangement where offered).",
+      "Switch from Provisioned Throughput to on-demand inference to avoid data retention."
+    ],
+    "correct": [2],
+    "explanation": "By default <b>Amazon Bedrock does not use your prompts and completions to train its base models</b> or share them with providers, and inference data is not stored unless you opt in; keeping <b>model invocation logging disabled</b> means no prompt/response content is persisted. <b>Fine-tuning</b> addresses model customization, not how inference data is handled. <b>Enabling logging</b> stores more data, the opposite of the goal. <b>Throughput mode</b> (on-demand vs Provisioned) has nothing to do with data retention."
+  },
+  {
+    "domain": "AI Safety, Security & Governance",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "Before fine-tuning a model, a data team must scan a multi-terabyte corpus stored across several Amazon S3 buckets to discover and report any PII or PHI that should be removed from the training data. Which service is designed for this?",
+    "options": [
+      "The Amazon Bedrock Guardrails sensitive-information policy.",
+      "Amazon Macie to discover and classify sensitive data across the S3 buckets.",
+      "AWS CloudTrail data events on the buckets.",
+      "Amazon Comprehend PII detection invoked manually on each object one at a time."
+    ],
+    "correct": [1],
+    "explanation": "<b>Amazon Macie</b> is purpose-built to discover and classify sensitive data (PII/PHI) at scale across S3 using managed identifiers and machine learning. The <b>Guardrails sensitive-information policy</b> filters data at inference time, not a bulk S3 corpus. <b>CloudTrail data events</b> record who accessed objects, not what sensitive content they contain. <b>Comprehend</b> can detect PII but calling it manually per object is not a managed S3-scale discovery workflow."
+  },
+  {
+    "domain": "AI Safety, Security & Governance",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "An application running in AWS account A must invoke a foundation model and a guardrail that are governed centrally in account B, where model access and guardrail policies are managed. The design must avoid long-lived credentials and be as secure as possible. What is the BEST approach?",
+    "options": [
+      "Attach a resource-based policy directly to the foundation model in account B that allows account A to invoke it.",
+      "Create an IAM user in account B, generate access keys, and store those keys in account A's application.",
+      "Make the model and guardrail publicly invocable so any account can call them without credentials.",
+      "Create an IAM role in account B that trusts account A, grant it bedrock:InvokeModel and bedrock:ApplyGuardrail, and have account A's principal assume the role with AWS STS."
+    ],
+    "correct": [3],
+    "explanation": "<b>Cross-account IAM role assumption via STS</b> issues short-lived credentials scoped to the exact Bedrock actions, giving secure, auditable access with no static keys. <b>Bedrock base foundation models do not support resource-based policies</b>, so that option does not work. <b>Sharing IAM user access keys</b> introduces long-lived credentials. <b>Making resources public</b> is a severe security violation."
+  },
+  {
+    "domain": "AI Safety, Security & Governance",
+    "tag": "Domain 3",
+    "type": "multi",
+    "stem": "An auditor requires a governance trail for a Bedrock workload that captures both (a) which IAM principal called which model and when, and (b) the full prompt and response content of each interaction for later review. Which TWO steps together satisfy this? (Select TWO.)",
+    "options": [
+      "Enable VPC Flow Logs to capture the prompt and completion text.",
+      "Enable Amazon Bedrock model invocation logging to Amazon S3 or CloudWatch Logs to capture full request and response content.",
+      "Turn on S3 server access logging on the application's bucket.",
+      "Store each answer in the application's DynamoDB table and treat that as the compliance audit trail.",
+      "Rely on AWS CloudTrail to record InvokeModel API activity, including which principal called which model and when."
+    ],
+    "correct": [1, 4],
+    "explanation": "<b>Bedrock model invocation logging</b> captures the full prompt/response content, and <b>AWS CloudTrail</b> records the API-level who/what/when of each InvokeModel call -- together they cover both requirements. <b>VPC Flow Logs</b> record network metadata (IPs, ports), never prompt content. <b>S3 server access logging</b> records object access, not model interactions. <b>An application-side DynamoDB copy</b> is not an authoritative, tamper-evident audit source and misses the API-level identity record."
+  },
+  {
+    "domain": "AI Safety, Security & Governance",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A platform team must ensure that across roughly 200 AWS accounts in an organization, developers can invoke only an approved list of foundation models, with the LEAST ongoing administrative effort. Which approach fits best?",
+    "options": [
+      "Attach an AWS Organizations service control policy (SCP) that denies bedrock:InvokeModel for all model ARNs except the approved ones.",
+      "Ask each account owner to configure Bedrock model access in the console and trust them to keep it current.",
+      "Manually create an identical IAM permission boundary in every account and update all of them whenever the list changes.",
+      "Use Amazon Macie to block invocation of unapproved models."
+    ],
+    "correct": [0],
+    "explanation": "An <b>Organizations SCP</b> sets an enforced permission guardrail across every account from one place, so only approved model ARNs are invocable with minimal ongoing effort. <b>Per-account console settings on trust</b> provides no enforcement. <b>Manually replicated permission boundaries</b> across 200 accounts is exactly the high-overhead work to avoid. <b>Macie</b> discovers sensitive data and cannot restrict model invocation."
+  },
+  {
+    "domain": "AI Safety, Security & Governance",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A responsible-AI team must quantify whether a candidate model's outputs exhibit bias or stereotyping across demographic groups and produce an explainability and bias report to include in the model's governance documentation. Which service is MOST appropriate?",
+    "options": [
+      "Amazon Bedrock Guardrails content filters.",
+      "Amazon Macie.",
+      "Amazon SageMaker Clarify to compute bias metrics and generate explainability/bias reports, including foundation model evaluations for toxicity and stereotyping.",
+      "AWS CloudTrail logs."
+    ],
+    "correct": [2],
+    "explanation": "<b>Amazon SageMaker Clarify</b> measures bias and produces explainability reports, and supports foundation model evaluations for toxicity and stereotyping -- exactly the quantified, documentable output required. <b>Guardrails content filters</b> block unsafe content at runtime but do not measure or report bias. <b>Macie</b> discovers sensitive data. <b>CloudTrail</b> is an API-activity audit log, not a bias-measurement tool."
+  },
+  {
+    "domain": "AI Safety, Security & Governance",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "Outputs from a customer-service assistant must never reveal a proprietary account-number format such as ACCT-000000000, which the built-in PII entity types do not recognize. The team wants to mask these with the LEAST operational overhead. What should they do?",
+    "options": [
+      "Rely on the Guardrails built-in PII entity types, expecting them to detect the proprietary format automatically.",
+      "Add a custom regular-expression pattern to the Bedrock Guardrails sensitive-information policy and set its action to mask the matched account numbers.",
+      "Train an Amazon Comprehend custom entity recognizer and invoke it on every response before returning it.",
+      "Add an instruction to the system prompt telling the model to hide any account numbers."
+    ],
+    "correct": [1],
+    "explanation": "The <b>Guardrails sensitive-information policy supports custom regex patterns</b> with a mask or block action, so a single regex covers the proprietary format with no extra infrastructure. The <b>built-in PII types</b> will not match a bespoke format. A <b>Comprehend custom entity recognizer</b> works but requires training, hosting, and per-request calls -- more overhead. A <b>system-prompt instruction</b> is not an enforced control and can leak the data."
+  },
+  {
+    "domain": "AI Safety, Security & Governance",
+    "tag": "Domain 3",
+    "type": "multi",
+    "stem": "A regulated healthcare customer runs a Bedrock application and must ensure data is encrypted with keys it controls and that traffic to Bedrock never traverses the public internet. Which TWO measures meet these requirements? (Select TWO.)",
+    "options": [
+      "Encrypt data at rest -- such as custom models, Knowledge Base sources, and guardrails -- with an AWS KMS customer-managed key (CMK).",
+      "Disable TLS between the application and Bedrock to reduce latency.",
+      "Make the S3 training bucket public but obscure the object keys.",
+      "Connect to Amazon Bedrock through an interface VPC endpoint (AWS PrivateLink) so traffic stays on the AWS network.",
+      "Rely on the default AWS-owned key and route requests through a NAT gateway to the public Bedrock endpoint."
+    ],
+    "correct": [0, 3],
+    "explanation": "A <b>KMS customer-managed key</b> gives the customer control over encryption at rest, and an <b>interface VPC endpoint (PrivateLink)</b> keeps traffic to Bedrock on the AWS private network instead of the internet. <b>Disabling TLS</b> removes encryption in transit -- a serious regression. A <b>public S3 bucket</b> exposes data. The <b>AWS-owned key with a NAT gateway</b> neither gives the customer key control nor provides private connectivity, since a NAT gateway still routes over the public endpoint."
+  }
+]
