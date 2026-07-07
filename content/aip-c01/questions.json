@@ -13,7 +13,10 @@
     "correct": [
       1
     ],
-    "explanation": "<b>Claude with a 200K-token context window</b> can ingest a very long document in one pass and reason across distant clauses. Titan Text Express, Command R, and especially Nova Micro have far smaller effective context windows and are tuned for short, low-cost tasks, so they would force truncation or chunking that breaks cross-clause reasoning."
+    "explanation": "<b>Claude with a 200K-token context window</b> can ingest a very long document in one pass and reason across distant clauses. Titan Text Express, Command R, and especially Nova Micro have far smaller effective context windows and are tuned for short, low-cost tasks, so they would force truncation or chunking that breaks cross-clause reasoning.",
+    "id": "aipc01-0001",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html"
   },
   {
     "domain": "Foundation Model Integration & Compliance",
@@ -29,7 +32,10 @@
     "correct": [
       3
     ],
-    "explanation": "<b>Amazon Nova Micro</b> is a text-only, ultra-low-cost, low-latency model ideal for high-volume, lightweight tasks such as short-message intent classification. Claude Opus and Sonnet and Llama 3 70B are larger, more expensive, higher-latency models whose reasoning strength is wasted on a simple classification task at this volume."
+    "explanation": "<b>Amazon Nova Micro</b> is a text-only, ultra-low-cost, low-latency model ideal for high-volume, lightweight tasks such as short-message intent classification. Claude Opus and Sonnet and Llama 3 70B are larger, more expensive, higher-latency models whose reasoning strength is wasted on a simple classification task at this volume.",
+    "id": "aipc01-0002",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/nova/latest/userguide/what-is-nova.html"
   },
   {
     "domain": "Foundation Model Integration & Compliance",
@@ -45,7 +51,10 @@
     "correct": [
       0
     ],
-    "explanation": "<b>Hierarchical chunking</b> creates parent and child chunks: search matches the small child chunks for precision, and Bedrock returns the larger associated parent chunk to the model so it has fuller section context. Fixed-size chunking ignores document structure, one-chunk-per-file destroys precision and can exceed limits, and large overlap only inflates cost without preserving true hierarchy."
+    "explanation": "<b>Hierarchical chunking</b> creates parent and child chunks: search matches the small child chunks for precision, and Bedrock returns the larger associated parent chunk to the model so it has fuller section context. Fixed-size chunking ignores document structure, one-chunk-per-file destroys precision and can exceed limits, and large overlap only inflates cost without preserving true hierarchy.",
+    "id": "aipc01-0003",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-chunking.html"
   },
   {
     "domain": "Foundation Model Integration & Compliance",
@@ -61,7 +70,10 @@
     "correct": [
       2
     ],
-    "explanation": "<b>Semantic chunking</b> splits text at natural meaning boundaries by using embedding similarity, so related sentences stay together in one chunk. Smaller fixed chunks fragment ideas further, hierarchical chunking still relies on fixed sizes at each level, and disabling chunking produces oversized chunks that dilute retrieval relevance."
+    "explanation": "<b>Semantic chunking</b> splits text at natural meaning boundaries by using embedding similarity, so related sentences stay together in one chunk. Smaller fixed chunks fragment ideas further, hierarchical chunking still relies on fixed sizes at each level, and disabling chunking produces oversized chunks that dilute retrieval relevance.",
+    "id": "aipc01-0004",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-chunking.html"
   },
   {
     "domain": "Foundation Model Integration & Compliance",
@@ -77,7 +89,10 @@
     "correct": [
       1
     ],
-    "explanation": "<b>Cohere Embed Multilingual</b> maps many languages into one shared vector space, enabling cross-lingual semantic search from a single model and index. Titan Multimodal Embeddings targets image-plus-text, not multilingual text retrieval; per-language indexes add operational overhead and block cross-lingual matching; and BM25 is lexical, not semantic."
+    "explanation": "<b>Cohere Embed Multilingual</b> maps many languages into one shared vector space, enabling cross-lingual semantic search from a single model and index. Titan Multimodal Embeddings targets image-plus-text, not multilingual text retrieval; per-language indexes add operational overhead and block cross-lingual matching; and BM25 is lexical, not semantic.",
+    "id": "aipc01-0005",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html"
   },
   {
     "domain": "Foundation Model Integration & Compliance",
@@ -93,7 +108,10 @@
     "correct": [
       3
     ],
-    "explanation": "<b>An incremental ingestion sync</b> compares the source against the last sync and only re-embeds added, modified, or deleted objects, minimizing cost and time. Recreating the Knowledge Base reprocesses all 2 million objects, no-chunking does not reduce which files are scanned, and DynamoDB is not the appropriate document source here."
+    "explanation": "<b>An incremental ingestion sync</b> compares the source against the last sync and only re-embeds added, modified, or deleted objects, minimizing cost and time. Recreating the Knowledge Base reprocesses all 2 million objects, no-chunking does not reduce which files are scanned, and DynamoDB is not the appropriate document source here.",
+    "id": "aipc01-0006",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base.html"
   },
   {
     "domain": "Foundation Model Integration & Compliance",
@@ -109,7 +127,10 @@
     "correct": [
       0
     ],
-    "explanation": "<b>Metadata filtering</b> attaches attributes like department to documents so queries only match the allowed subset, giving isolation from a single index. One Knowledge Base per department multiplies operational overhead; post-filtering still retrieves other units' data into the app, risking leakage and waste; and Guardrails enforce content policy, not document-level access scoping."
+    "explanation": "<b>Metadata filtering</b> attaches attributes like department to documents so queries only match the allowed subset, giving isolation from a single index. One Knowledge Base per department multiplies operational overhead; post-filtering still retrieves other units' data into the app, risking leakage and waste; and Guardrails enforce content policy, not document-level access scoping.",
+    "id": "aipc01-0007",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base.html"
   },
   {
     "domain": "Foundation Model Integration & Compliance",
@@ -125,7 +146,10 @@
     "correct": [
       2
     ],
-    "explanation": "<b>Aurora PostgreSQL with pgvector</b> adds vector similarity search inside the database the team already operates, avoiding a new service for a moderate corpus. Pinecone and OpenSearch Serverless are capable but add another system to manage and integrate, and Neptune is a graph database, not a vector store."
+    "explanation": "<b>Aurora PostgreSQL with pgvector</b> adds vector similarity search inside the database the team already operates, avoiding a new service for a moderate corpus. Pinecone and OpenSearch Serverless are capable but add another system to manage and integrate, and Neptune is a graph database, not a vector store.",
+    "id": "aipc01-0008",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraPostgreSQL.VectorDB.html"
   },
   {
     "domain": "Foundation Model Integration & Compliance",
@@ -141,7 +165,10 @@
     "correct": [
       1
     ],
-    "explanation": "<b>Redis Enterprise</b> keeps vectors in memory and supports vector similarity search, delivering the single-digit millisecond latency the real-time feature needs while reusing the existing platform. S3 Vectors optimizes cost for large, latency-tolerant corpora; pgvector on Aurora is disk-backed and slower for this target; and Athena is an interactive SQL query service, not a low-latency vector store."
+    "explanation": "<b>Redis Enterprise</b> keeps vectors in memory and supports vector similarity search, delivering the single-digit millisecond latency the real-time feature needs while reusing the existing platform. S3 Vectors optimizes cost for large, latency-tolerant corpora; pgvector on Aurora is disk-backed and slower for this target; and Athena is an interactive SQL query service, not a low-latency vector store.",
+    "id": "aipc01-0009",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base.html"
   },
   {
     "domain": "Foundation Model Integration & Compliance",
@@ -157,7 +184,10 @@
     "correct": [
       3
     ],
-    "explanation": "<b>Continued pre-training</b> consumes large unlabeled corpora to teach a model domain vocabulary and style without requiring labeled pairs, exactly matching the firm's situation. Fine-tuning needs labeled prompt-and-completion data they lack, RAG injects retrieved facts at inference but does not change the model's internal language, and few-shot prompting cannot absorb an entire proprietary corpus."
+    "explanation": "<b>Continued pre-training</b> consumes large unlabeled corpora to teach a model domain vocabulary and style without requiring labeled pairs, exactly matching the firm's situation. Fine-tuning needs labeled prompt-and-completion data they lack, RAG injects retrieved facts at inference but does not change the model's internal language, and few-shot prompting cannot absorb an entire proprietary corpus.",
+    "id": "aipc01-0010",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html"
   },
   {
     "domain": "Foundation Model Integration & Compliance",
@@ -173,7 +203,10 @@
     "correct": [
       0
     ],
-    "explanation": "<b>Fine-tuning</b> on thousands of labeled examples is the right tool when the goal is reliable format and tone rather than fresh knowledge, and the domain is stable so the tuned model stays valid. RAG targets changing or large knowledge, continued pre-training needs an unlabeled corpus and does not sharpen output formatting, and stuffing few-shot examples into every request raises cost and latency while remaining less consistent."
+    "explanation": "<b>Fine-tuning</b> on thousands of labeled examples is the right tool when the goal is reliable format and tone rather than fresh knowledge, and the domain is stable so the tuned model stays valid. RAG targets changing or large knowledge, continued pre-training needs an unlabeled corpus and does not sharpen output formatting, and stuffing few-shot examples into every request raises cost and latency while remaining less consistent.",
+    "id": "aipc01-0011",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html"
   },
   {
     "domain": "Foundation Model Integration & Compliance",
@@ -189,7 +222,10 @@
     "correct": [
       2
     ],
-    "explanation": "<b>A JSONL file</b> with one JSON object per line containing prompt and completion fields is the expected format for Bedrock fine-tuning. CSV is not the accepted schema, a single JSON array is not line-delimited JSONL, and unstructured raw text provides no supervised prompt-and-completion pairs for the tuning job."
+    "explanation": "<b>A JSONL file</b> with one JSON object per line containing prompt and completion fields is the expected format for Bedrock fine-tuning. CSV is not the accepted schema, a single JSON array is not line-delimited JSONL, and unstructured raw text provides no supervised prompt-and-completion pairs for the tuning job.",
+    "id": "aipc01-0012",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-customization-prepare.html"
   },
   {
     "domain": "Foundation Model Integration & Compliance",
@@ -205,7 +241,10 @@
     "correct": [
       1
     ],
-    "explanation": "<b>A customer managed AWS KMS key</b> gives the bank control over key policy, rotation, auditing via CloudTrail, and the ability to disable or revoke the key. Service-owned default keys are not customer-controlled or auditable at the key level, a hardcoded application key is insecure and unmanageable, and security groups do not provide encryption at rest."
+    "explanation": "<b>A customer managed AWS KMS key</b> gives the bank control over key policy, rotation, auditing via CloudTrail, and the ability to disable or revoke the key. Service-owned default keys are not customer-controlled or auditable at the key level, a hardcoded application key is insecure and unmanageable, and security groups do not provide encryption at rest.",
+    "id": "aipc01-0013",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/encryption.html"
   },
   {
     "domain": "Foundation Model Integration & Compliance",
@@ -221,7 +260,10 @@
     "correct": [
       3
     ],
-    "explanation": "<b>An interface VPC endpoint (AWS PrivateLink)</b> exposes Bedrock as a private ENI in the VPC so API calls stay on the AWS network without internet exposure. A NAT gateway still sends traffic to the public endpoint over the internet, you cannot front a managed Bedrock API with your own ALB, and whitelisting public IPs still uses the public path."
+    "explanation": "<b>An interface VPC endpoint (AWS PrivateLink)</b> exposes Bedrock as a private ENI in the VPC so API calls stay on the AWS network without internet exposure. A NAT gateway still sends traffic to the public endpoint over the internet, you cannot front a managed Bedrock API with your own ALB, and whitelisting public IPs still uses the public path.",
+    "id": "aipc01-0014",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/vpc-interface-endpoints.html"
   },
   {
     "domain": "Foundation Model Integration & Compliance",
@@ -237,7 +279,10 @@
     "correct": [
       0
     ],
-    "explanation": "<b>Cross-Region inference can move requests across Regions</b> within an inference profile's geography, so an EU-scoped profile (which only routes among EU Regions) or disabling cross-Region routing preserves residency. It does not always pin data to the source Region, residency is not automatic irrespective of configuration, and fine-tuning does not control where inference is routed."
+    "explanation": "<b>Cross-Region inference can move requests across Regions</b> within an inference profile's geography, so an EU-scoped profile (which only routes among EU Regions) or disabling cross-Region routing preserves residency. It does not always pin data to the source Region, residency is not automatic irrespective of configuration, and fine-tuning does not control where inference is routed.",
+    "id": "aipc01-0015",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html"
   },
   {
     "domain": "Foundation Model Integration & Compliance",
@@ -253,7 +298,10 @@
     "correct": [
       2
     ],
-    "explanation": "<b>Bedrock is HIPAA-eligible under an AWS Business Associate Addendum</b>, and Amazon does not use your inputs or outputs to train the base models, which supports PHI workloads with proper controls. Bedrock does not train base models on customer data, self-hosting on EC2 is not required, and Guardrails are one control but do not by themselves establish HIPAA compliance."
+    "explanation": "<b>Bedrock is HIPAA-eligible under an AWS Business Associate Addendum</b>, and Amazon does not use your inputs or outputs to train the base models, which supports PHI workloads with proper controls. Bedrock does not train base models on customer data, self-hosting on EC2 is not required, and Guardrails are one control but do not by themselves establish HIPAA compliance.",
+    "id": "aipc01-0016",
+    "difficulty": "medium",
+    "docUrl": "https://aws.amazon.com/compliance/hipaa-compliance/"
   },
   {
     "domain": "Foundation Model Integration & Compliance",
@@ -271,7 +319,10 @@
       0,
       3
     ],
-    "explanation": "<b>Claude vision models</b> and <b>Amazon Nova multimodal models</b> both accept image inputs alongside text and generate responses, so both belong in the evaluation. Titan Text Embeddings V2 produces embeddings rather than generating responses, and Cohere Command Light and Titan Text Lite are text-only generation models that cannot ingest images."
+    "explanation": "<b>Claude vision models</b> and <b>Amazon Nova multimodal models</b> both accept image inputs alongside text and generate responses, so both belong in the evaluation. Titan Text Embeddings V2 produces embeddings rather than generating responses, and Cohere Command Light and Titan Text Lite are text-only generation models that cannot ingest images.",
+    "id": "aipc01-0017",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html"
   },
   {
     "domain": "Foundation Model Integration & Compliance",
@@ -289,7 +340,10 @@
       1,
       4
     ],
-    "explanation": "<b>An interface VPC endpoint (PrivateLink)</b> keeps Bedrock API traffic on the AWS network, and a <b>customer managed KMS key</b> encrypts data at rest with keys the team controls. Public internet plus TLS still traverses the internet, a public S3 bucket exposes sensitive embeddings, and a wildcard permission violates least privilege."
+    "explanation": "<b>An interface VPC endpoint (PrivateLink)</b> keeps Bedrock API traffic on the AWS network, and a <b>customer managed KMS key</b> encrypts data at rest with keys the team controls. Public internet plus TLS still traverses the internet, a public S3 bucket exposes sensitive embeddings, and a wildcard permission violates least privilege.",
+    "id": "aipc01-0018",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/data-protection.html"
   },
   {
     "domain": "Foundation Model Integration & Compliance",
@@ -307,7 +361,10 @@
       2,
       4
     ],
-    "explanation": "<b>Metadata filtering</b> restricts retrieval to documents that are actually relevant, and a <b>chunking strategy matched to the document structure</b> produces more semantically coherent chunks, both directly improving what is retrieved. Increasing output tokens, lowering temperature, and swapping the generation model only affect the generation step, not which chunks the retriever returns."
+    "explanation": "<b>Metadata filtering</b> restricts retrieval to documents that are actually relevant, and a <b>chunking strategy matched to the document structure</b> produces more semantically coherent chunks, both directly improving what is retrieved. Increasing output tokens, lowering temperature, and swapping the generation model only affect the generation step, not which chunks the retriever returns.",
+    "id": "aipc01-0019",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base.html"
   },
   {
     "domain": "Foundation Model Integration & Compliance",
@@ -325,7 +382,10 @@
       0,
       2
     ],
-    "explanation": "<b>Amazon does not train base models on your inputs or outputs</b>, and <b>you can scope Bedrock usage to chosen Regions</b> to support data residency, both of which are accurate. Invocation logging is optional rather than required to serve requests, fine-tuning data is not shared with model providers, and customer managed KMS keys are in fact supported for encrypting Bedrock data."
+    "explanation": "<b>Amazon does not train base models on your inputs or outputs</b>, and <b>you can scope Bedrock usage to chosen Regions</b> to support data residency, both of which are accurate. Invocation logging is optional rather than required to serve requests, fine-tuning data is not shared with model providers, and customer managed KMS keys are in fact supported for encrypting Bedrock data.",
+    "id": "aipc01-0020",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/data-protection.html"
   },
   {
     "domain": "Implementation & Integration",
@@ -341,7 +401,10 @@
     "correct": [
       1
     ],
-    "explanation": "<b>Return of control</b> lets the agent emit the chosen function and parameters back to the caller so the existing on-prem client executes the action -- no new connectivity needed. A Lambda executor over VPN is real re-architecture and still requires network access the team wants to avoid. A raw InvokeModel call throws away the agent's orchestration. A Knowledge Base only retrieves text; it cannot <em>execute</em> an action."
+    "explanation": "<b>Return of control</b> lets the agent emit the chosen function and parameters back to the caller so the existing on-prem client executes the action -- no new connectivity needed. A Lambda executor over VPN is real re-architecture and still requires network access the team wants to avoid. A raw InvokeModel call throws away the agent's orchestration. A Knowledge Base only retrieves text; it cannot <em>execute</em> an action.",
+    "id": "aipc01-0021",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/agents-returncontrol.html"
   },
   {
     "domain": "Implementation & Integration",
@@ -357,7 +420,10 @@
     "correct": [
       0
     ],
-    "explanation": "The <b>Converse API</b> normalizes messages, system prompts, and inference parameters across models, so swapping model IDs needs no per-model parsing code. Per-family InvokeModel adapters are exactly the code the team wants to eliminate. Batch inference is for large asynchronous jobs, not low-latency chat. Self-hosting on SageMaker adds operational overhead and does not standardize Bedrock model access."
+    "explanation": "The <b>Converse API</b> normalizes messages, system prompts, and inference parameters across models, so swapping model IDs needs no per-model parsing code. Per-family InvokeModel adapters are exactly the code the team wants to eliminate. Batch inference is for large asynchronous jobs, not low-latency chat. Self-hosting on SageMaker adds operational overhead and does not standardize Bedrock model access.",
+    "id": "aipc01-0022",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/conversation-inference.html"
   },
   {
     "domain": "Implementation & Integration",
@@ -373,7 +439,10 @@
     "correct": [
       2
     ],
-    "explanation": "<b>Prompt caching</b> stores the large static prefix so repeated requests reuse it, cutting input-token cost and time-to-first-token while leaving the prompt text intact. A Knowledge Base adds a retrieval round-trip and does not cache the instructions. Lowering max output tokens affects generation length, not the expensive static input. InvokeModel versus Converse does not address the repeated input cost."
+    "explanation": "<b>Prompt caching</b> stores the large static prefix so repeated requests reuse it, cutting input-token cost and time-to-first-token while leaving the prompt text intact. A Knowledge Base adds a retrieval round-trip and does not cache the instructions. Lowering max output tokens affects generation length, not the expensive static input. InvokeModel versus Converse does not address the repeated input cost.",
+    "id": "aipc01-0023",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-caching.html"
   },
   {
     "domain": "Implementation & Integration",
@@ -389,7 +458,10 @@
     "correct": [
       3
     ],
-    "explanation": "<b>Exponential backoff with jitter</b> spreads retries over time and de-synchronizes concurrent callers, which is the recommended handling for ThrottlingException. A tight loop worsens the overload. Failing fast needlessly drops recoverable requests. A fixed one-second interval still lets many instances retry in lockstep, recreating the storm."
+    "explanation": "<b>Exponential backoff with jitter</b> spreads retries over time and de-synchronizes concurrent callers, which is the recommended handling for ThrottlingException. A tight loop worsens the overload. Failing fast needlessly drops recoverable requests. A fixed one-second interval still lets many instances retry in lockstep, recreating the storm.",
+    "id": "aipc01-0024",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/general/latest/gr/api-retries.html"
   },
   {
     "domain": "Implementation & Integration",
@@ -405,7 +477,10 @@
     "correct": [
       1
     ],
-    "explanation": "Declaring the structure as a <b>tool</b> and using Converse <b>tool use</b> makes the model emit arguments that conform to the defined schema, which the parser can consume directly. A plain-English JSON request offers no structural guarantee. Raising temperature makes output less consistent, not more. Streaming only changes delivery of tokens; it does not enforce schema conformance."
+    "explanation": "Declaring the structure as a <b>tool</b> and using Converse <b>tool use</b> makes the model emit arguments that conform to the defined schema, which the parser can consume directly. A plain-English JSON request offers no structural guarantee. Raising temperature makes output less consistent, not more. Streaming only changes delivery of tokens; it does not enforce schema conformance.",
+    "id": "aipc01-0025",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html"
   },
   {
     "domain": "Implementation & Integration",
@@ -421,7 +496,10 @@
     "correct": [
       2
     ],
-    "explanation": "An <b>embeddings model</b> like Amazon Titan Text Embeddings maps text to a dense fixed-length vector suitable for cosine or dot-product similarity search. A generation model produces prose, not comparable vectors. Guardrails enforce safety and grounding policies. Converse tool use handles function calling, not vectorization."
+    "explanation": "An <b>embeddings model</b> like Amazon Titan Text Embeddings maps text to a dense fixed-length vector suitable for cosine or dot-product similarity search. A generation model produces prose, not comparable vectors. Guardrails enforce safety and grounding policies. Converse tool use handles function calling, not vectorization.",
+    "id": "aipc01-0026",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/titan-embedding-models.html"
   },
   {
     "domain": "Implementation & Integration",
@@ -437,7 +515,10 @@
     "correct": [
       0
     ],
-    "explanation": "A <b>Lambda function URL with response streaming</b> delivers the ConverseStream chunks to the browser incrementally without adding WebSocket or extra services. A REST API buffers the full response, so raising the timeout still delays the first token. Buffering chunks defeats streaming entirely. Batch inference is asynchronous and the wrong tool for interactive chat."
+    "explanation": "A <b>Lambda function URL with response streaming</b> delivers the ConverseStream chunks to the browser incrementally without adding WebSocket or extra services. A REST API buffers the full response, so raising the timeout still delays the first token. Buffering chunks defeats streaming entirely. Batch inference is asynchronous and the wrong tool for interactive chat.",
+    "id": "aipc01-0027",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/lambda/latest/dg/configuration-response-streaming.html"
   },
   {
     "domain": "Implementation & Integration",
@@ -453,7 +534,10 @@
     "correct": [
       3
     ],
-    "explanation": "<b>Step Functions</b> models branching, retries, and error handling declaratively and gives a visual execution history for pinpointing failures, minimizing custom orchestration code. One giant Lambda hand-codes all control flow and risks timeouts. EventBridge and SQS can connect stages but require you to build the conditional logic, retries, and observability yourself."
+    "explanation": "<b>Step Functions</b> models branching, retries, and error handling declaratively and gives a visual execution history for pinpointing failures, minimizing custom orchestration code. One giant Lambda hand-codes all control flow and risks timeouts. EventBridge and SQS can connect stages but require you to build the conditional logic, retries, and observability yourself.",
+    "id": "aipc01-0028",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/step-functions/latest/dg/welcome.html"
   },
   {
     "domain": "Implementation & Integration",
@@ -469,7 +553,10 @@
     "correct": [
       2
     ],
-    "explanation": "Claude responds well to <b>XML tags</b> that delimit source material, so wrapping the contract in tags clearly marks it as data rather than instructions. Higher temperature adds randomness, not structure. Removing delimiters makes the confusion worse. Splitting into separate requests loses the shared context the reviewer instructions need to act on the contract."
+    "explanation": "Claude responds well to <b>XML tags</b> that delimit source material, so wrapping the contract in tags clearly marks it as data rather than instructions. Higher temperature adds randomness, not structure. Removing delimiters makes the confusion worse. Splitting into separate requests loses the shared context the reviewer instructions need to act on the contract.",
+    "id": "aipc01-0029",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-engineering-guidelines.html"
   },
   {
     "domain": "Implementation & Integration",
@@ -485,7 +572,10 @@
     "correct": [
       1
     ],
-    "explanation": "<b>Agent memory and session state</b> let the agent carry forward earlier turn details automatically within a session. Provisioned Throughput reserves capacity but stores no conversation context. Guardrails enforce content policy. CloudWatch invocation logging records requests for observability, not for feeding context back into the conversation."
+    "explanation": "<b>Agent memory and session state</b> let the agent carry forward earlier turn details automatically within a session. Provisioned Throughput reserves capacity but stores no conversation context. Guardrails enforce content policy. CloudWatch invocation logging records requests for observability, not for feeding context back into the conversation.",
+    "id": "aipc01-0030",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/agents-memory.html"
   },
   {
     "domain": "Implementation & Integration",
@@ -501,7 +591,10 @@
     "correct": [
       3
     ],
-    "explanation": "An <b>idempotency key</b> combined with a conditional write guarantees that a repeated request maps to the same single result regardless of how many times it arrives. Temperature does not control retry behavior of the surrounding system. Swallowing an error does not stop a second real charge. A longer timeout does not prevent a duplicate request from executing again."
+    "explanation": "An <b>idempotency key</b> combined with a conditional write guarantees that a repeated request maps to the same single result regardless of how many times it arrives. Temperature does not control retry behavior of the surrounding system. Swallowing an error does not stop a second real charge. A longer timeout does not prevent a duplicate request from executing again.",
+    "id": "aipc01-0031",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/WorkingWithItems.html"
   },
   {
     "domain": "Implementation & Integration",
@@ -517,7 +610,10 @@
     "correct": [
       0
     ],
-    "explanation": "For simple actions, a <b>function schema</b> lets you list names, descriptions, and parameters directly with minimal authoring and no REST spec to maintain. A full OpenAPI schema is heavier than needed here. A SageMaker inference component is unrelated to agent action definitions. An IAM policy governs permissions, not the action interface the agent reasons over."
+    "explanation": "For simple actions, a <b>function schema</b> lets you list names, descriptions, and parameters directly with minimal authoring and no REST spec to maintain. A full OpenAPI schema is heavier than needed here. A SageMaker inference component is unrelated to agent action definitions. An IAM policy governs permissions, not the action interface the agent reasons over.",
+    "id": "aipc01-0032",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/agents-action-create.html"
   },
   {
     "domain": "Implementation & Integration",
@@ -533,7 +629,10 @@
     "correct": [
       2
     ],
-    "explanation": "<b>Associating a Knowledge Base</b> with the agent adds managed retrieval and citations over the handbooks with no custom retrieval service. Fine-tuning is costly, slow to update, and does not produce citations. Pasting whole handbooks bloats the prompt and does not scale. Returning raw PDF bytes leaves parsing, chunking, and grounding for the team to build."
+    "explanation": "<b>Associating a Knowledge Base</b> with the agent adds managed retrieval and citations over the handbooks with no custom retrieval service. Fine-tuning is costly, slow to update, and does not produce citations. Pasting whole handbooks bloats the prompt and does not scale. Returning raw PDF bytes leaves parsing, chunking, and grounding for the team to build.",
+    "id": "aipc01-0033",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/agents.html"
   },
   {
     "domain": "Implementation & Integration",
@@ -551,7 +650,10 @@
       0,
       2
     ],
-    "explanation": "Raising the <b>Service Quotas</b> ceiling gives sustained headroom, and <b>backoff with jitter plus a cross-Region inference profile</b> smooths spikes and distributes load. Temperature does not affect rate limits. More Lambda memory speeds compute but not Bedrock quota. InvokeModel is throttled by the same account limits as Converse, so it bypasses nothing."
+    "explanation": "Raising the <b>Service Quotas</b> ceiling gives sustained headroom, and <b>backoff with jitter plus a cross-Region inference profile</b> smooths spikes and distributes load. Temperature does not affect rate limits. More Lambda memory speeds compute but not Bedrock quota. InvokeModel is throttled by the same account limits as Converse, so it bypasses nothing.",
+    "id": "aipc01-0034",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/quotas.html"
   },
   {
     "domain": "Implementation & Integration",
@@ -569,7 +671,10 @@
       0,
       2
     ],
-    "explanation": "<b>Tool use</b> constrains output to the declared schema, and <b>prefilling the assistant turn</b> with an opening brace steers Claude to emit valid JSON immediately. Raising temperature and top_p makes output less predictable. A schema-free plain request gives no structural guarantee. Removing the system prompt discards useful instructions and does nothing to enforce structure."
+    "explanation": "<b>Tool use</b> constrains output to the declared schema, and <b>prefilling the assistant turn</b> with an opening brace steers Claude to emit valid JSON immediately. Raising temperature and top_p makes output less predictable. A schema-free plain request gives no structural guarantee. Removing the system prompt discards useful instructions and does nothing to enforce structure.",
+    "id": "aipc01-0035",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html"
   },
   {
     "domain": "Implementation & Integration",
@@ -587,7 +692,10 @@
       1,
       4
     ],
-    "explanation": "An <b>action group</b> gives the agent the ability to create tickets, and an associated <b>Knowledge Base</b> supplies grounded, cited answers from the documentation -- together they cover both requirements. Provisioned Throughput is a capacity option, not a functional requirement. CloudWatch logging aids observability only. A Guardrail enforces safety but neither performs actions nor grounds answers."
+    "explanation": "An <b>action group</b> gives the agent the ability to create tickets, and an associated <b>Knowledge Base</b> supplies grounded, cited answers from the documentation -- together they cover both requirements. Provisioned Throughput is a capacity option, not a functional requirement. CloudWatch logging aids observability only. A Guardrail enforces safety but neither performs actions nor grounds answers.",
+    "id": "aipc01-0036",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/agents.html"
   },
   {
     "domain": "Implementation & Integration",
@@ -605,7 +713,10 @@
       0,
       2
     ],
-    "explanation": "<b>Embedding each product</b> with Titan Text Embeddings and <b>embedding the query, then running pgvector similarity search</b> in Aurora delivers semantic matching on infrastructure the team already runs. Fine-tuning an LLM does not build a searchable vector index and is costly to keep current. SQL LIKE is keyword matching, exactly what they want to move beyond. Guardrails enforce policy and cannot rank relevance."
+    "explanation": "<b>Embedding each product</b> with Titan Text Embeddings and <b>embedding the query, then running pgvector similarity search</b> in Aurora delivers semantic matching on infrastructure the team already runs. Fine-tuning an LLM does not build a searchable vector index and is costly to keep current. SQL LIKE is keyword matching, exactly what they want to move beyond. Guardrails enforce policy and cannot rank relevance.",
+    "id": "aipc01-0037",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraPostgreSQL.VectorDB.html"
   },
   {
     "domain": "AI Safety, Security & Governance",
@@ -621,7 +732,10 @@
     "correct": [
       2
     ],
-    "explanation": "The <b>ApplyGuardrail API</b> evaluates arbitrary text against an existing Bedrock guardrail without invoking a Bedrock model, so the same policy can wrap a self-hosted or third-party model. <b>Reimplementing filters</b> duplicates work and drifts from the managed policy. <b>InvokeModel</b> only runs Bedrock-hosted models -- it cannot execute your SageMaker or external model. <b>WAF</b> inspects HTTP/network traffic, not semantic model content."
+    "explanation": "The <b>ApplyGuardrail API</b> evaluates arbitrary text against an existing Bedrock guardrail without invoking a Bedrock model, so the same policy can wrap a self-hosted or third-party model. <b>Reimplementing filters</b> duplicates work and drifts from the managed policy. <b>InvokeModel</b> only runs Bedrock-hosted models -- it cannot execute your SageMaker or external model. <b>WAF</b> inspects HTTP/network traffic, not semantic model content.",
+    "id": "aipc01-0038",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails.html"
   },
   {
     "domain": "AI Safety, Security & Governance",
@@ -637,7 +751,10 @@
     "correct": [
       1
     ],
-    "explanation": "<b>Denied topics</b> let you describe a subject area in natural language so the guardrail generalizes across phrasings and refuses it. A <b>word filter</b> matches only exact terms and cannot enumerate every phrasing of a concept. <b>Temperature</b> controls randomness, not topic avoidance. A <b>sensitive-information/PII policy</b> targets personal identifiers, not conversational topics."
+    "explanation": "<b>Denied topics</b> let you describe a subject area in natural language so the guardrail generalizes across phrasings and refuses it. A <b>word filter</b> matches only exact terms and cannot enumerate every phrasing of a concept. <b>Temperature</b> controls randomness, not topic avoidance. A <b>sensitive-information/PII policy</b> targets personal identifiers, not conversational topics.",
+    "id": "aipc01-0039",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails.html"
   },
   {
     "domain": "AI Safety, Security & Governance",
@@ -653,7 +770,10 @@
     "correct": [
       3
     ],
-    "explanation": "<b>Word filters</b> with a custom word list block specific, known strings deterministically, and the managed profanity filter adds a curated list -- exactly the right tool for an exact blocklist. A <b>denied topic</b> targets broad subjects, not precise strings such as code names. A <b>system-prompt instruction</b> is not an enforced control and can be bypassed. <b>Contextual grounding checks</b> measure whether a response is supported by source context, which is unrelated to blocking specific terms."
+    "explanation": "<b>Word filters</b> with a custom word list block specific, known strings deterministically, and the managed profanity filter adds a curated list -- exactly the right tool for an exact blocklist. A <b>denied topic</b> targets broad subjects, not precise strings such as code names. A <b>system-prompt instruction</b> is not an enforced control and can be bypassed. <b>Contextual grounding checks</b> measure whether a response is supported by source context, which is unrelated to blocking specific terms.",
+    "id": "aipc01-0040",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails.html"
   },
   {
     "domain": "AI Safety, Security & Governance",
@@ -669,7 +789,10 @@
     "correct": [
       0
     ],
-    "explanation": "The <b>contextual grounding check</b> scores each response from 0 to 1 for how well it is supported by the source; a response is blocked when it scores below the configured threshold, so raising the <b>grounding threshold</b> makes the check stricter and stops ungrounded answers. <b>max_tokens</b> only bounds length. A <b>denied topic</b> targets subjects, not hallucinations. <b>Disabling retrieval</b> removes the grounding source entirely and increases hallucination."
+    "explanation": "The <b>contextual grounding check</b> scores each response from 0 to 1 for how well it is supported by the source; a response is blocked when it scores below the configured threshold, so raising the <b>grounding threshold</b> makes the check stricter and stops ungrounded answers. <b>max_tokens</b> only bounds length. A <b>denied topic</b> targets subjects, not hallucinations. <b>Disabling retrieval</b> removes the grounding source entirely and increases hallucination.",
+    "id": "aipc01-0041",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails.html"
   },
   {
     "domain": "AI Safety, Security & Governance",
@@ -687,7 +810,10 @@
       0,
       1
     ],
-    "explanation": "The <b>prompt-attack filter</b> detects and blocks injection/jailbreak patterns in input, and <b>least-privilege scoping of the action-group tools and IAM permissions</b> limits the blast radius if an attack still gets through -- defense in depth. A <b>system-prompt instruction</b> is easily overridden and is not an enforced control. <b>Larger models are not immune</b> to injection. <b>Higher temperature</b> adds randomness without adding security."
+    "explanation": "The <b>prompt-attack filter</b> detects and blocks injection/jailbreak patterns in input, and <b>least-privilege scoping of the action-group tools and IAM permissions</b> limits the blast radius if an attack still gets through -- defense in depth. A <b>system-prompt instruction</b> is easily overridden and is not an enforced control. <b>Larger models are not immune</b> to injection. <b>Higher temperature</b> adds randomness without adding security.",
+    "id": "aipc01-0042",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails.html"
   },
   {
     "domain": "AI Safety, Security & Governance",
@@ -703,7 +829,10 @@
     "correct": [
       2
     ],
-    "explanation": "By default <b>Amazon Bedrock does not use your prompts and completions to train its base models</b> or share them with providers, and inference data is not stored unless you opt in; keeping <b>model invocation logging disabled</b> means no prompt/response content is persisted. <b>Fine-tuning</b> addresses model customization, not how inference data is handled. <b>Enabling logging</b> stores more data, the opposite of the goal. <b>Throughput mode</b> (on-demand vs Provisioned) has nothing to do with data retention."
+    "explanation": "By default <b>Amazon Bedrock does not use your prompts and completions to train its base models</b> or share them with providers, and inference data is not stored unless you opt in; keeping <b>model invocation logging disabled</b> means no prompt/response content is persisted. <b>Fine-tuning</b> addresses model customization, not how inference data is handled. <b>Enabling logging</b> stores more data, the opposite of the goal. <b>Throughput mode</b> (on-demand vs Provisioned) has nothing to do with data retention.",
+    "id": "aipc01-0043",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/data-protection.html"
   },
   {
     "domain": "AI Safety, Security & Governance",
@@ -719,7 +848,10 @@
     "correct": [
       1
     ],
-    "explanation": "<b>Amazon Macie</b> is purpose-built to discover and classify sensitive data (PII/PHI) at scale across S3 using managed identifiers and machine learning. The <b>Guardrails sensitive-information policy</b> filters data at inference time, not a bulk S3 corpus. <b>CloudTrail data events</b> record who accessed objects, not what sensitive content they contain. <b>Comprehend</b> can detect PII but calling it manually per object is not a managed S3-scale discovery workflow."
+    "explanation": "<b>Amazon Macie</b> is purpose-built to discover and classify sensitive data (PII/PHI) at scale across S3 using managed identifiers and machine learning. The <b>Guardrails sensitive-information policy</b> filters data at inference time, not a bulk S3 corpus. <b>CloudTrail data events</b> record who accessed objects, not what sensitive content they contain. <b>Comprehend</b> can detect PII but calling it manually per object is not a managed S3-scale discovery workflow.",
+    "id": "aipc01-0044",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/macie/latest/user/what-is-macie.html"
   },
   {
     "domain": "AI Safety, Security & Governance",
@@ -735,7 +867,10 @@
     "correct": [
       3
     ],
-    "explanation": "<b>Cross-account IAM role assumption via STS</b> issues short-lived credentials scoped to the exact Bedrock actions, giving secure, auditable access with no static keys. <b>Bedrock base foundation models do not support resource-based policies</b>, so that option does not work. <b>Sharing IAM user access keys</b> introduces long-lived credentials. <b>Making resources public</b> is a severe security violation."
+    "explanation": "<b>Cross-account IAM role assumption via STS</b> issues short-lived credentials scoped to the exact Bedrock actions, giving secure, auditable access with no static keys. <b>Bedrock base foundation models do not support resource-based policies</b>, so that option does not work. <b>Sharing IAM user access keys</b> introduces long-lived credentials. <b>Making resources public</b> is a severe security violation.",
+    "id": "aipc01-0045",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_common-scenarios_aws-accounts.html"
   },
   {
     "domain": "AI Safety, Security & Governance",
@@ -753,7 +888,10 @@
       1,
       4
     ],
-    "explanation": "<b>Bedrock model invocation logging</b> captures the full prompt/response content, and <b>AWS CloudTrail</b> records the API-level who/what/when of each InvokeModel call -- together they cover both requirements. <b>VPC Flow Logs</b> record network metadata (IPs, ports), never prompt content. <b>S3 server access logging</b> records object access, not model interactions. <b>An application-side DynamoDB copy</b> is not an authoritative, tamper-evident audit source and misses the API-level identity record."
+    "explanation": "<b>Bedrock model invocation logging</b> captures the full prompt/response content, and <b>AWS CloudTrail</b> records the API-level who/what/when of each InvokeModel call -- together they cover both requirements. <b>VPC Flow Logs</b> record network metadata (IPs, ports), never prompt content. <b>S3 server access logging</b> records object access, not model interactions. <b>An application-side DynamoDB copy</b> is not an authoritative, tamper-evident audit source and misses the API-level identity record.",
+    "id": "aipc01-0046",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-invocation-logging.html"
   },
   {
     "domain": "AI Safety, Security & Governance",
@@ -769,7 +907,10 @@
     "correct": [
       0
     ],
-    "explanation": "An <b>Organizations SCP</b> sets an enforced permission guardrail across every account from one place, so only approved model ARNs are invocable with minimal ongoing effort. <b>Per-account console settings on trust</b> provides no enforcement. <b>Manually replicated permission boundaries</b> across 200 accounts is exactly the high-overhead work to avoid. <b>Macie</b> discovers sensitive data and cannot restrict model invocation."
+    "explanation": "An <b>Organizations SCP</b> sets an enforced permission guardrail across every account from one place, so only approved model ARNs are invocable with minimal ongoing effort. <b>Per-account console settings on trust</b> provides no enforcement. <b>Manually replicated permission boundaries</b> across 200 accounts is exactly the high-overhead work to avoid. <b>Macie</b> discovers sensitive data and cannot restrict model invocation.",
+    "id": "aipc01-0047",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps.html"
   },
   {
     "domain": "AI Safety, Security & Governance",
@@ -785,7 +926,10 @@
     "correct": [
       2
     ],
-    "explanation": "<b>Amazon SageMaker Clarify</b> measures bias and produces explainability reports, and supports foundation model evaluations for toxicity and stereotyping -- exactly the quantified, documentable output required. <b>Guardrails content filters</b> block unsafe content at runtime but do not measure or report bias. <b>Macie</b> discovers sensitive data. <b>CloudTrail</b> is an API-activity audit log, not a bias-measurement tool."
+    "explanation": "<b>Amazon SageMaker Clarify</b> measures bias and produces explainability reports, and supports foundation model evaluations for toxicity and stereotyping -- exactly the quantified, documentable output required. <b>Guardrails content filters</b> block unsafe content at runtime but do not measure or report bias. <b>Macie</b> discovers sensitive data. <b>CloudTrail</b> is an API-activity audit log, not a bias-measurement tool.",
+    "id": "aipc01-0048",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-fairness-and-explainability.html"
   },
   {
     "domain": "AI Safety, Security & Governance",
@@ -801,7 +945,10 @@
     "correct": [
       1
     ],
-    "explanation": "The <b>Guardrails sensitive-information policy supports custom regex patterns</b> with a mask or block action, so a single regex covers the proprietary format with no extra infrastructure. The <b>built-in PII types</b> will not match a bespoke format. A <b>Comprehend custom entity recognizer</b> works but requires training, hosting, and per-request calls -- more overhead. A <b>system-prompt instruction</b> is not an enforced control and can leak the data."
+    "explanation": "The <b>Guardrails sensitive-information policy supports custom regex patterns</b> with a mask or block action, so a single regex covers the proprietary format with no extra infrastructure. The <b>built-in PII types</b> will not match a bespoke format. A <b>Comprehend custom entity recognizer</b> works but requires training, hosting, and per-request calls -- more overhead. A <b>system-prompt instruction</b> is not an enforced control and can leak the data.",
+    "id": "aipc01-0049",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails.html"
   },
   {
     "domain": "AI Safety, Security & Governance",
@@ -819,7 +966,10 @@
       0,
       3
     ],
-    "explanation": "A <b>KMS customer-managed key</b> gives the customer control over encryption at rest, and an <b>interface VPC endpoint (PrivateLink)</b> keeps traffic to Bedrock on the AWS private network instead of the internet. <b>Disabling TLS</b> removes encryption in transit -- a serious regression. A <b>public S3 bucket</b> exposes data. The <b>AWS-owned key with a NAT gateway</b> neither gives the customer key control nor provides private connectivity, since a NAT gateway still routes over the public endpoint."
+    "explanation": "A <b>KMS customer-managed key</b> gives the customer control over encryption at rest, and an <b>interface VPC endpoint (PrivateLink)</b> keeps traffic to Bedrock on the AWS private network instead of the internet. <b>Disabling TLS</b> removes encryption in transit -- a serious regression. A <b>public S3 bucket</b> exposes data. The <b>AWS-owned key with a NAT gateway</b> neither gives the customer key control nor provides private connectivity, since a NAT gateway still routes over the public endpoint.",
+    "id": "aipc01-0050",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/data-protection.html"
   },
   {
     "domain": "Operational Efficiency & Optimization",
@@ -835,7 +985,10 @@
     "correct": [
       0
     ],
-    "explanation": "<b>Prompt caching</b> is designed exactly for a large, static, repeated prefix: cached input tokens are billed at a large discount and cache reads lower time-to-first-token, with no model or quality change. <b>Provisioned Throughput</b> reserves capacity by the hour and does not discount a repeated prefix; it is for guaranteed throughput, not for a low-traffic chatbot. <b>Batch inference</b> is asynchronous with results delivered later, which breaks an interactive chatbot. <b>Fine-tuning</b> on policy text is costly, does not reliably eliminate instruction prompts, and produces a custom model that then REQUIRES Provisioned Throughput to serve."
+    "explanation": "<b>Prompt caching</b> is designed exactly for a large, static, repeated prefix: cached input tokens are billed at a large discount and cache reads lower time-to-first-token, with no model or quality change. <b>Provisioned Throughput</b> reserves capacity by the hour and does not discount a repeated prefix; it is for guaranteed throughput, not for a low-traffic chatbot. <b>Batch inference</b> is asynchronous with results delivered later, which breaks an interactive chatbot. <b>Fine-tuning</b> on policy text is costly, does not reliably eliminate instruction prompts, and produces a custom model that then REQUIRES Provisioned Throughput to serve.",
+    "id": "aipc01-0051",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-caching.html"
   },
   {
     "domain": "Operational Efficiency & Optimization",
@@ -851,7 +1004,10 @@
     "correct": [
       1
     ],
-    "explanation": "Custom (fine-tuned) models on Bedrock cannot be called on-demand; you must buy <b>Provisioned Throughput</b> (model units) to get a dedicated endpoint that serves the custom model. A <b>quota increase</b> cannot create an on-demand path that does not exist for custom models. <b>Cross-Region inference</b> applies to supported on-demand base/system-defined models, not to serving your private custom model. There is no <b>training flag</b> that grants on-demand serving; serving mode is a deployment decision (Provisioned Throughput), not a fine-tuning parameter."
+    "explanation": "Custom (fine-tuned) models on Bedrock cannot be called on-demand; you must buy <b>Provisioned Throughput</b> (model units) to get a dedicated endpoint that serves the custom model. A <b>quota increase</b> cannot create an on-demand path that does not exist for custom models. <b>Cross-Region inference</b> applies to supported on-demand base/system-defined models, not to serving your private custom model. There is no <b>training flag</b> that grants on-demand serving; serving mode is a deployment decision (Provisioned Throughput), not a fine-tuning parameter.",
+    "id": "aipc01-0052",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/prov-throughput.html"
   },
   {
     "domain": "Operational Efficiency & Optimization",
@@ -867,7 +1023,10 @@
     "correct": [
       3
     ],
-    "explanation": "<b>Latency-optimized inference</b> runs supported models on infrastructure specifically tuned to lower response latency, directly targeting the SLA problem for interactive traffic. <b>Batch inference</b> is asynchronous and higher-latency, the opposite of what a real-time assistant needs. Raising <b>max_tokens</b> only sets an upper bound on output length; it does not speed up token generation and longer outputs increase latency. An <b>SQS queue</b> adds buffering and delay, worsening interactive latency rather than reducing it."
+    "explanation": "<b>Latency-optimized inference</b> runs supported models on infrastructure specifically tuned to lower response latency, directly targeting the SLA problem for interactive traffic. <b>Batch inference</b> is asynchronous and higher-latency, the opposite of what a real-time assistant needs. Raising <b>max_tokens</b> only sets an upper bound on output length; it does not speed up token generation and longer outputs increase latency. An <b>SQS queue</b> adds buffering and delay, worsening interactive latency rather than reducing it.",
+    "id": "aipc01-0053",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/latency-optimized-inference.html"
   },
   {
     "domain": "Operational Efficiency & Optimization",
@@ -883,7 +1042,10 @@
     "correct": [
       2
     ],
-    "explanation": "<b>Model distillation</b> uses the large teacher to train a smaller student that retains task accuracy while costing far less per token to run at high volume, which is exactly the high-throughput narrow-task scenario. <b>Provisioned Throughput on the large model</b> reserves capacity but does not change the model's high per-token cost and can be expensive for spiky or very high volume. <b>Batch inference</b> only helps asynchronous bulk jobs and is not for a real-time classification API. <b>Temperature</b> controls randomness, not length or cost, so it does not lower spend."
+    "explanation": "<b>Model distillation</b> uses the large teacher to train a smaller student that retains task accuracy while costing far less per token to run at high volume, which is exactly the high-throughput narrow-task scenario. <b>Provisioned Throughput on the large model</b> reserves capacity but does not change the model's high per-token cost and can be expensive for spiky or very high volume. <b>Batch inference</b> only helps asynchronous bulk jobs and is not for a real-time classification API. <b>Temperature</b> controls randomness, not length or cost, so it does not lower spend.",
+    "id": "aipc01-0054",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-distillation.html"
   },
   {
     "domain": "Operational Efficiency & Optimization",
@@ -899,7 +1061,10 @@
     "correct": [
       0
     ],
-    "explanation": "A <b>cross-Region inference profile</b> lets Bedrock route on-demand requests across multiple Regions, raising the effective quota and adding resilience during spikes with essentially no application redesign. <b>Tight retries without backoff</b> amplify throttling and can worsen the storm; exponential backoff with jitter is the correct retry pattern. <b>Provisioned Throughput sized for the average rate</b> would still throttle at the spike (spikes exceed the average) and requires committing to reserved capacity. <b>Batch inference</b> abandons the real-time path entirely, which is a large re-architecture and changes behavior."
+    "explanation": "A <b>cross-Region inference profile</b> lets Bedrock route on-demand requests across multiple Regions, raising the effective quota and adding resilience during spikes with essentially no application redesign. <b>Tight retries without backoff</b> amplify throttling and can worsen the storm; exponential backoff with jitter is the correct retry pattern. <b>Provisioned Throughput sized for the average rate</b> would still throttle at the spike (spikes exceed the average) and requires committing to reserved capacity. <b>Batch inference</b> abandons the real-time path entirely, which is a large re-architecture and changes behavior.",
+    "id": "aipc01-0055",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html"
   },
   {
     "domain": "Operational Efficiency & Optimization",
@@ -917,7 +1082,10 @@
       0,
       1
     ],
-    "explanation": "<b>AWS Budgets</b> provides proactive actual-and-forecasted cost alerts and is the standard control for warning before overruns. <b>CloudWatch Bedrock metrics</b> (InputTokenCount, OutputTokenCount, Invocations) let the team track token usage and set alarms, supporting attribution and monitoring. <b>Shield Advanced</b> is DDoS protection and does not cap invocations or spend. <b>Guardrails</b> filter content and enforce policy on prompts and responses; they do not track dollars or stop spend at a budget. The <b>Free Tier dashboard</b> is not a multi-account cost-forecasting or spend-control tool."
+    "explanation": "<b>AWS Budgets</b> provides proactive actual-and-forecasted cost alerts and is the standard control for warning before overruns. <b>CloudWatch Bedrock metrics</b> (InputTokenCount, OutputTokenCount, Invocations) let the team track token usage and set alarms, supporting attribution and monitoring. <b>Shield Advanced</b> is DDoS protection and does not cap invocations or spend. <b>Guardrails</b> filter content and enforce policy on prompts and responses; they do not track dollars or stop spend at a budget. The <b>Free Tier dashboard</b> is not a multi-account cost-forecasting or spend-control tool.",
+    "id": "aipc01-0056",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/cost-management/latest/userguide/budgets-managing-costs.html"
   },
   {
     "domain": "Operational Efficiency & Optimization",
@@ -933,7 +1101,10 @@
     "correct": [
       3
     ],
-    "explanation": "<b>Provisioned Throughput with a committed term</b> becomes cheaper than on-demand precisely when utilization is high, steady, and predictable around the clock, which matches this profile. <b>Cross-Region inference</b> improves throughput and resilience but does not reduce the per-token price. <b>Batch inference</b> is asynchronous and cannot serve a continuous real-time workload, and it does not apply only during business hours. <b>top_p</b> controls sampling diversity, not cost, so changing it has no material effect on spend."
+    "explanation": "<b>Provisioned Throughput with a committed term</b> becomes cheaper than on-demand precisely when utilization is high, steady, and predictable around the clock, which matches this profile. <b>Cross-Region inference</b> improves throughput and resilience but does not reduce the per-token price. <b>Batch inference</b> is asynchronous and cannot serve a continuous real-time workload, and it does not apply only during business hours. <b>top_p</b> controls sampling diversity, not cost, so changing it has no material effect on spend.",
+    "id": "aipc01-0057",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/prov-throughput.html"
   },
   {
     "domain": "Operational Efficiency & Optimization",
@@ -949,7 +1120,10 @@
     "correct": [
       2
     ],
-    "explanation": "The cost driver is redundant input tokens, so <b>reranking plus a tighter top-k</b> keeps only the most relevant chunks in the prompt, directly shrinking input tokens while preserving or improving answer quality. <b>Increasing max_tokens</b> raises the output ceiling and does nothing to reduce the bloated input context. <b>Provisioned Throughput</b> reserves capacity but does not make oversized prompts cheaper and is unrelated to the token-bloat problem. <b>Temperature</b> affects randomness, not which context is sent or billed, so it neither cuts tokens nor reliably improves grounding."
+    "explanation": "The cost driver is redundant input tokens, so <b>reranking plus a tighter top-k</b> keeps only the most relevant chunks in the prompt, directly shrinking input tokens while preserving or improving answer quality. <b>Increasing max_tokens</b> raises the output ceiling and does nothing to reduce the bloated input context. <b>Provisioned Throughput</b> reserves capacity but does not make oversized prompts cheaper and is unrelated to the token-bloat problem. <b>Temperature</b> affects randomness, not which context is sent or billed, so it neither cuts tokens nor reliably improves grounding.",
+    "id": "aipc01-0058",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/rerank.html"
   },
   {
     "domain": "Testing, Validation & Troubleshooting",
@@ -965,7 +1139,10 @@
     "correct": [
       2
     ],
-    "explanation": "<b>LLM-as-a-judge</b> in an Amazon Bedrock model evaluation job lets you bring your own prompt dataset and automatically score nuanced dimensions like coherence and faithfulness at scale, so it can run on every release. Human evaluation is accurate but too slow and costly to repeat on thousands of items each release. Reference-based automatic metrics such as BERTScore and F1 require gold reference summaries and poorly capture faithfulness. A CloudWatch alarm on summary length measures nothing about quality."
+    "explanation": "<b>LLM-as-a-judge</b> in an Amazon Bedrock model evaluation job lets you bring your own prompt dataset and automatically score nuanced dimensions like coherence and faithfulness at scale, so it can run on every release. Human evaluation is accurate but too slow and costly to repeat on thousands of items each release. Reference-based automatic metrics such as BERTScore and F1 require gold reference summaries and poorly capture faithfulness. A CloudWatch alarm on summary length measures nothing about quality.",
+    "id": "aipc01-0059",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-evaluation.html"
   },
   {
     "domain": "Testing, Validation & Troubleshooting",
@@ -981,7 +1158,10 @@
     "correct": [
       1
     ],
-    "explanation": "<b>Groundedness</b> measures whether the generated answer is supported by the retrieved passages. High context relevance means retrieval is working, so low groundedness points to the generator adding unsupported content, which is a hallucination during generation rather than a retrieval problem. Because context relevance is already high, replacing embeddings or ingesting more documents would not help, and answer relevance is acceptable so the questions are not the issue. Remedies include a grounding-focused prompt, lower temperature, or a contextual grounding guardrail."
+    "explanation": "<b>Groundedness</b> measures whether the generated answer is supported by the retrieved passages. High context relevance means retrieval is working, so low groundedness points to the generator adding unsupported content, which is a hallucination during generation rather than a retrieval problem. Because context relevance is already high, replacing embeddings or ingesting more documents would not help, and answer relevance is acceptable so the questions are not the issue. Remedies include a grounding-focused prompt, lower temperature, or a contextual grounding guardrail.",
+    "id": "aipc01-0060",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/evaluation-kb.html"
   },
   {
     "domain": "Testing, Validation & Troubleshooting",
@@ -997,7 +1177,10 @@
     "correct": [
       3
     ],
-    "explanation": "An Amazon Bedrock <b>guardrail with the contextual grounding check</b> scores each response for grounding against the retrieved source and for relevance to the query, and it blocks or filters responses that fall below your configured thresholds, giving an enforceable inference-time control. Raising temperature increases hallucination, extra few-shot instructions help but cannot deterministically block ungrounded answers, and no larger model eliminates hallucination entirely."
+    "explanation": "An Amazon Bedrock <b>guardrail with the contextual grounding check</b> scores each response for grounding against the retrieved source and for relevance to the query, and it blocks or filters responses that fall below your configured thresholds, giving an enforceable inference-time control. Raising temperature increases hallucination, extra few-shot instructions help but cannot deterministically block ungrounded answers, and no larger model eliminates hallucination entirely.",
+    "id": "aipc01-0061",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails.html"
   },
   {
     "domain": "Testing, Validation & Troubleshooting",
@@ -1013,7 +1196,10 @@
     "correct": [
       0
     ],
-    "explanation": "A ThrottlingException means requests are exceeding the account's per-model rate, so the correct response is client-side <b>exponential backoff with jitter</b> plus, for sustained demand, a service quota increase or <b>Provisioned Throughput</b>. A missing bedrock:InvokeModel permission would fail every call with AccessDeniedException, not intermittently at peak. Reducing max_tokens addresses context-length ValidationExceptions. Model invocation logging records calls but does not retry them."
+    "explanation": "A ThrottlingException means requests are exceeding the account's per-model rate, so the correct response is client-side <b>exponential backoff with jitter</b> plus, for sustained demand, a service quota increase or <b>Provisioned Throughput</b>. A missing bedrock:InvokeModel permission would fail every call with AccessDeniedException, not intermittently at peak. Reducing max_tokens addresses context-length ValidationExceptions. Model invocation logging records calls but does not retry them.",
+    "id": "aipc01-0062",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/quotas.html"
   },
   {
     "domain": "Testing, Validation & Troubleshooting",
@@ -1029,7 +1215,10 @@
     "correct": [
       2
     ],
-    "explanation": "With IAM already allowing InvokeModel and other models working, a specific new model failing with <b>AccessDeniedException</b> almost always means model access was never granted for that model in the account and Region under Bedrock model access, which is a separate step from IAM. Exceeding a quota raises ThrottlingException, and a malformed body or an over-length prompt raises ValidationException, so neither of those produces AccessDeniedException."
+    "explanation": "With IAM already allowing InvokeModel and other models working, a specific new model failing with <b>AccessDeniedException</b> almost always means model access was never granted for that model in the account and Region under Bedrock model access, which is a separate step from IAM. Exceeding a quota raises ThrottlingException, and a malformed body or an over-length prompt raises ValidationException, so neither of those produces AccessDeniedException.",
+    "id": "aipc01-0063",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html"
   },
   {
     "domain": "Testing, Validation & Troubleshooting",
@@ -1045,7 +1234,10 @@
     "correct": [
       1
     ],
-    "explanation": "A <b>canary or A-B deployment</b> exposes only a small slice of live traffic to the new prompt and compares real quality and business metrics against the current version, which limits the blast radius and validates behavior that offline tests cannot capture. Switching 100 percent immediately maximizes risk and error-rate metrics do not measure answer quality. Rerunning offline evaluation never touches production behavior and still cuts everyone over at once, and Provisioned Throughput addresses latency, not quality or rollout risk."
+    "explanation": "A <b>canary or A-B deployment</b> exposes only a small slice of live traffic to the new prompt and compares real quality and business metrics against the current version, which limits the blast radius and validates behavior that offline tests cannot capture. Switching 100 percent immediately maximizes risk and error-rate metrics do not measure answer quality. Rerunning offline evaluation never touches production behavior and still cuts everyone over at once, and Provisioned Throughput addresses latency, not quality or rollout risk.",
+    "id": "aipc01-0064",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/deployment-guardrails.html"
   },
   {
     "domain": "Testing, Validation & Troubleshooting",
@@ -1063,6 +1255,9 @@
       0,
       3
     ],
-    "explanation": "<b>Model invocation logging</b> is the only listed feature that captures the full prompt and completion payloads, delivering them to Amazon S3 and CloudWatch Logs, and <b>CloudWatch alarms</b> on the InvocationLatency and InvocationServerErrors metrics provide the automated threshold alerting. CloudTrail records API activity metadata but not the request and response bodies, VPC Flow Logs capture only IP-level traffic metadata over encrypted connections, and X-Ray stores trace segments, so none of those persist the model input and output payloads."
+    "explanation": "<b>Model invocation logging</b> is the only listed feature that captures the full prompt and completion payloads, delivering them to Amazon S3 and CloudWatch Logs, and <b>CloudWatch alarms</b> on the InvocationLatency and InvocationServerErrors metrics provide the automated threshold alerting. CloudTrail records API activity metadata but not the request and response bodies, VPC Flow Logs capture only IP-level traffic metadata over encrypted connections, and X-Ray stores trace segments, so none of those persist the model input and output payloads.",
+    "id": "aipc01-0065",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-invocation-logging.html"
   }
 ]
