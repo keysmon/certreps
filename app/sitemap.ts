@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { listGuides } from "@/lib/guides";
 
-const BASE = "https://preploop.dev";
+const BASE = "https://certreps.dev";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [

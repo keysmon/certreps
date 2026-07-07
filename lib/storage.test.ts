@@ -41,7 +41,7 @@ describe("attempt store", () => {
     expect(getInProgress("aip-c01", "mock")).toBeNull();
   });
   it("survives corrupted storage gracefully", () => {
-    localStorage.setItem("preploop.attempts.v1", "{corrupt");
+    localStorage.setItem("certreps.attempts.v1", "{corrupt");
     expect(listAttempts("aip-c01")).toEqual([]);
   });
   it("clears missed questions when retried and answered correctly", () => {

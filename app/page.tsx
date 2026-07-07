@@ -10,7 +10,7 @@ export default function Home() {
         Practice. Miss. Retry.<br />Walk in ready.
       </h1>
       <p style={{ color: "var(--muted)", maxWidth: 560 }}>
-        PrepLoop is a free practice-exam site for engineers: original scenario questions with
+        CertReps is a free practice-exam site for engineers: original scenario questions with
         real explanations, a full exam simulator, and a readiness read that tells you what to
         drill next. No account, no paywall, no brain dumps.
       </p>

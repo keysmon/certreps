@@ -1,5 +1,5 @@
 {
-  "name": "preploop",
+  "name": "certreps",
   "private": true,
   "scripts": {
     "dev": "next dev",

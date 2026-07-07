@@ -1,4 +1,4 @@
-# PrepLoop
+# CertReps
 
 Free, original, deeply-explained practice exams for IT certifications.
 No signup, no paywall, no brain dumps.
@@ -14,6 +14,6 @@ Test: `npm test`
 Typecheck: `npm run typecheck`
 Content gate: `python3 pipeline/validate_bank.py` must pass before committing any change to `content/*/questions.json`.
 
-PrepLoop is an independent study resource.
+CertReps is an independent study resource.
 Not affiliated with, endorsed by, or sponsored by Amazon Web Services.
 All questions are original - never actual exam content.

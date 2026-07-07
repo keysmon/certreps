@@ -1,6 +1,6 @@
 import type { Attempt, Mode, QuestionResult } from "./types";
 
-const KEY = "preploop.attempts.v1";
+const KEY = "certreps.attempts.v1";
 
 function readAll(): Attempt[] {
   if (typeof window === "undefined") return [];
