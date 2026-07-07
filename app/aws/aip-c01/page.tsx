@@ -13,6 +13,7 @@ export const metadata: Metadata = {
 export default function CertPage() {
   const meta = getMeta();
   const bankSize = getBank().length;
+  const guides = listGuides("aip-c01");
   return (
     <main className="container" style={{ paddingTop: 48 }}>
       <p className="eyebrow">{meta.vendor} certification - {meta.level} - Verified {meta.verified}</p>
@@ -63,14 +64,16 @@ export default function CertPage() {
         </div>
       </div>
 
-      <div className="card" style={{ marginTop: 24 }}>
-        <h2 style={{ marginTop: 0, fontSize: 18 }}>Study guides</h2>
-        {listGuides("aip-c01").map((g) => (
-          <p key={g.slug} style={{ margin: "8px 0" }}>
-            <Link href={`/guides/aip-c01/${g.slug}`}>{g.title}</Link>
-          </p>
-        ))}
-      </div>
+      {guides.length > 0 && (
+        <div className="card" style={{ marginTop: 24 }}>
+          <h2 style={{ marginTop: 0, fontSize: 18 }}>Study guides</h2>
+          {guides.map((g) => (
+            <p key={g.slug} style={{ margin: "8px 0" }}>
+              <Link href={`/guides/aip-c01/${g.slug}`}>{g.title}</Link>
+            </p>
+          ))}
+        </div>
+      )}
     </main>
   );
 }
