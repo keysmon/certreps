@@ -26,13 +26,19 @@ export function QuestionCard({
   total?: number;
 }) {
   const [chosen, setChosen] = useState<number[]>([]);
+  const [lastQid, setLastQid] = useState(question.id);
+  if (lastQid !== question.id) {
+    // Reset selection when the question changes so a reused instance cannot submit stale choices.
+    setLastQid(question.id);
+    setChosen([]);
+  }
   const isMulti = question.type === "multi";
   const view = graded ? graded.chosen : chosen;
 
   function toggle(i: number) {
     if (graded) return;
     if (isMulti) {
-      setChosen((c) => (c.includes(i) ? c.filter((x) => x !== i) : c.length >= 2 ? c : [...c, i].sort()));
+      setChosen((c) => (c.includes(i) ? c.filter((x) => x !== i) : c.length >= 2 ? c : [...c, i].sort((a, b) => a - b)));
     } else {
       setChosen([i]);
     }
@@ -48,7 +54,7 @@ export function QuestionCard({
       </div>
       <p className="qstem">{question.stem}</p>
       {isMulti && <p className="qhint">Select TWO</p>}
-      <div className="options">
+      <div className="options" role="group" aria-label={isMulti ? "Answer choices - choose two" : "Answer choices"}>
         {question.options.map((text, i) => {
           const isKey = question.correct.includes(i);
           const wasChosen = view.includes(i);
@@ -56,7 +62,7 @@ export function QuestionCard({
             ? isKey ? "option correct" : wasChosen ? "option incorrect" : "option dim"
             : wasChosen ? "option selected" : "option";
           return (
-            <button key={i} type="button" className={cls} disabled={!!graded} onClick={() => toggle(i)}>
+            <button key={i} type="button" className={cls} aria-pressed={wasChosen} disabled={!!graded} onClick={() => toggle(i)}>
               <span className="marker">{graded ? (isKey ? CHECK : wasChosen ? CROSS : LETTERS[i]) : LETTERS[i]}</span>
               <span>{text}</span>
             </button>
@@ -66,6 +72,7 @@ export function QuestionCard({
       {graded && (
         <div className={`explain ${graded.correct ? "right" : "wrong"}`}>
           <p className="verdict">{graded.correct ? `${CHECK} Correct` : `${CROSS} Not quite`}</p>
+          {/* Safe: trusted build-time content from our own pipeline (<b>/<em> only), never user input. */}
           <p dangerouslySetInnerHTML={{ __html: question.explanation }} />
           <a className="doclink" href={question.docUrl} target="_blank" rel="noopener noreferrer">
             Read the AWS docs {String.fromCharCode(8594)}
@@ -73,7 +80,7 @@ export function QuestionCard({
         </div>
       )}
       {!graded && (
-        <button className="btn btn-primary" disabled={view.length === 0} onClick={() => onSubmit(chosen)}>
+        <button className="btn btn-primary" disabled={chosen.length === 0} onClick={() => onSubmit(chosen)}>
           Submit answer
         </button>
       )}

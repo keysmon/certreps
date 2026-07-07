@@ -23,5 +23,5 @@
 .explain .verdict { font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; margin: 0 0 9px; font-weight: 600; }
 .explain.right .verdict { color: var(--emerald); }
 .explain.wrong .verdict { color: var(--rose); }
-.explain p { margin: 0 0 10px; font-size: 14.5px; line-height: 1.6; color: #d6e0ea; }
+.explain p { margin: 0 0 10px; font-size: 14.5px; line-height: 1.6; color: var(--text); }
 .doclink { font-size: 13px; }
