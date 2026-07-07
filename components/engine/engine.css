@@ -32,3 +32,23 @@
 .mapcell.answered { border-color: var(--emerald); color: var(--emerald); background: var(--emerald-soft); }
 .mapcell.flagged { border-color: var(--gold); color: var(--gold); background: var(--gold-soft); }
 .mapcell.current { outline: 2px solid var(--gold); outline-offset: -3px; font-weight: 700; }
+.results { text-align: center; }
+.score-ring { width: 168px; height: 168px; margin: 8px auto 20px; position: relative; display: grid; place-items: center; }
+.score-ring svg { transform: rotate(-90deg); position: absolute; inset: 0; }
+.score-num { font-size: 46px; font-weight: 680; font-variant-numeric: tabular-nums; }
+.score-den { font-family: var(--font-mono); font-size: 13px; color: var(--muted); }
+.pausestamp { display: inline-block; font-family: var(--font-mono); font-size: 12px; color: var(--gold); background: var(--gold-soft); border: 1px solid var(--gold-dim); border-radius: 20px; padding: 6px 14px; margin: 6px 0 14px; }
+.breakdown { text-align: left; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; margin: 20px 0; }
+.breakdown h3, .recap h3 { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); font-weight: 500; margin: 0 0 14px; }
+.brow { display: flex; align-items: center; gap: 12px; padding: 8px 0; }
+.brow .bn { font-size: 13px; width: 50%; text-align: left; }
+.brow .bbar { flex: 1; height: 7px; background: var(--line); border-radius: 4px; overflow: hidden; }
+.brow .bbar span { display: block; height: 100%; border-radius: 4px; }
+.brow .bsc { font-family: var(--font-mono); font-size: 12.5px; color: var(--muted); width: 42px; text-align: right; }
+.recap { text-align: left; margin-bottom: 24px; }
+.recap-item { display: flex; align-items: center; gap: 11px; padding: 9px 0; border-bottom: 1px solid var(--line); font-size: 13px; }
+.recap-item .ri { font-family: var(--font-mono); width: 20px; }
+.recap-item .ri.ok { color: var(--emerald); }
+.recap-item .ri.no { color: var(--rose); }
+.recap-item .rq { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.recap-item .rd { color: var(--muted); font-size: 11.5px; margin-left: auto; font-family: var(--font-mono); white-space: nowrap; }
