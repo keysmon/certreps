@@ -1,5 +1,6 @@
 import type { Attempt, Question } from "./types";
 
+/** Set equality on the chosen vs correct indices, order-insensitive; symmetric. */
 export function isCorrect(chosen: number[], correct: number[]): boolean {
   if (chosen.length !== correct.length) return false;
   const a = [...chosen].sort();
@@ -15,6 +16,7 @@ export interface Grade {
   avgSecPerQuestion: number;
 }
 
+/** Grades against the questions list: unanswered counts wrong; results for questions not in the list are ignored. */
 export function gradeAttempt(attempt: Attempt, questions: Question[]): Grade {
   const byDomain: Grade["byDomain"] = {};
   let score = 0;

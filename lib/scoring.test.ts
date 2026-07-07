@@ -22,7 +22,7 @@ describe("isCorrect", () => {
 describe("gradeAttempt", () => {
   it("scores and breaks down by domain", () => {
     const questions = [q("q1", "D1", [0]), q("q2", "D1", [1]), q("q3", "D2", [2])];
-    const attempt = {
+    const attempt: Attempt = {
       attemptId: "a", certId: "aip-c01", mode: "quick", questionIds: ["q1", "q2", "q3"],
       results: {
         q1: { questionId: "q1", chosen: [0], correct: true, flagged: false },
@@ -30,7 +30,7 @@ describe("gradeAttempt", () => {
         // q3 unanswered
       },
       startedAt: 0, finishedAt: 1, elapsedSec: 90, pauseCount: 0,
-    } as Attempt;
+    };
     const g = gradeAttempt(attempt, questions);
     expect(g.score).toBe(1);
     expect(g.total).toBe(3);
