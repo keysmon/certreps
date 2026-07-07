@@ -19,7 +19,9 @@ when the scenario says "same instructions on every request."
 - **On-demand**: default pay-per-token; right for variable or unpredictable traffic.
 - **Provisioned Throughput**: reserved model units at an hourly/term rate. Cheaper than
   on-demand only when utilization is high, steady, and predictable. It is also **required to
-  serve custom (fine-tuned) models** - a favorite exam fact.
+  serve most custom (fine-tuned) models** - a favorite exam fact. (Exception since July 2025:
+  Amazon Nova PEFT fine-tunes and Meta Llama 3.3 70B custom models can also be deployed for
+  on-demand inference; Claude fine-tunes still need PT.)
 - **Batch inference**: asynchronous bulk jobs at discounted pricing; never the answer for an
   interactive chat experience.
 
@@ -41,7 +43,7 @@ without hurting answer quality.
 
 For a narrow, high-volume task where a frontier model meets accuracy but costs too much,
 distill the teacher's behavior into a smaller student model and serve that (via Provisioned
-Throughput, since it is a custom model).
+Throughput - or on-demand deployment where the student's family supports it).
 
 ## Practice this domain
 
