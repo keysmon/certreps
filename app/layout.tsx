@@ -3,7 +3,7 @@ import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://preploop.dev"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://preploop.dev"),
   title: { default: "PrepLoop — Free IT Certification Practice Exams", template: "%s | PrepLoop" },
   description:
     "Free, original, deeply-explained practice exams for IT certifications. No signup required.",
