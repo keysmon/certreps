@@ -44,4 +44,19 @@ describe("attempt store", () => {
     localStorage.setItem("preploop.attempts.v1", "{corrupt");
     expect(listAttempts("aip-c01")).toEqual([]);
   });
+  it("clears missed questions when retried and answered correctly", () => {
+    const a = createAttempt("aip-c01", "quick", ["q1"]);
+    a.startedAt = 1000;
+    saveAttempt(a);
+    recordResult(a.attemptId, { questionId: "q1", chosen: [0], correct: false, flagged: false });
+    finishAttempt(a.attemptId, 60, 0);
+
+    const b = createAttempt("aip-c01", "retry", ["q1"]);
+    b.startedAt = 2000;
+    saveAttempt(b);
+    recordResult(b.attemptId, { questionId: "q1", chosen: [1], correct: true, flagged: false });
+    finishAttempt(b.attemptId, 30, 0);
+
+    expect(missedQuestionIds("aip-c01")).toEqual([]);
+  });
 });

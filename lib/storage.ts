@@ -8,7 +8,7 @@ function readAll(): Attempt[] {
     const raw = localStorage.getItem(KEY);
     if (!raw) return [];
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? (parsed as Attempt[]) : [];
+    return Array.isArray(parsed) ? parsed.filter((a): a is Attempt => a !== null && typeof a === "object") : [];
   } catch {
     return [];
   }
@@ -37,6 +37,7 @@ export function createAttempt(certId: string, mode: Mode, questionIds: string[],
   };
 }
 
+/** Call once after createAttempt to persist the new attempt. Afterwards use recordResult/finishAttempt only - re-saving a stale engine-held copy would clobber recorded results. */
 export function saveAttempt(a: Attempt): void {
   const all = readAll().filter((x) => x.attemptId !== a.attemptId);
   all.push(a);
