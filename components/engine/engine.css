@@ -31,4 +31,4 @@
 .mapcell { height: 34px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); color: var(--muted); font-family: var(--font-mono); font-size: 12px; cursor: pointer; }
 .mapcell.answered { border-color: var(--emerald); color: var(--emerald); background: var(--emerald-soft); }
 .mapcell.flagged { border-color: var(--gold); color: var(--gold); background: var(--gold-soft); }
-.mapcell.current { outline: 2px solid var(--gold); }
+.mapcell.current { outline: 2px solid var(--gold); outline-offset: -3px; font-weight: 700; }
