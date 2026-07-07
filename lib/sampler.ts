@@ -7,7 +7,9 @@ export function difficultyTargets(n: number): Record<Difficulty, number> {
   const raw = (Object.entries(MIX) as [Difficulty, number][]).map(([d, p]) => ({ d, exact: n * p }));
   const base = raw.map((r) => ({ d: r.d, count: Math.floor(r.exact), rem: r.exact - Math.floor(r.exact) }));
   let deficit = n - base.reduce((s, b) => s + b.count, 0);
+  // Deficit <= 2 because MIX sums to 1; largest-remainder distribution wraps modularly for defensive safety.
   base.sort((a, b) => b.rem - a.rem);
+  // Stable sort ties to MIX declaration order; easy wins extra slot at n === 2 mod 4 - deliberate bias.
   for (let i = 0; deficit > 0; i = (i + 1) % base.length, deficit--) base[i].count++;
   const out = { easy: 0, medium: 0, hard: 0 } as Record<Difficulty, number>;
   for (const b of base) out[b.d] = b.count;
@@ -25,6 +27,7 @@ function shuffle<T>(arr: T[]): T[] {
 
 /** Pick `count` from `pool` honoring 25/50/25; backfill from remaining pool when a bucket runs dry. */
 function pickBalanced(pool: Question[], count: number): Question[] {
+  if (count <= 0) return [];
   const targets = difficultyTargets(count);
   const buckets: Record<Difficulty, Question[]> = { easy: [], medium: [], hard: [] };
   for (const q of shuffle(pool)) buckets[q.difficulty].push(q);

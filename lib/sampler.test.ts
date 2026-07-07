@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { sampleMock, sampleQuick, sampleDrill, difficultyTargets } from "./sampler";
+import { sampleMock, sampleQuick, sampleDrill, difficultyTargets, questionsByIds } from "./sampler";
 import { getBank, getMeta } from "./bank";
 
 describe("difficultyTargets", () => {
@@ -7,7 +7,7 @@ describe("difficultyTargets", () => {
     expect(difficultyTargets(20)).toEqual({ easy: 5, medium: 10, hard: 5 });
   });
   it("always sums to n", () => {
-    for (let n = 1; n <= 30; n++) {
+    for (let n = 0; n <= 30; n++) {
       const t = difficultyTargets(n);
       expect(t.easy + t.medium + t.hard).toBe(n);
     }
@@ -44,5 +44,18 @@ describe("sampleQuick / sampleDrill", () => {
     const qs = sampleDrill(getBank(), d, 10);
     expect(qs.length).toBe(10);
     expect(qs.every((q) => q.domain === d)).toBe(true);
+  });
+});
+
+describe("questionsByIds", () => {
+  it("preserves order and drops unknown ids", () => {
+    const bank = getBank();
+    const ids = [bank[3].id, bank[1].id, bank[0].id];
+    const request = [ids[2], ids[0], "nope", ids[1]];
+    const result = questionsByIds(bank, request);
+    expect(result.length).toBe(3);
+    expect(result[0].id).toBe(ids[2]);
+    expect(result[1].id).toBe(ids[0]);
+    expect(result[2].id).toBe(ids[1]);
   });
 });
