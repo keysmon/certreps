@@ -1,8 +1,9 @@
 import type { Attempt, Mode, QuestionResult } from "./types";
+import { queueUpsert } from "./sync-runtime";
 
 const KEY = "certreps.attempts.v1";
 
-function readAll(): Attempt[] {
+export function readAll(): Attempt[] {
   if (typeof window === "undefined") return [];
   try {
     const raw = localStorage.getItem(KEY);
@@ -14,7 +15,7 @@ function readAll(): Attempt[] {
   }
 }
 
-function writeAll(attempts: Attempt[]): void {
+export function writeAll(attempts: Attempt[]): void {
   try {
     localStorage.setItem(KEY, JSON.stringify(attempts));
   } catch {
@@ -42,6 +43,15 @@ export function saveAttempt(a: Attempt): void {
   const all = readAll().filter((x) => x.attemptId !== a.attemptId);
   all.push(a);
   writeAll(all);
+  // Write-through cloud mirror (no-op when signed out/unavailable). This is the single
+  // write path - recordResult and finishAttempt both persist through here, so a finished
+  // attempt is upserted immediately and mid-exam writes are debounced. Guarded so sync can
+  // never surface to the engine, even though queueUpsert already never throws by contract.
+  try {
+    queueUpsert(a);
+  } catch {
+    /* sync must never break the localStorage write-once contract */
+  }
 }
 
 export function getAttempt(attemptId: string): Attempt | null {
