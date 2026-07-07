@@ -40,7 +40,7 @@ describe("ExamEngine mock mode", () => {
     // Return to review and submit the exam
     await userEvent.click(screen.getByRole("button", { name: /review & submit/i }));
     await userEvent.click(screen.getByRole("button", { name: /submit exam/i }));
-    expect(await screen.findByText(/results/i)).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: /results/i })).toBeInTheDocument();
     const a = listAttempts("aip-c01")[0];
     expect(a.mode).toBe("mock");
     expect(a.finishedAt).not.toBeNull();
@@ -68,7 +68,7 @@ describe("ExamEngine mock mode", () => {
       // Back on the review screen, run the clock past the full budget -> auto-submit to results.
       fireEvent.click(screen.getByRole("button", { name: /review & submit/i }));
       act(() => vi.advanceTimersByTime(budget * 1000));
-      expect(screen.getByText(/results/i)).toBeInTheDocument();
+      expect(screen.getByRole("heading", { name: /results/i })).toBeInTheDocument();
       const a = listAttempts("aip-c01")[0];
       expect(a.finishedAt).not.toBeNull();
     } finally {

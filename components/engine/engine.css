@@ -52,3 +52,4 @@
 .recap-item .ri.no { color: var(--rose); }
 .recap-item .rq { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .recap-item .rd { color: var(--muted); font-size: 11.5px; margin-left: auto; font-family: var(--font-mono); white-space: nowrap; }
+.brow .bverdict { font-family: var(--font-mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); width: 84px; text-align: right; }

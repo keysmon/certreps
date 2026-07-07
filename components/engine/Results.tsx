@@ -23,9 +23,9 @@ export function Results({ attempt, questions, meta }: { attempt: Attempt; questi
 
   return (
     <div className="results">
-      <h2 style={{ position: "absolute", left: -9999 }}>Results</h2>
+      <h2 className="sr-only">Results</h2>
       <div className="score-ring">
-        <svg width="168" height="168" viewBox="0 0 168 168">
+        <svg width="168" height="168" viewBox="0 0 168 168" aria-hidden="true">
           <circle cx="84" cy="84" r="76" fill="none" stroke="var(--line)" strokeWidth="10" />
           <circle cx="84" cy="84" r="76" fill="none" stroke={ring} strokeWidth="10" strokeLinecap="round" strokeDasharray={`${dash} ${circ}`} />
         </svg>
@@ -35,8 +35,11 @@ export function Results({ attempt, questions, meta }: { attempt: Attempt; questi
         </div>
       </div>
 
-      {attempt.pauseCount >= HEAVY_PAUSE_THRESHOLD && (
-        <div className="pausestamp">Paused {attempt.pauseCount}x - timing may not reflect exam conditions</div>
+      {attempt.pauseCount >= 1 && (
+        <div className="pausestamp">
+          Paused {attempt.pauseCount}x
+          {attempt.pauseCount >= HEAVY_PAUSE_THRESHOLD && " - timing may not reflect exam conditions"}
+        </div>
       )}
 
       <p style={{ color: "var(--muted)", fontSize: 14 }}>
@@ -48,12 +51,14 @@ export function Results({ attempt, questions, meta }: { attempt: Attempt; questi
         {meta.domains.filter((d) => g.byDomain[d.name]).map((d) => {
           const v = g.byDomain[d.name];
           const pct = v.total ? Math.round((v.correct / v.total) * 100) : 0;
-          const col = VERDICT_COLORS[domainVerdict(pct, meta.passLinePct)];
+          const verdict = domainVerdict(pct, meta.passLinePct);
+          const col = VERDICT_COLORS[verdict];
           return (
             <div className="brow" key={d.name}>
               <span className="bn">{d.name}</span>
               <span className="bbar"><span style={{ width: `${pct}%`, background: col }} /></span>
               <span className="bsc">{v.correct}/{v.total}</span>
+              <span className="bverdict">{verdict}</span>
             </div>
           );
         })}
@@ -66,8 +71,8 @@ export function Results({ attempt, questions, meta }: { attempt: Attempt; questi
           const ok = r?.correct ?? false;
           return (
             <div className="recap-item" key={q.id}>
-              <span className={`ri ${ok ? "ok" : "no"}`}>{ok ? CHECK : CROSS}</span>
-              <span className="rq">Q{i + 1} - {q.stem.slice(0, 58)}...</span>
+              <span className={`ri ${ok ? "ok" : "no"}`} aria-label={ok ? "correct" : "incorrect"}>{ok ? CHECK : CROSS}</span>
+              <span className="rq">Q{i + 1} - {q.stem}</span>
               <span className="rd">{q.tag}</span>
             </div>
           );

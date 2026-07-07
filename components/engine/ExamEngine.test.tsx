@@ -20,7 +20,7 @@ describe("ExamEngine quick mode", () => {
       expect(screen.getAllByText(/correct|not quite/i).length).toBeGreaterThan(0);
       await userEvent.click(screen.getByRole("button", { name: i < 9 ? /next question/i : /see results/i }));
     }
-    expect(screen.getByText(/results/i)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /results/i })).toBeInTheDocument();
     const attempts = listAttempts("aip-c01");
     expect(attempts.length).toBe(1);
     expect(attempts[0].finishedAt).not.toBeNull();

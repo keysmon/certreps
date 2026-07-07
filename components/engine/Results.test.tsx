@@ -39,4 +39,9 @@ describe("Results", () => {
     render(<Results attempt={makeAttempt(HEAVY_PAUSE_THRESHOLD)} questions={qs} meta={getMeta()} />);
     expect(screen.getByText(new RegExp(`paused ${HEAVY_PAUSE_THRESHOLD}x - timing may not reflect exam conditions`, "i"))).toBeInTheDocument();
   });
+  it("shows a plain pause stamp below the heavy threshold, without the warning clause", () => {
+    render(<Results attempt={makeAttempt(HEAVY_PAUSE_THRESHOLD - 1)} questions={qs} meta={getMeta()} />);
+    expect(screen.getByText(new RegExp(`paused ${HEAVY_PAUSE_THRESHOLD - 1}x`, "i"))).toBeInTheDocument();
+    expect(screen.queryByText(/timing may not reflect exam conditions/i)).not.toBeInTheDocument();
+  });
 });
