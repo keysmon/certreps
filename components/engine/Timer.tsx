@@ -47,5 +47,5 @@ export function Timer({
   }, [onPause]);
 
   const shown = countdownSec !== null ? Math.max(0, countdownSec - elapsed) : elapsed;
-  return <span style={{ fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums" }}>{fmt(shown)}</span>;
+  return <span role="timer" style={{ fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums" }}>{fmt(shown)}</span>;
 }
