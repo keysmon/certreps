@@ -1,0 +1,18 @@
+{
+  "certId": "aip-c01",
+  "vendor": "AWS",
+  "title": "AWS Certified Generative AI Developer - Professional",
+  "examCode": "AIP-C01",
+  "level": "Professional",
+  "mockQuestionCount": 65,
+  "mockMinutes": 156,
+  "passLinePct": 75,
+  "verified": "Q3 2026",
+  "domains": [
+    { "name": "Foundation Model Integration & Compliance", "tag": "Domain 1", "weightPct": 31, "mockCount": 20 },
+    { "name": "Implementation & Integration", "tag": "Domain 2", "weightPct": 26, "mockCount": 17 },
+    { "name": "AI Safety, Security & Governance", "tag": "Domain 3", "weightPct": 20, "mockCount": 13 },
+    { "name": "Operational Efficiency & Optimization", "tag": "Domain 4", "weightPct": 12, "mockCount": 8 },
+    { "name": "Testing, Validation & Troubleshooting", "tag": "Domain 5", "weightPct": 11, "mockCount": 7 }
+  ]
+}
