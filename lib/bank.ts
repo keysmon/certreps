@@ -3,11 +3,11 @@ import questionsJson from "@/content/aip-c01/questions.json";
 import metaJson from "@/content/aip-c01/meta.json";
 
 export function getBank(): Question[] {
-  return questionsJson as unknown as Question[];
+  return questionsJson as Question[];
 }
 
 export function getMeta(): CertMeta {
-  return metaJson as unknown as CertMeta;
+  return metaJson as CertMeta;
 }
 
 export function byDomain(bank: Question[]): Record<string, Question[]> {

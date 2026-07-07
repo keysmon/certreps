@@ -14,6 +14,8 @@ describe("bank", () => {
   it("meta domain mockCounts sum to 65", () => {
     const meta = getMeta();
     expect(meta.domains.reduce((s, d) => s + d.mockCount, 0)).toBe(65);
+    expect(getMeta().mockQuestionCount).toBe(65);
+    expect(getMeta().domains.reduce((s, d) => s + d.weightPct, 0)).toBe(100);
   });
   it("groups by domain matching meta counts availability", () => {
     const groups = byDomain(getBank());
