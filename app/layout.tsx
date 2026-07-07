@@ -1,16 +1,31 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "PrepLoop — Free IT Certification Practice Exams",
+  metadataBase: new URL("https://preploop.dev"),
+  title: { default: "PrepLoop — Free IT Certification Practice Exams", template: "%s | PrepLoop" },
   description:
-    "Free, original practice exams for IT certifications. No signup. Not affiliated with AWS.",
+    "Free, original, deeply-explained practice exams for IT certifications. No signup required.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        {children}
+        <footer className="site">
+          <div className="container">
+            <p>
+              PrepLoop is an independent study resource. Not affiliated with, endorsed by, or
+              sponsored by Amazon Web Services. AWS and AWS certification names are trademarks
+              of Amazon.com, Inc. or its affiliates. All questions are original — never actual
+              exam content.
+            </p>
+          </div>
+        </footer>
+        <Analytics />
+      </body>
     </html>
   );
 }
