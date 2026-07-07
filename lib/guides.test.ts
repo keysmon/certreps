@@ -11,5 +11,6 @@ describe("guides", () => {
   it("returns raw markdown for a slug and null for unknown", () => {
     expect(getGuide("aip-c01", "operational-efficiency-and-optimization")).toContain("# Operational Efficiency");
     expect(getGuide("aip-c01", "nope")).toBeNull();
+    expect(getGuide("aip-c01", "../../package")).toBeNull();
   });
 });
