@@ -16,6 +16,8 @@ describe("ReviewMap", () => {
     expect(cells.length).toBe(3);
     expect(cells[0].className).toContain("answered");
     expect(cells[1].className).toContain("flagged");
+    expect(screen.getByRole("button", { name: "Go to question 1, current" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Go to question 2, unanswered, flagged" })).toBeInTheDocument();
     await userEvent.click(cells[2]);
     expect(onJump).toHaveBeenCalledWith(2);
   });

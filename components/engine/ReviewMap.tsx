@@ -15,7 +15,7 @@ export function ReviewMap({ states, current, onJump }: { states: CellState[]; cu
             type="button"
             className={`mapcell${s.answered ? " answered" : ""}${s.flagged ? " flagged" : ""}${i === current ? " current" : ""}`}
             onClick={() => onJump(i)}
-            aria-label={`Go to question ${i + 1}`}
+            aria-label={`Go to question ${i + 1}${s.answered ? "" : ", unanswered"}${s.flagged ? ", flagged" : ""}${i === current ? ", current" : ""}`}
           >
             {i + 1}
           </button>
