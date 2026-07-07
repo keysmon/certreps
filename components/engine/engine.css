@@ -46,12 +46,23 @@
 .brow .bbar span { display: block; height: 100%; border-radius: 4px; }
 .brow .bsc { font-family: var(--font-mono); font-size: 12.5px; color: var(--muted); width: 42px; text-align: right; }
 .recap { text-align: left; margin-bottom: 24px; }
-.recap-item { display: flex; align-items: center; gap: 11px; padding: 9px 0; border-bottom: 1px solid var(--line); font-size: 13px; }
-.recap-item .ri { font-family: var(--font-mono); width: 20px; }
+.recap-item { border-bottom: 1px solid var(--line); }
+.recap-summary { display: flex; align-items: center; gap: 11px; padding: 9px 0; font-size: 13px; cursor: pointer; list-style: none; }
+.recap-summary::-webkit-details-marker { display: none; }
+.recap-item .ri { flex-shrink: 0; font-family: var(--font-mono); width: 20px; }
 .recap-item .ri.ok { color: var(--emerald); }
 .recap-item .ri.no { color: var(--rose); }
-.recap-item .rq { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.recap-item .rd { color: var(--muted); font-size: 11.5px; margin-left: auto; font-family: var(--font-mono); white-space: nowrap; }
+/* min-width: 0 lets the flex item shrink so text-overflow: ellipsis actually fires. */
+.recap-summary .rq { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.recap-item[open] .recap-summary .rq { overflow: visible; white-space: normal; }
+.recap-item .rd { flex-shrink: 0; color: var(--muted); font-size: 11.5px; margin-left: auto; font-family: var(--font-mono); white-space: nowrap; }
+.recap-chevron { flex-shrink: 0; color: var(--faint); font-family: var(--font-mono); font-size: 13px; transition: transform 0.15s ease; }
+.recap-item[open] .recap-chevron { transform: rotate(90deg); }
+/* Graded options here are a read-only replay, so kill the button-style hover/pointer affordance. */
+.recap-body { padding: 4px 0 18px; }
+.recap-body .options { margin: 6px 0 14px; }
+.recap-body .option { pointer-events: none; }
+.recap-explain { margin: 0 0 10px; font-size: 14.5px; line-height: 1.6; color: var(--text); }
 .brow .bverdict { font-family: var(--font-mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); width: 84px; text-align: right; }
 /* R2 (Task 15): narrow phones (<=380px) - the fixed columns (~240px) crush the bar, so wrap
    the domain name onto its own row and let the bar + counts + verdict share the second row. */
