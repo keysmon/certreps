@@ -1259,5 +1259,1266 @@
     "id": "aipc01-0065",
     "difficulty": "medium",
     "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-invocation-logging.html"
+  },
+  {
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A marketing team wants to generate original, professional-grade product images directly from text prompts using an AWS first-party foundation model available in Amazon Bedrock. Which model is purpose-built for this task?",
+    "options": [
+      "Amazon Nova Canvas",
+      "Amazon Nova Micro",
+      "Amazon Titan Text Embeddings V2",
+      "Anthropic Claude 3.5 Sonnet"
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Amazon Nova Canvas</b> is Amazon's creative model that generates high-quality images from text and image inputs, making it the purpose-built choice. <b>Nova Micro</b> is a text-only understanding model that outputs text, not images. <b>Titan Text Embeddings V2</b> only produces embedding vectors for retrieval, not images. <b>Claude 3.5 Sonnet</b> accepts image inputs but generates text, not images.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/nova/latest/userguide/what-is-nova.html",
+    "id": "aipc01-0066"
+  },
+  {
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A team uses Amazon Titan Text Embeddings V2 for a Knowledge Base with tens of millions of chunks. They must lower vector storage cost and reduce query latency and are willing to accept a small reduction in retrieval accuracy. Which configuration change BEST achieves this tradeoff?",
+    "options": [
+      "Increase the output embedding dimension from 1024 to a larger value",
+      "Reduce the output embedding dimension to 256",
+      "Switch to a larger multilingual embeddings model",
+      "Disable metadata filtering on the index"
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Titan Text Embeddings V2</b> supports output dimensions of 1024 (default), 512, and 256. Choosing <b>256</b> produces smaller vectors, which lowers storage cost and speeds similarity search at a modest accuracy cost. <b>Increasing</b> dimensions raises storage and latency. Switching to a <b>larger model</b> increases cost and does not shrink the vectors. <b>Disabling metadata filtering</b> does not reduce vector size and removes a useful precision control.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/titan-embedding-models.html",
+    "id": "aipc01-0067"
+  },
+  {
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A support team's source content is a spreadsheet where each row is already a self-contained FAQ answer of a few sentences. When ingesting it into an Amazon Bedrock Knowledge Base, they want each answer kept intact as a single retrievable unit rather than split or merged. Which chunking option is MOST appropriate?",
+    "options": [
+      "Fixed-size chunking at 300 tokens with 20 percent overlap",
+      "Hierarchical chunking with parent and child levels",
+      "No chunking, so each record is treated as a single chunk",
+      "Semantic chunking with a high breakpoint threshold"
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "With <b>no chunking</b>, Amazon Bedrock treats each document or record as a single chunk, keeping each self-contained FAQ answer intact, which is ideal for pre-segmented content. <b>Fixed-size</b> chunking would arbitrarily split or combine short answers. <b>Hierarchical</b> chunking is for long documents that need parent context. <b>Semantic</b> chunking adds foundation-model cost and is unnecessary when records are already atomic.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-chunking.html",
+    "id": "aipc01-0068"
+  },
+  {
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A Bedrock Knowledge Base returns a set of candidate passages, but the single most relevant passage is frequently ranked below less useful ones, lowering answer quality. The team wants to reorder retrieved results by true relevance before passing them to the model, with minimal architectural change. Which approach BEST addresses this?",
+    "options": [
+      "Add a reranker model (such as Amazon Rerank or Cohere Rerank) to the retrieval step",
+      "Increase the foundation model temperature",
+      "Replace the vector store with Amazon Aurora PostgreSQL",
+      "Switch from semantic to fixed-size chunking"
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "A <b>reranker model</b> scores each retrieved chunk against the query and reorders results by relevance, so the best passages reach the model first; it also lets you pass fewer, higher-quality results to cut cost and latency. <b>Temperature</b> affects generation randomness, not retrieval order. Changing the <b>vector store</b> does not by itself improve ranking. <b>Chunking</b> strategy changes how content is split, not how retrieved results are ordered.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/rerank.html",
+    "id": "aipc01-0069"
+  },
+  {
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A company runs a large, expensive foundation model that meets its accuracy target but costs too much at production scale. It has a large set of representative production prompts and wants a smaller, cheaper model that reproduces the large model's outputs for its specific task. Which Amazon Bedrock capability is designed for this?",
+    "options": [
+      "Provisioned Throughput",
+      "Cross-Region inference",
+      "Retrieval Augmented Generation with a Knowledge Base",
+      "Amazon Bedrock Model Distillation"
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Model Distillation</b> transfers knowledge from a large teacher model to a smaller, faster, cheaper student model by generating teacher responses to your prompts and fine-tuning the student, exactly the cost-reduction goal described. <b>Provisioned Throughput</b> reserves capacity but does not create a cheaper model. <b>Cross-Region inference</b> distributes traffic for resilience, not cost per token. <b>RAG</b> adds external knowledge but does not reduce the base model's inference cost.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-distillation.html",
+    "id": "aipc01-0070"
+  },
+  {
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A healthcare chatbot on Amazon Bedrock must automatically detect and mask personally identifiable information such as names, phone numbers, and Social Security numbers in both user inputs and model responses. Which capability MOST directly provides this?",
+    "options": [
+      "Amazon Bedrock Guardrails sensitive information filters",
+      "Amazon Bedrock Knowledge Bases metadata filtering",
+      "IAM resource-based policies",
+      "Provisioned Throughput"
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Guardrails sensitive information filters</b> detect PII in prompts and responses and can block or mask (anonymize) it, replacing values with the entity type such as {NAME} or {PHONE}. <b>Metadata filtering</b> restricts which chunks are retrieved, not PII handling. <b>IAM policies</b> control access to APIs, not content redaction. <b>Provisioned Throughput</b> reserves inference capacity and is unrelated to PII.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-sensitive-filters.html",
+    "id": "aipc01-0071"
+  },
+  {
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A compliance team must retain a complete record of every prompt sent to and every response returned by Amazon Bedrock, with the full request and response payloads delivered to Amazon S3 and Amazon CloudWatch Logs for audit. What should they enable?",
+    "options": [
+      "AWS CloudTrail management events only",
+      "Amazon VPC Flow Logs",
+      "Amazon Bedrock model invocation logging",
+      "Amazon Bedrock Guardrails"
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Model invocation logging</b> captures the full request and response payloads for Bedrock invocations and delivers them to Amazon S3 and/or CloudWatch Logs, which is the audit record required. <b>CloudTrail</b> records API management events (who called what) but not the full prompt and response content. <b>VPC Flow Logs</b> capture network metadata, not model input and output. <b>Guardrails</b> filter content but are not a logging or retention mechanism.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-invocation-logging.html",
+    "id": "aipc01-0072"
+  },
+  {
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A company must generate summaries and embeddings for a backlog of 10 million archived documents. The job is not time-sensitive and can run overnight, and minimizing cost is the top priority. Which Amazon Bedrock inference option is MOST cost-effective for this workload?",
+    "options": [
+      "On-demand real-time inference",
+      "Provisioned Throughput with a 6-month commitment",
+      "Batch inference",
+      "Latency-optimized inference"
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Batch inference</b> processes large sets of prompts asynchronously from Amazon S3 and is offered at a lower price than on-demand, making it the cost-optimal choice for large, non-urgent jobs. <b>On-demand</b> real-time inference costs more per token and targets interactive traffic. <b>Provisioned Throughput</b> reserves capacity at a fixed hourly cost, which is wasteful for a one-time offline batch. <b>Latency-optimized inference</b> pays a premium for speed, the opposite of this goal.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference.html",
+    "id": "aipc01-0073"
+  },
+  {
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A team has two recently customized models in Amazon Bedrock, both created in US East (N. Virginia): a fine-tuned Amazon Nova Micro and a fine-tuned Anthropic Claude model. They want pay-per-use, on-demand serving wherever possible to avoid paying for idle reserved capacity. Which serving approach is CORRECT for these two custom models?",
+    "options": [
+      "Both custom models can be deployed for on-demand inference, so neither needs Provisioned Throughput",
+      "The Nova Micro custom model can be deployed for on-demand inference, while the Claude fine-tune must be served with Provisioned Throughput",
+      "Both custom models must be served with Provisioned Throughput, because on-demand serving is not available for any custom model",
+      "The Claude fine-tune can be deployed for on-demand inference, while the Nova Micro custom model requires Provisioned Throughput"
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "Since a July 2025 update, custom models from supported base families - Amazon Nova Micro, Nova Lite, Nova Pro, and Meta Llama 3.3 70B - can be deployed for <b>on-demand inference</b> using a custom model deployment (in US East N. Virginia or US West Oregon), so the recent Nova Micro fine-tune does not need reserved capacity. Anthropic Claude is <b>not</b> on the supported-for-on-demand list, so a Claude fine-tune still requires <b>Provisioned Throughput</b>. That makes the claims that both support on-demand, that neither does, or that only Claude supports on-demand all incorrect.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/deploy-custom-model-on-demand.html",
+    "id": "aipc01-0074"
+  },
+  {
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A real-time coding assistant needs the fastest possible token generation from a supported model on Amazon Bedrock and is willing to accept higher cost for reduced response time, without fine-tuning the model. Which Bedrock capability should the team use?",
+    "options": [
+      "Latency-optimized inference",
+      "Batch inference",
+      "Amazon Bedrock Model Distillation",
+      "A Knowledge Base with hierarchical chunking"
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Latency-optimized inference</b> serves supported models (for example, Amazon Nova Pro, Anthropic Claude 3.5 Haiku, and Meta Llama 3.1 70B and 405B) with reduced latency and no fine-tuning by setting the latency parameter to optimized. <b>Batch inference</b> is asynchronous and slower, aimed at cost not speed. <b>Model Distillation</b> creates a smaller model but is a training process, not a per-request latency setting. A <b>Knowledge Base</b> addresses retrieval, not generation speed.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/latency-optimized-inference.html",
+    "id": "aipc01-0075"
+  },
+  {
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "An application sends the same large 20-page policy document as context with every user question, driving up input-token cost and latency for the repeated portion. Without removing the context, which Amazon Bedrock feature MOST reduces the cost and latency of the repeated tokens?",
+    "options": [
+      "Increasing the maximum output tokens",
+      "Enabling Guardrails contextual grounding checks",
+      "Purchasing Provisioned Throughput",
+      "Prompt caching"
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Prompt caching</b> lets the model reuse a cached prefix (the static document) across requests, so repeated tokens are billed at a reduced rate and skip recomputation, cutting cost and latency. <b>Max output tokens</b> affects response length, not repeated input cost. <b>Contextual grounding</b> checks factuality and does not reduce token cost. <b>Provisioned Throughput</b> reserves capacity but still charges for reprocessing the repeated context on each call.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-caching.html",
+    "id": "aipc01-0076"
+  },
+  {
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A team wants the fastest path to stand up an Amazon Bedrock Knowledge Base without provisioning or managing any vector database themselves, letting Bedrock automatically create and manage the vector index. Which vector store does the quick-create workflow use?",
+    "options": [
+      "Amazon OpenSearch Serverless",
+      "Amazon Aurora PostgreSQL",
+      "Pinecone",
+      "Amazon Neptune Analytics"
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "The Knowledge Bases <b>quick-create</b> flow automatically provisions and manages an <b>Amazon OpenSearch Serverless</b> vector index for you, requiring no manual vector-store setup. <b>Aurora PostgreSQL</b>, <b>Pinecone</b>, and <b>Neptune Analytics</b> are supported vector stores but require you to create and configure the store yourself before connecting it.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup.html",
+    "id": "aipc01-0077"
+  },
+  {
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A research team needs their RAG system to answer questions that require traversing explicit relationships between entities across many documents, for example multi-hop connections among authors, papers, and institutions, rather than relying only on semantic similarity. Which Amazon Bedrock Knowledge Bases option BEST supports this?",
+    "options": [
+      "A vector-only Amazon OpenSearch Serverless index",
+      "GraphRAG using Amazon Neptune Analytics",
+      "Fixed-size chunking with a larger chunk size",
+      "Amazon Titan Multimodal Embeddings"
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>GraphRAG with Amazon Neptune Analytics</b> builds a knowledge graph so the system can traverse explicit entity relationships and answer multi-hop questions, going beyond pure vector similarity. A <b>vector-only OpenSearch</b> index captures semantic closeness but not explicit relationships. Larger <b>fixed-size chunks</b> only change text segmentation. <b>Titan Multimodal Embeddings</b> handle image and text vectors, not graph traversal.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup.html",
+    "id": "aipc01-0078"
+  },
+  {
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "An organization wants to standardize on a foundation model family in Amazon Bedrock that is openly licensed with published open weights, so the same base model could also be self-hosted outside Bedrock (for example on Amazon SageMaker) to avoid vendor lock-in. Which catalog choice BEST fits?",
+    "options": [
+      "Anthropic Claude",
+      "Amazon Nova Pro",
+      "Amazon Titan Text Embeddings V2",
+      "Meta Llama"
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Meta Llama</b> models are open-weight and openly licensed, so the same base model is available both in Bedrock and for self-hosting elsewhere, supporting portability. <b>Claude</b> and <b>Amazon Nova</b> are proprietary models accessed only via API and are not distributed as open weights. <b>Titan Text Embeddings V2</b> is a proprietary embeddings model, not a general open-weight text-generation family.",
+    "difficulty": "medium",
+    "docUrl": "https://aws.amazon.com/bedrock/llama/",
+    "id": "aipc01-0079"
+  },
+  {
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "An e-commerce team wants semantic product search where a shopper can query the catalog using either a text phrase or an example photo, with both mapped into the same vector space so images and text are directly comparable. Which Amazon Bedrock embeddings model is designed for this?",
+    "options": [
+      "Amazon Titan Text Embeddings V2",
+      "Amazon Titan Multimodal Embeddings",
+      "Cohere Embed English",
+      "Anthropic Claude 3.5 Sonnet"
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Amazon Titan Multimodal Embeddings</b> encode both images and text into a shared vector space, enabling text-to-image and image-to-image similarity search. <b>Titan Text Embeddings V2</b> and <b>Cohere Embed English</b> embed text only, so they cannot compare an image query against the catalog. <b>Claude 3.5 Sonnet</b> is a text-generation model that accepts images as input but does not produce embedding vectors for a search index.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html",
+    "id": "aipc01-0080"
+  },
+  {
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A security review asks whether prompts and completions sent to Amazon Bedrock base models are used to train or improve those models, or shared with the third-party model providers. Which statement is CORRECT?",
+    "options": [
+      "Prompts and completions are used to retrain the base models by default",
+      "Customer content is not used to train the base models and is not shared with third-party model providers",
+      "Data is shared with model providers unless you buy a premium support tier",
+      "Only fine-tuning data is protected, while on-demand inference data is used for training"
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "Amazon Bedrock does <b>not</b> use your prompts and completions to train the base foundation models, and model providers have no access to your content or Bedrock logs. Therefore the claims that data is used for retraining by default, shared with providers unless you pay more, or that only fine-tuning data is protected are all <b>false</b>.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/data-protection.html",
+    "id": "aipc01-0081"
+  },
+  {
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "multi",
+    "stem": "A team is deciding between fine-tuning a model and using Retrieval Augmented Generation (RAG) for a Bedrock application. Which TWO scenarios MOST favor fine-tuning over RAG? (Select TWO.)",
+    "options": [
+      "The model must reliably produce a proprietary output format and tone that prompt instructions alone cannot enforce",
+      "The underlying facts change many times per day and answers must always reflect the newest data",
+      "The team needs the model to internalize a specialized writing style from thousands of labeled examples",
+      "Every answer must cite the specific source document it came from",
+      "New facts must be added frequently without any retraining"
+    ],
+    "correct": [
+      0,
+      2
+    ],
+    "explanation": "<b>Fine-tuning</b> excels when you must bake in a consistent proprietary format and tone, or a specialized style, that prompting cannot reliably enforce, using labeled examples, so those two options are correct. <b>RAG</b> is the better fit when facts change frequently and must be current, when answers need source citations, or when new knowledge must be added without retraining, so those three options favor RAG rather than fine-tuning.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html",
+    "id": "aipc01-0082"
+  },
+  {
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "multi",
+    "stem": "An architecture review is selecting a vector store for an Amazon Bedrock Knowledge Base. Which TWO statements about the supported options are TRUE? (Select TWO.)",
+    "options": [
+      "Amazon DynamoDB is the default vector store for Knowledge Bases",
+      "Amazon Aurora PostgreSQL with the pgvector extension is a supported vector store",
+      "Amazon CloudFront provides the vector similarity search engine",
+      "Amazon OpenSearch Serverless can be automatically created and managed by the Knowledge Bases quick-create workflow",
+      "Amazon Athena must be used to run all vector similarity queries"
+    ],
+    "correct": [
+      1,
+      3
+    ],
+    "explanation": "<b>Amazon Aurora PostgreSQL (pgvector)</b> is a supported bring-your-own vector store, and <b>Amazon OpenSearch Serverless</b> is the quick-create default that Bedrock provisions and manages for you, so both are true. <b>DynamoDB</b> is not a Knowledge Bases vector store and is not a default. <b>CloudFront</b> is a CDN and performs no vector search. <b>Athena</b> is an interactive query service for Amazon S3 data, not the vector similarity engine for Knowledge Bases.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup.html",
+    "id": "aipc01-0083"
+  },
+  {
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "multi",
+    "stem": "A conversational application built on Amazon Bedrock frequently approaches its chosen model's context-window limit as chats grow long and source material accumulates. Which TWO techniques MOST help keep requests within the context window? (Select TWO.)",
+    "options": [
+      "Summarize or truncate older conversation turns before appending new input",
+      "Increase the model temperature parameter",
+      "Raise the maximum output token setting",
+      "Use retrieval to inject only the most relevant chunks instead of the entire corpus",
+      "Enable Provisioned Throughput for the model"
+    ],
+    "correct": [
+      0,
+      3
+    ],
+    "explanation": "<b>Summarizing or truncating</b> earlier turns and <b>retrieving only the most relevant chunks</b> both reduce how many input tokens you send, keeping requests inside the context window. <b>Temperature</b> changes output randomness, not token count. <b>Max output tokens</b> governs response length and can consume more of the window. <b>Provisioned Throughput</b> reserves capacity but does nothing to shrink the prompt.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base.html",
+    "id": "aipc01-0084"
+  },
+  {
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "multi",
+    "stem": "A team is mapping Amazon Nova understanding models to workloads. Which TWO statements are CORRECT? (Select TWO.)",
+    "options": [
+      "Amazon Nova Micro natively accepts image and video inputs",
+      "Amazon Nova Micro is a text-only model optimized for the lowest latency and very low cost",
+      "Amazon Nova Canvas is a text-only conversational chat model",
+      "Amazon Nova models cannot be invoked through Amazon Bedrock",
+      "Amazon Nova Lite and Amazon Nova Pro accept text, image, and video inputs"
+    ],
+    "correct": [
+      1,
+      4
+    ],
+    "explanation": "<b>Nova Micro</b> is text-only with the lowest latency and very low cost, and <b>Nova Lite and Nova Pro</b> are multimodal, accepting text, image, and video inputs, so both are true. <b>Nova Micro</b> does <b>not</b> take image or video inputs. <b>Nova Canvas</b> is a creative image-generation model, not a text chat model. All Amazon Nova models are accessed <b>through</b> Amazon Bedrock, so that option is false.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/nova/latest/userguide/what-is-nova.html",
+    "id": "aipc01-0085"
+  },
+  {
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "multi",
+    "stem": "A team's Lambda function calls ConverseStream and must push generated tokens to web and mobile clients as they are produced, using AWS managed services that keep a persistent connection open to each client. Which TWO approaches deliver incremental tokens to connected clients? (Select TWO.)",
+    "options": [
+      "Publish each chunk through an AWS AppSync GraphQL subscription so subscribed clients receive tokens over the managed WebSocket connection.",
+      "Send each chunk to clients through an Amazon API Gateway WebSocket API using the connection callback URL.",
+      "Return the full response from an Amazon API Gateway REST API only after ConverseStream finishes.",
+      "Store each chunk in Amazon S3 and have clients poll a presigned URL every second.",
+      "Buffer the whole response in the Lambda function and email it through Amazon SES."
+    ],
+    "correct": [
+      0,
+      1
+    ],
+    "explanation": "Both an <b>AWS AppSync</b> GraphQL subscription and an <b>Amazon API Gateway WebSocket API</b> keep a managed persistent connection to each client, so the function can push each streamed chunk as it is produced. A REST API returns only after completion, S3 polling is not push-based, and email is not incremental.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/appsync/latest/devguide/aws-appsync-real-time-data.html",
+    "id": "aipc01-0086"
+  },
+  {
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "multi",
+    "stem": "A data team must generate embeddings for 40 million archived documents to build a semantic index. Real-time per-document calls would be slow and expensive, and storage of the resulting vectors is a major cost concern. Which TWO choices MOST reduce cost for this bulk embedding workload? (Select TWO.)",
+    "options": [
+      "Submit an Amazon Bedrock batch inference job that reads documents from Amazon S3 and writes embeddings back to S3 at the discounted batch price.",
+      "Call the Converse API once per document in a tight loop from a single Lambda function.",
+      "Purchase Provisioned Throughput for the embedding model for the duration of this one-time job.",
+      "Configure Amazon Titan Text Embeddings V2 to output smaller-dimension vectors such as 256 to cut vector storage and query cost.",
+      "Store each 1024-dimension vector as an uncompressed JSON string in Amazon S3 Standard."
+    ],
+    "correct": [
+      0,
+      3
+    ],
+    "explanation": "A <b>Bedrock batch inference job</b> processes the whole corpus asynchronously from S3 at a discounted price, and configuring <b>Titan Text Embeddings V2</b> to emit smaller-dimension vectors cuts vector storage and query cost. Per-document loops, Provisioned Throughput for a one-time job, and uncompressed JSON storage all raise cost.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference.html",
+    "id": "aipc01-0087"
+  },
+  {
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "multi",
+    "stem": "A custom Retrieval Augmented Generation application calls the Converse API directly and does not use Bedrock Agents. Compliance requires that user prompts be screened for prohibited topics before retrieval runs, and that model responses be screened before they reach the user. Which TWO configurations implement both checks with a single Bedrock guardrail? (Select TWO.)",
+    "options": [
+      "Call the ApplyGuardrail API on the raw user input before the retrieval step.",
+      "Pass the guardrail identifier in the guardrailConfig field of the Converse request so the model output is evaluated.",
+      "Rely on the foundation model built-in alignment and skip any guardrail on input.",
+      "Enforce the guardrail only through IAM resource policies on the Bedrock endpoint.",
+      "Move all screening into an Amazon Comprehend custom classifier invoked after the response is sent."
+    ],
+    "correct": [
+      0,
+      1
+    ],
+    "explanation": "Calling the <b>ApplyGuardrail</b> API screens the raw user input before retrieval, and passing the same guardrail in <b>guardrailConfig</b> on the Converse request screens the model output, so one guardrail covers both directions. Model alignment, IAM policies, and a post-send classifier do not meet the requirement.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-use-independent-api.html",
+    "id": "aipc01-0088"
+  },
+  {
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "multi",
+    "stem": "A high-traffic assistant sees bursts that exceed on-demand capacity and produce ThrottlingException errors. The product team requires that user requests still complete, even at reduced quality, rather than fail outright. Which TWO measures BEST keep requests completing during spikes? (Select TWO.)",
+    "options": [
+      "Increase the client socket timeout so throttled calls wait longer before failing.",
+      "Buffer requests on an Amazon SQS queue that a Lambda consumer drains with exponential backoff to smooth bursts over time.",
+      "Disable SDK retries to reduce total request volume.",
+      "Fall back to a secondary, higher-availability model through application logic when the primary model returns throttling errors.",
+      "Convert every request to a single synchronous InvokeModel call with no queue or retry."
+    ],
+    "correct": [
+      1,
+      3
+    ],
+    "explanation": "Buffering on <b>Amazon SQS</b> with backoff smooths bursts so throttled work is retried rather than dropped, and an application-level <b>fallback</b> to a higher-availability model keeps requests completing at reduced quality. Longer timeouts, disabling retries, and unbuffered synchronous calls make throttling worse.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/quotas.html",
+    "id": "aipc01-0089"
+  },
+  {
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "An enterprise wants one Bedrock Agent to coordinate several specialized agents (a billing agent, a returns agent, and a shipping agent), routing each user request to the right specialist and combining their results. Which Amazon Bedrock Agents capability supports this design?",
+    "options": [
+      "Multi-agent collaboration with a supervisor agent that delegates to collaborator agents.",
+      "A single agent with three separate knowledge bases attached.",
+      "Provisioned Throughput assigned to each action group.",
+      "Three unrelated agents invoked by the client with no coordination."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Multi-agent collaboration</b> lets a supervisor agent route each request to specialized collaborator agents and combine their results. Multiple knowledge bases, Provisioned Throughput, and uncoordinated agents do not provide this orchestration.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/agents-multi-agent-collaboration.html",
+    "id": "aipc01-0090"
+  },
+  {
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A Bedrock Agent must pass the authenticated user's account ID to its action group Lambda on every turn so the Lambda can scope database queries, but this ID must NOT be inserted into the model prompt or influence generation. Which session state mechanism should the developer use?",
+    "options": [
+      "Set the account ID as a prompt session attribute so it is added to the model prompt each turn.",
+      "Append the account ID to the user message text on every turn.",
+      "Set the account ID as a session attribute, which is passed to the action group Lambda but not inserted into the prompt.",
+      "Store the account ID in the agent instruction so the model always includes it."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "A <b>session attribute</b> is passed to the action group Lambda across turns but is not inserted into the model prompt, meeting the requirement. A <em>prompt</em> session attribute, appending to the message, or embedding it in the instruction would all expose the ID to generation.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/agents-session-state.html",
+    "id": "aipc01-0091"
+  },
+  {
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "Users ask a Bedrock Agent to perform ad hoc numeric analysis and generate charts from uploaded CSV files. The team wants the agent to write and run code in a secure sandbox to compute results rather than relying on the model to reason arithmetic in text. Which built-in agent feature should they enable?",
+    "options": [
+      "A custom Lambda action group that reimplements a Python runtime from scratch.",
+      "Code interpretation, which lets the agent generate and run code in a secure managed sandbox to compute results and produce charts.",
+      "Attaching a knowledge base of statistics articles.",
+      "Increasing the model temperature so it computes math more accurately."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Code interpretation</b> lets the agent write and run code in a managed sandbox to compute results and generate charts, which is more reliable than text-based arithmetic. A hand-built runtime, a knowledge base, or higher temperature do not provide sandboxed execution.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/agents-code-interpretation.html",
+    "id": "aipc01-0092"
+  },
+  {
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A developer is adding a Bedrock Agent action that submits a deeply nested order object (line items, addresses, and payment details with required and optional fields). They want the agent to understand the full request structure and validation rules. Which action group definition is MOST appropriate?",
+    "options": [
+      "A function schema listing a few scalar parameters.",
+      "An OpenAPI schema that models the nested request body, data types, and required fields.",
+      "Plain-text instructions describing the object in the agent prompt only.",
+      "A knowledge base document that describes the JSON shape."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "An <b>OpenAPI schema</b> can model a deeply nested request body with data types and required fields, which a simple function schema of scalar parameters cannot. Prompt text or a knowledge base document do not define an invokable action contract.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/agents-action-create.html",
+    "id": "aipc01-0093"
+  },
+  {
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "Using the Converse API, a developer's request returns a stopReason of tool_use with a toolUse block asking to call getWeather. What must the application do next so the model can produce a final answer?",
+    "options": [
+      "Ignore the toolUse block and re-send the original prompt unchanged.",
+      "Switch to the InvokeModel API because Converse cannot continue after a tool call.",
+      "Return the toolUse block directly to the end user as the final response.",
+      "Execute the requested function, then send a follow-up Converse request that appends the assistant toolUse message and a user message with a matching toolResult block."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "When Converse returns <b>tool_use</b>, the app runs the function and sends a new Converse request that includes the assistant toolUse message plus a user message with a matching <b>toolResult</b> (same toolUseId), letting the model finish. Ignoring it, switching APIs, or returning the raw block does not complete the loop.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html",
+    "id": "aipc01-0094"
+  },
+  {
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A developer enables Amazon Bedrock prompt caching for requests that contain a large fixed system prompt and reference guide followed by a short, always-different user question. Cache hit rates are near zero. Where should the cache checkpoint be placed to maximize reuse?",
+    "options": [
+      "Before the system prompt, at the very start of the request.",
+      "At the very end of the request, after the user question.",
+      "Immediately after the fixed system prompt and reference guide, before the variable user question.",
+      "Inside the user question so that each unique question becomes its own cache entry."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "Content before a cache checkpoint is cached, so placing the checkpoint <b>after the fixed system prompt and reference guide but before the variable question</b> makes the large static prefix reusable. Placing it after or inside the changing question, or before the static content, yields almost no reuse.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-caching.html",
+    "id": "aipc01-0095"
+  },
+  {
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A platform team lets several internal business units share the same Amazon Bedrock foundation model and must attribute inference spend to each unit and track it per unit in AWS Cost Explorer using tags. Which Bedrock capability supports this cost allocation with the LEAST custom accounting?",
+    "options": [
+      "Create a tagged application inference profile per business unit and invoke the model through that profile so usage is tracked by tag.",
+      "Ask each business unit to use a different foundation model so bills separate naturally.",
+      "Enable Provisioned Throughput and split the monthly invoice manually.",
+      "Estimate per-unit spend from AWS CloudTrail event names after the fact."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "A tagged <b>application inference profile</b> per business unit routes that unit's calls through its own profile, so Bedrock usage and cost are attributed by tag in Cost Explorer. Using different models, manual invoice splitting, or CloudTrail estimation are error-prone and add accounting overhead.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/inference-profiles.html",
+    "id": "aipc01-0096"
+  },
+  {
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A workflow must call Amazon Bedrock InvokeModel as one step in an AWS Step Functions state machine. The team wants to make this call without writing and maintaining a wrapper Lambda function. Which approach is BEST?",
+    "options": [
+      "Write a Lambda function that calls Bedrock and invoke it from the state.",
+      "Poll an Amazon SQS queue from the state machine to reach Bedrock.",
+      "Use the Step Functions optimized integration for Amazon Bedrock to call InvokeModel directly from a task state.",
+      "Launch an Amazon EC2 instance from the state to run the Bedrock call."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "The Step Functions <b>optimized integration for Amazon Bedrock</b> calls InvokeModel directly from a task state with no wrapper Lambda to maintain. A Lambda, SQS polling, or EC2 all add components to manage.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/step-functions/latest/dg/connect-bedrock.html",
+    "id": "aipc01-0097"
+  },
+  {
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "Whenever a document lands in an Amazon S3 bucket, a multi-step generative summarization pipeline built as an AWS Step Functions state machine must start automatically, with no server continuously polling. Which integration starts the workflow in the MOST event-driven, decoupled way?",
+    "options": [
+      "Run a cron-based Lambda every minute that lists the bucket and starts an execution for each new object.",
+      "Ask users to start each execution manually from the console after uploading.",
+      "Embed the state machine ARN in each object metadata and expect Step Functions to read it.",
+      "Create an Amazon EventBridge rule on the S3 object-created event that targets the Step Functions state machine."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "An <b>Amazon EventBridge</b> rule on the S3 object-created event that targets the state machine starts the workflow automatically with no polling. Cron polling, manual starts, and object metadata are not event-driven triggers.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-targets.html",
+    "id": "aipc01-0098"
+  },
+  {
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A microservice calls a downstream generative endpoint that occasionally suffers extended outages. During an outage the service keeps sending calls that all time out, exhausting threads and slowing the whole application. Which resiliency pattern BEST addresses this?",
+    "options": [
+      "Remove all timeouts so each call waits until the dependency recovers.",
+      "Increase the thread pool size without limit.",
+      "Retry immediately in a tight loop until a call succeeds.",
+      "Add a circuit breaker that stops calling the failing dependency for a cooldown period and fails fast or returns a fallback."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "A <b>circuit breaker</b> detects the failing dependency, stops calling it for a cooldown, and fails fast or returns a fallback, protecting the thread pool. Removing timeouts, unbounded threads, and tight retry loops worsen the cascade.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/prescriptiveguidance/latest/cloud-design-patterns/circuit-breaker.html",
+    "id": "aipc01-0099"
+  },
+  {
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A Bedrock Agent should remember a returning customer's earlier issues across separate conversations that occur days apart, so a new session can build on summaries of prior ones. Which agent capability provides this cross-session recall?",
+    "options": [
+      "Rely on session attributes, which persist only within a single active session.",
+      "Enable agent memory, which stores a summary of each session under a memory identifier for use in later sessions.",
+      "Increase the model context window size and hope earlier chats fit.",
+      "Store every past transcript in the agent static instructions."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "Enabling <b>agent memory</b> stores a summary of each session under a memory identifier so later sessions can recall prior context. Session attributes persist only within one session, a larger context window does not carry data between sessions, and static instructions cannot hold per-user history.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/agents-memory.html",
+    "id": "aipc01-0100"
+  },
+  {
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A team built a vector index by embedding documents with one embedding model, then later changed the query path to embed user queries with a different embedding model. Retrieval quality collapsed. What is the correct practice?",
+    "options": [
+      "Always embed queries with a larger model than the documents to add detail.",
+      "Use the same embedding model and output dimension to embed both the indexed documents and the incoming queries so their vectors share one space.",
+      "Re-rank the returned results randomly to compensate for the mismatch.",
+      "Store the documents unembedded and embed only the queries at search time."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "Query and document vectors must come from the <b>same embedding model and output dimension</b> so they occupy one comparable vector space; mixing models produces incompatible vectors and poor nearest-neighbor results. A larger query model, random re-ranking, or unembedded documents do not fix the space mismatch.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/titan-embedding-models.html",
+    "id": "aipc01-0101"
+  },
+  {
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A chatbot built on the Converse API must block a defined set of denied topics and filter harmful content, with the LEAST custom code. What should the team do?",
+    "options": [
+      "Create an Amazon Bedrock guardrail and reference it in the guardrailConfig of each Converse request.",
+      "Write regular-expression filters in the Lambda handler for every possible harmful phrase.",
+      "Fine-tune the model to refuse denied topics.",
+      "Add a second model that reviews every output with a custom prompt."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "Creating a <b>Bedrock guardrail</b> and referencing it in <b>guardrailConfig</b> on each Converse call blocks denied topics and filters harmful content with almost no custom code. Regex lists, fine-tuning, and a second review model are far more effort and less reliable.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails.html",
+    "id": "aipc01-0102"
+  },
+  {
+    "domain": "AI Safety, Security & Governance",
+    "tag": "Domain 3",
+    "type": "single",
+    "difficulty": "easy",
+    "stem": "A media company generates marketing images with Amazon Titan Image Generator and later needs to confirm, for a set of uploaded images, whether each one was produced by that model. Which approach BEST accomplishes this?",
+    "options": [
+      "Compute an MD5 hash of every generated image at creation time and compare hashes later.",
+      "Add a visible logo watermark to each generated image in post-processing.",
+      "Use Amazon Bedrock watermark detection (in the console or via the watermark detection API) to check each image for the invisible watermark that Titan Image Generator embeds.",
+      "Store the generation prompts in DynamoDB and match uploaded images to prompts by filename."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "Titan Image Generator embeds an <b>invisible watermark</b> (and C2PA content credentials) in every image it produces, and <b>Amazon Bedrock watermark detection</b> -- available in the console and through a watermark detection API -- checks an uploaded image for that watermark. <b>Hashing</b> breaks the moment an image is resized or re-encoded. A <b>visible logo</b> is easily cropped and is not the built-in mechanism. <b>Matching prompts by filename</b> proves nothing about the pixels and fails once files are renamed.",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/titan-image-models.html",
+    "id": "aipc01-0103"
+  },
+  {
+    "domain": "AI Safety, Security & Governance",
+    "tag": "Domain 3",
+    "type": "single",
+    "difficulty": "easy",
+    "stem": "A multimodal assistant accepts user-uploaded images and returns generated images. The team must block violent and other harmful image content on BOTH the input and the output, using the same managed safety service they already use for text. What should they configure?",
+    "options": [
+      "Enable Amazon Bedrock Guardrails content filters with image content filtering, which apply the harmful-content categories to images as well as text on prompts and responses.",
+      "Rely on the model to refuse to process harmful images on its own.",
+      "Add the words 'violence' and 'gore' to a Guardrails word filter.",
+      "Run every image through Amazon Macie before sending it to the model."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Bedrock Guardrails content filters support image content</b>, applying the harmful-content categories (such as violence and hate) to images on both prompts and responses -- the same managed service used for text. <b>Relying on the model</b> is not an enforced control. A <b>word filter</b> matches text strings, not image pixels. <b>Macie</b> discovers sensitive data in storage such as Amazon S3; it does not moderate harmful image content at inference time.",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails.html",
+    "id": "aipc01-0104"
+  },
+  {
+    "domain": "AI Safety, Security & Governance",
+    "tag": "Domain 3",
+    "type": "single",
+    "difficulty": "medium",
+    "stem": "An application invokes a foundation model with InvokeModelWithResponseStream and applies a Bedrock guardrail. Compliance requires that no unsafe token is ever displayed to the end user, even briefly, while accepting some added latency. How should the guardrail be configured for the streamed response?",
+    "options": [
+      "Set the guardrail stream processing mode to asynchronous so chunks are returned immediately while scanning continues.",
+      "Disable the guardrail during streaming and re-scan the full transcript afterward.",
+      "Raise the temperature so unsafe tokens are statistically less likely to appear.",
+      "Use the default synchronous stream processing mode, which buffers and scans response chunks with the guardrail before they are sent to the user."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "In <b>synchronous mode</b> (the default) the guardrail buffers response chunks and applies its policies before any chunk reaches the user, so nothing unsafe is ever displayed -- at the cost of some latency. <b>Asynchronous mode</b> streams chunks immediately and can expose inappropriate content until the scan catches up, which violates the requirement. <b>Disabling the guardrail</b> removes protection during the stream. <b>Temperature</b> is unrelated to content-safety enforcement.",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-streaming.html",
+    "id": "aipc01-0105"
+  },
+  {
+    "domain": "AI Safety, Security & Governance",
+    "tag": "Domain 3",
+    "type": "single",
+    "difficulty": "medium",
+    "stem": "A team must update the denied topics in a production Bedrock guardrail, but wants to test the changes without affecting live traffic and be able to roll back instantly. Which practice BEST supports this?",
+    "options": [
+      "Make changes in the guardrail's working draft, create and test a new published version, point production to a specific numbered guardrail version, and revert to the previous version if needed.",
+      "Edit the guardrail's working draft directly and let production pick up the changes automatically.",
+      "Delete the guardrail and recreate it with the new configuration each time.",
+      "Keep a second copy of the application code with the new topics hardcoded."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "Bedrock Guardrails support a <b>working draft plus immutable numbered versions</b>. You iterate on the draft, publish and test a new version, and have production reference a <b>specific version</b> so changes are deliberate and instantly reversible by pointing back to the prior version. <b>Letting production follow the draft</b> pushes untested edits straight to live traffic. <b>Deleting and recreating</b> loses version history and risks outages. <b>Hardcoding topics in app code</b> bypasses the managed guardrail entirely.",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails.html",
+    "id": "aipc01-0106"
+  },
+  {
+    "domain": "AI Safety, Security & Governance",
+    "tag": "Domain 3",
+    "type": "single",
+    "difficulty": "hard",
+    "stem": "A global application sends prompts and responses in many languages. The security team wants the strongest available Bedrock Guardrails detection accuracy and broad multilingual coverage for content filters, denied topics, and prompt-attack detection. Which configuration is MOST appropriate?",
+    "options": [
+      "Select the Guardrails Classic tier, which offers the widest language support.",
+      "Translate every prompt to English with a separate service before applying a guardrail.",
+      "Lower all filter strengths so the guardrail behaves consistently across languages.",
+      "Select the Guardrails Standard tier, which provides improved detection accuracy and expanded multilingual support for content filters, denied topics, and prompt attacks."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "Bedrock Guardrails offers a <b>Standard tier</b> and a <b>Classic tier</b> for content filters and denied topics; the <b>Standard tier</b> provides higher detection accuracy and broader multilingual coverage, making it the right choice for a global, many-language workload. The <b>Classic tier</b> is the older baseline with narrower language support. <b>Pre-translating to English</b> adds a fragile dependency and can distort meaning. <b>Lowering filter strengths</b> weakens protection rather than improving cross-language accuracy.",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails.html",
+    "id": "aipc01-0107"
+  },
+  {
+    "domain": "AI Safety, Security & Governance",
+    "tag": "Domain 3",
+    "type": "single",
+    "difficulty": "easy",
+    "stem": "A prospective enterprise customer's auditors ask for AWS's SOC 2, ISO 27001, and PCI DSS reports to confirm the compliance posture of the AWS services (including Amazon Bedrock) underpinning a product. Which AWS resource is the BEST way to obtain these documents?",
+    "options": [
+      "Open a support case and ask an engineer to email the reports.",
+      "Retrieve the reports on demand from AWS Artifact, the self-service portal for AWS security and compliance documents.",
+      "Download the reports from AWS Trusted Advisor.",
+      "Generate the reports with Amazon Inspector."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>AWS Artifact</b> is the self-service portal that provides on-demand downloads of AWS security and compliance reports (SOC, ISO, PCI, and more) and lets you review and accept agreements. <b>Support cases</b> are unnecessary and slow. <b>Trusted Advisor</b> gives cost, performance, and security recommendations, not third-party audit reports. <b>Amazon Inspector</b> scans your own workloads for vulnerabilities; it does not supply AWS's attestation documents.",
+    "docUrl": "https://docs.aws.amazon.com/artifact/latest/ug/what-is-aws-artifact.html",
+    "id": "aipc01-0108"
+  },
+  {
+    "domain": "AI Safety, Security & Governance",
+    "tag": "Domain 3",
+    "type": "single",
+    "difficulty": "hard",
+    "stem": "A security team must guarantee that every bedrock:InvokeModel call made by an application role passes through a specific approved guardrail, so a developer cannot silently omit the guardrail parameter. Which IAM approach enforces this MOST directly?",
+    "options": [
+      "Add a policy statement that denies bedrock:InvokeModel and bedrock:InvokeModelWithResponseStream unless the request's bedrock:GuardrailIdentifier condition key matches the approved guardrail.",
+      "Write the guardrail ID into the application's environment variables and trust developers to pass it.",
+      "Enable CloudTrail so calls made without the guardrail can be reviewed after the fact.",
+      "Attach the guardrail to an AWS WAF rule in front of the application."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "Amazon Bedrock exposes the <b>bedrock:GuardrailIdentifier</b> IAM condition key, so a policy can <b>deny InvokeModel and InvokeModelWithResponseStream unless the approved guardrail is supplied</b> -- a preventive, request-time control. <b>Environment variables and developer discipline</b> are not enforced. <b>CloudTrail</b> is detective, catching omissions only after they happen. <b>AWS WAF</b> inspects HTTP traffic and cannot bind a Bedrock guardrail to model invocations.",
+    "docUrl": "https://docs.aws.amazon.com/service-authorization/latest/reference/list_amazonbedrock.html",
+    "id": "aipc01-0109"
+  },
+  {
+    "domain": "AI Safety, Security & Governance",
+    "tag": "Domain 3",
+    "type": "single",
+    "difficulty": "medium",
+    "stem": "A multi-tenant chatbot built on Amazon Bedrock Agents serves thousands of end users. During testing, one user's conversation context occasionally appears in another user's replies. Which change BEST prevents this cross-user leakage?",
+    "options": [
+      "Increase the agent's idle session timeout so sessions persist longer.",
+      "Invoke the agent with a unique sessionId per end user (or per conversation) so each user's session state is isolated.",
+      "Lower the model temperature to make responses more deterministic.",
+      "Share a single sessionId across all users to simplify session management."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "Bedrock Agents key conversational state to the <b>sessionId</b> passed to InvokeAgent; using a <b>unique sessionId per user or conversation</b> keeps each user's context isolated. A <b>longer session timeout</b> makes bleed-over worse. <b>Temperature</b> affects randomness, not session boundaries. <b>Sharing one sessionId</b> across users is the root cause of the leakage, not a fix.",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/agents.html",
+    "id": "aipc01-0110"
+  },
+  {
+    "domain": "AI Safety, Security & Governance",
+    "tag": "Domain 3",
+    "type": "single",
+    "difficulty": "medium",
+    "stem": "A company enables Amazon Bedrock model invocation logging to an Amazon S3 bucket. A compliance rule requires that the captured prompts and responses be encrypted at rest with a key the company owns and can audit, rotate, and revoke. What should they configure?",
+    "options": [
+      "Leave the bucket with default Amazon S3-managed encryption (SSE-S3).",
+      "Disable logging so no sensitive content is ever written.",
+      "Store the logs unencrypted but restrict the bucket with an IAM policy.",
+      "Encrypt the destination S3 bucket with server-side encryption using a customer managed AWS KMS key (SSE-KMS with a CMK)."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "Configuring the logging destination bucket with <b>SSE-KMS using a customer managed KMS key</b> gives the company full control over the encryption key -- including rotation, key policies, and revocation -- with an auditable trail of key usage. <b>SSE-S3</b> uses an AWS-managed key the customer does not control. <b>Disabling logging</b> defeats the audit requirement. <b>Access policies alone</b> do not satisfy an encryption-at-rest-with-customer-keys mandate.",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-invocation-logging.html",
+    "id": "aipc01-0111"
+  },
+  {
+    "domain": "AI Safety, Security & Governance",
+    "tag": "Domain 3",
+    "type": "single",
+    "difficulty": "hard",
+    "stem": "A Bedrock agent's action group currently exposes every operation of an internal administration API, including delete and refund functions, even though the assistant only needs two read-only lookups. Applying the principle of least functionality to reduce excessive-agency risk, what is the BEST remediation?",
+    "options": [
+      "Keep all operations available but add a system-prompt instruction telling the agent to use only the two lookups.",
+      "Keep all operations available but rely on CloudTrail to detect any misuse afterward.",
+      "Redefine the action group so it exposes only the two required read-only functions, removing the delete, refund, and other unneeded operations from what the agent can call.",
+      "Keep all operations available but require user confirmation before every single call."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "The root cause is <b>excessive functionality</b>: the agent can call high-impact operations it never needs. <b>Removing those functions from the action group</b> so only the two required read-only calls are exposed eliminates the risk at its source. A <b>system-prompt instruction</b> is not an enforced control and can be overridden by injection. <b>CloudTrail</b> is detective, not preventive. <b>Confirming every call</b> addresses autonomy, not the presence of dangerous tools, and degrades usability without closing the gap.",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/agents-action-create.html",
+    "id": "aipc01-0112"
+  },
+  {
+    "domain": "AI Safety, Security & Governance",
+    "tag": "Domain 3",
+    "type": "multi",
+    "difficulty": "medium",
+    "stem": "A governance team wants Amazon Bedrock model invocation logs to feed BOTH near-real-time operational monitoring with metric filters and alarms AND durable, low-cost archival for multi-year retention. Which TWO configurations together meet these goals? (Select TWO.)",
+    "options": [
+      "Enable model invocation logging with an Amazon S3 destination for durable, low-cost long-term archival of full request and response records.",
+      "Rely on AWS CloudTrail management events to capture the full prompt and completion content for archival.",
+      "Enable model invocation logging with an Amazon CloudWatch Logs destination so metric filters and alarms provide near-real-time monitoring.",
+      "Record prompts and responses in VPC Flow Logs for real-time monitoring.",
+      "Use S3 server access logs on the application bucket as the monitoring feed."
+    ],
+    "correct": [
+      0,
+      2
+    ],
+    "explanation": "Bedrock model invocation logging can deliver to <b>Amazon S3</b> and <b>Amazon CloudWatch Logs</b>, and both can be enabled together: <b>S3</b> gives durable, inexpensive long-term archival, while <b>CloudWatch Logs</b> supports metric filters and alarms for near-real-time monitoring. <b>CloudTrail management events</b> record API activity, not full prompt and response content. <b>VPC Flow Logs</b> capture network metadata, never model content. <b>S3 server access logs</b> record bucket access, not model interactions.",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-invocation-logging.html",
+    "id": "aipc01-0113"
+  },
+  {
+    "domain": "AI Safety, Security & Governance",
+    "tag": "Domain 3",
+    "type": "multi",
+    "difficulty": "medium",
+    "stem": "A Bedrock agent calls a Lambda-backed action group, and the Lambda's resource-based policy grants access to the Bedrock service principal. Security wants to prevent a confused-deputy attack from another account and to bound the agent's autonomy on high-impact operations. Which TWO measures BEST achieve this? (Select TWO.)",
+    "options": [
+      "Add aws:SourceArn and aws:SourceAccount condition keys to the Lambda's resource-based policy so only the intended agent in the intended account can invoke it.",
+      "Grant the agent's service role broad administrative permissions so tool calls never fail.",
+      "Switch to a larger foundation model, which cannot be tricked into misusing tools.",
+      "Require user confirmation (return of control) before the agent runs high-impact tool actions.",
+      "Raise the model temperature so tool selection is less predictable to attackers."
+    ],
+    "correct": [
+      0,
+      3
+    ],
+    "explanation": "Adding <b>aws:SourceArn and aws:SourceAccount condition keys</b> to the resource-based policy ensures the Bedrock service principal can invoke the Lambda only on behalf of the intended agent and account, preventing a confused-deputy attack, and <b>requiring user confirmation</b> for high-impact actions bounds the agent's autonomy. <b>Broad admin permissions</b> increase the blast radius. A <b>larger model</b> is not immune to tool misuse. <b>Higher temperature</b> adds randomness, not security.",
+    "docUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/confused-deputy.html",
+    "id": "aipc01-0114"
+  },
+  {
+    "domain": "AI Safety, Security & Governance",
+    "tag": "Domain 3",
+    "type": "multi",
+    "difficulty": "medium",
+    "stem": "A retrieval-augmented assistant pulls documents from a knowledge base that end users can contribute to, and it renders the model's answers as HTML in a web page. The team is addressing OWASP risks for LLM applications. Which TWO mitigations are MOST appropriate? (Select TWO.)",
+    "options": [
+      "Trust the retrieved documents because they are stored in an internal knowledge base.",
+      "Treat retrieved documents as untrusted and evaluate both the retrieved content and the model's response with Amazon Bedrock Guardrails to catch indirect prompt injection.",
+      "Increase the model's context window so it can read more of each document.",
+      "Encode and sanitize the model's output before rendering it, so any returned markup or script cannot execute in the browser.",
+      "Raise the temperature to make injected instructions less effective."
+    ],
+    "correct": [
+      1,
+      3
+    ],
+    "explanation": "User-contributed documents can carry <b>indirect prompt injection</b>, so treating retrieved content as untrusted and screening both it and the response with <b>Bedrock Guardrails</b> addresses that risk, while <b>encoding and sanitizing the output</b> before rendering prevents <b>insecure output handling</b> where returned markup executes as HTML or JavaScript. <b>Trusting internal documents</b> ignores that users can write to them. A <b>larger context window</b> does not reduce injection risk. <b>Higher temperature</b> does not neutralize injected instructions.",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails.html",
+    "id": "aipc01-0115"
+  },
+  {
+    "domain": "Operational Efficiency & Optimization",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A customer-support application on Amazon Bedrock sends every user message, from simple FAQ lookups to complex multi-step troubleshooting, to a single large Anthropic Claude model. Most messages are simple and do not need the largest model, and the team wants to cut cost by using a cheaper model for easy requests while preserving quality on hard ones, without building and maintaining their own routing service. Which Amazon Bedrock capability BEST meets this goal?",
+    "options": [
+      "Send all traffic to the smallest model in the family to minimize per-token cost.",
+      "Build a custom AWS Lambda classifier that inspects each prompt and calls a different InvokeModel endpoint, and maintain its routing rules over time.",
+      "Configure Amazon Bedrock intelligent prompt routing to dynamically send each request to the model in the family that gives the best predicted response quality at the lowest cost.",
+      "Lower the temperature parameter so the large model produces cheaper responses for simple questions."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Intelligent prompt routing</b> exposes a single endpoint that predicts each request's response quality for every model in a family and forwards it to the model with the best quality-to-cost tradeoff, so simple messages use a cheaper model and hard ones still get the strong model, with no routing service to build. Always using the <b>smallest model</b> saves money but degrades quality on complex troubleshooting. A <b>custom Lambda classifier</b> is exactly the self-managed orchestration the team wants to avoid. <b>Temperature</b> controls randomness, not price, so it does not reduce cost.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-routing.html",
+    "id": "aipc01-0116"
+  },
+  {
+    "domain": "Operational Efficiency & Optimization",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A summarization endpoint on Amazon Bedrock must return at most a three-sentence summary, but the model frequently emits long, verbose answers that inflate output-token cost and latency. The team wants to reliably bound the number of output tokens generated per request. Which combination of inference settings BEST enforces short outputs?",
+    "options": [
+      "Set a low max_tokens (maximum output length) and define stop sequences, and instruct the model to answer concisely.",
+      "Raise max_tokens and rely on the model to decide to stop early on its own.",
+      "Lower the temperature so the response becomes shorter.",
+      "Increase Top P so the model selects fewer tokens overall."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "Setting a low <b>max_tokens</b> caps the generated output length, <b>stop sequences</b> halt generation at a defined marker, and a concise-output instruction reduces verbosity, together bounding output tokens, cost, and latency. Raising <b>max_tokens</b> loosens the ceiling rather than tightening it. <b>Temperature</b> and <b>Top P</b> change randomness and the candidate token pool, not the length of the response, so neither reliably shortens output.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/inference-parameters.html",
+    "id": "aipc01-0117"
+  },
+  {
+    "domain": "Operational Efficiency & Optimization",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "Each night a team must generate summaries for several million archived support tickets stored in Amazon S3. The results are only needed by the next morning and are not time sensitive, but running the job as millions of real-time InvokeModel calls is expensive and repeatedly hits on-demand throttling limits. Which Amazon Bedrock approach is MOST cost-effective for this workload?",
+    "options": [
+      "Purchase Provisioned Throughput sized for the nightly peak and delete it again each morning.",
+      "Keep the real-time calls but wrap them in an aggressive no-backoff retry loop to push through the throttling.",
+      "Enable latency-optimized inference so the tickets are processed faster.",
+      "Submit the tickets as an Amazon Bedrock batch inference job that reads inputs from Amazon S3 and writes results back to S3 asynchronously at a lower price than on-demand."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Batch inference</b> is built for large, asynchronous, non-latency-sensitive jobs: it reads prompts from Amazon S3, generates responses offline at a lower price than on-demand, and does not compete for the real-time quota. <b>Provisioned Throughput</b> commits to hourly capacity aimed at steady real-time load, not a once-nightly bulk run, and repeated purchase and deletion is impractical. <b>No-backoff retries</b> amplify throttling. <b>Latency-optimized inference</b> targets interactive response time and raises cost, which does not help an overnight bulk job.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference.html",
+    "id": "aipc01-0118"
+  },
+  {
+    "domain": "Operational Efficiency & Optimization",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A Retrieval Augmented Generation system stores hundreds of millions of Amazon Titan Text Embeddings V2 vectors, and the dominant cost is the vector store's storage and memory footprint. The team can tolerate a very small drop in retrieval accuracy in exchange for a large reduction in storage. Which change to how embeddings are generated BEST reduces the vector store footprint?",
+    "options": [
+      "Store each float embedding twice, once in each of two separate indexes, for redundancy.",
+      "Request binary embeddings from Titan Text Embeddings V2 by setting embeddingTypes to binary, so each dimension is stored as a single bit instead of a 32-bit float.",
+      "Convert the stored vectors to double precision to improve accuracy.",
+      "Increase the retrieved top-k so that fewer vectors need to be stored."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Binary embeddings</b> encode each dimension as a single bit rather than a 32-bit float, cutting vector storage and memory in the vector store by roughly 32 times while retaining most retrieval accuracy, which matches the stated tradeoff. The Bedrock embedding call is still billed per input token and is unchanged; the savings are entirely downstream in the vector store. <b>Duplicating</b> vectors and using <b>double precision</b> both increase storage. Changing <b>top-k</b> affects how many results a query returns, not how much data is stored.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-titan-embed-text.html",
+    "id": "aipc01-0119"
+  },
+  {
+    "domain": "Operational Efficiency & Optimization",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "Several product teams share one AWS account and all invoke the same on-demand foundation models on Amazon Bedrock. AWS Budgets alerts are already configured, but finance still cannot break the single Bedrock cost line down by team because every team's on-demand invocations roll up together. Which approach lets finance attribute Bedrock cost and usage to each individual team?",
+    "options": [
+      "Add more AWS Budgets alert thresholds so that each team receives its own spend alert.",
+      "Move every team into its own separate AWS account and reconcile the invoices by hand.",
+      "Create an application inference profile per team, tag each profile, and have each team invoke models through its profile ARN so usage is separated by cost allocation tags.",
+      "Turn on model invocation logging and have finance parse the raw logs to guess which team made each call."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Application inference profiles</b> let each team invoke models through a tagged profile ARN, so on-demand usage and cost are separated by <b>cost allocation tags</b> and appear per team in cost reporting, which is exactly the attribution finance needs. Adding more <b>Budgets</b> thresholds provides alerting, not a per-team cost breakdown. <b>Separate accounts</b> can attribute cost but are a heavy re-architecture for teams already sharing one account. <b>Parsing raw invocation logs by hand</b> is fragile and carries no reliable team identity.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/inference-profiles.html",
+    "id": "aipc01-0120"
+  },
+  {
+    "domain": "Operational Efficiency & Optimization",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A product-FAQ assistant on Amazon Bedrock answers a small set of common questions that thousands of users phrase in many different ways, and the answers rarely change. Every request currently triggers a full model invocation, driving up cost and latency. The team wants to avoid re-invoking the model when a new question is semantically equivalent to one already answered. Which approach BEST reduces cost and latency?",
+    "options": [
+      "Add a semantic cache that embeds each incoming query and returns the stored response when a prior query is similar above a threshold, invoking the model only on cache misses.",
+      "Add an exact-string-match cache keyed on the raw question text.",
+      "Enable Bedrock prompt caching so repeated questions are served from the prompt cache without invoking the model.",
+      "Increase max_tokens so that each answer is generated in a single pass."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "A <b>semantic cache</b> compares the embedding of each new query against previously answered queries and, on a similar-enough match, returns the stored answer without calling the model, cutting both cost and latency for a stable FAQ workload. An <b>exact-string cache</b> misses the many paraphrases of the same question. <b>Prompt caching</b> still invokes the model on every request; it only discounts a repeated prompt prefix and does not return a stored answer for a repeated question. Raising <b>max_tokens</b> avoids no invocation at all.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/semantic-caching-overview.html",
+    "id": "aipc01-0121"
+  },
+  {
+    "domain": "Operational Efficiency & Optimization",
+    "tag": "Domain 4",
+    "type": "multi",
+    "stem": "A production Amazon Bedrock workload has a steady baseline load 24 hours a day plus unpredictable daytime spikes that briefly reach two to three times the baseline. Finance wants the lowest sustained cost, and the team must keep serving the spikes without ThrottlingException failures. Which TWO actions together BEST meet these goals? (Select TWO.)",
+    "options": [
+      "Provision enough model units to cover the highest daytime spike at all times, including overnight.",
+      "Purchase Provisioned Throughput with a term commitment sized to the steady baseline load to serve that portion at a lower committed rate.",
+      "Serve the entire workload on on-demand only, with no committed capacity.",
+      "Send the portion of traffic that exceeds the provisioned baseline capacity to on-demand inference so spikes are absorbed without failing.",
+      "Move the entire real-time workload to batch inference to avoid throttling."
+    ],
+    "correct": [
+      1,
+      3
+    ],
+    "explanation": "Sizing <b>Provisioned Throughput</b> to the steady baseline serves the predictable, always-on portion at a lower committed rate, and routing the <b>overflow above provisioned capacity to on-demand</b> absorbs the unpredictable spikes without failures, producing a cost-efficient hybrid. <b>Provisioning for the peak</b> pays for idle capacity overnight. <b>On-demand only</b> costs more for the sustained baseline. <b>Batch inference</b> is asynchronous and cannot serve a real-time workload.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/prov-throughput.html",
+    "id": "aipc01-0122"
+  },
+  {
+    "domain": "Operational Efficiency & Optimization",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "An interactive assistant on Amazon Bedrock has a p99 latency SLA. The team alarms only on the Average statistic of the InvocationLatency CloudWatch metric, which stays well within target, yet a meaningful fraction of users still report slow responses during peak hours. What is the BEST change to detect the SLA violations these users experience?",
+    "options": [
+      "Raise the threshold on the existing Average-based alarm so it stops firing.",
+      "Alarm on a high percentile statistic such as p99 of InvocationLatency instead of the Average, so tail latency that the average hides is surfaced.",
+      "Switch the alarm to the Invocations count metric to track request volume instead.",
+      "Alarm on the Sum statistic of InvocationLatency to capture total latency across all requests."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "A p99 SLA is about tail latency, so alarming on the <b>p99 percentile</b> statistic of InvocationLatency surfaces the slow-request tail that the <b>Average</b> statistic masks. Raising the <b>Average threshold</b> hides the problem further. The <b>Invocations</b> count measures request volume, not latency. The <b>Sum</b> of latency grows with traffic and does not represent per-request response time, so it cannot detect a p99 violation.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/monitoring-runtime-metrics.html",
+    "id": "aipc01-0123"
+  },
+  {
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "multi",
+    "difficulty": "hard",
+    "stem": "A support team's Amazon Bedrock Knowledge Bases RAG assistant fails to answer a question even though the answer clearly exists in an ingested document. When they call Retrieve directly with the user's query, the passage that contains the answer is never returned among the results while unrelated passages are. Which TWO issues are the MOST likely causes of this retrieval failure? (Select TWO.)",
+    "options": [
+      "The foundation model used for generation has too small a context window to include the retrieved passage in its prompt.",
+      "A metadata filter applied at query time excludes the document, for example because the document's metadata attribute does not match the filter expression the application sends.",
+      "The application's IAM role is missing bedrock:InvokeModel, which causes Retrieve to silently return unrelated passages.",
+      "The account is being throttled, which causes Retrieve to substitute unrelated passages for the correct one.",
+      "The chunking strategy split the source so that the answer's key facts and the query's key terms landed in different chunks, so no single chunk embeds close enough to the query to be retrieved."
+    ],
+    "correct": [
+      1,
+      4
+    ],
+    "explanation": "When the correct passage never appears in <b>Retrieve</b> results, the fault is in retrieval, not generation. A <b>metadata filter</b> whose expression does not match the document's attributes silently removes it from the candidate set, and a <b>chunking</b> strategy that separates the answer's facts from the query's key terms leaves no chunk whose embedding is similar enough to the query, so neither passage is retrieved. A small generation context window would truncate an answer, not remove a passage from retrieval. A missing bedrock:InvokeModel permission raises AccessDeniedException on generation rather than returning wrong passages, and throttling raises ThrottlingException rather than swapping in unrelated content.",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base.html",
+    "id": "aipc01-0124"
+  },
+  {
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "single",
+    "difficulty": "easy",
+    "stem": "An Amazon Bedrock agent intermittently returns an unhelpful final answer, and the developer needs to see, step by step, how the agent reasoned, which action group or knowledge base it invoked, and what each returned, in order to find where the orchestration went wrong. What should the developer use to diagnose this?",
+    "options": [
+      "Increase the agent's temperature so that it produces a more detailed final answer that reveals its internal reasoning.",
+      "Read AWS CloudTrail management events, which record the intermediate reasoning and tool outputs of each agent step.",
+      "Enable and inspect the agent's trace, which exposes the model's step-by-step reasoning, the action groups and knowledge bases it invoked, and their inputs and outputs for the session.",
+      "Re-create the agent with a larger foundation model, which removes the need to inspect intermediate steps."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "The Amazon Bedrock Agents <b>trace</b> exposes the agent's step-by-step orchestration, including the model's reasoning, which action groups and knowledge bases were invoked, and the inputs and outputs of each step, which is exactly what you need to pinpoint where orchestration failed. Raising temperature changes randomness, not observability. CloudTrail records API management activity, not the intermediate reasoning or tool outputs of a step. Swapping in a larger model may change behavior but does not reveal why the current agent misbehaves.",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/agents-test.html",
+    "id": "aipc01-0125"
+  },
+  {
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "single",
+    "difficulty": "medium",
+    "stem": "A RAG application on Amazon Bedrock has unacceptable end-to-end response latency, and the team must determine whether the time is being spent in knowledge base retrieval, in the foundation model invocation, or in their own orchestration code before they optimize anything. What is the MOST effective first step?",
+    "options": [
+      "Immediately purchase Provisioned Throughput, because that is the only way to reduce latency in any stage.",
+      "Lower the model temperature, which reduces the number of tokens generated and therefore the total latency.",
+      "Switch the application to a larger foundation model, which processes each request faster.",
+      "Instrument the application to measure each stage separately, comparing the Amazon Bedrock InvocationLatency metric for the model call against timers around retrieval and application processing, so the dominant contributor is isolated."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "Before optimizing, you must localize the bottleneck. Comparing the Amazon Bedrock <b>InvocationLatency</b> CloudWatch metric, which measures the model call, against your own timers around retrieval and orchestration isolates which stage dominates, so effort is spent where it matters. Buying Provisioned Throughput only helps if the model call is the bottleneck and demand is steady. Temperature does not control output length, and a larger model is generally slower per token rather than faster, so neither is a reliable latency fix.",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/monitoring-runtime-metrics.html",
+    "id": "aipc01-0126"
+  },
+  {
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "single",
+    "difficulty": "easy",
+    "stem": "A document-summarization feature on Amazon Bedrock works for short inputs, but when users submit very long documents the InvokeModel call fails with a ValidationException indicating that the input exceeds the model's maximum token limit. What is the MOST appropriate fix?",
+    "options": [
+      "Add retries with exponential backoff, because a ValidationException is a transient capacity error that clears on retry.",
+      "Reduce the input size to fit the model's context window, for example by chunking or by summarizing the document in stages before the final call.",
+      "Request a service quota increase for requests per minute so that the long inputs are accepted.",
+      "Grant the caller's IAM role bedrock:InvokeModel so that large inputs are permitted."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "A <b>ValidationException</b> for exceeding the token limit means the request violates a fixed input constraint, so the fix is to <b>reduce the input</b> to fit the context window, commonly through chunking or staged, hierarchical summarization. The error is not transient, so backoff and retries will keep failing. A requests-per-minute quota increase addresses ThrottlingException, not input length, and a missing bedrock:InvokeModel permission would raise AccessDeniedException rather than a ValidationException.",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_InvokeModel.html",
+    "id": "aipc01-0127"
+  },
+  {
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "single",
+    "difficulty": "medium",
+    "stem": "Every time developers tweak the system prompt for a production assistant, subtle quality regressions slip into the release. The team wants an automated safeguard that runs on each pull request and prevents merging a prompt change if answer quality drops below the current baseline. Which approach BEST establishes this safeguard?",
+    "options": [
+      "Ask a reviewer to manually spot-check a handful of prompts by hand before approving each pull request.",
+      "Deploy every prompt change straight to all production traffic and roll back only if users file complaints.",
+      "Store each prompt version in Prompt management, which by itself blocks any change that would lower quality.",
+      "Maintain a versioned golden dataset of representative inputs with expected outputs, run an automated evaluation on every pull request, and fail the build when the aggregate quality score falls below a defined threshold."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "A <b>regression gate</b> built from a versioned <b>golden dataset</b> plus an automated evaluation that runs in the pull request pipeline and fails the build when the aggregate score drops below a set threshold catches quality regressions before they merge, deterministically and repeatably. Manual spot-checks are inconsistent and do not scale, deploying to all traffic and waiting for complaints provides no safeguard and maximum blast radius, and Prompt management versions and stores prompts but does not evaluate quality or block a regression on its own.",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/evaluation.html",
+    "id": "aipc01-0128"
+  },
+  {
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "single",
+    "difficulty": "hard",
+    "stem": "Before a high-visibility launch, a company must sign off on whether a model's responses meet nuanced brand voice, cultural sensitivity, and legal-tone requirements that its own subject-matter experts define and that carry regulatory consequences if judged wrong. Automatic metrics and a judge model have both proven unreliable for these subjective, high-stakes dimensions. Which Amazon Bedrock evaluation approach is MOST appropriate for this sign-off?",
+    "options": [
+      "Create an Amazon Bedrock model evaluation job that uses human workers, routing the responses to the company's subject-matter experts to rate them against the defined criteria.",
+      "Create an automatic model evaluation job using built-in metrics such as BERTScore and F1, which fully capture brand voice and legal tone.",
+      "Create a model evaluation job that uses a judge model, since an LLM judge is always at least as reliable as human experts.",
+      "Skip formal evaluation and rely on the CloudWatch InvocationServerErrors metric to confirm response quality."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "For subjective, high-stakes dimensions such as brand voice, cultural sensitivity, and legal tone that require authoritative expert judgment and carry regulatory consequences, an Amazon Bedrock <b>human evaluation job</b> that routes responses to your own subject-matter experts is the appropriate sign-off, because it captures nuanced human judgment that automated methods miss. Reference-based metrics like BERTScore and F1 do not measure brand voice or legal tone, an LLM judge is efficient but is not a reliable authority for these regulated subjective criteria, and InvocationServerErrors is an operational metric that says nothing about response quality.",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/evaluation-human.html",
+    "id": "aipc01-0129"
+  },
+  {
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "single",
+    "difficulty": "medium",
+    "stem": "A team's automated prompt regression tests are flaky: the same test input produces different model outputs on different runs, so assertions on the output pass sometimes and fail other times even though nothing changed. What is the MOST effective way to make these evaluation runs reproducible?",
+    "options": [
+      "Raise the temperature so the model explores more outputs and eventually settles on one stable answer.",
+      "Add exponential-backoff retries so the test re-runs until it happens to pass.",
+      "Set the temperature to 0 and constrain top-p and top-k so the model decodes greedily and returns the same output for the same input, making the tests deterministic.",
+      "Increase the max tokens value so the model has room to converge on a single consistent answer."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "Model sampling introduces run-to-run variation, so the fix for flaky evaluation is to make decoding deterministic by setting <b>temperature to 0</b> for greedy decoding and constraining top-p and top-k, which yields the same output for the same input and stabilizes the assertions. Raising temperature increases randomness and makes flakiness worse, retrying until a test passes hides the nondeterminism instead of removing it, and max tokens only caps response length without affecting which tokens are sampled.",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/inference-parameters.html",
+    "id": "aipc01-0130"
   }
 ]

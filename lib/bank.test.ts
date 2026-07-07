@@ -2,9 +2,10 @@ import { describe, expect, it } from "vitest";
 import { getBank, getMeta, byDomain } from "./bank";
 
 describe("bank", () => {
-  it("loads 65 valid questions with upgraded schema", () => {
+  it("loads a valid bank with upgraded schema (grows over time, never below mock size)", () => {
     const bank = getBank();
-    expect(bank.length).toBe(65);
+    expect(bank.length).toBeGreaterThanOrEqual(getMeta().mockQuestionCount);
+    expect(new Set(bank.map((q) => q.id)).size).toBe(bank.length);
     for (const q of bank) {
       expect(q.id).toMatch(/^aipc01-\d{4}$/);
       expect(["easy", "medium", "hard"]).toContain(q.difficulty);
