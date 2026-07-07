@@ -1,7 +1,8 @@
-import { beforeEach, describe, expect, it } from "vitest";
-import { render, screen, within } from "@testing-library/react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { ExamEngine } from "./ExamEngine";
+import { getMeta } from "@/lib/bank";
 import { listAttempts } from "@/lib/storage";
 
 beforeEach(() => localStorage.clear());
@@ -44,5 +45,34 @@ describe("ExamEngine mock mode", () => {
     expect(a.mode).toBe("mock");
     expect(a.finishedAt).not.toBeNull();
     expect(a.results[a.questionIds[0]].flagged).toBe(true);
+  });
+
+  it("keeps the countdown running across review roundtrips and auto-submits on expiry", () => {
+    // Fake timers scoped to this test only (test 1 above relies on real timers + userEvent).
+    vi.useFakeTimers();
+    try {
+      const budget = getMeta().mockMinutes * 60; // 156 * 60 = 9360
+      const toSec = (t: string) =>
+        t.split(":").reverse().reduce((acc, v, i) => acc + Number(v) * 60 ** i, 0);
+      render(<ExamEngine mode="mock" />);
+      // Let the sealed countdown run a few seconds.
+      act(() => vi.advanceTimersByTime(5000));
+      // Enter the review screen - the Timer must NOT unmount (persistent header).
+      fireEvent.click(screen.getByRole("button", { name: /review & submit/i }));
+      expect(screen.getByRole("timer")).toBeInTheDocument();
+      // Jump back to a question - the countdown must not reset to the full budget.
+      fireEvent.click(within(screen.getByTestId("reviewmap")).getAllByRole("button")[0]);
+      const remaining = toSec(screen.getByRole("timer").textContent ?? "");
+      expect(remaining).toBeLessThanOrEqual(budget - 5); // monotonic: kept ticking, did not reset
+      expect(remaining).toBeGreaterThan(0);
+      // Back on the review screen, run the clock past the full budget -> auto-submit to results.
+      fireEvent.click(screen.getByRole("button", { name: /review & submit/i }));
+      act(() => vi.advanceTimersByTime(budget * 1000));
+      expect(screen.getByText(/results/i)).toBeInTheDocument();
+      const a = listAttempts("aip-c01")[0];
+      expect(a.finishedAt).not.toBeNull();
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });

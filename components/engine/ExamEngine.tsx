@@ -51,6 +51,10 @@ export function ExamEngine({ mode, domain }: { mode: Mode; domain?: string }) {
   const [flags, setFlags] = useState<Record<string, boolean>>({});
   const elapsedRef = useRef(0);
   const pausesRef = useRef(0);
+  // Contract C1b (Task 13 review): finish is one-way. Once submitted (or the countdown expires),
+  // every nav/jump/flag/submit handler no-ops so a queued setPhase("question") cannot reopen a
+  // sealed exam after onExpire has already moved it to results.
+  const finishedRef = useRef(false);
 
   const q = questions[index];
 
@@ -62,7 +66,7 @@ export function ExamEngine({ mode, domain }: { mode: Mode; domain?: string }) {
   // Practice: grade immediately. Mock: record silently.
   const submit = useCallback(
     (chosen: number[]) => {
-      if (!q || !attemptRef.current) return;
+      if (finishedRef.current || !q || !attemptRef.current) return;
       const correct = isCorrect(chosen, q.correct);
       if (isMock) {
         setAnswers((a) => ({ ...a, [q.id]: chosen }));
@@ -75,12 +79,21 @@ export function ExamEngine({ mode, domain }: { mode: Mode; domain?: string }) {
   );
 
   const finish = useCallback(() => {
+    if (finishedRef.current) return;
+    finishedRef.current = true;
     if (attemptRef.current) finishAttempt(attemptRef.current.attemptId, elapsedRef.current, pausesRef.current);
     setPhase("results");
   }, []);
 
+  // One guarded entry point for Prev/Next/jump so the C1b no-op lives in a single place.
+  const goTo = useCallback((i: number) => {
+    if (finishedRef.current) return;
+    setIndex(i);
+    setPhase("question");
+  }, []);
+
   const toggleFlag = useCallback(() => {
-    if (!q || !attemptRef.current) return;
+    if (finishedRef.current || !q || !attemptRef.current) return;
     const next = !flags[q.id];
     setFlags((f) => ({ ...f, [q.id]: next }));
     const chosen = answers[q.id];
@@ -105,31 +118,19 @@ export function ExamEngine({ mode, domain }: { mode: Mode; domain?: string }) {
     return <Results attempt={attempt} questions={questions} meta={meta} />;
   }
 
-  if (phase === "review") {
-    const states = questions.map((qq) => ({ answered: !!answers[qq.id], flagged: !!flags[qq.id] }));
-    return (
-      <div>
-        <h2>Review your answers</h2>
-        {/* Contract C7 (Task 11 review): the Submit button precedes the map in DOM order so
-            keyboard users are not forced to tab through 65 cells to reach it. */}
-        <button className="btn btn-primary" onClick={finish}>Submit exam</button>
-        <div data-testid="reviewmap">
-          <ReviewMap states={states} current={index} onJump={(i) => { setIndex(i); setPhase("question"); }} />
-        </div>
-      </div>
-    );
-  }
-
   const g = isMock ? null : graded[q.id] ?? null;
   const last = index === questions.length - 1;
   const answeredThis = isMock && !!answers[q.id];
 
+  // Contract C1a (Task 13 review): the header (eyebrow + Timer) is hoisted above the phase switch so
+  // the sealed countdown NEVER unmounts between the question and review phases - it only unmounts when
+  // finish() moves to results. initialElapsedSec seeds from elapsedRef so any remount resumes in place.
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16, gap: 12 }}>
         <span className="eyebrow">{meta.examCode} - {isMock ? "Full Mock" : mode}</span>
         <Timer
-          initialElapsedSec={0}
+          initialElapsedSec={elapsedRef.current}
           countdownSec={isMock ? meta.mockMinutes * 60 : null}
           onTick={handleTick}
           onExpire={finish}
@@ -137,34 +138,55 @@ export function ExamEngine({ mode, domain }: { mode: Mode; domain?: string }) {
         />
       </div>
 
-      {/* Contract C2 (Task 9 review): QuestionCard renders in a bare div - never inside .card
-          (its .qnum text fails AA contrast on a --panel-background surface). */}
-      <QuestionCard
-        key={q.id + String(answeredThis)}
-        question={q}
-        graded={g}
-        onSubmit={submit}
-        index={index}
-        total={questions.length}
-      />
-
-      {isMock && (
-        <div style={{ display: "flex", gap: 10, marginTop: 8, flexWrap: "wrap" }}>
-          <button className="btn btn-ghost" disabled={index === 0} onClick={() => setIndex((i) => i - 1)}>Prev</button>
-          <button className="btn btn-ghost" disabled={last} onClick={() => setIndex((i) => i + 1)}>Next</button>
-          <button className="btn btn-ghost" onClick={toggleFlag}>
-            {flags[q.id] ? "Unflag" : "Flag for review"}
-          </button>
-          <button className="btn btn-primary" style={{ marginLeft: "auto" }} onClick={() => setPhase("review")}>
-            Review & submit
-          </button>
+      {phase === "review" ? (
+        <div>
+          <h2>Review your answers</h2>
+          {/* Contract C7 (Task 11 review): the Submit button precedes the map in DOM order so
+              keyboard users are not forced to tab through 65 cells to reach it. */}
+          <button className="btn btn-primary" onClick={finish}>Submit exam</button>
+          <div data-testid="reviewmap">
+            <ReviewMap
+              states={questions.map((qq) => ({ answered: !!answers[qq.id], flagged: !!flags[qq.id] }))}
+              current={index}
+              onJump={goTo}
+            />
+          </div>
         </div>
-      )}
+      ) : (
+        <div>
+          {/* Contract C2 (Task 9 review): QuestionCard renders in a bare div - never inside .card
+              (its .qnum text fails AA contrast on a --panel-background surface). */}
+          <QuestionCard
+            key={q.id + String(answeredThis)}
+            question={q}
+            graded={g}
+            onSubmit={submit}
+            index={index}
+            total={questions.length}
+          />
 
-      {!isMock && g && (
-        <button className="btn btn-primary" onClick={() => (last ? finish() : setIndex((i) => i + 1))}>
-          {last ? "See results" : "Next question"}
-        </button>
+          {isMock && (
+            <div style={{ display: "flex", gap: 10, marginTop: 8, flexWrap: "wrap", alignItems: "center" }}>
+              <button className="btn btn-ghost" disabled={index === 0} onClick={() => goTo(index - 1)}>Prev</button>
+              <button className="btn btn-ghost" disabled={last} onClick={() => goTo(index + 1)}>Next</button>
+              <button className="btn btn-ghost" onClick={toggleFlag}>
+                {flags[q.id] ? "Unflag" : "Flag for review"}
+              </button>
+              {answers[q.id] && (
+                <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, color: "var(--muted)" }}>Answer recorded</span>
+              )}
+              <button className="btn btn-primary" style={{ marginLeft: "auto" }} onClick={() => { if (!finishedRef.current) setPhase("review"); }}>
+                Review & submit
+              </button>
+            </div>
+          )}
+
+          {!isMock && g && (
+            <button className="btn btn-primary" onClick={() => (last ? finish() : setIndex((i) => i + 1))}>
+              {last ? "See results" : "Next question"}
+            </button>
+          )}
+        </div>
       )}
     </div>
   );

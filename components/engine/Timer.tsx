@@ -30,15 +30,21 @@ export function Timer({
       setElapsed((e) => {
         const next = e + 1;
         onTick(next);
-        if (countdownSec !== null && next >= countdownSec && !expired.current) {
-          expired.current = true;
-          onExpire();
-        }
         return next;
       });
     }, 1000);
     return () => clearInterval(id);
-  }, [countdownSec, onExpire, onTick]);
+  }, [onTick]);
+
+  // Fire expiry from an effect, NEVER from inside the setElapsed updater: onExpire triggers a parent
+  // setState (finish -> results), and calling it during the updater (render phase) warns "cannot
+  // update a component while rendering a different component". The expired ref keeps it one-shot.
+  useEffect(() => {
+    if (countdownSec !== null && elapsed >= countdownSec && !expired.current) {
+      expired.current = true;
+      onExpire();
+    }
+  }, [elapsed, countdownSec, onExpire]);
 
   useEffect(() => {
     const handler = () => { if (document.hidden) onPause(); };
@@ -47,5 +53,6 @@ export function Timer({
   }, [onPause]);
 
   const shown = countdownSec !== null ? Math.max(0, countdownSec - elapsed) : elapsed;
+  // role="timer" (Task 12 review, contract C4): exposes the live count to assistive tech + tests.
   return <span role="timer" style={{ fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums" }}>{fmt(shown)}</span>;
 }
