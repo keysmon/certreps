@@ -60,12 +60,17 @@ export function AccountClient({ welcome }: { welcome: boolean }) {
   useEffect(() => {
     let live = true;
     (async () => {
-      if (welcome && supabaseAvailable() && !syncedRef.current) {
-        syncedRef.current = true;
-        await fullSync();
-        if (live) router.replace("/account");
+      try {
+        if (welcome && supabaseAvailable() && !syncedRef.current) {
+          syncedRef.current = true;
+          await fullSync();
+          if (live) router.replace("/account");
+        }
+      } finally {
+        // The history load must never hinge on sync outcome: fullSync honors a never-throws
+        // contract today, but if a refactor ever breaks it, the page must not stick on Loading.
+        if (live) setAttempts(listAttempts(meta.certId));
       }
-      if (live) setAttempts(listAttempts(meta.certId));
     })();
     return () => {
       live = false;
@@ -94,6 +99,7 @@ export function AccountClient({ welcome }: { welcome: boolean }) {
       console.warn("delete:", e); // best-effort: still wipe local + sign out below
     }
     clearAll();
+    setAttempts([]); // honest immediate feedback even if sign-out below is slow
     try {
       await supabase?.auth.signOut();
     } catch {
@@ -123,7 +129,9 @@ export function AccountClient({ welcome }: { welcome: boolean }) {
         <AttemptsList attempts={attempts} meta={meta} />
       )}
 
-      {session && attempts !== null && (
+      {/* Trend + account actions only make sense once data exists - a fresh signed-in
+          account otherwise stacks the empty-state CTA, the mock hint, and delete-nothing. */}
+      {session && attempts !== null && attempts.length > 0 && (
         <>
           <div style={{ marginTop: 28 }}>
             <TrendPanel attempts={attempts} meta={meta} />
