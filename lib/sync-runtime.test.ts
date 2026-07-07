@@ -184,7 +184,8 @@ describe("fullSync", () => {
     // X: local behind cloud (answered 1 vs 3) -> cloud wins, NOT uploaded.
     // Y: local finished vs cloud unfinished -> local wins AND is newer -> uploaded.
     // L1: local-only -> survives, uploaded.
-    // C1: cloud-only -> lands in localStorage, NOT uploaded.
+    // C1: cloud-only UNFINISHED -> EXCLUDED from localStorage (single-device-in-progress), NOT uploaded.
+    // C2: cloud-only FINISHED -> lands in localStorage (finished rows sync everywhere), NOT uploaded.
     const localX = mk({ attemptId: "X", results: answered(1), startedAt: 100 });
     const localY = mk({ attemptId: "Y", finishedAt: 500, startedAt: 400 });
     const localL1 = mk({ attemptId: "L1", results: answered(1), startedAt: 300 });
@@ -193,7 +194,8 @@ describe("fullSync", () => {
     const cloudX = mk({ attemptId: "X", results: answered(3), startedAt: 100 });
     const cloudY = mk({ attemptId: "Y", finishedAt: null, startedAt: 400 });
     const cloudC1 = mk({ attemptId: "C1", results: answered(1), startedAt: 200 });
-    const cloudRows = [toRow(cloudX, "u1"), toRow(cloudY, "u1"), toRow(cloudC1, "u1")];
+    const cloudC2 = mk({ attemptId: "C2", finishedAt: 600, startedAt: 250 });
+    const cloudRows = [toRow(cloudX, "u1"), toRow(cloudY, "u1"), toRow(cloudC1, "u1"), toRow(cloudC2, "u1")];
 
     const { client, upsert, select } = fakeClient({ session: { user: { id: "u1" } }, cloudRows });
     mockedGetSupabase.mockReturnValue(client);
@@ -201,15 +203,17 @@ describe("fullSync", () => {
     await fullSync();
 
     const byId = Object.fromEntries(readAll().map((a) => [a.attemptId, a]));
-    expect(byId.C1).toBeTruthy(); // cloud-only merged in
+    expect(byId.C1).toBeUndefined(); // cloud-only UNFINISHED excluded (single-device-in-progress)
+    expect(byId.C2).toBeTruthy(); // cloud-only FINISHED still merged in
     expect(Object.keys(byId.X.results).length).toBe(3); // cloud-ahead copy kept
     expect(byId.Y.finishedAt).toBe(500); // local-newer (finished) survived
     expect(byId.L1).toBeTruthy(); // local-only survived
 
     const uploaded = upsert.mock.calls.map((c) => c[0].attempt_id);
-    expect(uploaded).toEqual(expect.arrayContaining(["Y", "L1"]));
+    expect(uploaded).toEqual(expect.arrayContaining(["Y", "L1"])); // local unfinished (L1) still uploads
     expect(uploaded).not.toContain("X");
     expect(uploaded).not.toContain("C1");
+    expect(uploaded).not.toContain("C2");
     expect(select).toHaveBeenCalledTimes(1);
   });
 

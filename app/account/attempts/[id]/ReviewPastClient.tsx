@@ -45,14 +45,23 @@ export function ReviewPastClient({ id }: { id: string }) {
   }
 
   if (attempt.finishedAt === null) {
-    // TODO(Task 8): once resume-in-progress lands, swap this card for a resume link
-    // (`/aws/<certId>/practice?resume=<id>`) that rehydrates the unfinished attempt.
+    // Resume rehydrates the unfinished attempt in the engine (Task 8). Only reachable for a
+    // device-LOCAL attempt: getAttempt reads localStorage, so a cloud-only in-progress attempt
+    // from another device renders the "not on this device" card above, never this resume link.
+    const params = new URLSearchParams({ mode: attempt.mode, resume: attempt.attemptId });
+    if (attempt.domain) params.set("domain", attempt.domain);
+    const resumeHref = `/aws/${meta.certId}/practice?${params.toString()}`;
     return (
       <div className="card">
         <p style={{ margin: "0 0 14px" }}>This attempt is still in progress.</p>
-        <Link className="btn btn-primary" href="/account">
-          Back to your account
-        </Link>
+        <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+          <Link className="btn btn-primary" href={resumeHref}>
+            Resume attempt
+          </Link>
+          <Link className="btn btn-ghost" href="/account">
+            Back to your account
+          </Link>
+        </div>
       </div>
     );
   }

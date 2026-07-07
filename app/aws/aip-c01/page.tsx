@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getBank, getMeta } from "@/lib/bank";
 import { listGuides } from "@/lib/guides";
+import { ResumeBanner } from "./ResumeBanner";
 import metaJson from "@/content/aip-c01/meta.json";
 
 export const metadata: Metadata = {
@@ -63,6 +64,8 @@ export default function CertPage() {
           <Link className="btn btn-ghost" href="/aws/aip-c01/practice?mode=retry">Retry missed</Link>
         </div>
       </div>
+
+      <ResumeBanner />
 
       {guides.length > 0 && (
         <div className="card" style={{ marginTop: 24 }}>

@@ -40,11 +40,18 @@ describe("ReviewPastClient", () => {
     );
   });
 
-  it("shows an in-progress card for an unfinished attempt", async () => {
+  it("shows an in-progress card with a resume link for an unfinished attempt", async () => {
     const a = createAttempt("aip-c01", "mock", getBank().slice(0, 3).map((q) => q.id));
     saveAttempt(a);
     render(<ReviewPastClient id={a.attemptId} />);
     expect(await screen.findByText(/still in progress/i)).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /account/i })).toHaveAttribute("href", "/account");
+    // Resume link rehydrates the unfinished attempt in the engine.
+    const resume = screen.getByRole("link", { name: /resume attempt/i });
+    const href = resume.getAttribute("href") ?? "";
+    expect(href).toContain(`/aws/${getMeta().certId}/practice`);
+    expect(href).toContain("mode=mock");
+    expect(href).toContain(`resume=${a.attemptId}`);
+    // The account escape hatch remains.
+    expect(screen.getByRole("link", { name: /back to your account/i })).toHaveAttribute("href", "/account");
   });
 });

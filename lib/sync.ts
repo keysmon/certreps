@@ -48,10 +48,27 @@ function compareRecency(a: Attempt, b: Attempt): number {
  * On a same-id conflict the cloud copy wins only when it is STRICTLY ahead; ties keep
  * local (the device you are on). Output is sorted by startedAt descending (newest first)
  * for the account page.
+ *
+ * SINGLE-DEVICE-IN-PROGRESS (Task 4 review, enforced here per the plan's Task 8 carried
+ * constraint): a cloud-only UNFINISHED attempt - one whose id is absent locally - is SKIPPED.
+ * It belongs to the device that started it. Adopting it here would make it resumable on THIS
+ * device (getInProgress reads localStorage), and the recency tree above cannot reconcile a later
+ * equal-count divergence without silently dropping one side. Cloud FINISHED rows, and any id
+ * already present locally, still merge normally. This DEFERS foreign in-progress visibility, it
+ * never loses data: the cloud row is untouched, so when the attempt finishes on its home device
+ * the finished copy syncs everywhere on the next pull. Convergence: when the merge upgrades to a
+ * results-map union, cloud-only unfinished attempts return and visibility + resumability come back
+ * together. Known edge: if a device wipes localStorage before finishing, its own cloud unfinished
+ * row becomes invisible cruft until "delete my data" - it can never finish (its home device lost
+ * it) - acceptable for v1b.
  */
 export function mergeAttempts(local: Attempt[], cloud: Attempt[]): Attempt[] {
+  const localIds = new Set(local.map((l) => l.attemptId));
   const byId = new Map<string, Attempt>();
-  for (const c of cloud) byId.set(c.attemptId, c);
+  for (const c of cloud) {
+    if (c.finishedAt === null && !localIds.has(c.attemptId)) continue; // cloud-only in-progress: skip
+    byId.set(c.attemptId, c);
+  }
   for (const l of local) {
     const c = byId.get(l.attemptId);
     // Keep local unless the cloud copy is strictly ahead.

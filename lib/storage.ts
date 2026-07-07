@@ -88,8 +88,33 @@ export function finishAttempt(attemptId: string, elapsedSec: number, pauseCount:
   saveAttempt(a);
 }
 
-export function getInProgress(certId: string, mode: Mode): Attempt | null {
-  return listAttempts(certId).find((a) => a.mode === mode && a.finishedAt === null) ?? null;
+/**
+ * Snapshot in-flight timer progress (elapsed + pauses) onto an UNFINISHED attempt so a resumed
+ * attempt restores an honest clock rather than a near-full one (Task 8). Writes localStorage ONLY
+ * - no cloud upsert: resume reads localStorage (single-device-in-progress semantics), and the next
+ * recordResult/finishAttempt upserts the full state to the cloud, so spamming an upsert per tick is
+ * both unnecessary and wasteful. No-ops on a sealed attempt - the finished write is authoritative and
+ * a post-expiry tick must never clobber it.
+ */
+export function saveProgress(attemptId: string, elapsedSec: number, pauseCount: number): void {
+  const all = readAll();
+  const a = all.find((x) => x.attemptId === attemptId);
+  if (!a || a.finishedAt !== null) return;
+  a.elapsedSec = elapsedSec;
+  a.pauseCount = pauseCount;
+  writeAll(all);
+}
+
+/**
+ * Latest LOCAL unfinished attempt for a cert (any mode, newest by startedAt), or null.
+ * Powers the cert-page resume banner. Reads only localStorage - single-device-in-progress
+ * semantics (Task 4 review, carried to Task 8): an in-progress attempt is resumable only
+ * where it lives locally, because the equal-count merge tree cannot reconcile a cross-device
+ * divergence without silently dropping one side.
+ */
+export function getInProgress(certId: string): Attempt | null {
+  const unfinished = listAttempts(certId).filter((a) => a.finishedAt === null);
+  return unfinished.length ? unfinished[unfinished.length - 1] : null;
 }
 
 /** Latest verdict wins: a question is "missed" if its most recent recorded result is wrong. */

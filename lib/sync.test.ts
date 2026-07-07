@@ -26,10 +26,31 @@ function answered(n: number): Record<string, QuestionResult> {
 
 describe("mergeAttempts", () => {
   it("unions disjoint sets (ids present on only one side survive)", () => {
+    // Local-only unfinished is always kept (it is the device's own); the cloud-only side is FINISHED
+    // so it survives too - a cloud-only UNFINISHED attempt is excluded (its own test below).
     const local = [mk({ attemptId: "L", startedAt: 100 })];
-    const cloud = [mk({ attemptId: "C", startedAt: 200 })];
+    const cloud = [mk({ attemptId: "C", finishedAt: 250, startedAt: 200 })];
     const ids = mergeAttempts(local, cloud).map((a) => a.attemptId);
     expect(ids.sort()).toEqual(["C", "L"]);
+  });
+
+  it("single-device-in-progress: excludes cloud-only unfinished, keeps cloud-only finished, still merges a shared unfinished id", () => {
+    // (1) cloud-only UNFINISHED -> excluded (belongs to its home device).
+    // (2) cloud-only FINISHED   -> included (finished rows sync everywhere).
+    // (3) id present on BOTH sides + unfinished -> the single-device rule does NOT apply; the
+    //     recency tree still picks the more-answered copy.
+    const local = [
+      mk({ attemptId: "L", finishedAt: 100, startedAt: 100 }),
+      mk({ attemptId: "S", results: answered(1), startedAt: 400 }),
+    ];
+    const cloud = [
+      mk({ attemptId: "CU", startedAt: 200 }),                            // (1) cloud-only, unfinished
+      mk({ attemptId: "CF", finishedAt: 300, startedAt: 300 }),           // (2) cloud-only, finished
+      mk({ attemptId: "S", results: answered(3), startedAt: 400 }),       // (3) shared id, cloud ahead
+    ];
+    const out = mergeAttempts(local, cloud);
+    expect(out.map((a) => a.attemptId).sort()).toEqual(["CF", "L", "S"]); // CU excluded
+    expect(Object.keys(out.find((a) => a.attemptId === "S")!.results).length).toBe(3);
   });
 
   it("same id: finished beats unfinished (local finished)", () => {
@@ -76,7 +97,8 @@ describe("mergeAttempts", () => {
 
   it("sorts output by startedAt descending (newest first)", () => {
     const local = [mk({ attemptId: "A", startedAt: 100 }), mk({ attemptId: "C", startedAt: 300 })];
-    const cloud = [mk({ attemptId: "B", startedAt: 200 })];
+    // B is cloud-only FINISHED so it survives the merge and can exercise cross-side ordering.
+    const cloud = [mk({ attemptId: "B", finishedAt: 250, startedAt: 200 })];
     expect(mergeAttempts(local, cloud).map((a) => a.attemptId)).toEqual(["C", "B", "A"]);
   });
 });

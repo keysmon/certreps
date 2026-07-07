@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { createAttempt, saveAttempt, getAttempt, listAttempts, recordResult, finishAttempt, missedQuestionIds, getInProgress } from "./storage";
+import { createAttempt, saveAttempt, getAttempt, listAttempts, recordResult, finishAttempt, missedQuestionIds, getInProgress, saveProgress } from "./storage";
 
 beforeEach(() => localStorage.clear());
 
@@ -33,13 +33,38 @@ describe("attempt store", () => {
     finishAttempt(b.attemptId, 30, 0);
     expect(missedQuestionIds("aip-c01")).toEqual(["q1"]);
   });
-  it("finds a resumable in-progress attempt by mode", () => {
-    const a = createAttempt("aip-c01", "mock", ["q1"]);
-    saveAttempt(a);
-    expect(getInProgress("aip-c01", "mock")?.attemptId).toBe(a.attemptId);
-    finishAttempt(a.attemptId, 10, 0);
-    expect(getInProgress("aip-c01", "mock")).toBeNull();
+  it("finds the latest resumable in-progress attempt (any mode)", () => {
+    const older = createAttempt("aip-c01", "mock", ["q1"]);
+    older.startedAt = 1000;
+    saveAttempt(older);
+    const newer = createAttempt("aip-c01", "quick", ["q2"]);
+    newer.startedAt = 2000;
+    saveAttempt(newer);
+    // Latest unfinished wins regardless of mode.
+    expect(getInProgress("aip-c01")?.attemptId).toBe(newer.attemptId);
+    // Finishing the latest falls back to the older still-unfinished attempt.
+    finishAttempt(newer.attemptId, 10, 0);
+    expect(getInProgress("aip-c01")?.attemptId).toBe(older.attemptId);
+    // Nothing unfinished -> null.
+    finishAttempt(older.attemptId, 10, 0);
+    expect(getInProgress("aip-c01")).toBeNull();
   });
+  it("saveProgress snapshots elapsed + pauses on an unfinished attempt, never on a sealed one", () => {
+    const a = createAttempt("aip-c01", "mock", ["q1", "q2"]);
+    saveAttempt(a);
+    saveProgress(a.attemptId, 90, 2);
+    const mid = getAttempt(a.attemptId)!;
+    expect(mid.elapsedSec).toBe(90);
+    expect(mid.pauseCount).toBe(2);
+    expect(mid.finishedAt).toBeNull(); // did not seal the attempt
+
+    finishAttempt(a.attemptId, 120, 3);
+    saveProgress(a.attemptId, 999, 9); // must no-op on a sealed attempt
+    const sealed = getAttempt(a.attemptId)!;
+    expect(sealed.elapsedSec).toBe(120);
+    expect(sealed.pauseCount).toBe(3);
+  });
+
   it("survives corrupted storage gracefully", () => {
     localStorage.setItem("certreps.attempts.v1", "{corrupt");
     expect(listAttempts("aip-c01")).toEqual([]);
