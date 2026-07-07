@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import type { Session } from "@supabase/supabase-js";
 import { getSupabase, supabaseAvailable } from "@/lib/supabase/client";
 
@@ -13,6 +14,7 @@ import { getSupabase, supabaseAvailable } from "@/lib/supabase/client";
  */
 export function AuthButton() {
   const available = supabaseAvailable();
+  const pathname = usePathname();
   const [session, setSession] = useState<Session | null>(null);
 
   useEffect(() => {
@@ -25,6 +27,8 @@ export function AuthButton() {
   }, [available]);
 
   if (!available) return null;
+  // The login page IS the sign-in call to action - a second "Sign in" strip above it is noise.
+  if (pathname === "/login" && !session) return null;
 
   const label = session?.user.email ?? (session?.user.user_metadata?.name as string | undefined);
 
