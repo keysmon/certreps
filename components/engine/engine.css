@@ -25,3 +25,10 @@
 .explain.wrong .verdict { color: var(--rose); }
 .explain p { margin: 0 0 10px; font-size: 14.5px; line-height: 1.6; color: var(--text); }
 .doclink { font-size: 13px; }
+.reviewmap { margin: 20px 0; }
+.reviewmap .summary { font-family: var(--font-mono); font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+.mapgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 6px; }
+.mapcell { height: 34px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); color: var(--muted); font-family: var(--font-mono); font-size: 12px; cursor: pointer; }
+.mapcell.answered { border-color: var(--emerald); color: var(--emerald); background: var(--emerald-soft); }
+.mapcell.flagged { border-color: var(--gold); color: var(--gold); background: var(--gold-soft); }
+.mapcell.current { outline: 2px solid var(--gold); }
