@@ -23,6 +23,16 @@ export function writeAll(attempts: Attempt[]): void {
   }
 }
 
+/** Wipe the local attempt store. Used by the account "Delete my data" action after the
+ *  cloud rows are deleted and the session is signed out. Degrades silently if blocked. */
+export function clearAll(): void {
+  try {
+    localStorage.removeItem(KEY);
+  } catch {
+    /* storage blocked - nothing else to do */
+  }
+}
+
 export function createAttempt(certId: string, mode: Mode, questionIds: string[], domain?: string): Attempt {
   return {
     attemptId: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
