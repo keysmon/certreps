@@ -32,4 +32,32 @@ describe("readinessRead", () => {
     expect(r.trend[1].heavilyPaused).toBe(true);
     expect(r.domains["D1"].verdict).toBe("above"); // latest unpaused mock: 9/10
   });
+  it("skips latest heavily paused mock for verdict and uses second-latest clean mock", () => {
+    const r = readinessRead(
+      [
+        mock("1", 70, 0, { D1: { correct: 7, total: 10 } }),
+        mock("2", 72, 0, { D1: { correct: 8, total: 10 } }),
+        mock("3", 75, HEAVY_PAUSE_THRESHOLD, { D1: { correct: 5, total: 10 } }),
+      ],
+      75
+    );
+    expect(r.trend.map((t) => t.pct)).toEqual([70, 72, 75]);
+    expect(r.trend[2].heavilyPaused).toBe(true);
+    expect(r.domains["D1"].pct).toBe(80); // from mock 2: 8/10, not mock 3's 5/10
+    expect(r.domains["D1"].verdict).toBe("above");
+  });
+  it("falls back to most recent mock when all are heavily paused", () => {
+    const r = readinessRead(
+      [
+        mock("1", 65, HEAVY_PAUSE_THRESHOLD, { D1: { correct: 6, total: 10 } }),
+        mock("2", 70, HEAVY_PAUSE_THRESHOLD, { D1: { correct: 7, total: 10 } }),
+        mock("3", 75, HEAVY_PAUSE_THRESHOLD, { D1: { correct: 8, total: 10 } }),
+      ],
+      75
+    );
+    expect(r.trend.length).toBe(3);
+    expect(r.trend.every((t) => t.heavilyPaused)).toBe(true);
+    expect(r.domains["D1"].pct).toBe(80); // from most recent (mock 3): 8/10
+    expect(r.domains["D1"].verdict).toBe("above");
+  });
 });

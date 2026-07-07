@@ -21,7 +21,11 @@ export interface ReadinessRead {
 }
 
 /** Trend = up to the last 5 finished mocks; domain verdicts use the most recent
- *  non-heavily-paused mock (falls back to the most recent one if all are paused). */
+ *  non-heavily-paused mock (falls back to the most recent one if all are paused).
+ *  Verdicts source the single most recent clean mock rather than an average because
+ *  recency reflects current ability more accurately than historical average. The source
+ *  search is scoped to the 5-mock window by design - an older clean mock is intentionally
+ *  ignored, consistent with the recency-first policy. */
 export function readinessRead(mocks: GradedMock[], passLine: number): ReadinessRead {
   const finished = mocks
     .filter((m) => m.attempt.finishedAt !== null)
