@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import type { Question } from "@/lib/types";
+import { ReportProblem } from "@/components/ReportProblem";
 import "./engine.css";
 
 const LETTERS = ["A", "B", "C", "D", "E"];
@@ -77,6 +78,9 @@ export function QuestionCard({
           <a className="doclink" href={question.docUrl} target="_blank" rel="noopener noreferrer">
             Read the AWS docs {String.fromCharCode(8594)}
           </a>
+          <div style={{ marginTop: 12 }}>
+            <ReportProblem questionId={question.id} />
+          </div>
         </div>
       )}
       {!graded && (
