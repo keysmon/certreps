@@ -1004,7 +1004,7 @@
     "correct": [
       1
     ],
-    "explanation": "Fine-tuned <b>Anthropic Claude</b> custom models on Bedrock cannot be called on-demand; you must buy <b>Provisioned Throughput</b> (model units) to get a dedicated endpoint. (Some other families - Amazon Nova PEFT fine-tunes and Meta Llama 3.3 70B - do support on-demand custom-model deployment since July 2025, but that path does not exist for Claude fine-tunes.) A <b>quota increase</b> cannot create an on-demand path that does not exist for custom models. <b>Cross-Region inference</b> applies to supported on-demand base/system-defined models, not to serving your private custom model. There is no <b>training flag</b> that grants on-demand serving; serving mode is a deployment decision (Provisioned Throughput), not a fine-tuning parameter.",
+    "explanation": "Fine-tuned <b>Anthropic Claude</b> custom models on Bedrock cannot be called on-demand; you must buy <b>Provisioned Throughput</b> (model units) to get a dedicated endpoint. (Some other families - Amazon Nova PEFT fine-tunes and Meta Llama 3.3 70B - do support on-demand custom-model deployment since 2025, but that path does not exist for Claude fine-tunes.) A <b>quota increase</b> cannot create an on-demand path that does not exist for custom models. <b>Cross-Region inference</b> applies to supported on-demand base/system-defined models, not to serving your private custom model. There is no <b>training flag</b> that grants on-demand serving; serving mode is a deployment decision (Provisioned Throughput), not a fine-tuning parameter.",
     "id": "aipc01-0052",
     "difficulty": "hard",
     "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/prov-throughput.html"
@@ -1426,7 +1426,7 @@
     "correct": [
       1
     ],
-    "explanation": "Since a July 2025 update, custom models from supported base families - Amazon Nova Micro, Nova Lite, Nova Pro, and Meta Llama 3.3 70B - can be deployed for <b>on-demand inference</b> using a custom model deployment (in US East N. Virginia or US West Oregon), so the recent Nova Micro fine-tune does not need reserved capacity. Anthropic Claude is <b>not</b> on the supported-for-on-demand list, so a Claude fine-tune still requires <b>Provisioned Throughput</b>. That makes the claims that both support on-demand, that neither does, or that only Claude supports on-demand all incorrect.",
+    "explanation": "Since a 2025 update, custom models from supported base families - Amazon Nova Micro, Nova Lite, Nova Pro, and Meta Llama 3.3 70B - can be deployed for <b>on-demand inference</b> using a custom model deployment (in US East N. Virginia or US West Oregon), so the recent Nova Micro fine-tune does not need reserved capacity. Anthropic Claude is <b>not</b> on the supported-for-on-demand list, so a Claude fine-tune still requires <b>Provisioned Throughput</b>. That makes the claims that both support on-demand, that neither does, or that only Claude supports on-demand all incorrect.",
     "difficulty": "hard",
     "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/deploy-custom-model-on-demand.html",
     "id": "aipc01-0074"
