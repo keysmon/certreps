@@ -99,8 +99,10 @@ export function fromRow(r: AttemptRow): Attempt {
     certId: r.cert_id,
     mode: r.mode,
     domain: r.domain ?? undefined,
-    questionIds: r.question_ids,
-    results: r.results,
+    // Defensive: 'null'::jsonb satisfies the NOT NULL column constraint but would
+    // crash Object.keys() in compareRecency - unreachable via toRow, cheap to guard.
+    questionIds: r.question_ids ?? [],
+    results: r.results ?? {},
     startedAt: new Date(r.started_at).getTime(),
     finishedAt: r.finished_at === null ? null : new Date(r.finished_at).getTime(),
     elapsedSec: r.elapsed_sec,
