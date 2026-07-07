@@ -16,8 +16,10 @@
   --on-gold: #23180a;
   --emerald: #3fcf8e;
   --emerald-soft: rgba(63, 207, 142, 0.12);
+  --on-emerald: #06210f;
   --rose: #f26d6d;
   --rose-soft: rgba(242, 109, 109, 0.12);
+  --on-rose: #2a0808;
   --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, Roboto, sans-serif;
   --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
   --radius: 14px;
