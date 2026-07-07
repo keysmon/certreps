@@ -43,4 +43,18 @@ describe("POST /api/report", () => {
       expect.objectContaining({ method: "POST" })
     );
   });
+  it("degrades to 202 when the GitHub call throws (network/DNS/timeout)", async () => {
+    vi.stubEnv("REPORT_GITHUB_TOKEN", "t");
+    vi.stubEnv("REPORT_GITHUB_REPO", "owner/repo");
+    vi.spyOn(globalThis, "fetch").mockRejectedValue(new Error("network down"));
+    const res = await POST(req({ questionId: "aipc01-0003", note: "network path" }));
+    expect(res.status).toBe(202);
+  });
+  it("degrades to 202 when GitHub responds non-ok", async () => {
+    vi.stubEnv("REPORT_GITHUB_TOKEN", "t");
+    vi.stubEnv("REPORT_GITHUB_REPO", "owner/repo");
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(new Response("boom", { status: 500 }));
+    const res = await POST(req({ questionId: "aipc01-0004", note: "server error path" }));
+    expect(res.status).toBe(202);
+  });
 });

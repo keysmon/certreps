@@ -37,6 +37,7 @@ export function ReportProblem({ questionId }: { questionId: string }) {
         onChange={(e) => setNote(e.target.value)}
         placeholder="What's wrong? (e.g. answer key, outdated service name, typo)"
         rows={3}
+        maxLength={2000}
         style={{ width: "100%", background: "var(--panel-2)", color: "var(--text)", border: "1px solid var(--line)", borderRadius: 8, padding: 10, fontFamily: "var(--font-sans)", fontSize: 13.5 }}
       />
       <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
