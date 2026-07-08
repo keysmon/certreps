@@ -18,6 +18,12 @@ const DEBOUNCE_MS = 400;
 // One trailing-debounce timer per attemptId; the latest queued call wins.
 const timers = new Map<string, ReturnType<typeof setTimeout>>();
 
+// Test-only: clears the module-level debounce timers between tests so a pending timer
+// from one test can never leak into the next (mirrors the report route's _resetRateLimit).
+export function _resetTimers(): void {
+  timers.clear();
+}
+
 /**
  * Fire-and-forget upsert of one attempt. Debounced 400ms per attemptId so a burst of
  * recordResult writes coalesces into one request; a FINISHED attempt fires immediately

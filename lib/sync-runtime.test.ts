@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { getSupabase, supabaseAvailable } from "@/lib/supabase/client";
-import { fullSync, queueUpsert } from "./sync-runtime";
+import { fullSync, queueUpsert, _resetTimers } from "./sync-runtime";
 import { readAll, writeAll } from "./storage";
 import { toRow, type AttemptRow } from "./sync";
 import type { Attempt, QuestionResult } from "./types";
@@ -71,6 +71,7 @@ beforeEach(() => {
 
 afterEach(() => {
   warnSpy.mockRestore();
+  _resetTimers(); // drop any module-level debounce timer so it can't leak into the next test
   vi.clearAllTimers();
   vi.useRealTimers();
 });
