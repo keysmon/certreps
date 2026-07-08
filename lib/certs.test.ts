@@ -3,8 +3,8 @@ import { listCerts, getCert } from "./certs";
 import { getBank, getMeta } from "./bank";
 
 describe("cert registry", () => {
-  it("lists exactly aip-c01 today, in registry order", () => {
-    expect(listCerts().map((c) => c.certId)).toEqual(["aip-c01"]);
+  it("lists both certs in registry order", () => {
+    expect(listCerts().map((c) => c.certId)).toEqual(["aip-c01", "mla-c01"]);
   });
 
   it("getCert returns the entry for a known cert", () => {
@@ -50,5 +50,21 @@ describe("prototype-chain safety (review regression)", () => {
   });
   it("bank loaders throw loudly for prototype keys", () => {
     expect(() => getBank("constructor")).toThrow(/unknown cert/i);
+  });
+});
+
+describe("mla-c01 registry entry", () => {
+  it("resolves with a 65-question bank and matching meta", () => {
+    const entry = getCert("mla-c01");
+    expect(entry).not.toBeNull();
+    expect(entry!.meta.certId).toBe("mla-c01");
+    expect(entry!.meta.mockQuestionCount).toBe(65);
+    expect(entry!.bank.length).toBe(65);
+    expect(entry!.meta.domains.reduce((s, d) => s + d.mockCount, 0)).toBe(65);
+  });
+  it("getBank('mla-c01') serves the mla bank, default stays aip-c01", () => {
+    expect(getBank("mla-c01").length).toBe(65);
+    expect(getBank("mla-c01")[0].id).toMatch(/^mlac01-/);
+    expect(getBank().length).toBe(130);
   });
 });

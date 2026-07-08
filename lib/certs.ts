@@ -1,7 +1,8 @@
 import type { CertMeta, Question } from "./types";
 import aipc01Bank from "@/content/aip-c01/questions.json";
 import aipc01Meta from "@/content/aip-c01/meta.json";
-// (mla-c01 imports arrive in Task 5)
+import mlac01Bank from "@/content/mla-c01/questions.json";
+import mlac01Meta from "@/content/mla-c01/meta.json";
 
 export interface CertEntry {
   meta: CertMeta;
@@ -16,6 +17,7 @@ export interface CertEntry {
 // cast because JSON widens the type/difficulty unions to plain string (TS1360).
 const REGISTRY: Record<string, CertEntry> = {
   "aip-c01": { meta: aipc01Meta satisfies CertMeta, bank: aipc01Bank as Question[] },
+  "mla-c01": { meta: mlac01Meta satisfies CertMeta, bank: mlac01Bank as Question[] },
 };
 
 export function listCerts(): CertMeta[] {
