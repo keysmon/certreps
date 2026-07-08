@@ -1,0 +1,40 @@
+{
+  "certId": "mla-c01",
+  "idPrefix": "mlac01",
+  "vendor": "AWS",
+  "title": "AWS Certified Machine Learning Engineer - Associate",
+  "examCode": "MLA-C01",
+  "level": "Associate",
+  "mockQuestionCount": 65,
+  "mockMinutes": 130,
+  "passLinePct": 72,
+  "verified": "Q3 2026",
+  "seoTitle": "Free MLA-C01 Practice Exam - AWS Certified Machine Learning Engineer",
+  "seoDescription": "Free full-length MLA-C01 practice exam with {n} original scenario questions, instant explanations, and a per-domain readiness read. No signup.",
+  "domains": [
+    {
+      "name": "Data Preparation for Machine Learning",
+      "tag": "Domain 1",
+      "weightPct": 28,
+      "mockCount": 18
+    },
+    {
+      "name": "ML Model Development",
+      "tag": "Domain 2",
+      "weightPct": 26,
+      "mockCount": 17
+    },
+    {
+      "name": "Deployment and Orchestration of ML Workflows",
+      "tag": "Domain 3",
+      "weightPct": 22,
+      "mockCount": 14
+    },
+    {
+      "name": "ML Solution Monitoring, Maintenance, and Security",
+      "tag": "Domain 4",
+      "weightPct": 24,
+      "mockCount": 16
+    }
+  ]
+}

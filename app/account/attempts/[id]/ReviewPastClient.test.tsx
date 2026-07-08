@@ -40,6 +40,15 @@ describe("ReviewPastClient", () => {
     );
   });
 
+  it("shows a certification-no-longer-available card for an attempt whose cert left the registry", async () => {
+    const a = createAttempt("removed-cert", "quick", ["removed-cert-0001"]);
+    saveAttempt(a);
+    finishAttempt(a.attemptId, 100, 0);
+    render(<ReviewPastClient id={a.attemptId} />);
+    expect(await screen.findByText(/no longer available/i)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /your account/i })).toHaveAttribute("href", "/account");
+  });
+
   it("shows an in-progress card with a resume link for an unfinished attempt", async () => {
     const a = createAttempt("aip-c01", "mock", getBank().slice(0, 3).map((q) => q.id));
     saveAttempt(a);

@@ -8,3 +8,4 @@ next-env.d.ts
 .DS_Store
 coverage/
 npm-debug.log*
+__pycache__/

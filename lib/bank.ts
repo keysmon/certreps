@@ -1,13 +1,25 @@
 import type { CertMeta, Question } from "./types";
-import questionsJson from "@/content/aip-c01/questions.json";
-import metaJson from "@/content/aip-c01/meta.json";
+import { getCert } from "./certs";
 
-export function getBank(): Question[] {
-  return questionsJson as Question[];
+const DEFAULT_CERT = "aip-c01";
+
+// certId defaults to aip-c01 so existing no-arg callers are unchanged; new
+// callers pass certId explicitly. Unknown certs throw (routes guard with
+// getCert() ?? notFound() before ever reaching here).
+/**
+ * Throws on unknown certId (loud internal failure). User-facing routes must guard
+ * with getCert(certId) ?? notFound() BEFORE calling this - see lib/certs.ts.
+ */
+export function getBank(certId: string = DEFAULT_CERT): Question[] {
+  const cert = getCert(certId);
+  if (!cert) throw new Error(`Unknown certId: ${certId}`);
+  return cert.bank;
 }
 
-export function getMeta(): CertMeta {
-  return metaJson as CertMeta;
+export function getMeta(certId: string = DEFAULT_CERT): CertMeta {
+  const cert = getCert(certId);
+  if (!cert) throw new Error(`Unknown certId: ${certId}`);
+  return cert.meta;
 }
 
 export function byDomain(bank: Question[]): Record<string, Question[]> {

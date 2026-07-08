@@ -42,7 +42,7 @@ export function TrendPanel({ attempts, meta }: { attempts: Attempt[]; meta: Cert
     );
   }
 
-  const bank = getBank();
+  const bank = getBank(meta.certId);
   const graded = finishedMocks.map((attempt) => {
     const g = gradeAttempt(attempt, questionsByIds(bank, attempt.questionIds));
     return { attempt, pct: g.pct, byDomain: g.byDomain };

@@ -1,20 +1,32 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getBank, getMeta } from "@/lib/bank";
+import { notFound } from "next/navigation";
+import { getCert, listCerts } from "@/lib/certs";
 import { listGuides } from "@/lib/guides";
 import { ResumeBanner } from "./ResumeBanner";
-import metaJson from "@/content/aip-c01/meta.json";
 
-export const metadata: Metadata = {
-  title: { absolute: "Free AIP-C01 Practice Exam - AWS Certified Generative AI Developer" },
-  description:
-    `Free full-length AIP-C01 practice exam with ${metaJson.mockQuestionCount} original scenario questions, explanations, and per-domain readiness scoring. No signup. Not affiliated with AWS.`,
-};
+export function generateStaticParams() {
+  return listCerts().map((c) => ({ certId: c.certId }));
+}
 
-export default function CertPage() {
-  const meta = getMeta();
-  const bankSize = getBank().length;
-  const guides = listGuides("aip-c01");
+export async function generateMetadata({ params }: { params: Promise<{ certId: string }> }): Promise<Metadata> {
+  const { certId } = await params;
+  const cert = getCert(certId);
+  if (!cert) return {};
+  const { meta } = cert;
+  return {
+    title: { absolute: meta.seoTitle },
+    description: meta.seoDescription.replace("{n}", String(meta.mockQuestionCount)),
+  };
+}
+
+export default async function CertPage({ params }: { params: Promise<{ certId: string }> }) {
+  const { certId } = await params;
+  const cert = getCert(certId);
+  if (!cert) notFound();
+  const meta = cert.meta;
+  const bankSize = cert.bank.length;
+  const guides = listGuides(certId);
   return (
     <main className="container" style={{ paddingTop: 48 }}>
       <p className="eyebrow">{meta.vendor} certification - {meta.level} - Verified {meta.verified}</p>
@@ -40,19 +52,19 @@ export default function CertPage() {
         <div className="card">
           <h3>Full Mock</h3>
           <p className="small-copy">{meta.mockQuestionCount} questions, {meta.mockMinutes}-minute countdown, exam-day navigation, results at the end.</p>
-          <Link className="btn btn-primary" href="/aws/aip-c01/practice?mode=mock">Start full mock</Link>
+          <Link className="btn btn-primary" href={`/aws/${certId}/practice?mode=mock`}>Start full mock</Link>
         </div>
         <div className="card">
           <h3>Quick Practice</h3>
           <p className="small-copy">10 questions with instant feedback and explanations.</p>
-          <Link className="btn btn-primary" href="/aws/aip-c01/practice?mode=quick">Quick 10</Link>
+          <Link className="btn btn-primary" href={`/aws/${certId}/practice?mode=quick`}>Quick 10</Link>
         </div>
         <div className="card">
           <h3>Domain Drill</h3>
           <p className="small-copy">Focus one domain, instant feedback.</p>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {meta.domains.map((d) => (
-              <Link key={d.tag} href={`/aws/aip-c01/practice?mode=drill&domain=${encodeURIComponent(d.name)}`} style={{ fontSize: 13.5 }}>
+              <Link key={d.tag} href={`/aws/${certId}/practice?mode=drill&domain=${encodeURIComponent(d.name)}`} style={{ fontSize: 13.5 }}>
                 {d.tag}: {d.name}
               </Link>
             ))}
@@ -61,18 +73,18 @@ export default function CertPage() {
         <div className="card">
           <h3>Retry my missed</h3>
           <p className="small-copy">Re-quiz exactly what you got wrong before.</p>
-          <Link className="btn btn-ghost" href="/aws/aip-c01/practice?mode=retry">Retry missed</Link>
+          <Link className="btn btn-ghost" href={`/aws/${certId}/practice?mode=retry`}>Retry missed</Link>
         </div>
       </div>
 
-      <ResumeBanner />
+      <ResumeBanner certId={certId} />
 
       {guides.length > 0 && (
         <div className="card" style={{ marginTop: 24 }}>
           <h2 style={{ marginTop: 0, fontSize: 18 }}>Study guides</h2>
           {guides.map((g) => (
             <p key={g.slug} style={{ margin: "8px 0" }}>
-              <Link href={`/guides/aip-c01/${g.slug}`}>{g.title}</Link>
+              <Link href={`/guides/${certId}/${g.slug}`}>{g.title}</Link>
             </p>
           ))}
         </div>

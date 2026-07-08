@@ -51,7 +51,7 @@ export function AttemptsList({ attempts, meta }: { attempts: Attempt[]; meta: Ce
     );
   }
 
-  const bank = getBank();
+  const bank = getBank(meta.certId);
   const rows = [...attempts].sort((a, b) => b.startedAt - a.startedAt);
 
   return (

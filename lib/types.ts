@@ -32,6 +32,11 @@ export interface CertMeta {
   mockMinutes: number;
   passLinePct: number;
   verified: string;
+  // SERP-budget title/description for the cert landing page. The page is a pure
+  // template over these: seoDescription carries a {n} placeholder for the mock
+  // question count so the copy stays in the content layer, not the route code.
+  seoTitle: string;
+  seoDescription: string;
   domains: DomainMeta[];
 }
 
