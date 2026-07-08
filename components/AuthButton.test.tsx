@@ -100,11 +100,11 @@ describe("AuthButton", () => {
     expect(container).toBeEmptyDOMElement();
   });
 
-  it("still renders on the practice child /aws/<certId>/practice (no TopNav there yet)", async () => {
+  it("suppresses itself in the exam room /aws/<certId>/practice (distraction-free chrome)", () => {
     mockedAvailable.mockReturnValue(true);
     mockedGetSupabase.mockReturnValue(fakeClient(sessionWith("ada@example.com")));
     mockedPathname.mockReturnValue("/aws/aip-c01/practice");
-    render(<AuthButton />);
-    expect(await screen.findByText("ada@example.com")).toBeInTheDocument();
+    const { container } = render(<AuthButton />);
+    expect(container).toBeEmptyDOMElement();
   });
 });

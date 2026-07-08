@@ -21,10 +21,11 @@ export function AuthButton() {
   // TopNav owns the auth surface on pages that mount it (landing, catalog) - a second bare
   // strip above it is noise. As later tasks migrate interior pages to TopNav, they join this list.
   if (pathname === "/" || pathname === "/catalog") return null;
-  // Cert detail (/aws/<certId>) mounts TopNav too (Task 5). Match ONLY the exact detail
-  // route, not its /practice child - that engine page does not mount TopNav yet (Task 6),
-  // so it still needs this strip.
+  // Cert detail (/aws/<certId>) mounts TopNav too (Task 5).
   if (pathname && /^\/aws\/[^/]+$/.test(pathname)) return null;
+  // The exam room is distraction-free chrome by design (Task 6): the practice surface has
+  // its own slim bar and no auth affordance - signing in mid-exam is not a real flow.
+  if (pathname && /^\/aws\/[^/]+\/practice$/.test(pathname)) return null;
   // The login page IS the sign-in call to action - a second "Sign in" strip above it is noise.
   if (pathname === "/login" && !session) return null;
 
