@@ -9,6 +9,7 @@
 .tn-spacer { flex: 1; }
 .tn-link { font-size: 14px; color: var(--muted); text-decoration: none; }
 .tn-link:hover { color: var(--text); }
+.tn-link-on { color: var(--text); font-weight: 600; }
 .tn-signin, .tn-signout { font-family: var(--font-sans); font-size: 13.5px; font-weight: 600; padding: 9px 15px; border-radius: 9px; background: transparent; color: var(--text); border: 1px solid var(--line-strong); text-decoration: none; cursor: pointer; display: inline-flex; align-items: center; transition: 0.14s; }
 .tn-signin:hover, .tn-signout:hover { border-color: var(--gold); color: var(--gold); }
 .tn-user { font-family: var(--font-mono); font-size: 12.5px; color: var(--muted); }

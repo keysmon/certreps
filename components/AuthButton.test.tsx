@@ -83,4 +83,12 @@ describe("AuthButton", () => {
     const { container } = render(<AuthButton />);
     expect(container).toBeEmptyDOMElement();
   });
+
+  it("suppresses itself on /catalog (TopNav owns the catalog auth surface)", () => {
+    mockedAvailable.mockReturnValue(true);
+    mockedGetSupabase.mockReturnValue(fakeClient(sessionWith("ada@example.com")));
+    mockedPathname.mockReturnValue("/catalog");
+    const { container } = render(<AuthButton />);
+    expect(container).toBeEmptyDOMElement();
+  });
 });

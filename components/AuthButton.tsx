@@ -18,8 +18,9 @@ export function AuthButton() {
   const pathname = usePathname();
 
   if (!available) return null;
-  // TopNav owns the auth surface on the landing page - a second bare strip is noise.
-  if (pathname === "/") return null;
+  // TopNav owns the auth surface on pages that mount it (landing, catalog) - a second bare
+  // strip above it is noise. As later tasks migrate interior pages to TopNav, they join this list.
+  if (pathname === "/" || pathname === "/catalog") return null;
   // The login page IS the sign-in call to action - a second "Sign in" strip above it is noise.
   if (pathname === "/login" && !session) return null;
 
