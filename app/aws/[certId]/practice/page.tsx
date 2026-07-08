@@ -22,9 +22,12 @@ export default async function PracticePage({ params }: { params: Promise<{ certI
   const { certId } = await params;
   const cert = getCert(certId);
   if (!cert) notFound();
+  // No .container width clamp here: the practice surface owns its chrome - a full-bleed sticky exam
+  // bar plus a self-centering 860px stage (see ExamEngine / engine.css). The narrow container would
+  // fight both.
   return (
-    <main className="container" style={{ paddingTop: 32, paddingBottom: 48 }}>
-      <Suspense fallback={<p>Loading...</p>}>
+    <main>
+      <Suspense fallback={<p className="stage">Loading...</p>}>
         <PracticeClient certId={certId} />
       </Suspense>
     </main>

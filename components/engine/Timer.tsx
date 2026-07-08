@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import "./engine.css";
 
 function fmt(totalSec: number): string {
   const m = Math.floor(totalSec / 60);
@@ -54,5 +55,5 @@ export function Timer({
 
   const shown = countdownSec !== null ? Math.max(0, countdownSec - elapsed) : elapsed;
   // role="timer" (Task 12 review, contract C4): exposes the live count to assistive tech + tests.
-  return <span role="timer" style={{ fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums" }}>{fmt(shown)}</span>;
+  return <span role="timer" className="timer">{fmt(shown)}</span>;
 }

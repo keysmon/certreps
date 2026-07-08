@@ -59,9 +59,10 @@ export function QuestionCard({
         {question.options.map((text, i) => {
           const isKey = question.correct.includes(i);
           const wasChosen = view.includes(i);
-          const cls = graded
+          const base = graded
             ? isKey ? "option correct" : wasChosen ? "option incorrect" : "option dim"
             : wasChosen ? "option selected" : "option";
+          const cls = isMulti ? `${base} multi` : base;
           return (
             <button key={i} type="button" className={cls} aria-pressed={wasChosen} disabled={!!graded} onClick={() => toggle(i)}>
               <span className="marker">{graded ? (isKey ? CHECK : wasChosen ? CROSS : LETTERS[i]) : LETTERS[i]}</span>
@@ -71,7 +72,7 @@ export function QuestionCard({
         })}
       </div>
       {graded && (
-        <div className={`explain ${graded.correct ? "right" : "wrong"}`}>
+        <div className={`explain ${graded.correct ? "right" : "wrong"}`} role="status" aria-live="polite">
           <p className="verdict">{graded.correct ? `${CHECK} Correct` : `${CROSS} Not quite`}</p>
           {/* Safe: trusted build-time content from our own pipeline (<b>/<em> only), never user input. */}
           <p dangerouslySetInnerHTML={{ __html: question.explanation }} />
@@ -84,9 +85,11 @@ export function QuestionCard({
         </div>
       )}
       {!graded && (
-        <button className="btn btn-primary" disabled={chosen.length === 0} onClick={() => onSubmit(chosen)}>
-          Submit answer
-        </button>
+        <div className="footbar">
+          <button className="btn btn-primary" style={{ marginLeft: "auto" }} disabled={chosen.length === 0} onClick={() => onSubmit(chosen)}>
+            Submit answer
+          </button>
+        </div>
       )}
     </div>
   );

@@ -9,11 +9,15 @@ import { QuestionCard } from "./QuestionCard";
 import { Timer } from "./Timer";
 import { Results } from "./Results";
 import { ReviewMap } from "./ReviewMap";
+import { VendorDot, VENDORS } from "@/components/ui/VendorDot";
 import "./engine.css";
 
 const QUICK_N = 10;
 const DRILL_N = 12;
 const PROGRESS_PERSIST_MS = 10_000;
+// Design glyphs via fromCharCode (repo ASCII-source convention, matches QuestionCard/OptionRow).
+const MIDDOT = String.fromCharCode(183); // U+00B7 middle dot - mode-note separator
+const TIMES = String.fromCharCode(10005); // U+2715 multiplication x - exit affordance
 
 export function ExamEngine({ certId, mode, domain, resumeAttemptId }: { certId?: string; mode: Mode; domain?: string; resumeAttemptId?: string }) {
   const bank = getBank(certId);
@@ -172,88 +176,136 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId }: { certId?:
 
   if (questions.length === 0) {
     return (
-      <div className="card">
-        <p>{mode === "retry" ? "No missed questions yet - take a practice run first." : "No questions available."}</p>
-        <a className="btn btn-ghost" href={`/aws/${meta.certId}`}>Back to {meta.examCode}</a>
+      <div className="stage">
+        <div className="card">
+          <p>{mode === "retry" ? "No missed questions yet - take a practice run first." : "No questions available."}</p>
+          <a className="btn btn-ghost" href={`/aws/${meta.certId}`}>Back to {meta.examCode}</a>
+        </div>
       </div>
     );
   }
 
   if (phase === "results" && attemptRef.current) {
     const attempt = getAttempt(attemptRef.current.attemptId) ?? attemptRef.current;
-    return <Results attempt={attempt} questions={questions} meta={meta} />;
+    // Results early-returns before the exam bar + stage, so it needs its own width clamp now that
+    // page.tsx no longer wraps the surface in .container. Task 7 re-widths this to the design's 940px.
+    return (
+      <div className="stage">
+        <Results attempt={attempt} questions={questions} meta={meta} />
+      </div>
+    );
   }
 
   const g = isMock ? null : graded[q.id] ?? null;
   const last = index === questions.length - 1;
   const answeredThis = isMock && !!answers[q.id];
 
-  // Contract C1a (Task 13 review): the header (eyebrow + Timer) is hoisted above the phase switch so
-  // the sealed countdown NEVER unmounts between the question and review phases - it only unmounts when
-  // finish() moves to results. initialElapsedSec seeds from elapsedRef so any remount resumes in place.
+  // Streak (drill/quick only, Task 6): consecutive-correct over the in-order answered prefix. A pure
+  // render derivation from `graded` - it adds no state and never writes storage, so engine logic is
+  // untouched. It is 0 on a fresh mount (empty `graded`), honestly reflects a resumed practice run's
+  // restored answers, and stays 0 in mock (mock records into `answers`, never grading `graded`).
+  let streak = 0;
+  if (!isMock) {
+    for (const qq of questions) {
+      const res = graded[qq.id];
+      if (!res) break;
+      streak = res.correct ? streak + 1 : 0;
+    }
+  }
+  const vendorColor = VENDORS[meta.vendor.toLowerCase()]?.c ?? "var(--gold)";
+  // Honest mode descriptions (design idiom) - the mock note names the blueprint bias + late reveal.
+  const modeNote = isMock
+    ? `Mock exam ${MIDDOT} mix follows the exam blueprint ${MIDDOT} explanations at the end`
+    : mode === "drill"
+    ? `Domain drill ${MIDDOT} instant feedback`
+    : mode === "retry"
+    ? `Retry missed ${MIDDOT} instant feedback`
+    : `Quick drill ${MIDDOT} instant feedback`;
+
+  // Contract C1a (Task 13 review): the exam bar (switcher + progress + Timer) is hoisted above the
+  // phase switch so the sealed countdown NEVER unmounts between the question and review phases - it
+  // only unmounts when finish() moves to results. initialElapsedSec seeds from elapsedRef so any
+  // remount resumes in place. The Timer stays mounted (and ticking) in practice too - it is only
+  // visually hidden there (the design shows the clock for mock only), so practice elapsed still records.
   return (
-    <div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16, gap: 12 }}>
-        <span className="eyebrow">{meta.examCode} - {isMock ? "Full Mock" : mode}</span>
-        <Timer
-          initialElapsedSec={elapsedRef.current}
-          countdownSec={isMock ? meta.mockMinutes * 60 : null}
-          onTick={handleTick}
-          onExpire={finish}
-          onPause={handlePause}
-        />
+    <>
+      <div className="exambar">
+        <div className="switcher">
+          <VendorDot color={vendorColor} />
+          <span className="sc-name">{meta.title}</span>
+        </div>
+        <div className="pbar-wrap">
+          <span className="pcount">{index + 1}/{questions.length}</span>
+          <div className="pbar"><span style={{ width: `${(index / questions.length) * 100}%` }} /></div>
+        </div>
+        <span style={{ display: isMock ? "inline-flex" : "none" }}>
+          <Timer
+            initialElapsedSec={elapsedRef.current}
+            countdownSec={isMock ? meta.mockMinutes * 60 : null}
+            onTick={handleTick}
+            onExpire={finish}
+            onPause={handlePause}
+          />
+        </span>
+        <a className="exit" href={`/aws/${meta.certId}`}>Exit {TIMES}</a>
       </div>
 
-      {phase === "review" ? (
-        <div>
-          <h2>Review your answers</h2>
-          {/* Contract C7 (Task 11 review): the Submit button precedes the map in DOM order so
-              keyboard users are not forced to tab through 65 cells to reach it. */}
-          <button className="btn btn-primary" onClick={finish}>Submit exam</button>
-          <div data-testid="reviewmap">
-            <ReviewMap
-              states={questions.map((qq) => ({ answered: !!answers[qq.id], flagged: !!flags[qq.id] }))}
-              current={index}
-              onJump={goTo}
-            />
-          </div>
-        </div>
-      ) : (
-        <div>
-          {/* Contract C2 (Task 9 review): QuestionCard renders in a bare div - never inside .card
-              (its .qnum text fails AA contrast on a --panel-background surface). */}
-          <QuestionCard
-            key={q.id + String(answeredThis)}
-            question={q}
-            graded={g}
-            onSubmit={submit}
-            index={index}
-            total={questions.length}
-          />
-
-          {isMock && (
-            <div style={{ display: "flex", gap: 10, marginTop: 8, flexWrap: "wrap", alignItems: "center" }}>
-              <button className="btn btn-ghost" disabled={index === 0} onClick={() => goTo(index - 1)}>Prev</button>
-              <button className="btn btn-ghost" disabled={last} onClick={() => goTo(index + 1)}>Next</button>
-              <button className="btn btn-ghost" onClick={toggleFlag}>
-                {flags[q.id] ? "Unflag" : "Flag for review"}
-              </button>
-              {answers[q.id] && (
-                <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, color: "var(--muted)" }}>Answer recorded</span>
-              )}
-              <button className="btn btn-primary" style={{ marginLeft: "auto" }} onClick={() => { if (!finishedRef.current) setPhase("review"); }}>
-                Review & submit
-              </button>
+      <div className="stage">
+        {phase === "review" ? (
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 18 }}>
+              <h2 className="review-head">Review your answers</h2>
+              {/* Contract C7 (Task 11 review): the Submit button precedes the map in DOM order so
+                  keyboard users are not forced to tab through 65 cells to reach it. */}
+              <button className="btn btn-primary" style={{ marginLeft: "auto" }} onClick={finish}>Submit exam</button>
             </div>
-          )}
+            <div data-testid="reviewmap" className="review-panel">
+              <ReviewMap
+                states={questions.map((qq) => ({ answered: !!answers[qq.id], flagged: !!flags[qq.id] }))}
+                current={index}
+                onJump={goTo}
+              />
+            </div>
+          </div>
+        ) : (
+          <div>
+            <p className="mode-note">{modeNote}</p>
+            {/* Contract C2 (Task 9 review): QuestionCard renders in a bare div - never inside .card
+                (its .qnum text fails AA contrast on a --panel-background surface). */}
+            <QuestionCard
+              key={q.id + String(answeredThis)}
+              question={q}
+              graded={g}
+              onSubmit={submit}
+              index={index}
+              total={questions.length}
+            />
 
-          {!isMock && g && (
-            <button className="btn btn-primary" onClick={() => (last ? finish() : setIndex((i) => i + 1))}>
-              {last ? "See results" : "Next question"}
-            </button>
-          )}
-        </div>
-      )}
-    </div>
+            {isMock && (
+              <div className="mocknav">
+                <button className="btn btn-ghost btn-sm" onClick={toggleFlag}>
+                  {flags[q.id] ? "Unflag" : "Flag for review"}
+                </button>
+                <button className="btn btn-ghost btn-sm" disabled={index === 0} onClick={() => goTo(index - 1)}>Prev</button>
+                <button className="btn btn-ghost btn-sm" disabled={last} onClick={() => goTo(index + 1)}>Next</button>
+                {answers[q.id] && <span className="recorded">Answer recorded</span>}
+                <button className="btn btn-primary" style={{ marginLeft: "auto" }} onClick={() => { if (!finishedRef.current) setPhase("review"); }}>
+                  Review & submit
+                </button>
+              </div>
+            )}
+
+            {!isMock && g && (
+              <div className="footbar">
+                {streak > 0 && <span className="streak">Streak: <b>{streak} correct</b></span>}
+                <button className="btn btn-primary" style={{ marginLeft: "auto" }} onClick={() => (last ? finish() : setIndex((i) => i + 1))}>
+                  {last ? "See results" : "Next question"}
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </>
   );
 }
