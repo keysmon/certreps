@@ -18,8 +18,8 @@ const MODE_LABEL: Record<string, string> = {
  * it renders nothing on the server and appears only once a device-local in-progress attempt
  * exists. Single-device-in-progress semantics live in getInProgress (Task 4 review).
  */
-export function ResumeBanner() {
-  const meta = getMeta();
+export function ResumeBanner({ certId }: { certId?: string }) {
+  const meta = getMeta(certId);
   const [attempt, setAttempt] = useState<Attempt | null>(null);
 
   useEffect(() => {

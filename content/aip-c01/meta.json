@@ -8,6 +8,8 @@
   "mockMinutes": 156,
   "passLinePct": 75,
   "verified": "Q3 2026",
+  "seoTitle": "Free AIP-C01 Practice Exam - AWS Certified Generative AI Developer",
+  "seoDescription": "Free full-length AIP-C01 practice exam with {n} original scenario questions, explanations, and per-domain readiness scoring. No signup. Not affiliated with AWS.",
   "domains": [
     { "name": "Foundation Model Integration & Compliance", "tag": "Domain 1", "weightPct": 31, "mockCount": 20 },
     { "name": "Implementation & Integration", "tag": "Domain 2", "weightPct": 26, "mockCount": 17 },

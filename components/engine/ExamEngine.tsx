@@ -15,9 +15,9 @@ const QUICK_N = 10;
 const DRILL_N = 12;
 const PROGRESS_PERSIST_MS = 10_000;
 
-export function ExamEngine({ mode, domain, resumeAttemptId }: { mode: Mode; domain?: string; resumeAttemptId?: string }) {
-  const bank = getBank();
-  const meta = getMeta();
+export function ExamEngine({ certId, mode, domain, resumeAttemptId }: { certId?: string; mode: Mode; domain?: string; resumeAttemptId?: string }) {
+  const bank = getBank(certId);
+  const meta = getMeta(certId);
   const isMock = mode === "mock";
 
   // Resume target resolved once per mount: a STORED, UNFINISHED attempt whose mode matches this

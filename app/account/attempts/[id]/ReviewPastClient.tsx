@@ -3,7 +3,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import type { Attempt } from "@/lib/types";
 import { getAttempt } from "@/lib/storage";
-import { getBank, getMeta } from "@/lib/bank";
+import { getMeta } from "@/lib/bank";
+import { getCert } from "@/lib/certs";
 import { questionsByIds } from "@/lib/sampler";
 import { Results } from "@/components/engine/Results";
 
@@ -15,7 +16,6 @@ import { Results } from "@/components/engine/Results";
  * live engine shows - zero bespoke result UI.
  */
 export function ReviewPastClient({ id }: { id: string }) {
-  const meta = getMeta();
   const [attempt, setAttempt] = useState<Attempt | null | undefined>(undefined);
 
   useEffect(() => {
@@ -28,7 +28,9 @@ export function ReviewPastClient({ id }: { id: string }) {
 
   if (attempt === null) {
     // A cloud-synced attempt made on another device legitimately is not in this device's
-    // localStorage, so this is not a 404 - say plainly that it lives elsewhere.
+    // localStorage, so this is not a 404 - say plainly that it lives elsewhere. No attempt
+    // means no certId to resolve, so the escape hatch falls back to the default cert.
+    const meta = getMeta();
     return (
       <div className="card">
         <p style={{ margin: "0 0 14px" }}>This attempt is not on this device.</p>
@@ -43,6 +45,23 @@ export function ReviewPastClient({ id }: { id: string }) {
       </div>
     );
   }
+
+  // Resolve the attempt's own cert. A cert dropped from the registry (getCert -> null) must never
+  // reach getBank/getMeta, which throw on an unknown certId - render a distinct card instead.
+  const cert = getCert(attempt.certId);
+  if (!cert) {
+    return (
+      <div className="card">
+        <p style={{ margin: "0 0 14px" }}>This attempt is from a certification no longer available.</p>
+        <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+          <Link className="btn btn-primary" href="/account">
+            Your account
+          </Link>
+        </div>
+      </div>
+    );
+  }
+  const meta = cert.meta;
 
   if (attempt.finishedAt === null) {
     // Resume rehydrates the unfinished attempt in the engine (Task 8). Only reachable for a
@@ -66,7 +85,7 @@ export function ReviewPastClient({ id }: { id: string }) {
     );
   }
 
-  const questions = questionsByIds(getBank(), attempt.questionIds);
+  const questions = questionsByIds(cert.bank, attempt.questionIds);
   return (
     <>
       <Link
