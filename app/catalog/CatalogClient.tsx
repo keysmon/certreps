@@ -2,10 +2,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { CertCard } from "@/components/ui/CertCard";
 import { VENDORS } from "@/components/ui/VendorDot";
-import { getBank } from "@/lib/bank";
-import { gradeAttempt } from "@/lib/scoring";
-import { questionsByIds } from "@/lib/sampler";
-import { getInProgress, listAttempts } from "@/lib/storage";
+import { progressView, type CertStatus } from "@/lib/progress-view";
 import "./catalog.css";
 
 // ASCII-source convention (see app/page.tsx / Results.tsx): typographic glyphs from the
@@ -29,7 +26,7 @@ export interface CatalogCert {
 }
 
 type Dim = "vendor" | "level" | "status";
-type Status = "Not started" | "In progress" | "Ready";
+type Status = CertStatus;
 type SortKey = "pop" | "az" | "new";
 
 const STATUS_VALUES: Status[] = ["Not started", "In progress", "Ready"];
@@ -120,22 +117,12 @@ export function CatalogClient({ certs }: { certs: CatalogCert[] }) {
   useEffect(() => {
     const prog: Record<string, number> = {};
     const stat: Record<string, Status> = {};
+    // Card bar (bestMockPct) and Status come from the one shared derivation in
+    // lib/progress-view so the catalog and the cert-detail page can never disagree.
     for (const c of certs) {
-      const bank = getBank(c.certId);
-      const finishedMocks = listAttempts(c.certId).filter((a) => a.mode === "mock" && a.finishedAt !== null);
-      // Best finished-mock score IS the card's readiness bar; deriving status from the same
-      // number keeps the card and the Status facet from ever contradicting each other.
-      const best = finishedMocks.length
-        ? Math.max(...finishedMocks.map((a) => gradeAttempt(a, questionsByIds(bank, a.questionIds)).pct))
-        : 0;
-      prog[c.certId] = best;
-      const inProgress = getInProgress(c.certId) !== null;
-      stat[c.certId] =
-        finishedMocks.length && best >= c.passLinePct
-          ? "Ready"
-          : inProgress || finishedMocks.length
-            ? "In progress"
-            : "Not started";
+      const { bestMockPct, status } = progressView(c.certId, c.passLinePct);
+      prog[c.certId] = bestMockPct;
+      stat[c.certId] = status;
     }
     setProgress(prog);
     setStatus(stat);
