@@ -94,9 +94,18 @@ export function AccountClient({ welcome }: { welcome: boolean }) {
     const supabase = getSupabase();
     const userId = session?.user.id;
     try {
-      if (supabase && userId) await supabase.from("attempts").delete().eq("user_id", userId);
+      if (supabase && userId) {
+        // supabase-js v2 resolves with { error } rather than throwing - check it, or a failed
+        // cloud delete silently masquerades as success (rows would resurface on next sign-in).
+        const { error } = await supabase.from("attempts").delete().eq("user_id", userId);
+        if (error) {
+          console.warn("delete:", error);
+          window.alert("Your cloud data could not be deleted right now - it may reappear when you next sign in. Local data was still cleared.");
+        }
+      }
     } catch (e) {
-      console.warn("delete:", e); // best-effort: still wipe local + sign out below
+      console.warn("delete:", e); // network-level throw: same honest path as above
+      window.alert("Your cloud data could not be deleted right now - it may reappear when you next sign in. Local data was still cleared.");
     }
     clearAll();
     setAttempts([]); // honest immediate feedback even if sign-out below is slow
