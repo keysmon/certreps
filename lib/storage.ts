@@ -1,8 +1,9 @@
 import type { Attempt, Mode, QuestionResult } from "./types";
+import { queueUpsert } from "./sync-runtime";
 
 const KEY = "certreps.attempts.v1";
 
-function readAll(): Attempt[] {
+export function readAll(): Attempt[] {
   if (typeof window === "undefined") return [];
   try {
     const raw = localStorage.getItem(KEY);
@@ -14,11 +15,21 @@ function readAll(): Attempt[] {
   }
 }
 
-function writeAll(attempts: Attempt[]): void {
+export function writeAll(attempts: Attempt[]): void {
   try {
     localStorage.setItem(KEY, JSON.stringify(attempts));
   } catch {
     /* storage full or blocked - degrade silently; in-memory state still works */
+  }
+}
+
+/** Wipe the local attempt store. Used by the account "Delete my data" action after the
+ *  cloud rows are deleted and the session is signed out. Degrades silently if blocked. */
+export function clearAll(): void {
+  try {
+    localStorage.removeItem(KEY);
+  } catch {
+    /* storage blocked - nothing else to do */
   }
 }
 
@@ -42,6 +53,15 @@ export function saveAttempt(a: Attempt): void {
   const all = readAll().filter((x) => x.attemptId !== a.attemptId);
   all.push(a);
   writeAll(all);
+  // Write-through cloud mirror (no-op when signed out/unavailable). This is the single
+  // write path - recordResult and finishAttempt both persist through here, so a finished
+  // attempt is upserted immediately and mid-exam writes are debounced. Guarded so sync can
+  // never surface to the engine, even though queueUpsert already never throws by contract.
+  try {
+    queueUpsert(a);
+  } catch {
+    /* sync must never break the localStorage write-once contract */
+  }
 }
 
 export function getAttempt(attemptId: string): Attempt | null {
@@ -68,8 +88,33 @@ export function finishAttempt(attemptId: string, elapsedSec: number, pauseCount:
   saveAttempt(a);
 }
 
-export function getInProgress(certId: string, mode: Mode): Attempt | null {
-  return listAttempts(certId).find((a) => a.mode === mode && a.finishedAt === null) ?? null;
+/**
+ * Snapshot in-flight timer progress (elapsed + pauses) onto an UNFINISHED attempt so a resumed
+ * attempt restores an honest clock rather than a near-full one (Task 8). Writes localStorage ONLY
+ * - no cloud upsert: resume reads localStorage (single-device-in-progress semantics), and the next
+ * recordResult/finishAttempt upserts the full state to the cloud, so spamming an upsert per tick is
+ * both unnecessary and wasteful. No-ops on a sealed attempt - the finished write is authoritative and
+ * a post-expiry tick must never clobber it.
+ */
+export function saveProgress(attemptId: string, elapsedSec: number, pauseCount: number): void {
+  const all = readAll();
+  const a = all.find((x) => x.attemptId === attemptId);
+  if (!a || a.finishedAt !== null) return;
+  a.elapsedSec = elapsedSec;
+  a.pauseCount = pauseCount;
+  writeAll(all);
+}
+
+/**
+ * Latest LOCAL unfinished attempt for a cert (any mode, newest by startedAt), or null.
+ * Powers the cert-page resume banner. Reads only localStorage - single-device-in-progress
+ * semantics (Task 4 review, carried to Task 8): an in-progress attempt is resumable only
+ * where it lives locally, because the equal-count merge tree cannot reconcile a cross-device
+ * divergence without silently dropping one side.
+ */
+export function getInProgress(certId: string): Attempt | null {
+  const unfinished = listAttempts(certId).filter((a) => a.finishedAt === null);
+  return unfinished.length ? unfinished[unfinished.length - 1] : null;
 }
 
 /** Latest verdict wins: a question is "missed" if its most recent recorded result is wrong. */

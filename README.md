@@ -13,6 +13,7 @@ Dev: `npm install && npm run dev`
 Test: `npm test`
 Typecheck: `npm run typecheck`
 Content gate: `python3 pipeline/validate_bank.py` must pass before committing any change to `content/*/questions.json`.
+Published-bank invariant (review-past replays depend on it): question ids are append-only - never delete or renumber; `options` and `correct` are immutable once published; `explanation` and `docUrl` may be improved.
 
 CertReps is an independent study resource.
 Not affiliated with, endorsed by, or sponsored by Amazon Web Services.

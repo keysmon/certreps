@@ -1,9 +1,9 @@
 "use client";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Attempt, Mode, Question } from "@/lib/types";
 import { getBank, getMeta } from "@/lib/bank";
 import { sampleDrill, sampleMock, sampleQuick, questionsByIds } from "@/lib/sampler";
-import { createAttempt, saveAttempt, recordResult, finishAttempt, missedQuestionIds, getAttempt } from "@/lib/storage";
+import { createAttempt, saveAttempt, recordResult, finishAttempt, missedQuestionIds, getAttempt, saveProgress } from "@/lib/storage";
 import { isCorrect } from "@/lib/scoring";
 import { QuestionCard } from "./QuestionCard";
 import { Timer } from "./Timer";
@@ -13,13 +13,27 @@ import "./engine.css";
 
 const QUICK_N = 10;
 const DRILL_N = 12;
+const PROGRESS_PERSIST_MS = 10_000;
 
-export function ExamEngine({ mode, domain }: { mode: Mode; domain?: string }) {
+export function ExamEngine({ mode, domain, resumeAttemptId }: { mode: Mode; domain?: string; resumeAttemptId?: string }) {
   const bank = getBank();
   const meta = getMeta();
   const isMock = mode === "mock";
 
+  // Resume target resolved once per mount: a STORED, UNFINISHED attempt whose mode matches this
+  // engine. Anything else (no id / missing / already finished / mode mismatch) yields null and the
+  // engine silently takes the normal fresh-sample path - no error UI (see Task 8).
+  const resumed: Attempt | null = useMemo(() => {
+    if (!resumeAttemptId) return null;
+    const a = getAttempt(resumeAttemptId);
+    if (!a || a.finishedAt !== null || a.mode !== mode) return null;
+    return a;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const questions: Question[] = useMemo(() => {
+    // Resume reuses the STORED question order verbatim (never resamples).
+    if (resumed) return questionsByIds(bank, resumed.questionIds);
     if (mode === "quick") return sampleQuick(bank, QUICK_N);
     if (mode === "drill" && domain) return sampleDrill(bank, domain, DRILL_N);
     if (mode === "retry") return questionsByIds(bank, missedQuestionIds(meta.certId));
@@ -27,7 +41,7 @@ export function ExamEngine({ mode, domain }: { mode: Mode; domain?: string }) {
     return [];
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  // Sampled once per mount; callers must key ExamEngine by mode+domain (see PracticeClient,
+  // Sampled once per mount; callers must key ExamEngine by mode+domain+resume (see PracticeClient,
   // Task 15) - prop changes without remount are ignored.
 
   // Contract C1 (Task 5 review): saveAttempt exactly once here; recordResult/finishAttempt thereafter.
@@ -35,22 +49,57 @@ export function ExamEngine({ mode, domain }: { mode: Mode; domain?: string }) {
   // Lazy-ref init (React docs "avoiding recreating the ref contents"): a useRef(IIFE()) initializer
   // is RE-EVALUATED every render, which fired saveAttempt on each render (21x in the loop) and
   // violated C1; the null-guard runs createAttempt/saveAttempt exactly once on the first render.
+  // Resume ADOPTS the stored attempt as-is: no createAttempt (that mints a second attemptId / row)
+  // and no saveAttempt (the row already exists) - recordResult/finishAttempt keep upserting the
+  // SAME id, so the write-once contract holds and no duplicate attempt is ever created.
   const attemptRef = useRef<Attempt | null>(null);
   if (attemptRef.current === null && questions.length) {
-    const a = createAttempt(meta.certId, mode, questions.map((qq) => qq.id), domain);
-    saveAttempt(a);
-    attemptRef.current = a;
+    if (resumed) {
+      attemptRef.current = resumed;
+    } else {
+      const a = createAttempt(meta.certId, mode, questions.map((qq) => qq.id), domain);
+      saveAttempt(a);
+      attemptRef.current = a;
+    }
   }
 
-  const [index, setIndex] = useState(0);
+  // Seed the write-through UI journal from the resumed attempt's results (once per mount). Practice
+  // modes hydrate `graded` (chosen + correctness -> an already-answered question shows its graded
+  // state, not a fresh form); mock hydrates `answers` (silent chosen). Flags restore for both modes.
+  const seed = useMemo(() => {
+    const graded: Record<string, { chosen: number[]; correct: boolean }> = {};
+    const answers: Record<string, number[]> = {};
+    const flags: Record<string, boolean> = {};
+    if (resumed) {
+      for (const r of Object.values(resumed.results)) {
+        if (isMock) answers[r.questionId] = r.chosen;
+        else graded[r.questionId] = { chosen: r.chosen, correct: r.correct };
+        if (r.flagged) flags[r.questionId] = true;
+      }
+    }
+    return { graded, answers, flags };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Resume position: the first UNANSWERED question (or index 0 when every question is answered).
+  const initialIndex = useMemo(() => {
+    if (!resumed) return 0;
+    const i = questions.findIndex((qq) => !resumed.results[qq.id]);
+    return i === -1 ? 0 : i;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const [index, setIndex] = useState(initialIndex);
   const [phase, setPhase] = useState<"question" | "review" | "results">("question");
-  // In-memory UI projection of attempt.results (write-through journal); a future resume feature
-  // seeds this from getAttempt(...).results - do not read storage during render.
-  const [graded, setGraded] = useState<Record<string, { chosen: number[]; correct: boolean }>>({});
-  const [answers, setAnswers] = useState<Record<string, number[]>>({}); // mock: chosen without reveal
-  const [flags, setFlags] = useState<Record<string, boolean>>({});
-  const elapsedRef = useRef(0);
-  const pausesRef = useRef(0);
+  // In-memory UI projection of attempt.results (write-through journal), seeded from the resumed
+  // attempt above - do not read storage during render.
+  const [graded, setGraded] = useState<Record<string, { chosen: number[]; correct: boolean }>>(seed.graded);
+  const [answers, setAnswers] = useState<Record<string, number[]>>(seed.answers); // mock: chosen without reveal
+  const [flags, setFlags] = useState<Record<string, boolean>>(seed.flags);
+  // Resume continues the stored clock + pause tally so a post-resume finish accumulates rather than
+  // clobbering them (initialElapsedSec below keeps the mock countdown honest).
+  const elapsedRef = useRef(resumed ? resumed.elapsedSec : 0);
+  const pausesRef = useRef(resumed ? resumed.pauseCount : 0);
   // Contract C1b (Task 13 review): finish is one-way. Once submitted (or the countdown expires),
   // every nav/jump/flag/submit handler no-ops so a queued setPhase("question") cannot reopen a
   // sealed exam after onExpire has already moved it to results.
@@ -103,6 +152,23 @@ export function ExamEngine({ mode, domain }: { mode: Mode; domain?: string }) {
       });
     }
   }, [q, flags, answers]);
+
+  // Persist the running clock every 10s and once more on unmount, so navigating away mid-exam and
+  // resuming continues from an honest elapsed time - not a near-full countdown. saveProgress writes
+  // localStorage only and no-ops on a sealed attempt, so this never races or clobbers the finish
+  // write. Refs only, so the effect binds once (empty deps).
+  useEffect(() => {
+    const persist = () => {
+      if (attemptRef.current && !finishedRef.current) {
+        saveProgress(attemptRef.current.attemptId, elapsedRef.current, pausesRef.current);
+      }
+    };
+    const id = setInterval(persist, PROGRESS_PERSIST_MS);
+    return () => {
+      clearInterval(id);
+      persist();
+    };
+  }, []);
 
   if (questions.length === 0) {
     return (
