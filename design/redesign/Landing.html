@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CertReps — Free certification prep</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+<style>
+h1,h2,h3,h4{font-family:var(--font-display);margin:0;letter-spacing:-.02em;line-height:1.08}
+.mono{font-family:var(--font-mono)}.muted{color:var(--muted)}.faint{color:var(--faint)}
+a{color:var(--gold);text-decoration:none}a:hover{color:var(--gold-bright)}
+body{background:
+   radial-gradient(1300px 640px at 18% -12%, rgba(233,180,76,.09), transparent 60%),
+   radial-gradient(1100px 620px at 100% 4%, rgba(90,169,240,.07), transparent 55%),
+   var(--ink);min-height:100vh}
+.btn{font-family:var(--font-sans);font-size:15px;font-weight:600;border:none;border-radius:12px;padding:14px 22px;cursor:pointer;display:inline-flex;align-items:center;gap:9px;text-decoration:none;transition:.14s}
+.btn-primary{background:var(--gold);color:var(--on-gold);box-shadow:0 10px 28px -12px rgba(233,180,76,.75)}
+.btn-primary:hover{background:var(--gold-bright)}
+.btn-ghost{background:transparent;color:var(--text);border:1px solid var(--line-strong)}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold)}
+.btn-sm{padding:9px 15px;font-size:13.5px;border-radius:9px}
+.topnav{display:flex;align-items:center;gap:18px;padding:18px 40px;max-width:1200px;margin:0 auto}
+.logo{display:flex;align-items:center;gap:11px;font-family:var(--font-display);font-weight:800;font-size:20px;letter-spacing:-.02em}
+.logo .loop{width:36px;height:36px;border-radius:10px;background:var(--ink-2);border:1px solid var(--line-strong);display:grid;place-items:center}
+.navlink{font-size:14px;color:var(--muted);cursor:pointer}.navlink:hover{color:var(--text)}
+.wrap{max-width:1080px;margin:0 auto;padding:0 40px}
+.hero{text-align:center;padding:66px 0 30px}
+.eyebrow{font-family:var(--font-mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);display:inline-flex;align-items:center;gap:9px}
+.hero h1{font-size:clamp(40px,7vw,76px);font-weight:800;margin:22px 0 0}
+.hero .accentword{color:var(--gold)}
+.hero p{font-size:19px;color:var(--muted);max-width:600px;margin:22px auto 0;line-height:1.6}
+.cta{display:flex;gap:14px;justify-content:center;margin-top:34px;flex-wrap:wrap}
+.kbd{font-family:var(--font-mono);font-size:11px;color:var(--faint);border:1px solid var(--line);border-radius:6px;padding:3px 8px}
+.trust{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:40px auto 0;max-width:760px}
+.vchip{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:20px;padding:7px 14px;background:var(--panel)}
+.vchip .vd{width:9px;height:9px;border-radius:50%}
+.sec{padding:56px 0}
+.sec-h{font-family:var(--font-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);text-align:center;margin-bottom:8px}
+.sec h2{font-size:30px;font-weight:800;text-align:center;margin-bottom:34px}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:26px 24px}
+.step .n{font-family:var(--font-mono);font-size:12px;color:var(--gold);margin-bottom:12px}
+.step h3{font-size:19px;font-weight:700;margin-bottom:8px}
+.step p{font-size:14px;color:var(--muted);margin:0;line-height:1.6}
+.trend-head{display:flex;align-items:baseline;gap:12px;margin-bottom:18px}
+.trend-head h2{font-size:22px;font-weight:800;text-align:left;margin:0}
+.finalcta{text-align:center;background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:52px 30px;margin:20px 0 60px}
+.finalcta h2{font-size:34px;font-weight:800;margin-bottom:10px}
+.finalcta p{color:var(--muted);font-size:16px;margin:0 auto 26px;max-width:440px}
+footer{text-align:center;padding:30px 0 50px;font-family:var(--font-mono);font-size:11.5px;color:var(--faint)}
+@media(max-width:760px){.steps{grid-template-columns:1fr}.topnav{padding:16px 20px}.wrap{padding:0 20px}.topnav .navlink{display:none}}
+</style>
+</head>
+<body>
+<a href="#maincontent" class="skip-link">Skip to content</a>
+<header class="topnav">
+  <div class="logo"><span class="loop"><svg viewBox="0 0 32 32" width="22" height="22"><circle cx="16" cy="16" r="8.5" fill="none" stroke="#e9b44c" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="42 11.4" transform="rotate(-35 16 16)"/></svg></span>CertReps</div>
+  <div style="flex:1"></div>
+  <span class="navlink" onclick="location.href='CertReps Catalog.html'">Catalog</span>
+  <a class="btn btn-ghost btn-sm" href="Sign In.html">Sign in</a>
+</header>
+
+<main class="wrap" id="maincontent">
+  <section class="hero">
+    <span class="eyebrow"><span style="width:7px;height:7px;border-radius:50%;background:var(--emerald);display:inline-block"></span>Free forever · no signup to practice</span>
+    <h1>Practice. Miss. Retry.<br><span class="accentword">Walk in ready.</span></h1>
+    <p>Original scenario questions with real explanations, a full exam simulator, and an honest readiness read that tells you exactly what to drill next.</p>
+    <div class="cta">
+      <a class="btn btn-primary" href="CertReps Catalog.html" id="browse">Browse <span id="certCount">60</span> certifications →</a>
+      <a class="btn btn-ghost" href="#how">See how it works</a>
+    </div>
+    <div class="trust" id="trust"></div>
+  </section>
+
+  <section class="sec" id="how">
+    <div class="sec-h">How it works</div>
+    <h2>Three honest steps</h2>
+    <div class="steps">
+      <div class="step"><div class="n">01 · Practice</div><h3>Drill a domain</h3><p>Answer original scenario questions one at a time. Miss one and see exactly why — immediately, with a link to the source docs.</p></div>
+      <div class="step"><div class="n">02 · Simulate</div><h3>Sit the full mock</h3><p>Real exam timing and question count. No peeking — just like the day itself, so the nerves are gone before they matter.</p></div>
+      <div class="step"><div class="n">03 · Read your gaps</div><h3>Know when you're ready</h3><p>A readiness report scores every domain against the pass line and tells you the two things to drill before you book.</p></div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="trend-head"><h2>Trending certifications</h2><a href="CertReps Catalog.html" style="font-family:var(--font-mono);font-size:12px;margin-left:auto">View all →</a></div>
+    <div id="trending" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px"></div>
+  </section>
+
+  <section>
+    <div class="finalcta">
+      <h2>Your next cert is one drill away.</h2>
+      <p>No account needed to start. Pick a certification and take your first ten questions right now.</p>
+      <a class="btn btn-primary" href="CertReps Catalog.html">Find your certification →</a>
+    </div>
+  </section>
+</main>
+
+<footer>CertReps · free certification prep · questions verified Q3 2026</footer>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="../_ds_bundle.js"></script>
+<script src="certs.js"></script>
+<script>
+const {V,CERTS,learners}=window;
+const DS=window.CertRepsDesignSystem_48aca3;
+const _e=React.createElement;
+document.getElementById('certCount').textContent=CERTS.length;
+
+/* vendor trust chips */
+document.getElementById('trust').innerHTML=Object.values(V).map(m=>
+  `<span class="vchip"><span class="vd" style="background:${m.c}"></span>${m.n}</span>`).join('');
+
+/* trending = top 3 by popularity, rendered from the DS CertCard */
+const trending=[...CERTS].sort((a,b)=>b.pop-a.pop).slice(0,3);
+ReactDOM.createRoot(document.getElementById('trending')).render(
+  trending.map(c=>{
+    const m=V[c.v];
+    const nav=()=>location.href='Cert Detail.html?c='+encodeURIComponent(c.code);
+    return _e('div',{key:c.code,role:'link',tabIndex:0,'aria-label':`${c.name} — ${m.n} ${c.lvl}`,
+      style:{borderRadius:'var(--radius)'},onClick:nav,onKeyDown:e=>{if(e.key==='Enter')nav();}},
+      _e(DS.CertCard,{accent:m.c,vendorName:m.n,code:c.code,name:c.name,level:c.lvl,role:c.role,questions:c.q,learners:learners(c.pop),progress:0,style:{cursor:'pointer',height:'100%'}}));
+  })
+);
+</script>
+</body>
+</html>
