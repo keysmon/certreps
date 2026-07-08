@@ -41,3 +41,14 @@ describe("parameterized bank loader (back-compat pinned)", () => {
     expect(() => getMeta("nope")).toThrow(/unknown cert/i);
   });
 });
+
+describe("prototype-chain safety (review regression)", () => {
+  it("returns null for inherited Object.prototype keys", () => {
+    expect(getCert("toString")).toBeNull();
+    expect(getCert("__proto__")).toBeNull();
+    expect(getCert("hasOwnProperty")).toBeNull();
+  });
+  it("bank loaders throw loudly for prototype keys", () => {
+    expect(() => getBank("constructor")).toThrow(/unknown cert/i);
+  });
+});

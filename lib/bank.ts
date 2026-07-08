@@ -6,6 +6,10 @@ const DEFAULT_CERT = "aip-c01";
 // certId defaults to aip-c01 so existing no-arg callers are unchanged; new
 // callers pass certId explicitly. Unknown certs throw (routes guard with
 // getCert() ?? notFound() before ever reaching here).
+/**
+ * Throws on unknown certId (loud internal failure). User-facing routes must guard
+ * with getCert(certId) ?? notFound() BEFORE calling this - see lib/certs.ts.
+ */
 export function getBank(certId: string = DEFAULT_CERT): Question[] {
   const cert = getCert(certId);
   if (!cert) throw new Error(`Unknown certId: ${certId}`);
