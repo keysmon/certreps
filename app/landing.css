@@ -1,0 +1,81 @@
+/* Landing page (app/page.tsx) - page-local styles, ported from
+   design/redesign/Landing.html's <style> block.
+   - The page-scoped body glow lives here: Task 1 removed the global glow, and the
+     design re-adds it on this page only (a wrapper element, not a global body change).
+   - The hero CTA buttons are a deliberate page-local treatment: larger than the DS
+     Button and with hover states, reproduced from the design's inline .btn. The
+     ui-kit Button stays the app's general button; Task 10 reconciles button systems.
+   - Global pieces (skip-link, sr-only, a{}, .muted) come from globals.css - not repeated.
+   Class names are lp- prefixed to stay collision-free (globals.css owns .btn/.card/.eyebrow). */
+
+.lp-glow {
+  background:
+    radial-gradient(1300px 640px at 18% -12%, rgba(233, 180, 76, 0.09), transparent 60%),
+    radial-gradient(1100px 620px at 100% 4%, rgba(90, 169, 240, 0.07), transparent 55%),
+    var(--ink);
+  min-height: 100vh;
+}
+
+/* shared display-heading treatment (font only - each heading sets its own size/margin) */
+.lp-glow h1, .lp-glow h2, .lp-glow h3 {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+  line-height: 1.08;
+}
+
+.lp-wrap { max-width: 1080px; margin: 0 auto; padding: 0 40px; }
+
+/* hero */
+.lp-hero { text-align: center; padding: 66px 0 30px; }
+.lp-eyebrow { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); display: inline-flex; align-items: center; gap: 9px; }
+.lp-eyebrow .lp-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--emerald); display: inline-block; }
+.lp-hero h1 { font-size: clamp(40px, 7vw, 76px); font-weight: 800; margin: 22px 0 0; }
+.lp-accent { color: var(--gold); }
+.lp-sub { font-size: 19px; color: var(--muted); max-width: 600px; margin: 22px auto 0; line-height: 1.6; }
+.lp-cta { display: flex; gap: 14px; justify-content: center; margin-top: 34px; flex-wrap: wrap; }
+
+/* hero CTAs - page-local (see file header) */
+.lp-btn { font-family: var(--font-sans); font-size: 15px; font-weight: 600; border: none; border-radius: 12px; padding: 14px 22px; cursor: pointer; display: inline-flex; align-items: center; gap: 9px; text-decoration: none; transition: 0.14s; }
+.lp-btn-primary { background: var(--gold); color: var(--on-gold); box-shadow: 0 10px 28px -12px rgba(233, 180, 76, 0.75); }
+.lp-btn-primary:hover { background: var(--gold-bright); }
+.lp-btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--line-strong); }
+.lp-btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+
+/* trust chips */
+.lp-trust { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 40px auto 0; max-width: 760px; }
+.lp-vchip { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 12px; color: var(--muted); border: 1px solid var(--line); border-radius: 20px; padding: 7px 14px; background: var(--panel); }
+.lp-vchip .lp-vd { width: 9px; height: 9px; border-radius: 50%; }
+.lp-vchip-more { color: var(--faint); }
+
+/* sections */
+.lp-sec { padding: 56px 0; }
+.lp-sec-h { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--faint); text-align: center; margin-bottom: 8px; }
+.lp-sec-title { font-size: 30px; font-weight: 800; text-align: center; margin: 0 0 34px; }
+
+/* how-it-works */
+.lp-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.lp-step { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 26px 24px; }
+.lp-step-n { font-family: var(--font-mono); font-size: 12px; color: var(--gold); margin-bottom: 12px; }
+.lp-step h3 { font-size: 19px; font-weight: 700; margin: 0 0 8px; }
+.lp-step p { font-size: 14px; color: var(--muted); margin: 0; line-height: 1.6; }
+
+/* trending - the design's repeat(3,1fr) leaves an empty third column with 2 real
+   certs; auto-fit + a max track + centering fills the row intentionally at 2 and
+   collapses to 1 column on narrow screens. */
+.lp-trend-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 18px; }
+.lp-trend-title { font-size: 22px; font-weight: 800; text-align: left; margin: 0; }
+.lp-viewall { font-family: var(--font-mono); font-size: 12px; margin-left: auto; }
+.lp-trend-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 360px)); justify-content: center; gap: 16px; }
+
+/* final CTA */
+.lp-finalcta { text-align: center; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 52px 30px; margin: 20px 0 60px; }
+.lp-finalcta h2 { font-size: 34px; font-weight: 800; margin: 0 0 10px; }
+.lp-finalcta p { color: var(--muted); font-size: 16px; margin: 0 auto 26px; max-width: 440px; }
+
+/* footer brand line - sits above the global legal disclaimer footer (layout.tsx) */
+.lp-footline { text-align: center; padding: 30px 0 40px; font-family: var(--font-mono); font-size: 11.5px; color: var(--faint); margin: 0; }
+
+@media (max-width: 760px) {
+  .lp-steps { grid-template-columns: 1fr; }
+  .lp-wrap { padding: 0 20px; }
+}
