@@ -1,5 +1,6 @@
 {
   "certId": "aip-c01",
+  "idPrefix": "aipc01",
   "vendor": "AWS",
   "title": "AWS Certified Generative AI Developer - Professional",
   "examCode": "AIP-C01",

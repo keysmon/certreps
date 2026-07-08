@@ -12,7 +12,7 @@ First cert: AWS Certified Generative AI Developer - Professional (AIP-C01).
 Dev: `npm install && npm run dev`
 Test: `npm test`
 Typecheck: `npm run typecheck`
-Content gate: `python3 pipeline/validate_bank.py` must pass before committing any change to `content/*/questions.json`.
+Content gate: `python3 pipeline/validate_bank.py` (validates every cert; `--cert <certId>` for one) must pass before committing any change to `content/*/questions.json`.
 Published-bank invariant (review-past replays depend on it): question ids are append-only - never delete or renumber; `options` and `correct` are immutable once published; `explanation` and `docUrl` may be improved.
 
 CertReps is an independent study resource.
