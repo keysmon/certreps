@@ -141,14 +141,17 @@ export function LoginClient({ failed }: { failed: boolean }) {
           )}
         </div>
 
-        {error && (
-          <p style={{ color: "var(--rose)", fontSize: 13.5, margin: 0 }}>{error}</p>
-        )}
-        {notice && (
-          <p className="small-copy" style={{ margin: 0 }}>
-            {notice}
-          </p>
-        )}
+        {/* aria-live: these two insert AFTER submit, so screen readers need the announcement. */}
+        <div aria-live="polite">
+          {error && (
+            <p style={{ color: "var(--rose)", fontSize: 13.5, margin: 0 }}>{error}</p>
+          )}
+          {notice && (
+            <p className="small-copy" style={{ margin: 0 }}>
+              {notice}
+            </p>
+          )}
+        </div>
 
         <button
           type="submit"
