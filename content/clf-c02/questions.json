@@ -24,17 +24,17 @@
     "domain": "Cloud Concepts",
     "tag": "Domain 1",
     "type": "single",
-    "stem": "AWS aggregates the usage of hundreds of thousands of customers to negotiate better pricing from suppliers and pass the resulting savings on as lower pay-as-you-go rates. Which cloud computing benefit does this describe?",
+    "stem": "A company used to provision servers based on guesses about future demand, sometimes buying too much capacity that sat idle, and sometimes too little and running out during a launch. On AWS, it instead adds or removes compute capacity as actual demand becomes clear. Which cloud computing benefit does this describe?",
     "options": [
-      "Economies of scale",
-      "Elasticity",
-      "High availability",
-      "Fault tolerance"
+      "Stop guessing capacity, since resources can be scaled up or down to match actual demand instead of being provisioned ahead of time based on a forecast",
+      "Economies of scale, which lowers the unit price of compute rather than changing how much capacity is provisioned",
+      "The shared responsibility model, which defines who secures the infrastructure versus the customer's data",
+      "Consolidated billing, which merges invoices across linked accounts"
     ],
     "correct": [
       0
     ],
-    "explanation": "<b>Economies of scale</b> is the benefit where aggregating demand across a huge customer base lets AWS negotiate lower supplier costs and pass the savings to customers. Elasticity is the ability to automatically add or remove capacity to match demand, not a pricing effect. High availability and fault tolerance describe a system's ability to keep running through failures, not AWS's purchasing power.",
+    "explanation": "<b>Stop guessing capacity</b> is the cloud benefit that lets a company scale resources to match actual demand as it becomes clear, instead of provisioning hardware for a forecast that can turn out too high or too low. Economies of scale is the separate benefit of AWS's purchasing volume lowering the unit price, not a change in how much capacity is provisioned. The shared responsibility model defines who secures what, unrelated to capacity planning. Consolidated billing only merges invoices across accounts and has no effect on capacity decisions.",
     "difficulty": "easy",
     "docUrl": "https://aws.amazon.com/what-is-cloud-computing/",
     "id": "clfc02-0002"
