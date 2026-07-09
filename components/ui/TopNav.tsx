@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getSupabase } from "@/lib/supabase/client";
 import { useSession } from "@/lib/supabase/useSession";
 import { initials } from "@/lib/initials";
+import { CommandSwitcher } from "./CommandSwitcher";
 import "./TopNav.css";
 
 /**
@@ -38,6 +39,9 @@ export function TopNav({ active }: { active?: "catalog" | "progress" }) {
         </span>
         CertReps
       </Link>
+      {/* Global Cmd+K certification switcher (Task 9). Ships wherever TopNav lives - never on the
+          practice engine, whose slim bar carries a static placeholder and keeps its own keyboard. */}
+      <CommandSwitcher />
       <span className="tn-spacer" />
       <Link
         href="/catalog"

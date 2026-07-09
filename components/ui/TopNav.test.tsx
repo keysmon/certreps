@@ -13,6 +13,12 @@ vi.mock("@/lib/supabase/client", () => ({
   supabaseAvailable: vi.fn(),
 }));
 
+// TopNav now mounts the CommandSwitcher (Task 9), whose Enter-to-open uses the app router.
+// Stub next/navigation so the transitive render has a router outside an app-router provider.
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ push: vi.fn(), replace: vi.fn() }),
+}));
+
 const mockedAvailable = vi.mocked(supabaseAvailable);
 const mockedGetSupabase = vi.mocked(getSupabase);
 const unsubscribe = vi.fn();
