@@ -306,5 +306,370 @@
     "difficulty": "medium",
     "docUrl": "https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-workloads-on-aws/disaster-recovery-options-in-the-cloud.html",
     "id": "clfc02-0016"
+  },
+  {
+    "domain": "Security and Compliance",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "Under the AWS shared responsibility model, which of the following is AWS's responsibility, described as security 'of' the cloud?",
+    "options": [
+      "The physical security of data centers, and the host infrastructure, including the hardware, software, networking, and facilities that run all AWS services",
+      "Configuring IAM users, groups, and permissions within a customer's own AWS account",
+      "Encrypting the customer's application data and managing the customer's encryption keys",
+      "Patching the guest operating system running on a customer's EC2 instances"
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "AWS is responsible for <b>security of the cloud</b>: the physical facilities, hardware, and the underlying host infrastructure, software, and networking that run every AWS service. Configuring IAM permissions, managing customer-controlled encryption and keys, and patching the guest OS on EC2 are all customer responsibilities, security in the cloud, because the customer controls how those resources are configured and used.",
+    "difficulty": "easy",
+    "docUrl": "https://aws.amazon.com/compliance/shared-responsibility-model/",
+    "id": "clfc02-0017"
+  },
+  {
+    "domain": "Security and Compliance",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A company runs an application on Amazon EC2 instances. Under the AWS shared responsibility model, which of the following is the CUSTOMER's responsibility?",
+    "options": [
+      "Maintaining and replacing the physical servers and networking hardware in the data center",
+      "Patching the guest operating system, configuring security group rules, and managing IAM permissions for the application",
+      "Ensuring the physical data center has redundant power and environmental controls",
+      "Decommissioning and securely disposing of storage hardware at end of life"
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "The customer is responsible for <b>security in the cloud</b>: patching the guest OS, configuring network controls such as security groups, and managing IAM identities and permissions for their own resources. Maintaining physical servers, data center power and environmental controls, and disposing of retired storage hardware are all part of AWS's security of the cloud responsibility, since AWS controls the underlying facilities.",
+    "difficulty": "easy",
+    "docUrl": "https://aws.amazon.com/compliance/shared-responsibility-model/",
+    "id": "clfc02-0018"
+  },
+  {
+    "domain": "Security and Compliance",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A company compares running a database on a self-managed EC2 instance versus running the same database engine on Amazon RDS. Which statement correctly describes how the shared responsibility model shifts for a managed service like RDS?",
+    "options": [
+      "There is no difference; the customer patches the underlying operating system in both cases",
+      "AWS becomes responsible for the customer's application-level data and query logic in both cases",
+      "AWS takes on responsibility for patching the underlying operating system and database engine on RDS, which the customer would otherwise have to patch themselves on EC2",
+      "Using RDS removes the customer's responsibility for configuring security groups and IAM permissions"
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "For managed services like Amazon RDS, <b>AWS takes on more of the operational burden</b>, including patching the underlying operating system and the database engine software, tasks the customer would otherwise have to handle on a self-managed EC2 database. AWS never takes responsibility for the customer's application data or query logic. Even with RDS, the customer still configures security groups, IAM permissions, and database-level access control, so those responsibilities do not disappear.",
+    "difficulty": "medium",
+    "docUrl": "https://aws.amazon.com/compliance/shared-responsibility-model/",
+    "id": "clfc02-0019"
+  },
+  {
+    "domain": "Security and Compliance",
+    "tag": "Domain 2",
+    "type": "multi",
+    "stem": "Which TWO of the following are customer responsibilities under the AWS shared responsibility model? (Select TWO.)",
+    "options": [
+      "Encrypting data and choosing how encryption keys are managed for the customer's own applications",
+      "Maintaining the physical security of the AWS data centers",
+      "Managing IAM users, groups, roles, and their permissions within the customer's account",
+      "Patching the hypervisor that underlies the EC2 service",
+      "Ensuring the global network backbone connecting AWS Regions is available"
+    ],
+    "correct": [
+      0,
+      2
+    ],
+    "explanation": "Customers are responsible for <b>encrypting their own data and choosing how to manage the keys used to do it</b>, and for <b>managing IAM identities and permissions</b> within their account. AWS, not the customer, secures the physical data centers, patches the underlying hypervisor, and maintains the global network backbone connecting Regions, since those are part of the infrastructure AWS operates.",
+    "difficulty": "easy",
+    "docUrl": "https://aws.amazon.com/compliance/shared-responsibility-model/",
+    "id": "clfc02-0020"
+  },
+  {
+    "domain": "Security and Compliance",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A company just created a new AWS account. Which practice reflects AWS's recommended way to protect the account's root user?",
+    "options": [
+      "Share the root user credentials with every engineer so anyone can perform administrative tasks",
+      "Generate long-lived access keys for the root user and embed them in application code",
+      "Use the root user for daily administrative tasks because it always has full permissions",
+      "Enable multi-factor authentication (MFA) on the root user and use it only for tasks that require it, creating an IAM administrator for daily work"
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "AWS recommends <b>enabling MFA on the root user</b> and reserving it only for the small set of tasks that truly require root, while creating an <b>IAM administrator user</b> for day-to-day administrative work. Sharing root credentials across a team, creating long-lived root access keys, and using root for routine tasks all increase the blast radius if credentials are compromised, which is exactly what these practices avoid.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_root-user.html",
+    "id": "clfc02-0021"
+  },
+  {
+    "domain": "Security and Compliance",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "An application running on an EC2 instance needs to read objects from an Amazon S3 bucket. AWS best practice is to avoid storing long-lived access keys on the instance. Which approach follows this best practice?",
+    "options": [
+      "Attach an IAM role to the EC2 instance that grants the permissions needed to access the S3 bucket",
+      "Create an IAM user with an access key and secret key, and hardcode the keys into the application",
+      "Store the AWS root user's access key in the instance's environment variables",
+      "Disable IAM entirely and rely on the S3 bucket being publicly readable"
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "An <b>IAM role attached to the EC2 instance</b> provides temporary, automatically rotated credentials to the application with no long-lived keys stored anywhere, which is the AWS best practice. Hardcoding an IAM user's access key or the root user's key into an application or its environment creates long-lived secrets that can leak, and making the bucket public removes access control rather than managing it correctly.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html",
+    "id": "clfc02-0022"
+  },
+  {
+    "domain": "Security and Compliance",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A developer needs permission to upload files to a single Amazon S3 bucket used for a specific project, and nothing else. Which IAM approach follows the principle of least privilege?",
+    "options": [
+      "Attach the AdministratorAccess managed policy so the developer never runs into a permissions error",
+      "Create a policy that grants only the s3:PutObject action on that one specific bucket",
+      "Add the developer as a co-owner of the AWS account",
+      "Grant full access to all S3 buckets in the account so the developer can also use other buckets later if needed"
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Least privilege</b> means granting only the specific permissions needed for the task, so a policy scoped to <b>s3:PutObject on the one required bucket</b> is correct. AdministratorAccess, account co-ownership, and account-wide S3 access all grant far more than the task requires, increasing risk if the developer's credentials are ever compromised.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html",
+    "id": "clfc02-0023"
+  },
+  {
+    "domain": "Security and Compliance",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "Which statement BEST describes the security benefit of enabling multi-factor authentication (MFA) on an AWS account?",
+    "options": [
+      "It automatically encrypts all data stored by that account",
+      "It replaces the need for IAM policies entirely",
+      "It requires a second, independent factor, such as a code from a hardware or virtual device, in addition to the password, so a stolen password alone cannot be used to sign in",
+      "It grants the account additional AWS Free Tier usage"
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>MFA adds a second authentication factor</b> beyond the password, so an attacker who only has the password still cannot sign in, which significantly reduces the risk of account compromise from credential theft. MFA does not encrypt data, does not replace IAM policies (which still control what an authenticated identity can do), and has no effect on Free Tier usage.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_mfa.html",
+    "id": "clfc02-0024"
+  },
+  {
+    "domain": "Security and Compliance",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A company manages dozens of AWS accounts under AWS Organizations and wants to enforce a rule across every account in a particular organizational unit, such as preventing any account from disabling CloudTrail, regardless of what IAM permissions an individual user is granted. Which feature enforces this?",
+    "options": [
+      "IAM user policies attached to each individual user in every account",
+      "Amazon GuardDuty findings",
+      "AWS Trusted Advisor recommendations",
+      "A Service Control Policy (SCP) attached to the organizational unit, which sets the maximum available permissions for all accounts under it"
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "A <b>Service Control Policy (SCP)</b> attached at the organizational unit or account level sets the maximum permissions available to every account underneath it, so even an account administrator with an IAM policy that allows an action cannot perform it if an SCP denies it. IAM user policies only affect individual users and cannot enforce an organization-wide guardrail. GuardDuty detects threats and Trusted Advisor gives recommendations, but neither one enforces a permission boundary.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps.html",
+    "id": "clfc02-0025"
+  },
+  {
+    "domain": "Security and Compliance",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A company's compliance team needs to download AWS's ISO certifications and SOC reports to satisfy an internal audit. Which AWS service provides self-service access to this compliance documentation?",
+    "options": [
+      "AWS Artifact",
+      "AWS Config",
+      "Amazon Inspector",
+      "AWS Trusted Advisor"
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>AWS Artifact</b> is the self-service portal for on-demand access to AWS's compliance reports, such as ISO certifications and SOC reports, and for reviewing and accepting agreements like the Business Associate Addendum. AWS Config tracks the configuration of a customer's own resources, Amazon Inspector scans workloads for vulnerabilities, and Trusted Advisor gives account-level recommendations, none of which provide AWS's compliance certification documents.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/artifact/latest/ug/what-is-aws-artifact.html",
+    "id": "clfc02-0026"
+  },
+  {
+    "domain": "Security and Compliance",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A security team wants to continuously record the configuration of their AWS resources over time and be notified when a resource's configuration drifts from an approved baseline, such as an S3 bucket becoming publicly accessible. Which service provides this?",
+    "options": [
+      "AWS CloudTrail",
+      "AWS Config, which records resource configuration history and evaluates resources against configuration rules",
+      "Amazon CloudWatch Logs",
+      "AWS Direct Connect"
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>AWS Config</b> continuously records the configuration state of resources and evaluates them against rules, flagging drift such as an S3 bucket becoming public. CloudTrail records API calls (who did what and when) rather than the resulting configuration state. CloudWatch Logs stores application and system logs, not resource configuration history. Direct Connect is a dedicated network connection and has nothing to do with configuration monitoring.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/config/latest/developerguide/WhatIsConfig.html",
+    "id": "clfc02-0027"
+  },
+  {
+    "domain": "Security and Compliance",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "After a security incident, an administrator needs to determine exactly which IAM user made a specific API call, from what IP address, and at what time. Which AWS service provides this record?",
+    "options": [
+      "Amazon GuardDuty",
+      "AWS Config",
+      "AWS CloudTrail, which logs API calls made in the account, including the caller identity, source, and time",
+      "Amazon Macie"
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>AWS CloudTrail</b> records API activity across an AWS account, including who made each call, from where, and when, providing the audit trail needed to investigate an incident. GuardDuty is a threat-detection service that analyzes signals like CloudTrail events but does not itself store the raw call log. AWS Config tracks resource configuration rather than API call identity. Amazon Macie discovers sensitive data in S3, unrelated to API auditing.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-user-guide.html",
+    "id": "clfc02-0028"
+  },
+  {
+    "domain": "Security and Compliance",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A security team wants a managed service that continuously analyzes VPC Flow Logs, DNS logs, and CloudTrail events using threat intelligence and machine learning to detect suspicious activity, such as a compromised EC2 instance communicating with a known malicious IP address, without the team deploying any agents. Which service fits this need?",
+    "options": [
+      "AWS Config",
+      "Amazon Inspector",
+      "AWS Firewall Manager",
+      "Amazon GuardDuty, which continuously analyzes account and network activity for threats using threat intelligence and machine learning"
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Amazon GuardDuty</b> continuously monitors VPC Flow Logs, DNS logs, and CloudTrail events with threat intelligence feeds and machine learning to surface findings like communication with a known malicious IP, requiring no agents to deploy. AWS Config tracks configuration compliance, not threat detection. Amazon Inspector scans EC2 and container images for software vulnerabilities. AWS Firewall Manager centrally manages firewall rules across accounts, but it does not analyze logs for threat findings the way GuardDuty does.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/guardduty/latest/ug/what-is-guardduty.html",
+    "id": "clfc02-0029"
+  },
+  {
+    "domain": "Security and Compliance",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A network administrator configures a security group to allow inbound traffic on port 443 to a web server, but adds no outbound rule. Separately, a network ACL on the same subnet allows inbound traffic on port 443 but has no explicit outbound rule allowing the response traffic. What happens to the response traffic leaving the instance in each case?",
+    "options": [
+      "The security group automatically allows the response traffic out because security groups are stateful, but the network ACL blocks it because network ACLs are stateless and require an explicit outbound rule",
+      "Both the security group and the network ACL automatically allow the response traffic, since both are stateful",
+      "Both the security group and the network ACL block the response traffic, since both require explicit outbound rules",
+      "The network ACL automatically allows the response traffic because it is stateful, but the security group blocks it because it is stateless"
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Security groups are stateful</b>, so return traffic for an allowed inbound request is automatically permitted out, with no separate outbound rule needed. <b>Network ACLs are stateless</b>, so an explicit outbound rule is required to allow the response traffic to leave the subnet, even if the matching inbound request was allowed. It is the security group, not the ACL, that behaves statefully, and the ACL, not the security group, that requires the explicit rule, which is the opposite of what the other options claim.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/vpc/latest/userguide/vpc-network-acls.html",
+    "id": "clfc02-0030"
+  },
+  {
+    "domain": "Security and Compliance",
+    "tag": "Domain 2",
+    "type": "multi",
+    "stem": "A company runs a public web application and wants to both filter incoming HTTP requests for common attack patterns like SQL injection, and protect against volumetric distributed denial-of-service (DDoS) attacks. Which TWO AWS services together address these needs? (Select TWO.)",
+    "options": [
+      "AWS Config, to detect malicious HTTP request patterns",
+      "AWS WAF, to filter web requests using rules that block patterns like SQL injection and cross-site scripting",
+      "Amazon Macie, to protect against DDoS attacks",
+      "AWS Shield, to protect against distributed denial-of-service (DDoS) attacks",
+      "AWS Trusted Advisor, to block malicious web requests in real time"
+    ],
+    "correct": [
+      1,
+      3
+    ],
+    "explanation": "<b>AWS WAF</b> lets you write rules that inspect HTTP requests and block patterns such as SQL injection or cross-site scripting, and <b>AWS Shield</b> provides protection against distributed denial-of-service (DDoS) attacks, together covering both requirements. AWS Config tracks resource configuration and does not inspect HTTP request content. Amazon Macie discovers sensitive data in S3 and has no DDoS protection function. AWS Trusted Advisor gives account recommendations; it does not block malicious requests in real time.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html",
+    "id": "clfc02-0031"
+  },
+  {
+    "domain": "Security and Compliance",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A company wants to encrypt data stored in Amazon S3 and Amazon EBS using encryption keys that it can centrally create, rotate, and control access to through IAM policies, without managing its own key-management hardware. Which service provides this?",
+    "options": [
+      "AWS Certificate Manager",
+      "AWS Key Management Service (KMS), which lets customers create and control encryption keys used to protect their data",
+      "Amazon Macie",
+      "AWS Secrets Manager"
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>AWS KMS</b> lets customers create, manage, rotate, and control access to the encryption keys used to protect data in services like S3 and EBS, without operating their own key-management hardware. AWS Certificate Manager issues and manages TLS/SSL certificates, a different function from managing data-encryption keys. Amazon Macie discovers sensitive data rather than managing keys. AWS Secrets Manager stores and rotates application secrets like database credentials, not general-purpose encryption keys for S3 or EBS.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/kms/latest/developerguide/overview.html",
+    "id": "clfc02-0032"
+  },
+  {
+    "domain": "Security and Compliance",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "An application stores a database password that must be automatically rotated on a schedule, with the rotation logic integrated directly into the service so the credential in use is always current. Which AWS service is purpose-built for automatic secret rotation like this?",
+    "options": [
+      "AWS Systems Manager Parameter Store, which is the only option that supports any form of automatic rotation",
+      "Amazon S3 with server-side encryption enabled",
+      "AWS Secrets Manager, which natively supports automatic, scheduled rotation of secrets such as database credentials",
+      "AWS CloudHSM, which is designed specifically for storing and rotating application secrets"
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>AWS Secrets Manager</b> is purpose-built to store secrets like database credentials and natively supports automatic, scheduled rotation, including built-in integration with services such as Amazon RDS. Systems Manager Parameter Store can store configuration values and secrets but does not provide native automatic rotation the way Secrets Manager does. S3 with server-side encryption protects stored objects, not credential rotation. AWS CloudHSM provides dedicated hardware security modules for key storage and cryptographic operations, not a secrets-rotation service.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html",
+    "id": "clfc02-0033"
+  },
+  {
+    "domain": "Security and Compliance",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A data governance team wants to automatically scan the objects in an Amazon S3 bucket to discover and classify sensitive data, such as personally identifiable information (PII) like names and social security numbers. Which AWS service is designed for this?",
+    "options": [
+      "AWS Config",
+      "Amazon GuardDuty",
+      "AWS CloudTrail",
+      "Amazon Macie, which uses machine learning to discover and classify sensitive data such as PII in Amazon S3"
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Amazon Macie</b> uses machine learning and pattern matching to discover and classify sensitive data, including PII, stored in Amazon S3. AWS Config tracks resource configuration rather than data content. Amazon GuardDuty detects threats from account and network activity, not sensitive-data discovery. AWS CloudTrail logs API activity, unrelated to scanning object content for PII.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/macie/latest/user/what-is-macie.html",
+    "id": "clfc02-0034"
+  },
+  {
+    "domain": "Security and Compliance",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A company wants to serve its public website over HTTPS and needs a TLS/SSL certificate that AWS can automatically renew before it expires, at no additional cost for the certificate itself, for use with an Application Load Balancer or CloudFront distribution. Which service provides this?",
+    "options": [
+      "AWS Certificate Manager (ACM), which provisions and automatically renews public TLS/SSL certificates for use with integrated AWS services",
+      "AWS Key Management Service (KMS)",
+      "AWS Secrets Manager",
+      "Amazon Macie"
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>AWS Certificate Manager (ACM)</b> provisions public TLS/SSL certificates at no additional cost and automatically renews them, and it integrates directly with services like Application Load Balancer and CloudFront to enable HTTPS. AWS KMS manages encryption keys for data at rest, not public TLS certificates. AWS Secrets Manager stores and rotates application secrets such as database credentials, a different use case than issuing public certificates. Amazon Macie discovers sensitive data in S3, unrelated to certificate management.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/acm/latest/userguide/acm-overview.html",
+    "id": "clfc02-0035"
   }
 ]
