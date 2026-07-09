@@ -690,5 +690,140 @@
     "domain": "Applications of Foundation Models",
     "tag": "Domain 3",
     "id": "aifc01-0036"
+  },
+  {
+    "type": "single",
+    "stem": "In the context of responsible AI, what does the term 'bias' refer to?",
+    "options": [
+      "The time delay between a model receiving a request and returning a response.",
+      "The process of converting text into numeric vectors for similarity search.",
+      "A systematic skew in a model's predictions that favors certain outcomes or groups, often caused by imbalances or historical patterns in the training data.",
+      "A technique for compressing a model so it can run on smaller devices."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Bias</b> in responsible AI refers to a systematic skew in predictions toward certain outcomes or groups, typically traceable to imbalances, gaps, or historical patterns baked into the training data. Response-time delay describes <b>latency</b>, an unrelated performance concept. Converting text to numeric vectors describes <b>embedding</b>, not bias. Shrinking a model to fit smaller devices describes model <b>compression</b>, a separate engineering concern from fairness.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-measure-data-bias.html",
+    "domain": "Guidelines for Responsible AI",
+    "tag": "Domain 4",
+    "id": "aifc01-0037"
+  },
+  {
+    "type": "single",
+    "stem": "A company trains a hiring-recommendation model on ten years of historical hiring decisions. The model ends up recommending male candidates far more often than equally qualified female candidates for technical roles. Which responsible AI concern does this MOST directly illustrate?",
+    "options": [
+      "Latency, since the model takes too long to score candidates.",
+      "Overfitting purely to noise unrelated to any protected characteristic.",
+      "A hallucination, since the model is inventing facts not present in its training data.",
+      "Fairness and bias, since the model has learned and is perpetuating demographic disparities present in the historical training data."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "This scenario is a textbook example of <b>fairness and bias</b>: the model absorbed and now perpetuates a demographic disparity that existed in the historical hiring decisions it trained on, producing unequal outcomes for equally qualified candidates. It has nothing to do with response speed (<b>latency</b>). It is not <b>overfitting</b> to noise, since the skew tracks a protected characteristic rather than random data quirks. It is not a <b>hallucination</b>, since the model is not fabricating unsupported facts, it is reproducing a real pattern from its training data.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-detect-data-bias.html",
+    "domain": "Guidelines for Responsible AI",
+    "tag": "Domain 4",
+    "id": "aifc01-0038"
+  },
+  {
+    "type": "single",
+    "stem": "A team must choose between a simple, easily interpretable linear model and a complex deep neural network for a loan-approval decision that regulators require the company to explain to rejected applicants. Which responsible AI consideration is MOST relevant to this choice?",
+    "options": [
+      "The transparency and explainability tradeoff, since more complex models often achieve higher accuracy but are harder to explain, while simpler models are easier to interpret but may sacrifice some accuracy.",
+      "Model file size, since smaller files always deploy faster regardless of interpretability.",
+      "Training cost only, since interpretability has no relationship to model complexity.",
+      "Network bandwidth, since only inference traffic volume matters for this decision."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "This choice sits squarely in the <b>transparency and explainability tradeoff</b>: complex models can be more accurate but harder to explain to a regulator or a rejected applicant, while simpler models sacrifice some accuracy for clearer explanations, which matters directly here because an explanation is a regulatory requirement. File size and deployment speed are engineering concerns, not the deciding factor for a regulatory explainability requirement. Interpretability is closely tied to model complexity, so claiming no relationship is false. Network bandwidth has nothing to do with whether a decision can be explained to an applicant.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-model-explainability.html",
+    "domain": "Guidelines for Responsible AI",
+    "tag": "Domain 4",
+    "id": "aifc01-0039"
+  },
+  {
+    "type": "single",
+    "stem": "A data science team wants to measure statistical bias in their training data across demographic groups before training, and also wants an explanation of which features most influenced each individual prediction after training. Which AWS capability provides both of these?",
+    "options": [
+      "SageMaker Model Monitor, which tracks data and prediction drift after deployment.",
+      "SageMaker Clarify, which measures bias in data and models and generates feature-importance explanations for individual predictions.",
+      "SageMaker Feature Store, which centralizes and serves engineered features.",
+      "SageMaker Ground Truth, which manages human data-labeling workflows."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>SageMaker Clarify</b> is purpose-built for both needs described: it measures statistical bias in training data across groups before training, and it produces feature-importance explanations for individual predictions after training. <b>Model Monitor</b> instead watches for data and prediction drift after a model is already deployed, a different concern. <b>Feature Store</b> centralizes and serves engineered features, with no bias-detection or explainability role. <b>Ground Truth</b> manages human labeling workflows, unrelated to bias measurement or prediction explanation.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-model-explainability.html",
+    "domain": "Guidelines for Responsible AI",
+    "tag": "Domain 4",
+    "id": "aifc01-0040"
+  },
+  {
+    "type": "single",
+    "stem": "Before approving a model for production, a governance team wants a single standardized document capturing the model's intended use, training data sources, performance metrics, and known limitations or risks. Which SageMaker capability supports creating this documentation?",
+    "options": [
+      "SageMaker Pipelines, which orchestrates automated ML workflows.",
+      "SageMaker Autopilot, which automatically builds and tunes models with minimal manual effort.",
+      "SageMaker Debugger, which detects training issues such as vanishing gradients.",
+      "SageMaker Model Cards, which capture standardized documentation of a model's intended use, training details, evaluation results, and risk considerations."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>SageMaker Model Cards</b> exist specifically to capture this kind of standardized governance documentation: intended use, training data sources, evaluation results, and known limitations or risks, all in one place for approval workflows. <b>Pipelines</b> orchestrates the ML workflow steps themselves, not governance documentation. <b>Autopilot</b> automates model building and tuning, unrelated to producing a documentation artifact. <b>Debugger</b> detects training-time issues such as vanishing gradients, not governance risk documentation.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/model-cards.html",
+    "domain": "Guidelines for Responsible AI",
+    "tag": "Domain 4",
+    "id": "aifc01-0041"
+  },
+  {
+    "type": "single",
+    "stem": "A facial-analysis model is trained mostly on images of one skin tone and performs noticeably worse on images of other skin tones after deployment. What is the MOST likely root cause?",
+    "options": [
+      "The model's temperature parameter was set too high during inference.",
+      "The model was fine-tuned using Reinforcement Learning from Human Feedback.",
+      "Underrepresentation in the training data, where certain groups are not adequately represented, leading to degraded performance and unfair outcomes for those groups.",
+      "The evaluation used the ROUGE metric instead of BLEU."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Underrepresentation in the training data</b> is the classic root cause of this pattern: when certain groups make up too small a share of training examples, the model learns their patterns poorly and performs worse for them after deployment. <b>Temperature</b> is a generative-model inference setting unrelated to a discriminative facial-analysis model's group-level accuracy. <b>RLHF</b> is a technique for aligning generative language models with human preferences, not a cause of demographic performance gaps in a vision model. Choosing <b>ROUGE over BLEU</b> is an evaluation-metric mismatch for text tasks, unrelated to an image model's skin-tone performance gap.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-detect-data-bias.html",
+    "domain": "Guidelines for Responsible AI",
+    "tag": "Domain 4",
+    "id": "aifc01-0042"
+  },
+  {
+    "type": "multi",
+    "stem": "Which TWO of the following statements about building responsible AI systems are correct? (Select TWO.)",
+    "options": [
+      "Robustness refers to a model's ability to maintain reliable performance under varied or unexpected inputs, not just on its original training distribution.",
+      "Once a model passes an initial fairness check, no further bias monitoring is needed for the rest of its production lifetime.",
+      "Veracity refers to a model's ability to produce outputs that are accurate and reliable, avoiding fabricated or misleading content.",
+      "Explainable models are always less accurate than every uninterpretable model, with no exceptions.",
+      "Governance and human oversight are unnecessary for AI systems once automated testing passes."
+    ],
+    "correct": [
+      0,
+      2
+    ],
+    "explanation": "<b>Robustness</b> (reliable performance on varied or unexpected inputs, not just the training distribution) and <b>veracity</b> (producing accurate, reliable, non-fabricated output) are both recognized pillars of responsible AI. Bias can emerge or worsen after deployment as data and usage patterns shift, so an initial fairness check is not sufficient for the model's entire lifetime, making that option false. The claim that explainable models are always less accurate than every uninterpretable model is an overstatement; the real relationship is a tradeoff, not an absolute rule. Automated testing does not replace ongoing governance and human oversight, so that option is also false.",
+    "difficulty": "hard",
+    "docUrl": "https://aws.amazon.com/ai/responsible-ai/",
+    "domain": "Guidelines for Responsible AI",
+    "tag": "Domain 4",
+    "id": "aifc01-0043"
   }
 ]
