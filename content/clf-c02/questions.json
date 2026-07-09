@@ -252,7 +252,7 @@
     "domain": "Cloud Concepts",
     "tag": "Domain 1",
     "type": "single",
-    "stem": "A company wants to move an on-premises application to AWS as quickly as possible with the least amount of change, by moving each server to an equivalent EC2 instance without modifying the application's architecture. Which of the 6 R's migration strategies does this describe?",
+    "stem": "A company wants to move an on-premises application to AWS as quickly as possible with the least amount of change, by moving each server to an equivalent EC2 instance without modifying the application's architecture. Which of the 7 Rs migration strategies does this describe?",
     "options": [
       "Rehost (lift-and-shift)",
       "Refactor / re-architect",
@@ -271,7 +271,7 @@
     "domain": "Cloud Concepts",
     "tag": "Domain 1",
     "type": "single",
-    "stem": "During migration planning, a team decides to move its on-premises MySQL database to Amazon RDS for MySQL, changing where backups, patching, and Multi-AZ failover are managed, but keeping the same schema and application code. Which of the 6 R's does this represent?",
+    "stem": "During migration planning, a team decides to move its on-premises MySQL database to Amazon RDS for MySQL, changing where backups, patching, and Multi-AZ failover are managed, but keeping the same schema and application code. Which of the 7 Rs does this represent?",
     "options": [
       "Repurchase, because moving to a managed database means buying a new commercial license",
       "Replatform, which makes a targeted cloud optimization like adopting a managed database without changing the application's core architecture",
@@ -1108,7 +1108,7 @@
     "correct": [
       0
     ],
-    "explanation": "The <b>AWS Free Tier</b> gives new accounts free usage allowances, some always-free and some free for 12 months, across many services such as EC2, S3, and Lambda, letting customers experiment before spending real budget. A Reserved Instance is a paid pricing commitment, not a free offering. Upgrading a Support plan costs money and does not grant free service usage. AWS Marketplace credits are a different mechanism tied to purchasing third-party software listings, not the account-wide introductory free usage.",
+    "explanation": "The <b>AWS Free Tier</b> lets new accounts explore many services such as EC2, S3, and Lambda at no cost, combining always-free usage allowances that stay free within monthly limits with free credits AWS grants a new account to experiment before spending real budget. A Reserved Instance is a paid pricing commitment, not a free offering. Upgrading a Support plan costs money and does not grant free service usage. AWS Marketplace credits are a different mechanism tied to purchasing third-party software listings, not the account-wide introductory free usage.",
     "difficulty": "easy",
     "docUrl": "https://aws.amazon.com/free/",
     "id": "clfc02-0058"
