@@ -929,7 +929,7 @@
     "explanation": "<b>Amazon SageMaker Clarify</b> measures bias and produces explainability reports, and supports foundation model evaluations for toxicity and stereotyping -- exactly the quantified, documentable output required. <b>Guardrails content filters</b> block unsafe content at runtime but do not measure or report bias. <b>Macie</b> discovers sensitive data. <b>CloudTrail</b> is an API-activity audit log, not a bias-measurement tool.",
     "id": "aipc01-0048",
     "difficulty": "easy",
-    "docUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-detect-post-training-bias.html"
+    "docUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-foundation-model-evaluate.html"
   },
   {
     "domain": "AI Safety, Security & Governance",
