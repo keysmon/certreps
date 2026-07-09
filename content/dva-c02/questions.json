@@ -323,7 +323,7 @@
     ],
     "explanation": "Within a single <b>MessageGroupId</b>, FIFO preserves send order, while different groups can be processed concurrently, which is how FIFO queues scale. <b>Deduplication</b>, whether content-based or via an explicit MessageDeduplicationId, drops duplicate sends made within the same 5-minute interval, giving exactly-once send semantics. A FIFO queue does not silently convert to standard; without high-throughput mode it is limited to about 300 (3,000 with batching) transactions per second per API action, and exceeding that throttles rather than converts the queue type. FIFO prevents the queue itself from introducing duplicates, but a consumer that fails to delete a message before its visibility timeout expires can still receive it again, so exactly-once consumer delivery is not absolutely guaranteed. Ordering is only guaranteed within a message group, not across the whole queue.",
     "difficulty": "hard",
-    "docUrl": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/FIFO-queues.html",
+    "docUrl": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-fifo-queues.html",
     "id": "dvac02-0017"
   },
   {
@@ -342,7 +342,7 @@
     ],
     "explanation": "The SNS <b>fan-out</b> pattern publishes one message to a topic that delivers a copy to each subscribed SQS queue, so each downstream workflow gets its own independent, durable queue with its own retry behavior, and consumers can be added or removed without touching the producer. Calling each service directly couples the producer to every consumer and its availability. Writing to three DynamoDB tables bypasses each workflow's own processing and retry logic entirely. A single shared SQS queue delivers each message to only one consumer, not to all three workflows, so it does not fan out.",
     "difficulty": "easy",
-    "docUrl": "https://docs.aws.amazon.com/sns/latest/dg/sns-common-scenarios.html",
+    "docUrl": "https://docs.aws.amazon.com/sns/latest/dg/sns-sqs-as-subscriber.html",
     "id": "dvac02-0018"
   },
   {
@@ -380,7 +380,7 @@
     ],
     "explanation": "<b>Standard</b> Step Functions workflows support executions up to a year, keep a durable execution history for auditing, and are built for long-running, auditable processes like a multi-day fulfillment flow. <b>Express</b> workflows are priced and optimized for high-volume, short-duration workloads (up to 5 minutes) with less granular history. A Lambda function cannot sleep for 3 days within a single invocation because Lambda's maximum timeout is 15 minutes. An SQS delay queue's maximum delivery delay is only 15 minutes, far short of 3 days, and it has no concept of an auditable multi-step execution history.",
     "difficulty": "medium",
-    "docUrl": "https://docs.aws.amazon.com/step-functions/latest/dg/concepts-standard-vs-express.html",
+    "docUrl": "https://docs.aws.amazon.com/step-functions/latest/dg/choosing-workflow-type.html",
     "id": "dvac02-0020"
   },
   {
@@ -456,7 +456,7 @@
     ],
     "explanation": "A cross-account <b>IAM role with a trust policy</b> lets Account A's execution role call <b>STS AssumeRole</b> and receive short-lived, automatically expiring credentials scoped to only what the target role allows, with nothing long-lived to store or leak. Storing a long-lived access key in an environment variable creates a durable secret that must be rotated and can be exfiltrated. Making the bucket public removes access control entirely and is a serious security risk. Copying a credentials file into a deployment package hardcodes long-lived secrets into every deployed copy of the function.",
     "difficulty": "medium",
-    "docUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use.html",
+    "docUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_manage-assume.html",
     "id": "dvac02-0024"
   },
   {
@@ -513,7 +513,7 @@
     ],
     "explanation": "<b>Secrets Manager</b> natively supports scheduled, automatic rotation, including ready-made rotation Lambda functions for services like RDS and Aurora, alongside encryption at rest with KMS. Parameter Store SecureString values are encrypted with KMS but do not include built-in rotation automation; rotating them requires building and scheduling a custom Lambda function and workflow. Nothing in Parameter Store rotates itself with zero configuration. Storing an access key as a plain (non-SecureString) String parameter is both unencrypted and manually rotated, the opposite of what is required here.",
     "difficulty": "medium",
-    "docUrl": "https://docs.aws.amazon.com/secretsmanager/latest/userguide/rotate-secrets_how.html",
+    "docUrl": "https://docs.aws.amazon.com/secretsmanager/latest/userguide/rotating-secrets.html",
     "id": "dvac02-0027"
   },
   {
@@ -745,7 +745,7 @@
     ],
     "explanation": "The standard SAM workflow is <b>sam build</b> to resolve dependencies and prepare artifacts, followed by <b>sam deploy</b> (which packages local artifacts to S3 and creates or updates the underlying CloudFormation stack). sam local invoke only runs a function locally for testing; it does not upload anything or touch CloudFormation. sam validate only checks the template's syntax; it does not package or deploy. sam logs only tails a deployed function's CloudWatch Logs and has nothing to do with packaging or ECR.",
     "difficulty": "easy",
-    "docUrl": "https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-command-reference-sam-deploy.html",
+    "docUrl": "https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-cli-command-reference-sam-deploy.html",
     "id": "dvac02-0039"
   },
   {
@@ -764,7 +764,7 @@
     ],
     "explanation": "<b>sam local invoke</b> runs the function locally inside a Docker container that emulates the Lambda execution environment, using a supplied event JSON file, so the developer can validate behavior entirely offline before deploying. sam deploy --guided deploys to AWS, the opposite of local-only testing. sam logs only streams logs from an already-deployed function; nothing is deployed yet in this scenario. sam package uploads build artifacts to S3 for deployment; it never executes the function's code.",
     "difficulty": "easy",
-    "docUrl": "https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-command-reference-sam-local-invoke.html",
+    "docUrl": "https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-cli-command-reference-sam-local-invoke.html",
     "id": "dvac02-0040"
   },
   {
@@ -994,7 +994,7 @@
     ],
     "explanation": "<b>sam local start-api</b> stands up a local HTTP endpoint that mimics API Gateway's routing, so requests with real paths, path parameters, and query strings are dispatched to the matching function running locally in a container, letting the developer exercise multiple routes together like a real client would. sam local invoke only runs a single function against one manually supplied event and does not provide an HTTP routing layer across multiple functions. sam validate only lints the template's syntax and starts nothing. sam local generate-event only prints a sample event payload for use elsewhere; it does not run any code or start a server.",
     "difficulty": "medium",
-    "docUrl": "https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-command-reference-sam-local-start-api.html",
+    "docUrl": "https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-cli-command-reference-sam-local-start-api.html",
     "id": "dvac02-0052"
   },
   {
@@ -1245,7 +1245,7 @@
     ],
     "explanation": "The <b>cache-aside</b> pattern checks the cache first, falls back to the database on a miss, and then populates the cache for subsequent reads, and it is commonly implemented with <b>Amazon ElastiCache</b> (Redis or Memcached) sitting in front of a relational or other backend database. Write-through caching pushes writes to the cache and database together and is a different strategy from the miss-then-populate flow described. Global Accelerator improves network path routing to endpoints; it has no query-result caching capability. S3 Intelligent-Tiering automates storage class transitions for S3 objects and is unrelated to caching database reads.",
     "difficulty": "easy",
-    "docUrl": "https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Strategies.html",
+    "docUrl": "https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/Strategies.html",
     "id": "dvac02-0065"
   }
 ]
