@@ -255,5 +255,159 @@
     "difficulty": "easy",
     "docUrl": "https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-cwe-custom-actions.html",
     "id": "scsc03-0015"
+  },
+  {
+    "domain": "Infrastructure Security",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A public-facing web application on an Application Load Balancer is receiving a spike of login attempts using stolen credentials (credential stuffing) mixed into otherwise normal-looking traffic, along with common SQL injection probes. The team wants to block both patterns at the edge, in front of the application, using a managed AWS service, without building and maintaining custom signature rules from scratch. Which approach is BEST?",
+    "options": [
+      "Configure Amazon GuardDuty to inspect ALB access logs for suspicious login patterns and block matching source IPs automatically.",
+      "Attach an AWS WAF web ACL to the ALB that combines an AWS Managed Rules rule group such as the SQL database rule group with a rate-based rule to throttle and block sources that exceed a request-rate threshold associated with credential stuffing.",
+      "Enable AWS Shield Advanced alone, since it fully inspects HTTP request bodies for SQL injection and credential-stuffing patterns.",
+      "Replace the ALB with a Network Load Balancer, which inspects Layer 7 payloads for malicious patterns by default."
+    ],
+    "correct": [1],
+    "explanation": "An AWS WAF <b>web ACL</b> attached to the ALB can combine an <b>AWS Managed Rules</b> rule group, such as the SQL database rule group with curated signatures for SQL injection, with a <b>rate-based rule</b> that throttles or blocks sources exceeding a request threshold, addressing both the injection probes and the credential-stuffing volume without writing custom signatures. GuardDuty analyzes logs and network or API behavior for threat findings; it is not an inline Layer 7 blocking control for ALB requests. Shield Advanced protects against DDoS and integrates with WAF, but it does not itself inspect HTTP payloads for SQL injection or credential-stuffing patterns; that inspection is WAF's job. A Network Load Balancer operates at Layer 4 and has no visibility into HTTP request content, so switching to NLB adds no Layer 7 protection.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html",
+    "id": "scsc03-0016"
+  },
+  {
+    "domain": "Infrastructure Security",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "An internet-facing application on Amazon EC2 behind an Application Load Balancer is a frequent target of large-scale network and transport layer DDoS attacks. The company wants proactive DDoS cost protection, access to the AWS DDoS Response Team (DRT) during active attacks, and health-based, near-real-time detection of degraded application health tied to a Route 53 health check. Which AWS capability BEST meets all of these needs?",
+    "options": [
+      "AWS WAF rate-based rules alone, since they mitigate all layers of DDoS attacks including network-layer floods.",
+      "The AWS Shield standard tier, which is automatically included for every AWS customer at no additional cost.",
+      "AWS Shield Advanced, which adds DDoS cost protection, 24/7 access to the DRT, and health-based detection that uses a Route 53 or Route 53 Application Recovery Controller health check to improve detection accuracy for a protected resource.",
+      "Amazon CloudFront alone, since simply placing a CDN in front of an origin eliminates the need for any DDoS-specific protection."
+    ],
+    "correct": [2],
+    "explanation": "<b>AWS Shield Advanced</b> is the paid tier that adds DDoS cost protection for scaling charges incurred during an attack, 24/7 access to the <b>AWS DDoS Response Team</b>, and <b>health-based detection</b>, which correlates a resource's health, via an associated Route 53 or Route 53 Application Recovery Controller health check, with traffic anomalies to improve detection accuracy and speed. WAF rate-based rules operate at Layer 7 and help with HTTP floods, but they do not provide DRT access, cost protection, or health-based detection, and they do not mitigate network-layer floods by themselves. Shield Standard is included automatically for all customers but does not include DRT access, cost protection, or health-based detection; those are Advanced-only capabilities. CloudFront helps absorb and distribute traffic but does not by itself provide the cost protection, DRT engagement, or health-based detection features described.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/waf/latest/developerguide/shield-chapter.html",
+    "id": "scsc03-0017"
+  },
+  {
+    "domain": "Infrastructure Security",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A security engineer configures a network ACL on a subnet to allow inbound traffic on port 443 from 0.0.0.0/0, but forgets to add an outbound rule allowing the corresponding ephemeral return-traffic ports. Meanwhile, the subnet's EC2 instances have a security group that allows inbound 443 from 0.0.0.0/0 with no explicit outbound rules configured. What is the MOST likely outcome for HTTPS responses from the instances back to clients?",
+    "options": [
+      "Responses fail, because security groups are stateless and require an explicit outbound rule to allow the return traffic.",
+      "Responses succeed, because network ACLs are stateful and automatically allow return traffic regardless of outbound rules.",
+      "Responses fail only if the instance is in a public subnet, and succeed in a private subnet.",
+      "Responses fail, because network ACLs are stateless and the missing outbound rule for ephemeral ports blocks the return traffic, even though the security group is stateful and would otherwise auto-allow the response given its default outbound-allow-all rule."
+    ],
+    "correct": [3],
+    "explanation": "<b>Network ACLs are stateless</b>: an allowed inbound request does not automatically permit its response, so the subnet's NACL needs an explicit outbound rule permitting the ephemeral port range, typically 1024-65535, back to the client, and without it the response is dropped at the NACL. In contrast, <b>security groups are stateful</b>, meaning a security group evaluates only the inbound rule for the request and then automatically allows the matching response, so the security group here, which allows inbound 443 and by default allows all outbound, is not the blocker. Claiming security groups need an explicit outbound rule for return traffic gets statefulness backwards. Claiming NACLs are stateful and auto-allow return traffic is also backwards. Subnet type, public or private, does not change NACL statelessness, so the outcome does not depend on that distinction here.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/vpc/latest/userguide/vpc-network-acls.html",
+    "id": "scsc03-0018"
+  },
+  {
+    "domain": "Infrastructure Security",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A company must allow outbound traffic from a VPC only to a specific allow-list of corporate SaaS domains, for example *.salesforce.com, and deny all other outbound internet destinations, including cases where the destination's underlying IP address rotates. Security groups and network ACLs filter only by IP address and port, not by domain name. Which AWS service BEST enforces this domain-based egress control?",
+    "options": [
+      "AWS Network Firewall, using a stateful rule group with domain list rules (an allow list) that matches on domain name, including via TLS SNI for HTTPS, regardless of the destination IP address.",
+      "Security groups with an outbound rule referencing a prefix list for each SaaS provider's published IP ranges.",
+      "Network ACLs with a deny-all outbound rule and no allow entries.",
+      "AWS WAF, attached to the VPC's internet gateway, using a geographic match rule."
+    ],
+    "correct": [0],
+    "explanation": "<b>AWS Network Firewall</b> stateful rule groups support <b>domain list</b> rules that match traffic against domain names, including HTTPS traffic via the TLS SNI field, so an allow list can key off the domain itself rather than needing to track the provider's underlying IP addresses, which is exactly what a rotating-IP SaaS destination requires. Security groups and network ACLs filter only on IP address, port, and protocol, so a prefix list still depends on the provider publishing, and you maintaining, accurate IP ranges, which does not solve rotating or unpublished IPs cleanly. A NACL with no allow entries simply blocks everything and provides no way to allow specific domains. WAF is a Layer 7 HTTP(S) inspection service for inbound web traffic to resources like an ALB or CloudFront, and it is not attached to a VPC internet gateway to filter general outbound VPC traffic; a geographic match rule also filters by request origin country, not by destination domain.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/network-firewall/latest/developerguide/stateful-rule-groups-domain-names.html",
+    "id": "scsc03-0019"
+  },
+  {
+    "domain": "Infrastructure Security",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A company runs EC2 instances in a private subnet with no internet gateway or NAT gateway, and the instances must read and write objects in Amazon S3 without any traffic ever traversing the public internet. Which solution BEST meets this requirement at the lowest cost?",
+    "options": [
+      "Add a NAT gateway to the private subnet so instances can reach the S3 public endpoint over the internet.",
+      "Create a gateway VPC endpoint for Amazon S3 and add a route to it in the subnet's route table, which lets instances reach S3 privately over the AWS network with no hourly endpoint charge.",
+      "Attach a public IP address to each instance so it can reach S3 directly.",
+      "Configure AWS Direct Connect to a corporate data center and route S3 traffic through it."
+    ],
+    "correct": [1],
+    "explanation": "A <b>gateway VPC endpoint</b> for Amazon S3 (or DynamoDB) adds a route in the subnet's route table that sends S3-bound traffic over AWS's private network instead of the internet, and gateway endpoints have no hourly charge, making this the lowest-cost, fully private option. A NAT gateway would route traffic out toward the internet path to the S3 public endpoint and also incurs hourly and data processing charges, so it neither meets the 'no internet' requirement nor is it the lowest cost. Attaching public IP addresses directly contradicts the private-subnet, no-internet-traversal requirement. Direct Connect links to an on-premises data center and is unrelated to reaching an AWS service privately from within the same VPC, and it is far more expensive than a gateway endpoint for this purpose.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/vpc/latest/privatelink/vpc-endpoints-s3.html",
+    "id": "scsc03-0020"
+  },
+  {
+    "domain": "Infrastructure Security",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A security team wants to eliminate SSH bastion hosts, open inbound SSH security group rules, and long-lived SSH key management for administrative access to EC2 instances, while retaining full audit logs of every interactive session and the ability to enforce IAM-based access control. Which AWS capability BEST replaces bastion-based SSH access?",
+    "options": [
+      "A hardened bastion host with key rotation automated by AWS Secrets Manager.",
+      "AWS Site-to-Site VPN, so administrators connect over an encrypted tunnel before using SSH as before.",
+      "AWS Systems Manager Session Manager, which provides browser-based or CLI shell access to managed instances through the SSM Agent without opening any inbound ports, using IAM policies for authorization and optionally logging session activity to CloudWatch Logs or S3.",
+      "A third-party jump box running in a public subnet with multi-factor authentication for SSH logins."
+    ],
+    "correct": [2],
+    "explanation": "<b>Systems Manager Session Manager</b> lets administrators start an interactive shell to a managed instance through the SSM Agent's outbound connection to the Systems Manager service, so no inbound port, including SSH, ever needs to be opened, access is governed entirely by <b>IAM policy</b>, and session activity can be logged for audit to CloudWatch Logs or S3, which removes the bastion host, the open SSH rule, and the SSH key management all at once. A hardened bastion with rotated keys still requires an open SSH path and key management, just automated. A Site-to-Site VPN still requires an SSH port and key-based (or similarly managed) authentication once connected. A public jump box, even with MFA on SSH, still exposes an SSH listener and requires SSH key or password management, which is exactly what the team wants to remove.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html",
+    "id": "scsc03-0021"
+  },
+  {
+    "domain": "Infrastructure Security",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A company's AWS Organization has 60 accounts. Individual account teams have been inconsistently applying AWS WAF rules and security group baselines, leaving several accounts exposed. Central security wants to mandate a common WAF web ACL and a baseline security group across all current and future accounts and Regions in the organization, enforced centrally rather than relying on each account team to opt in. Which AWS service BEST achieves this centralized, organization-wide enforcement?",
+    "options": [
+      "AWS Config conformance packs, which can evaluate compliance but cannot themselves create or attach a WAF web ACL or a security group to resources.",
+      "IAM permission boundaries applied to each account's administrators, restricting which WAF actions they may call.",
+      "A service control policy that denies the ec2:AuthorizeSecurityGroupIngress action across the organization.",
+      "AWS Firewall Manager, which centrally creates and enforces a common WAF policy and a common security group policy across all accounts and Regions in an AWS Organization, automatically applying them to new accounts and in-scope resources as they appear."
+    ],
+    "correct": [3],
+    "explanation": "<b>AWS Firewall Manager</b> lets a Firewall Manager administrator define a common <b>WAF policy</b> and a common <b>security group policy</b> once, then automatically applies and continuously enforces them across all existing and new accounts and Regions in an AWS Organization, which is exactly the centralized, no-opt-in enforcement the requirement describes. Config conformance packs can evaluate compliance and even trigger remediation via SSM Automation documents, but a conformance pack itself does not create or attach a WAF web ACL or a security group the way a Firewall Manager policy does. IAM permission boundaries constrain what actions administrators can call, but they do not create or enforce any WAF or security group configuration. An SCP blocking a specific security group action can prevent certain changes but does not create the mandated WAF web ACL or a baseline security group, and it does not adapt automatically as new accounts join.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/waf/latest/developerguide/fms-chapter.html",
+    "id": "scsc03-0022"
+  },
+  {
+    "domain": "Infrastructure Security",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A company must apply operating system security patches to hundreds of EC2 instances across multiple accounts on a recurring monthly schedule, automatically scan for missing patches, and report compliance without manually connecting to each instance. Which AWS Systems Manager capability BEST fits this requirement?",
+    "options": [
+      "AWS Systems Manager Patch Manager, which uses patch baselines to define approved patches, scans managed instances for missing patches, and can install them on a recurring schedule via a maintenance window, with compliance reporting.",
+      "AWS Systems Manager Parameter Store, which stores configuration values and secrets for retrieval by applications.",
+      "AWS Systems Manager Inventory, which only collects metadata about installed software and does not install patches.",
+      "Amazon Inspector, which detects vulnerabilities but does not install or schedule patch deployment."
+    ],
+    "correct": [0],
+    "explanation": "<b>Patch Manager</b> uses <b>patch baselines</b> to define which patches are approved for each instance's operating system, automatically scans <b>managed instances</b>, registered via the SSM Agent, for missing patches, can install them on a recurring cadence through a <b>maintenance window</b>, and reports patch compliance centrally, matching every part of the requirement. Parameter Store is a configuration and secrets store, unrelated to patching. Inventory catalogs installed software and instance metadata but does not scan for missing patches or install anything. Amazon Inspector identifies vulnerabilities and assigns risk scores but does not itself install patches or run a patch maintenance schedule.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/systems-manager/latest/userguide/patch-manager.html",
+    "id": "scsc03-0023"
+  },
+  {
+    "domain": "Infrastructure Security",
+    "tag": "Domain 3",
+    "type": "multi",
+    "stem": "A team is designing subnet-level and instance-level network controls for a VPC and needs to correctly describe how security groups differ from network ACLs. Which TWO statements are correct? (Select TWO.)",
+    "options": [
+      "A network ACL evaluates rules by applying the first matching rule regardless of its rule number, and ignores any lower-numbered rule that also matches.",
+      "A security group can contain explicit deny rules to block specific IP addresses.",
+      "A network ACL is stateless, so it evaluates inbound and outbound traffic independently and requires explicit rules in both directions, including for return traffic.",
+      "A security group operates at the subnet level and automatically applies to every instance launched into that subnet.",
+      "A security group is stateful, so a response to an allowed inbound request is automatically permitted outbound regardless of any outbound rule, and vice versa for an outbound-initiated request."
+    ],
+    "correct": [2, 4],
+    "explanation": "<b>Network ACLs are stateless</b>, so inbound and outbound traffic are evaluated independently against explicit numbered rules, and a NACL needs its own outbound rule to permit the response to any inbound request it allows, unlike a firewall that tracks connection state. <b>Security groups are stateful</b>: once a security group's rule allows a request in one direction, the corresponding response in the other direction is automatically allowed regardless of any rule for that direction. A network ACL evaluates rules in numeric order and stops at the first match, so a matching rule with a lower number does take precedence over a later, higher-numbered rule, which makes the 'ignores rule number' framing backwards. Security groups support only allow rules, never explicit deny rules; to block traffic you simply omit an allow rule. Security groups are attached directly to elastic network interfaces, and therefore to specific instances, not automatically to every instance in a subnet; that subnet-wide automatic association describes a network ACL, not a security group.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/vpc/latest/userguide/vpc-security-groups.html",
+    "id": "scsc03-0024"
   }
 ]
