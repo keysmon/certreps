@@ -46,8 +46,8 @@ token is ever displayed (at the cost of some latency); asynchronous mode can lea
   foundation models do not support resource-based policies, so role assumption is the answer, not a resource policy.
 - **Fleet-wide restriction**: an AWS Organizations **service control policy (SCP)** that denies `InvokeModel` for every
   model ARN except approved ones enforces an allowed-model list across hundreds of accounts from one place.
-- **Least-privilege action groups**: scope an agent's tools and IAM permissions so a successful injection cannot trigger
-  high-impact actions.
+- **Least-privilege agent tools**: scope the tools an agent can call (through AgentCore Gateway and Policy) and its IAM
+  permissions so a successful injection cannot trigger high-impact actions.
 
 ## Logging, auditing, and data protection
 
@@ -74,9 +74,9 @@ Several answers look similar; the exam rewards keeping the distinct threats and 
   both the retrieved content and the response with Guardrails.
 - **Insecure output handling**: encode and sanitize model output before rendering it as HTML so returned markup or script
   cannot execute in the browser.
-- **Excessive functionality**: remove unneeded operations - redefine an action group to expose only the required
-  read-only calls instead of delete and refund functions.
-- **Excessive agency**: require user confirmation (return of control) before the agent runs high-impact actions.
+- **Excessive functionality**: remove unneeded operations - scope the AgentCore Gateway to expose only the required
+  read-only tools instead of delete and refund functions.
+- **Excessive agency**: require human confirmation before the agent runs high-impact actions.
 - **Confused deputy**: add `aws:SourceArn` and `aws:SourceAccount` conditions to a Lambda's resource-based policy so only
   the intended agent in the intended account can invoke it.
 - **Session isolation**: pass a unique `sessionId` per user or conversation so multi-tenant agent state does not bleed
