@@ -536,5 +536,275 @@
     "difficulty": "medium",
     "docUrl": "https://docs.aws.amazon.com/efs/latest/ug/efs-replication.html",
     "id": "soac03-0028"
+  },
+  {
+    "domain": "Deployment, Provisioning, and Automation",
+    "tag": "Domain 3",
+    "type": "multi",
+    "stem": "A platform team manages 40 AWS accounts under AWS Organizations and wants to deploy and keep in sync the same CloudFormation stack, a baseline security-monitoring stack, across all 40 accounts and three Regions each, with new accounts automatically receiving the stack as they join an organizational unit. Which TWO statements about using CloudFormation StackSets for this requirement are correct? (Select TWO.)",
+    "options": [
+      "StackSets can only deploy a stack to a single account at a time, requiring the platform team to run 120 separate deployments by hand.",
+      "A stack instance created by a StackSet cannot be updated after creation; the underlying stack must be deleted and manually recreated for every template change.",
+      "Service-managed permissions integrate with AWS Organizations so a StackSet can automatically deploy to every account in a target organizational unit, including accounts added later.",
+      "StackSets requires every target account to pre-create the exact same IAM execution role by hand before any deployment can succeed, even with service-managed permissions.",
+      "A single StackSet operation can target multiple accounts and multiple Regions at once, and it tracks each resulting stack as a stack instance so the fleet can be updated or drift-detected centrally."
+    ],
+    "correct": [
+      2,
+      4
+    ],
+    "explanation": "With <b>service-managed permissions</b>, a StackSet integrates with AWS Organizations and can target an organizational unit directly, automatically deploying to accounts added to it later. A <b>single StackSet operation spans many accounts and Regions</b>, and every resulting stack is tracked as a stack instance, so the whole fleet can be updated or drift-detected from one place. StackSets is built to avoid one-at-a-time manual deployments, not require them. Stack instances can be updated in place by updating the StackSet, with no delete-and-recreate cycle needed. Service-managed permissions specifically remove the need to pre-create a matching IAM role in every target account; that manual role setup is only required under the older self-managed permissions model.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-concepts.html",
+    "id": "soac03-0029"
+  },
+  {
+    "domain": "Deployment, Provisioning, and Automation",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A team suspects that engineers have been making manual changes directly in the AWS Management Console to resources originally created by a CloudFormation stack, which risks the next stack update failing or silently reverting those changes. Which CloudFormation capability lets the team detect exactly which resources and properties have drifted from the stack's template definition, without performing an update?",
+    "options": [
+      "Run CloudFormation drift detection on the stack, which compares each resource's actual configuration to the template and reports which resources and properties are DRIFTED, along with the differences.",
+      "Enable CloudFormation StackSets and let it silently re-apply the template to all target accounts on a fixed schedule.",
+      "Delete and recreate the stack from the same template so all resources are guaranteed to match the definition again.",
+      "Enable AWS Config recording for the stack's resources and wait for a weekly summary email."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>CloudFormation drift detection</b> compares each resource's live configuration against the stack's template and reports which resources and specific properties have drifted, with no update performed. StackSets manages multi-account, multi-Region deployment; it does not detect or report drift on its own. Deleting and recreating the stack is destructive and would cause an outage; it is not a detection mechanism. AWS Config records configuration history for compliance rules generally, but it is not the CloudFormation-native mechanism that compares a stack's live resources against its own template.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-stack-drift.html",
+    "id": "soac03-0030"
+  },
+  {
+    "domain": "Deployment, Provisioning, and Automation",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "Before applying an update to a production CloudFormation stack that changes an RDS instance's engine version and an Auto Scaling group's launch template, the team wants to see exactly which resources will be modified, replaced, or deleted, and confirm none of those changes will cause an unexpected resource replacement, before the update actually runs. Which CloudFormation feature BEST supports this review?",
+    "options": [
+      "Stack policies, which permanently block updates to specific resource types.",
+      "A change set, which computes and previews the specific changes CloudFormation will make, including any resource replacements, before the update is executed.",
+      "Nested stacks, which split a template into smaller reusable templates.",
+      "The stack's rollback configuration, which defines CloudWatch alarms that trigger an automatic rollback after an update starts."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "A <b>change set</b> computes and displays the exact actions CloudFormation will take, including which resources will be modified, replaced, or deleted, before anything is applied, letting the team catch an unexpected replacement in advance. A stack policy restricts which updates are allowed on specific resources; it does not preview an upcoming update's effects. Nested stacks are a template organization technique, not a change-preview mechanism. Rollback configuration only reacts after an update has already started, using alarms to trigger a rollback; it does not preview changes beforehand.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-changesets.html",
+    "id": "soac03-0031"
+  },
+  {
+    "domain": "Deployment, Provisioning, and Automation",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "An operations engineer needs to run an ad hoc command, restarting a specific service, across 200 EC2 instances tagged Environment=prod right now, without opening any inbound SSH or RDP ports and without pre-installing a bastion host. Which Systems Manager capability BEST fits this need?",
+    "options": [
+      "AWS Config, targeting the same tag and remediating with a custom Lambda function.",
+      "Systems Manager Patch Manager, scheduling a patch baseline scan against the tagged instances.",
+      "Systems Manager Run Command, targeting instances by the Environment=prod tag and running a command document to restart the service, using the SSM Agent instead of SSH or RDP.",
+      "Systems Manager Session Manager, opening one interactive shell session per instance and typing the restart command 200 times."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Systems Manager Run Command</b> targets managed instances by tag and executes a command document across the whole fleet at once through the SSM Agent, with no inbound ports or bastion host needed. AWS Config evaluates and records resource configuration; it is not built for on-demand command execution across a fleet. Patch Manager is scoped to patch scanning and installation, not arbitrary ad hoc commands like restarting a specific service. Session Manager could open a shell per instance, but doing that 200 times manually is far less efficient than a single Run Command execution targeted by tag.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/systems-manager/latest/userguide/run-command.html",
+    "id": "soac03-0032"
+  },
+  {
+    "domain": "Deployment, Provisioning, and Automation",
+    "tag": "Domain 3",
+    "type": "multi",
+    "stem": "A CloudOps team must patch several hundred EC2 instances against the latest security updates every month, during a defined maintenance window, only applying patches that are already approved after a testing delay, and producing a compliance report showing which instances are missing an approved patch. Which TWO statements about using Systems Manager Patch Manager for this requirement are correct? (Select TWO.)",
+    "options": [
+      "A patch baseline defines which patches are approved for installation, including an auto-approval delay so newly released patches are only applied after they have been available for a set number of days.",
+      "Patch Manager can only run against instances located in the same Region as the Patch Manager configuration itself, never across Regions in one operation.",
+      "Maintenance windows are unrelated to Patch Manager and can only be used to schedule Systems Manager Run Command executions, never patch scans or installs.",
+      "Patch Manager's compliance reporting shows, per instance, which approved patches are missing, letting the team confirm patch compliance without manually checking each instance.",
+      "Once a patch baseline is created, every instance in the account is automatically enrolled in it with no way to assign different baselines to different groups of instances."
+    ],
+    "correct": [
+      0,
+      3
+    ],
+    "explanation": "A <b>patch baseline</b> defines the approval rules, including an auto-approval delay that holds back newly released patches for a set testing period, and Patch Manager's <b>compliance reporting</b> shows exactly which approved patches are missing on each instance. Patch Manager operations can span multiple Regions, not just the one the configuration lives in. Maintenance windows schedule Patch Manager scan-and-install tasks directly, alongside Run Command and other supported task types; they are not limited to Run Command only. Different patch groups, defined by a tag, can be assigned different baselines, so instances are not forced into one baseline account-wide.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/systems-manager/latest/userguide/patch-manager.html",
+    "id": "soac03-0033"
+  },
+  {
+    "domain": "Deployment, Provisioning, and Automation",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A company's security policy prohibits opening inbound port 22 on any EC2 instance's security group, but engineers still occasionally need an interactive shell on an instance for troubleshooting, with a full record of the session kept for audit. Which approach BEST satisfies both requirements?",
+    "options": [
+      "Open port 22 only from the corporate VPN's IP range, and rely on the security group's flow logs for an audit trail.",
+      "Deploy a bastion host with port 22 open only from the bastion's own security group.",
+      "Configure an SSH key pair per instance and share the private key with the operations team over email.",
+      "Use Systems Manager Session Manager, which opens an interactive shell over the SSM Agent with no inbound ports required, and can log every session's commands and output to CloudWatch Logs or S3."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Systems Manager Session Manager</b> opens an interactive shell through the SSM Agent with no inbound port required at all, and it can stream every session's activity to CloudWatch Logs or S3 for a full audit trail. Opening port 22 to the VPN range still leaves an inbound port open, which the policy prohibits, and flow logs only show connection metadata, not session content. A bastion host still requires an inbound port 22 somewhere in the path. Emailing a shared private key is also a security risk and provides no built-in session logging.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html",
+    "id": "soac03-0034"
+  },
+  {
+    "domain": "Deployment, Provisioning, and Automation",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "An application running on multiple EC2 instances and Lambda functions needs a shared database connection string and a handful of feature-flag values, which change occasionally, without redeploying code, and with a version history the application can use to know the current value. Which AWS capability BEST fits this need at the lowest operational overhead?",
+    "options": [
+      "AWS Systems Manager Parameter Store, storing each value as a parameter, using the standard tier for a handful of low-volume values and giving a version history the application can read through the SDK or API.",
+      "A static configuration file baked into a new AMI, requiring a rebuild and redeploy for every value change.",
+      "Environment variables set inside every server's user-data script, updated manually one instance at a time.",
+      "Amazon S3 with server-side encryption storing a single shared JSON file, downloaded manually before every deployment."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Systems Manager Parameter Store</b> stores shared configuration values centrally, with the standard tier free for typical low-volume use, and it keeps a version history the application can query at runtime with no redeploy needed. Baking values into an AMI requires a full rebuild and redeploy for any change, which is exactly the overhead the requirement rules out. Updating user-data on every server manually does not scale and provides no centralized source of truth. Manually downloading a shared S3 file before each deployment adds a manual step and lacks the built-in versioning Parameter Store provides.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-parameter-store.html",
+    "id": "soac03-0035"
+  },
+  {
+    "domain": "Deployment, Provisioning, and Automation",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A CloudOps team wants every managed EC2 instance in a fleet to continuously keep a specific antivirus agent installed and running, and to automatically reapply that configuration on a schedule if an instance drifts from it, without an engineer manually re-running an install script whenever an instance is found out of compliance. Which Systems Manager capability BEST fits this need?",
+    "options": [
+      "Systems Manager Run Command, executed manually by an engineer whenever a compliance report shows an instance out of compliance.",
+      "Systems Manager State Manager, which defines an association that applies and re-applies a specified configuration document on a recurring schedule to keep managed instances in the desired state.",
+      "Systems Manager Patch Manager, scheduled to scan for missing OS patches only.",
+      "Systems Manager Parameter Store, storing the desired antivirus version number as a parameter for reference."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Systems Manager State Manager</b> associations apply a configuration document on a recurring schedule and automatically reapply it if an instance drifts from the desired state, removing the need for manual re-runs. Run Command executed manually is exactly the manual re-run the team wants to eliminate. Patch Manager is scoped to OS and application patch compliance, not arbitrary software installation and enforcement like an antivirus agent. Parameter Store can hold a reference value, such as a version number, but it has no mechanism to enforce or reapply configuration on instances.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-state.html",
+    "id": "soac03-0036"
+  },
+  {
+    "domain": "Deployment, Provisioning, and Automation",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A team currently uses an EC2 Auto Scaling launch configuration to define instance specifications for a group, but launch configurations cannot be modified once created and lack support for multiple instance types or newer EC2 features. The team wants a mechanism with versioning, so they can change the AMI or instance type and roll new versions out to the Auto Scaling group in a controlled way. Which approach BEST meets this need?",
+    "options": [
+      "Continue creating a brand-new launch configuration and manually swapping it into the Auto Scaling group for every change.",
+      "Configure the Auto Scaling group to launch instances directly from a single hardcoded AMI ID, bypassing both launch configurations and launch templates.",
+      "Migrate the Auto Scaling group to use a launch template, which supports multiple numbered versions, so the group can reference a specific version or the latest or default version as it changes.",
+      "Store the instance specification in an AWS Config conformance pack and have Auto Scaling read from it directly."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "An EC2 <b>launch template</b> supports multiple numbered versions, letting the team change the AMI or instance type in a new version while the Auto Scaling group references a specific version or tracks the latest or a designated default, giving controlled, versioned rollout. Continuing with launch configurations keeps the exact limitation the team wants to move away from, since each change still requires creating and swapping a whole new configuration. Hardcoding a single AMI ID with no template or configuration removes any structured way to manage or version instance specifications. AWS Config conformance packs evaluate compliance; Auto Scaling does not read launch specifications from them.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-launch-templates.html",
+    "id": "soac03-0037"
+  },
+  {
+    "domain": "Deployment, Provisioning, and Automation",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A company builds a hardened, patched, standard Amazon Linux AMI that includes a specific runtime and security agent, and currently does this by manually launching an instance, installing software by hand, and creating an AMI from it every month. They want the build, test, and Region-distribution steps to run automatically on a defined schedule, with the same repeatable steps every time. Which AWS service BEST replaces this manual process?",
+    "options": [
+      "AWS Systems Manager Automation, using a single generic runbook with no defined image-building components or testing stage.",
+      "Amazon Data Lifecycle Manager, since it also manages EBS snapshot schedules and can be reused for AMI builds.",
+      "AWS CodeDeploy, configured to install software onto an already-running fleet of instances.",
+      "EC2 Image Builder, which defines a repeatable pipeline of build components, test components, and Region distribution settings, and runs on a schedule to produce a new hardened AMI automatically."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>EC2 Image Builder</b> is purpose-built for exactly this: a pipeline of build components, test components, and distribution settings that runs on a schedule to produce a consistent, hardened AMI with no manual steps. Generic Systems Manager Automation runbooks are not structured around image build, test, and distribution stages the way an Image Builder pipeline is. Data Lifecycle Manager automates EBS snapshot and AMI lifecycle policies for existing resources; it does not build or customize a new AMI's contents. CodeDeploy installs application revisions onto already-running instances; it does not create AMIs.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/imagebuilder/latest/userguide/what-is-image-builder.html",
+    "id": "soac03-0038"
+  },
+  {
+    "domain": "Deployment, Provisioning, and Automation",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A platform team wants to let application teams self-service-provision a pre-approved, standardized set of resources, such as a three-tier web application stack, from a menu, without granting each application team direct IAM permissions to create the underlying EC2, RDS, and VPC resources themselves, and while still enforcing which CloudFormation template versions are allowed. Which AWS service BEST meets this need?",
+    "options": [
+      "AWS Service Catalog, which lets the platform team publish approved CloudFormation-based products into a portfolio and grants only launch permissions to application teams, without granting direct resource-creation permissions.",
+      "AWS CloudFormation StackSets, granting every application team account administrator permissions to create their own stacks from a shared template.",
+      "AWS Config conformance packs, which evaluate resources for compliance after they are already created.",
+      "AWS Organizations service control policies (SCPs) alone, which can only deny actions and cannot provision any resources."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>AWS Service Catalog</b> publishes vetted CloudFormation-based products into a portfolio and grants application teams only permission to launch a product, not to create the underlying resources directly, satisfying both the self-service and governance requirements. Granting account administrator permissions so teams can run StackSets themselves defeats the purpose of restricting direct resource-creation access. AWS Config conformance packs check compliance after resources exist; they don't provide a self-service provisioning menu. SCPs can only restrict what IAM principals are allowed to do; they cannot provision anything themselves.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/servicecatalog/latest/adminguide/introduction.html",
+    "id": "soac03-0039"
+  },
+  {
+    "domain": "Deployment, Provisioning, and Automation",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A team deploys a new application version to an Auto Scaling group behind an Application Load Balancer and wants zero-downtime deployments where the new version is fully launched and verified healthy on a completely separate set of instances before any production traffic is shifted to it, with the ability to shift traffic back to the original instances immediately if a problem is detected. Which AWS CodeDeploy deployment type BEST meets this requirement?",
+    "options": [
+      "An in-place deployment, which stops the application on each existing instance, installs the new version, and restarts it, instance by instance.",
+      "A blue/green deployment, which provisions a replacement set of instances running the new version and reroutes load balancer traffic to them only after they pass health checks, keeping the original instances available for rollback.",
+      "A canary deployment defined entirely inside Amazon CloudFront, shifting a percentage of viewer requests to a second origin.",
+      "A rolling update performed directly by the Auto Scaling group's instance refresh feature, with no involvement from CodeDeploy."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "A <b>blue/green deployment</b> in CodeDeploy provisions a full replacement set of instances, validates them, and only then shifts load balancer traffic, while keeping the original (blue) instances intact and ready for an immediate rollback. An in-place deployment reuses the existing instances, taking each one out of service briefly during the update, which does not give a fully separate, pre-verified fleet before any traffic shifts. CloudFront origin shifting is unrelated to CodeDeploy's EC2/On-Premises deployment model. Auto Scaling instance refresh performs a rolling replacement directly and is a different mechanism from a CodeDeploy blue/green deployment, without the same CodeDeploy-managed traffic-shifting and rollback controls.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/codedeploy/latest/userguide/deployments.html",
+    "id": "soac03-0040"
+  },
+  {
+    "domain": "Deployment, Provisioning, and Automation",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A team runs a web application on AWS Elastic Beanstalk and needs a deployment policy that avoids any reduction in the number of instances serving traffic during a new application version rollout, and that keeps the previous, known-good version's environment available to fail back to immediately if the new version fails health checks after traffic switches. Which Elastic Beanstalk deployment policy BEST meets this requirement?",
+    "options": [
+      "All at once, which updates every instance in the environment simultaneously.",
+      "Rolling, which updates instances in batches within the existing environment, briefly taking each batch out of service.",
+      "Immutable, which launches a full set of new instances in a temporary Auto Scaling group running the new version, and only shifts traffic to them after they pass health checks, leaving the original environment untouched until the switch.",
+      "Rolling with additional batch, which launches one extra batch of new instances before beginning a normal rolling update."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "The <b>Immutable</b> deployment policy launches an entirely new, full-capacity set of instances alongside the existing environment and only shifts traffic once they pass health checks, so serving capacity never drops and the original environment remains available to fail back to. All at once updates every existing instance simultaneously, causing downtime. Rolling takes each batch out of service temporarily, briefly reducing capacity, which the requirement rules out. Rolling with an additional batch reduces, but does not eliminate, that same temporary capacity dip during the update.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/using-features.rolling-version-deploy.html",
+    "id": "soac03-0041"
+  },
+  {
+    "domain": "Deployment, Provisioning, and Automation",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A CloudOps team manages hundreds of EC2 instances across several teams and needs a queryable, centralized view of which operating system versions, installed applications, and network configurations exist across the fleet today, refreshed automatically, without connecting to every instance individually or maintaining a separate spreadsheet. Which Systems Manager capability BEST meets this need?",
+    "options": [
+      "Systems Manager Session Manager, connecting to each instance interactively to run manual inventory commands.",
+      "Systems Manager Patch Manager, which only reports missing security patches, not general software or configuration inventory.",
+      "Systems Manager Parameter Store, storing a manually updated list of each instance's software as a parameter.",
+      "Systems Manager Inventory, which collects metadata such as installed applications, OS version, and network configuration from managed instances on a schedule and makes it queryable centrally."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Systems Manager Inventory</b> automatically collects and centralizes metadata, including installed applications, OS version, and network configuration, from every managed instance on a recurring schedule, and it is queryable without touching any instance directly. Session Manager provides interactive shell access, not automated, centralized data collection across a fleet. Patch Manager is scoped to patch compliance, not general software or configuration inventory. Parameter Store only holds whatever values are manually written to it; it has no built-in fleet-wide collection capability.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-inventory.html",
+    "id": "soac03-0042"
   }
 ]
