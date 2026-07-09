@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { getSupabase } from "@/lib/supabase/client";
@@ -37,10 +37,18 @@ const NOTIF_ROWS: NotifRow[] = [
 export function SettingsClient() {
   const router = useRouter();
   const { session } = useSession();
-  const [prefs, setPrefs] = useState<Prefs>(() => readPrefs());
+  // SSR-safe: /settings is statically prerendered, so the initial render MUST be deterministic
+  // defaults (what the server HTML contains). Reading localStorage in the useState initializer
+  // would desync on a hard reload - the prerendered DOM shows OFF while state holds the stored
+  // value, and React does not patch hydrated attributes, so the first click flips storage with no
+  // visible change. Load the stored prefs in an effect instead (mirrors AccountClient's attempts load).
+  const [prefs, setPrefs] = useState<Prefs>({ reminders: false, newCerts: false, weekly: false });
   const [toast, setToast] = useState("");
   const toastTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const email = session?.user.email ?? undefined;
+
+  // Load stored prefs after hydration (see the SSR-safe note on the useState above).
+  useEffect(() => setPrefs(readPrefs()), []);
 
   function showToast(msg: string) {
     setToast(msg);

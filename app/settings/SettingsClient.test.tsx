@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
+import { renderToString } from "react-dom/server";
 import userEvent from "@testing-library/user-event";
 import type { Session } from "@supabase/supabase-js";
 import { SettingsClient } from "./SettingsClient";
@@ -63,6 +64,31 @@ beforeEach(() => {
 afterEach(() => vi.clearAllMocks());
 
 describe("SettingsClient", () => {
+  it("renders defaults in the effect-free (SSR) pass even when a pref is stored on (hydration-safe)", () => {
+    mockedAvailable.mockReturnValue(false);
+    // Stored pref is ON. renderToString runs no effects - it is exactly what the prerendered HTML
+    // contains and what the client's first render must match. If the initial render read localStorage
+    // the switch would come back on here and desync a real hard reload; SSR-safe init keeps it off.
+    writePrefs({ reminders: true, newCerts: false, weekly: false });
+    const html = renderToString(<SettingsClient />);
+    const btn = html.match(/<button[^>]*aria-label="Study reminders"[^>]*>/)?.[0] ?? "";
+    expect(btn).toContain('aria-checked="false"');
+  });
+
+  it("loads the stored pref via effect after mount, then toggles from that value in one click", async () => {
+    mockedAvailable.mockReturnValue(false);
+    writePrefs({ reminders: true, newCerts: false, weekly: false });
+    render(<SettingsClient />);
+
+    const reminders = screen.getByRole("switch", { name: "Study reminders" });
+    // The mount effect loads the stored value: the switch transitions from its default-off SSR
+    // state to on, so state and DOM agree - no two-click desync.
+    await waitFor(() => expect(reminders).toHaveAttribute("aria-checked", "true"));
+    await userEvent.click(reminders);
+    expect(reminders).toHaveAttribute("aria-checked", "false");
+    expect(readPrefs().reminders).toBe(false);
+  });
+
   it("persists a notification toggle to the prefs store and toasts", async () => {
     mockedAvailable.mockReturnValue(false); // signed out - notifications toggle regardless of auth
     render(<SettingsClient />);
