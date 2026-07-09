@@ -1,0 +1,310 @@
+[
+  {
+    "domain": "Cloud Concepts",
+    "tag": "Domain 1",
+    "type": "multi",
+    "stem": "A startup is evaluating a move to AWS. Which TWO of the following are commonly cited advantages of cloud computing over running your own data center? (Select TWO.)",
+    "options": [
+      "Trade capital expense for variable expense, paying only for the compute you consume instead of buying servers up front.",
+      "You must forecast and purchase enough hardware capacity for your highest expected peak load, months in advance.",
+      "You take on full responsibility for maintaining and replacing the physical data center facilities.",
+      "Benefit from massive economies of scale, since AWS aggregates usage from hundreds of thousands of customers to lower the pay-as-you-go price.",
+      "You must sign a multi-year contract before the first server can be provisioned."
+    ],
+    "correct": [
+      0,
+      3
+    ],
+    "explanation": "<b>Trading capital expense for variable expense</b> means paying for compute as you use it instead of buying racks of servers ahead of demand, and <b>economies of scale</b> let AWS pass its purchasing volume on to customers as lower pay-as-you-go prices. Forecasting peak capacity months ahead is exactly the guessing game the cloud removes. AWS, not the customer, operates and maintains the physical facilities under the shared responsibility model. AWS services can be provisioned on demand with no long-term contract required.",
+    "difficulty": "easy",
+    "docUrl": "https://aws.amazon.com/what-is-cloud-computing/",
+    "id": "clfc02-0001"
+  },
+  {
+    "domain": "Cloud Concepts",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "AWS aggregates the usage of hundreds of thousands of customers to negotiate better pricing from suppliers and pass the resulting savings on as lower pay-as-you-go rates. Which cloud computing benefit does this describe?",
+    "options": [
+      "Economies of scale",
+      "Elasticity",
+      "High availability",
+      "Fault tolerance"
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Economies of scale</b> is the benefit where aggregating demand across a huge customer base lets AWS negotiate lower supplier costs and pass the savings to customers. Elasticity is the ability to automatically add or remove capacity to match demand, not a pricing effect. High availability and fault tolerance describe a system's ability to keep running through failures, not AWS's purchasing power.",
+    "difficulty": "easy",
+    "docUrl": "https://aws.amazon.com/what-is-cloud-computing/",
+    "id": "clfc02-0002"
+  },
+  {
+    "domain": "Cloud Concepts",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A retail website's traffic spikes sharply during flash sales and drops back to normal afterward. The company wants its infrastructure to automatically add capacity during the spike and automatically remove that capacity afterward, so it never pays for idle servers. Which cloud characteristic provides this?",
+    "options": [
+      "Scalability, which only refers to the maximum size a system can be manually grown to",
+      "Elasticity, which automatically scales resources out and in to match real-time demand",
+      "Durability, which describes the likelihood that stored data will not be lost",
+      "Consolidated billing, which combines charges from multiple accounts onto one invoice"
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Elasticity</b> is the ability of a cloud environment to automatically scale compute resources out to meet a demand spike and back in once demand falls, so the company pays only for what it actually uses. Scalability describes the capability to grow (or shrink) a system's capacity, but on its own does not imply the automatic, real-time adjustment elasticity provides. Durability is about data not being lost, not about compute capacity. Consolidated billing is a billing feature, unrelated to capacity changes.",
+    "difficulty": "medium",
+    "docUrl": "https://aws.amazon.com/what-is-cloud-computing/",
+    "id": "clfc02-0003"
+  },
+  {
+    "domain": "Cloud Concepts",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A company based in one country wants to deploy its application closer to customers in several other countries to reduce latency, and do so within minutes rather than the months of lead time it would take to build new facilities. Which cloud computing benefit does AWS provide for this?",
+    "options": [
+      "Consolidated billing across linked accounts",
+      "The shared responsibility model",
+      "The ability to go global in minutes by deploying into AWS Regions around the world",
+      "Reserved Instance pricing discounts"
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Going global in minutes</b> is the AWS benefit of deploying an application into additional Regions around the world in a few clicks, instead of the months or years it would take to build new physical data centers. Consolidated billing only merges invoices and has nothing to do with geographic reach. The shared responsibility model defines who secures what, not global deployment speed. Reserved Instance pricing is a discount model, not a deployment capability.",
+    "difficulty": "easy",
+    "docUrl": "https://aws.amazon.com/about-aws/global-infrastructure/regions_az/",
+    "id": "clfc02-0004"
+  },
+  {
+    "domain": "Cloud Concepts",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A team wants a structured way to review whether their workload is right-sized, whether they are using the most cost-effective services, and whether spending is being tracked and controlled over time. Which AWS Well-Architected Framework pillar addresses this?",
+    "options": [
+      "Operational Excellence",
+      "Reliability",
+      "Performance Efficiency",
+      "Cost Optimization"
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "The <b>Cost Optimization</b> pillar focuses on avoiding unnecessary costs, right-sizing resources, choosing the most cost-effective pricing models, and tracking spend over time. Operational Excellence covers running and monitoring systems to deliver business value, not cost control. Reliability covers a workload's ability to recover from disruptions. Performance Efficiency covers using computing resources efficiently to meet requirements, which is related but distinct from managing cost.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/wellarchitected/latest/framework/the-pillars-of-the-framework.html",
+    "id": "clfc02-0005"
+  },
+  {
+    "domain": "Cloud Concepts",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A company wants its workload to recover quickly from the failure of an individual component, an Availability Zone, or an entire Region, and to automatically recover from infrastructure or service disruptions. Which Well-Architected Framework pillar covers this design goal?",
+    "options": [
+      "Reliability",
+      "Security",
+      "Cost Optimization",
+      "Sustainability"
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "The <b>Reliability</b> pillar covers a workload's ability to perform its function correctly and consistently, including recovering from infrastructure or service disruptions and dynamically acquiring resources to meet demand. Security covers protecting data and systems, not recovery from failure. Cost Optimization is about avoiding unnecessary spend. Sustainability is about minimizing the environmental impact of running workloads, not failure recovery.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/wellarchitected/latest/framework/the-pillars-of-the-framework.html",
+    "id": "clfc02-0006"
+  },
+  {
+    "domain": "Cloud Concepts",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A team is deciding between several EC2 instance families and storage options to ensure their workload uses computing resources efficiently as demand and technology change over time. Which Well-Architected Framework pillar covers this decision?",
+    "options": [
+      "Operational Excellence",
+      "Performance Efficiency",
+      "Security",
+      "Cost Optimization"
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Performance Efficiency</b> covers using computing resources efficiently to meet requirements, and maintaining that efficiency as demand changes and technology evolves, which includes choosing the right instance types and storage. Operational Excellence is about running and monitoring systems and continually improving processes, not resource selection. Security covers protection of data and systems. Cost Optimization focuses on spend rather than resource-to-workload fit.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/wellarchitected/latest/framework/the-pillars-of-the-framework.html",
+    "id": "clfc02-0007"
+  },
+  {
+    "domain": "Cloud Concepts",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A team wants to run and monitor systems to deliver business value, and continually improve their processes and procedures through automation, runbooks, and small frequent changes. Which Well-Architected Framework pillar covers this?",
+    "options": [
+      "Reliability",
+      "Cost Optimization",
+      "Operational Excellence",
+      "Security"
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Operational Excellence</b> covers running and monitoring systems to deliver business value and continually improving supporting processes, including automating changes, responding to events, and defining standards through runbooks. Reliability is about recovering from disruptions rather than the operating processes themselves. Cost Optimization is about spend. Security is about protecting data and systems, a separate pillar from day-to-day operations.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/wellarchitected/latest/framework/the-pillars-of-the-framework.html",
+    "id": "clfc02-0008"
+  },
+  {
+    "domain": "Cloud Concepts",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "AWS added a sixth pillar to the Well-Architected Framework focused on minimizing the environmental impact of running cloud workloads, such as maximizing resource utilization and reducing energy consumption. Which pillar is this?",
+    "options": [
+      "Performance Efficiency",
+      "Reliability",
+      "Cost Optimization",
+      "Sustainability"
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "The <b>Sustainability</b> pillar addresses the long-term environmental impact of a workload, such as energy and resource efficiency. Performance Efficiency is about matching resources to workload needs generally, not environmental impact specifically. Reliability is about resilience to failure. Cost Optimization is about avoiding unnecessary spend, which can overlap with efficiency but is a distinct financial pillar, not the environmental one.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/wellarchitected/latest/framework/the-pillars-of-the-framework.html",
+    "id": "clfc02-0009"
+  },
+  {
+    "domain": "Cloud Concepts",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "Within a single AWS Region, AWS operates multiple discrete data centers, each with independent power, cooling, and networking, connected by low-latency links so an application can run across more than one for higher availability. What are these individual locations called?",
+    "options": [
+      "Availability Zones",
+      "Edge locations",
+      "Local Zones",
+      "Wavelength Zones"
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Availability Zones</b> are one or more discrete data centers within a Region, each with independent power, cooling, and networking, connected through low-latency links so workloads can span multiple zones for fault tolerance. Edge locations are the smaller sites used by Amazon CloudFront to cache content close to users, not full data centers. Local Zones and Wavelength Zones extend AWS infrastructure closer to specific metro areas or telecom networks, but they are not the base building block of a Region.",
+    "difficulty": "easy",
+    "docUrl": "https://aws.amazon.com/about-aws/global-infrastructure/regions_az/",
+    "id": "clfc02-0010"
+  },
+  {
+    "domain": "Cloud Concepts",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A company runs its production database on Amazon RDS and wants it to keep serving requests with minimal downtime even if the entire data center hosting the primary database instance becomes unavailable. Which RDS feature BEST meets this need?",
+    "options": [
+      "Read replicas in the same Availability Zone as the primary instance",
+      "A Multi-AZ deployment, which maintains a synchronously replicated standby in a different Availability Zone and fails over automatically",
+      "A larger instance class for the existing single database instance",
+      "Amazon S3 Cross-Region Replication for the database's storage volume"
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "An RDS <b>Multi-AZ deployment</b> keeps a synchronously replicated standby in a separate Availability Zone and automatically fails over to it if the primary becomes unavailable, minimizing downtime. Read replicas in the same zone do not protect against a zone-level failure and are mainly for offloading read traffic. A bigger instance class improves performance, not availability during an outage. S3 Cross-Region Replication applies to S3 objects, not an RDS database's storage volume.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html",
+    "id": "clfc02-0011"
+  },
+  {
+    "domain": "Cloud Concepts",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A media company wants to cache its video thumbnails and static assets at locations physically close to end users around the world, so requests are served with lower latency than if they always traveled back to the origin Region. Which AWS capability provides this?",
+    "options": [
+      "AWS Direct Connect",
+      "AWS Transit Gateway",
+      "Amazon CloudFront using edge locations",
+      "AWS Site-to-Site VPN"
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Amazon CloudFront</b> is AWS's content delivery network, and it caches content at globally distributed <b>edge locations</b> so end users are served from a nearby cache instead of the origin, cutting latency. Direct Connect is a dedicated private network link to AWS, not a caching layer. Transit Gateway interconnects VPCs and on-premises networks. Site-to-Site VPN provides an encrypted tunnel between a customer network and AWS, and neither of those caches content near end users.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html",
+    "id": "clfc02-0012"
+  },
+  {
+    "domain": "Cloud Concepts",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A company runs a real-time bidding application that must process requests from mobile devices with single-digit-millisecond latency by running compute inside a telecommunications provider's 5G network, as close to end users' devices as possible. Which AWS infrastructure offering is purpose-built for this?",
+    "options": [
+      "AWS Local Zones, which place compute and storage in large metropolitan areas near end users",
+      "AWS Outposts, which extends AWS infrastructure into a customer's own data center",
+      "Additional Availability Zones within the nearest AWS Region",
+      "AWS Wavelength, which embeds AWS compute and storage inside telecommunications providers' 5G networks"
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>AWS Wavelength</b> embeds AWS compute and storage services within telecommunications providers' 5G networks, so traffic from mobile and connected devices reaches the application without leaving the telecom network, achieving the lowest possible latency for mobile edge use cases. Local Zones bring AWS infrastructure closer to large population and industry centers but do not run inside a telecom's 5G network specifically. Outposts extends AWS into a customer's own data center, not a telecom network. Adding more Availability Zones in the nearest Region does not reduce the last-mile mobile network latency the way running inside the 5G network does.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/wavelength/latest/developerguide/what-is-wavelength.html",
+    "id": "clfc02-0013"
+  },
+  {
+    "domain": "Cloud Concepts",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A company wants to move an on-premises application to AWS as quickly as possible with the least amount of change, by moving each server to an equivalent EC2 instance without modifying the application's architecture. Which of the 6 R's migration strategies does this describe?",
+    "options": [
+      "Rehost (lift-and-shift)",
+      "Refactor / re-architect",
+      "Replatform",
+      "Retire"
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Rehost</b>, often called lift-and-shift, moves an application to the cloud with no code changes, typically mapping existing servers to equivalent EC2 instances, which is usually the fastest migration path. Refactor (re-architect) involves redesigning the application to take advantage of cloud-native features, which is more effort, not less. Replatform makes some cloud optimizations, such as swapping to a managed database, which is more change than a pure lift-and-shift. Retire means decommissioning an application that is no longer needed, not moving it.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/prescriptive-guidance/latest/large-migration-guide/migration-strategies.html",
+    "id": "clfc02-0014"
+  },
+  {
+    "domain": "Cloud Concepts",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "During migration planning, a team decides to move its on-premises MySQL database to Amazon RDS for MySQL, changing where backups, patching, and Multi-AZ failover are managed, but keeping the same schema and application code. Which of the 6 R's does this represent?",
+    "options": [
+      "Repurchase, because moving to a managed database means buying a new commercial license",
+      "Replatform, which makes a targeted cloud optimization like adopting a managed database without changing the application's core architecture",
+      "Rehost, because both moving to RDS and redesigning the architecture involve zero code changes",
+      "Retain, because the database stays on the same engine it used on-premises"
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Replatform</b> makes a targeted optimization, such as moving to a managed database like RDS, to gain operational benefits without changing the application's core architecture. Refactor (re-architect) goes further, redesigning the application, often to be cloud-native, which is a bigger change than replatforming. Repurchase means switching to a different product entirely, such as moving to a SaaS offering, which is not what happens here. Rehost involves no changes at all, but adopting a managed database is itself a change, so this is not rehosting. Retain means keeping a workload on-premises rather than migrating it, which contradicts moving to RDS.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/prescriptive-guidance/latest/large-migration-guide/migration-strategies.html",
+    "id": "clfc02-0015"
+  },
+  {
+    "domain": "Cloud Concepts",
+    "tag": "Domain 1",
+    "type": "multi",
+    "stem": "A company is designing its disaster recovery approach for a critical workload and is comparing AWS DR strategies. Which TWO of the following correctly describe valid AWS disaster recovery strategies? (Select TWO.)",
+    "options": [
+      "Multi-Region active-active is the lowest-cost strategy because it needs no standby infrastructure at all.",
+      "Backup and restore is the lowest-cost, highest-recovery-time strategy, where data is backed up and infrastructure is provisioned only after a disaster occurs.",
+      "Pilot light requires a fully scaled duplicate of production running at all times in a second Region.",
+      "Warm standby means production traffic is already split evenly across two Regions before any disaster occurs.",
+      "Pilot light keeps a minimal version of core systems always running in a second Region so recovery can scale that environment up quickly during a disaster."
+    ],
+    "correct": [
+      1,
+      4
+    ],
+    "explanation": "<b>Backup and restore</b> is the lowest-cost, slowest strategy: data is backed up, and compute infrastructure is only stood up after a disaster is declared. <b>Pilot light</b> keeps a minimal, always-on copy of core systems, such as a replicated database, in a second Region, so that during a disaster the rest of the environment can be scaled up around that core quickly. Multi-Region active-active is actually the most expensive and complex strategy, not the cheapest, since it runs full production capacity in multiple Regions simultaneously. Running a fully scaled duplicate at all times describes warm standby or active-active, not pilot light. Warm standby means a scaled-down but fully functional copy runs continuously, not an even split of live production traffic.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-workloads-on-aws/disaster-recovery-options-in-the-cloud.html",
+    "id": "clfc02-0016"
+  }
+]
