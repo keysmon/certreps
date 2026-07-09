@@ -511,5 +511,176 @@
     "difficulty": "hard",
     "docUrl": "https://docs.aws.amazon.com/directconnect/latest/UserGuide/monitoring-overview.html",
     "id": "ansc01-0030"
+  },
+  {
+    "domain": "Network Security, Compliance, and Governance",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A security team must allow outbound traffic only to a specific allow-list of known-good domains, and also perform deep packet inspection to detect protocol anomalies within established flows, at the perimeter of a VPC. Which AWS Network Firewall capability is the correct fit?",
+    "options": [
+      "Stateless rule groups only, since they can match domains and protocol patterns entirely without flow context.",
+      "Security groups alone, since they can filter by domain name at the instance level.",
+      "Route 53 Resolver DNS Firewall alone, without any Network Firewall rule groups, since domain allow-listing and protocol anomaly detection are the same capability.",
+      "Stateful rule groups using Suricata-compatible rules, deployed through firewall subnets with route tables directing perimeter traffic through the firewall endpoints."
+    ],
+    "correct": [3],
+    "explanation": "<b>Network Firewall's stateful rule groups, based on the Suricata IPS engine</b>, can allow-list known domains and perform deep packet inspection with protocol-aware detection across a full traffic flow, and are deployed by routing perimeter traffic (internet gateway, NAT gateway, VPN, or Direct Connect bound) through dedicated firewall subnets. Stateless rules inspect one packet at a time without flow context, so they cannot evaluate patterns across a flow the way stateful inspection does. Security groups filter by IP and port at the instance level and have no domain-name or deep-packet-inspection capability. DNS Firewall filters DNS resolution requests only; it has no visibility into non-DNS packet-level protocol anomalies, so it cannot replace Network Firewall's deep packet inspection.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/network-firewall/latest/developerguide/what-is-aws-network-firewall.html",
+    "id": "ansc01-0031"
+  },
+  {
+    "domain": "Network Security, Compliance, and Governance",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A team wants to block outbound DNS lookups to a list of known-malicious domains before resolution occurs, as one layer of a defense-in-depth design that also inspects general network and application-layer traffic at the VPC perimeter. Which combination correctly matches each layer to its responsibility?",
+    "options": [
+      "Route 53 Resolver DNS Firewall filters outbound DNS queries against domain lists (allow, block, or alert), while AWS Network Firewall inspects network and application-layer traffic but has no visibility into DNS queries made through Resolver.",
+      "AWS Network Firewall filters DNS queries directly, making a separate DNS Firewall unnecessary.",
+      "Route 53 Resolver DNS Firewall inspects full packet payloads for every protocol, replacing the need for Network Firewall.",
+      "Both services perform the exact same function, so deploying one is always redundant with the other."
+    ],
+    "correct": [0],
+    "explanation": "<b>DNS Firewall filters outbound DNS resolution requests</b> that pass through Route 53 Resolver against domain-based rule lists, while <b>Network Firewall inspects network and application-layer traffic but has no visibility into Resolver's DNS queries</b>, so the two services cover different layers and are meant to be used together for defense in depth. Network Firewall does not filter Resolver's DNS queries directly. DNS Firewall only evaluates DNS queries, not full packet payloads across all protocols, so it cannot replace Network Firewall's broader packet inspection. Because each addresses a different traffic path, they are complementary rather than redundant.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resolver-dns-firewall.html",
+    "id": "ansc01-0032"
+  },
+  {
+    "domain": "Network Security, Compliance, and Governance",
+    "tag": "Domain 4",
+    "type": "multi",
+    "stem": "A team is troubleshooting why return traffic for an already-established connection is unexpectedly dropped after they tightened a network ACL, while the security group rules were left unchanged. Which TWO statements correctly describe the difference between security groups and network ACLs that explain this kind of issue? (Select TWO.)",
+    "options": [
+      "Network ACLs are stateful, so a rule permitting inbound traffic automatically permits the matching outbound return traffic.",
+      "Both security groups and network ACLs only support ALLOW rules; neither can explicitly DENY traffic.",
+      "Network ACLs are stateless, so return traffic must be explicitly permitted by an outbound rule, including for high-numbered ephemeral ports, or it will be dropped even if the inbound rule allowed the request.",
+      "Security groups operate only at the subnet level and cannot be applied to individual instances or elastic network interfaces.",
+      "Security groups are stateful, so a rule that allows inbound traffic automatically allows the corresponding outbound return traffic, without a matching outbound rule."
+    ],
+    "correct": [2, 4],
+    "explanation": "<b>Network ACLs are stateless</b>: tightening an ACL can silently block return traffic, such as the ephemeral port range, unless both the inbound request and the outbound response are explicitly permitted, matching the symptom in the stem. <b>Security groups are stateful</b>, so an allowed inbound request automatically allows its return traffic without a separate outbound rule, which is why leaving the security group unchanged did not fix the ACL-caused drop. Network ACLs support both ALLOW and explicit DENY rules, unlike security groups, which only allow, so the claim that neither can deny is false. Saying network ACLs are stateful is backwards. Security groups attach to elastic network interfaces, effectively per instance, not to subnets, so that claim is also false.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/vpc/latest/userguide/vpc-network-acls.html",
+    "id": "ansc01-0033"
+  },
+  {
+    "domain": "Network Security, Compliance, and Governance",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A security team in the management account of an AWS Organization wants to enforce one common AWS Network Firewall policy and a baseline set of security group rules across every existing account and VPC, and have that same baseline automatically applied to new accounts and resources as they are created. Which service is the correct fit?",
+    "options": [
+      "AWS Config conformance packs, which only report on compliance without applying network firewall policies or security group rules.",
+      "AWS Firewall Manager, configured with an organization-wide policy that centrally deploys and maintains Network Firewall, DNS Firewall, and security group rules, automatically extending to new accounts and resources.",
+      "IAM permission boundaries applied individually in every member account.",
+      "A CloudFormation StackSet that must be manually re-run whenever a new account joins the organization."
+    ],
+    "correct": [1],
+    "explanation": "<b>AWS Firewall Manager</b> is built exactly for this: a central policy in the Organizations management (or a delegated administrator) account deploys and enforces Network Firewall, DNS Firewall associations, and security group rules across all in-scope accounts, and <b>automatically extends coverage to new accounts and resources</b> as they join the organization. Config conformance packs report compliance but do not themselves deploy or enforce Network Firewall or security group configurations. IAM permission boundaries constrain what identities can do; they do not configure network firewall rules or security groups. A CloudFormation StackSet can deploy resources but does not automatically re-apply itself to brand-new accounts without additional automation, unlike Firewall Manager's built-in auto-remediation for new members.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/waf/latest/developerguide/fms-chapter.html",
+    "id": "ansc01-0034"
+  },
+  {
+    "domain": "Network Security, Compliance, and Governance",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A compliance requirement mandates that all accepted and rejected network flow records be retained for seven years at the lowest feasible storage cost, with the ability to run occasional ad hoc SQL queries against historical records. Which VPC Flow Logs delivery destination BEST fits this requirement?",
+    "options": [
+      "Amazon CloudWatch Logs only, with no lifecycle or export configuration.",
+      "Discard Flow Logs after 30 days, since compliance retention is handled by AWS automatically.",
+      "Amazon S3, with a lifecycle policy transitioning older objects to lower-cost storage classes, queried ad hoc with Amazon Athena.",
+      "Amazon DynamoDB, writing one item per flow log record for long-term retention."
+    ],
+    "correct": [2],
+    "explanation": "Publishing Flow Logs to <b>Amazon S3</b>, combined with an <b>S3 lifecycle policy</b> to transition aging objects to cheaper storage classes, is the lowest-cost long-term retention path, and <b>Amazon Athena</b> can run ad hoc SQL queries directly against the S3 objects without needing a separate database load. CloudWatch Logs alone, without any export or lifecycle plan, costs more at scale for multi-year retention than archived S3 storage. Flow Logs retention is a customer-configured choice, not an automatic seven-year AWS default. Writing one DynamoDB item per flow record is an expensive, operationally heavy pattern not designed for this kind of bulk historical log retention and ad hoc SQL analysis.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs.html",
+    "id": "ansc01-0035"
+  },
+  {
+    "domain": "Network Security, Compliance, and Governance",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A regulated workload requires encryption of data in transit between the customer's router and AWS over Direct Connect, but the team wants to avoid the throughput and latency overhead that an IPsec VPN would add on top of the dedicated connection. Which approach BEST satisfies both requirements?",
+    "options": [
+      "Rely on AS_PATH prepending, which encrypts BGP-advertised routes end to end.",
+      "Terminate a Site-to-Site VPN over the Direct Connect public virtual interface as the sole encryption mechanism.",
+      "Apply the NO_EXPORT BGP community, which AWS documentation indicates provides confidentiality for data in transit.",
+      "Enable MACsec (802.1AE) on a MACsec-capable dedicated Direct Connect connection, providing near line-rate point-to-point encryption without the overhead of an IPsec VPN tunnel."
+    ],
+    "correct": [3],
+    "explanation": "<b>MACsec</b> on a MACsec-capable dedicated connection encrypts traffic at the Ethernet layer at near line rate, satisfying an in-transit encryption requirement without layering an IPsec VPN's tunneling and encryption overhead on top of Direct Connect. AS_PATH prepending is a route-preference mechanism for BGP path selection and provides no encryption. Running a VPN over Direct Connect is a valid pattern for encrypting traffic, but it is exactly the overhead the team wants to avoid, not the requested alternative. NO_EXPORT is a route-scoping community that limits how far a route propagates; it has nothing to do with data confidentiality.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/directconnect/latest/UserGuide/MACsec.html",
+    "id": "ansc01-0036"
+  },
+  {
+    "domain": "Network Security, Compliance, and Governance",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A company wants to prevent every account except the network team's account from ever being able to create or attach an internet gateway, even if a developer in another account is granted AdministratorAccess by mistake. Which governance control correctly enforces this organization-wide guardrail?",
+    "options": [
+      "A Service Control Policy (SCP) attached at the organizational unit level that denies ec2:CreateInternetGateway and ec2:AttachInternetGateway for all accounts except the network team's account.",
+      "An IAM permission policy attached to each developer's IAM user in every account, since SCPs cannot restrict actions taken by an AdministratorAccess policy.",
+      "A resource-based S3 bucket policy applied to the network team's account.",
+      "A security group rule that blocks port 80 and 443 on every VPC's internet gateway."
+    ],
+    "correct": [0],
+    "explanation": "An <b>SCP</b> sets the <b>maximum available permissions</b> for every IAM user and role in a member account, including one with AdministratorAccess; a deny-based SCP on <b>ec2:CreateInternetGateway</b> and <b>ec2:AttachInternetGateway</b>, scoped by organizational unit with an exception carved out for the network team's account, blocks the action account-wide regardless of any identity-based policy granted inside that account. Per-user IAM policies can be bypassed by any other identity-based policy such as AdministratorAccess and do not provide the same organization-wide, unbypassable guardrail; SCPs are specifically designed to cap even AdministratorAccess, so the premise that they cannot is false. An S3 bucket policy controls access to S3 objects, not EC2 API actions. A security group rule filters IP traffic on running resources; it cannot prevent the API call that creates or attaches an internet gateway in the first place.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps.html",
+    "id": "ansc01-0037"
+  },
+  {
+    "domain": "Network Security, Compliance, and Governance",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A compliance requirement states that contractors connecting through the corporate Client VPN must be limited to a small, specific subnet, while full-time employees in the same VPN can reach a broader set of subnets, using existing Active Directory group membership as the source of truth. Which Client VPN configuration enforces this governance requirement?",
+    "options": [
+      "Rely only on the target subnets' network ACLs, since Client VPN itself has no concept of per-group access restriction.",
+      "Configure Client VPN authorization rules that map the contractor AD group to only the narrow subnet's CIDR, and map the employee AD group to the broader set of subnet CIDRs.",
+      "Issue different client certificates to contractors and employees, since certificate issuance alone determines which subnets each group can reach.",
+      "Place contractors and employees in different VPCs with no VPN configuration differences, since VPN configuration cannot vary by group."
+    ],
+    "correct": [1],
+    "explanation": "<b>Client VPN authorization rules map an authenticated user group</b>, from Active Directory or SAML, <b>to specific target network CIDRs</b>, so contractors and employees, authenticated against the same Client VPN endpoint, can be restricted to different reachable subnets purely by group membership. Network ACLs operate on IP ranges, not authenticated group identity, so they cannot enforce this by themselves; authorization rules are the built-in mechanism for this. Certificate issuance establishes trust that the client is legitimate, but it does not by itself carry group-based network authorization the way authorization rules with a group mapping do. Client VPN authorization rules exist specifically to vary access by group without requiring separate VPCs.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/vpn/latest/clientvpn-admin/client-authentication.html",
+    "id": "ansc01-0038"
+  },
+  {
+    "domain": "Network Security, Compliance, and Governance",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A security team wants automated, continuous detection of threats such as communication with known-malicious IP addresses, unusual DNS query patterns, and compromised credentials, by analyzing existing VPC Flow Logs, DNS logs, and CloudTrail events, without deploying any agents on EC2 instances. Which service BEST fits this requirement?",
+    "options": [
+      "AWS Config, which evaluates resource configurations against rules but does not analyze traffic or DNS logs for threats.",
+      "AWS Network Firewall alone, which requires manual Suricata rule authoring for every threat pattern.",
+      "Amazon GuardDuty, which continuously analyzes VPC Flow Logs, DNS logs, and CloudTrail events using threat intelligence feeds and machine learning, with no agents required.",
+      "AWS Certificate Manager, which manages TLS certificates but does not analyze network traffic for threats."
+    ],
+    "correct": [2],
+    "explanation": "<b>Amazon GuardDuty</b> is a managed threat-detection service that continuously ingests <b>VPC Flow Logs, DNS logs, and CloudTrail management events</b> and applies threat-intelligence feeds and machine-learning models to flag malicious or anomalous activity, requiring no agents to deploy. AWS Config evaluates resource configuration compliance, not traffic or log-based threat detection. Network Firewall can block known-bad traffic through authored rules, but it does not itself provide the continuous, ML-driven anomaly detection across Flow Logs, DNS, and CloudTrail that GuardDuty provides out of the box. Certificate Manager only manages TLS certificate lifecycle and has no threat-detection function.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/guardduty/latest/ug/what-is-guardduty.html",
+    "id": "ansc01-0039"
+  },
+  {
+    "domain": "Network Security, Compliance, and Governance",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A network team shares several subnets from its VPC with application-team participant accounts using AWS RAM. One participant account is granted broad IAM permissions, including full EC2 and VPC permissions, within its own account. Which statement correctly describes the governance boundary that still applies in this shared VPC design?",
+    "options": [
+      "Because the participant has full EC2 and VPC IAM permissions in its own account, it can modify the VPC owner's route tables and network ACLs for the shared subnets.",
+      "Any participant account can view and modify EC2 instances that other participant accounts have created in the same shared subnet.",
+      "Only the participant with the broadest IAM permissions is allowed to create a VPC peering connection on behalf of the VPC owner.",
+      "Regardless of a participant's own IAM permissions, only the VPC owner account can manage VPC-level constructs such as route tables, network ACLs, and VPC peering connections for the shared VPC; participants can only create, view, and manage their own resources within the shared subnets."
+    ],
+    "correct": [3],
+    "explanation": "VPC sharing is a governance boundary enforced at the resource-ownership level, independent of a participant's own IAM permissions: <b>only the VPC owner account can manage the VPC itself</b>, including its <b>route tables, network ACLs, and VPC peering connections</b>, while <b>participants can create, view, and manage only their own resources</b>, such as their own EC2 instances, within the shared subnets. A participant's broad IAM permissions apply only within its own account and cannot reach into the owner's VPC-level constructs. Participants cannot view or modify other participants' resources, even within the same shared subnet. VPC peering connections can only be managed by the VPC owner, not by any participant regardless of their IAM permissions.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/vpc/latest/userguide/vpc-sharing.html",
+    "id": "ansc01-0040"
   }
 ]
