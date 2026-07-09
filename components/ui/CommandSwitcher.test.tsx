@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { listCerts } from "@/lib/certs";
 import { CommandSwitcher } from "./CommandSwitcher";
 import { getBank } from "@/lib/bank";
 import { writeAll } from "@/lib/storage";
@@ -108,7 +109,7 @@ describe("CommandSwitcher", () => {
     render(<CommandSwitcher />);
     await userEvent.click(trigger());
     const options = await screen.findAllByRole("option");
-    expect(options).toHaveLength(2);
+    expect(options).toHaveLength(listCerts().length);
     // Cert with progress (mla) sorts ahead of the untouched aip.
     expect(options[0]).toHaveTextContent(MLA_TITLE);
     expect(options[0]).toHaveTextContent(/100%/);

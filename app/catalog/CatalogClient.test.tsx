@@ -22,6 +22,10 @@ const CERTS: CatalogCert[] = listCerts().map((m) => ({
 
 const AIP = "aip-c01"; // Professional
 const MLA = "mla-c01"; // Associate
+// Registry-derived expectations: these tests survive registry growth (v1e adds certs in waves).
+const N = CERTS.length;
+const titlesOf = (level: string) =>
+  CERTS.filter((c) => c.level === level).map((c) => expect.stringContaining(c.title));
 const AIP_TITLE = /Generative AI Developer/i;
 const MLA_TITLE = /Machine Learning Engineer/i;
 
@@ -61,8 +65,8 @@ beforeEach(() => localStorage.clear());
 describe("CatalogClient", () => {
   it("renders every cert unfiltered with an 'N of M certifications' eyebrow", async () => {
     render(<CatalogClient certs={CERTS} />);
-    expect(gridTitles()).toHaveLength(2);
-    expect(screen.getByText(/2 of 2 certifications/i)).toBeInTheDocument();
+    expect(gridTitles()).toHaveLength(N);
+    expect(screen.getByText(new RegExp(`${N} of ${N} certifications`, "i"))).toBeInTheDocument();
     expect(screen.getByRole("heading", { level: 1, name: /all certifications/i })).toBeInTheDocument();
   });
 
@@ -73,14 +77,14 @@ describe("CatalogClient", () => {
 
     await userEvent.click(assoc);
     expect(assoc).toHaveAttribute("aria-pressed", "true");
-    expect(gridTitles()).toEqual([expect.stringMatching(MLA_TITLE)]);
+    expect(gridTitles()).toEqual(titlesOf("Associate"));
     // Single-selected facet drives the dynamic heading.
     expect(screen.getByRole("heading", { level: 1, name: /Associate/i })).toBeInTheDocument();
 
     // Toggling the same chip off restores the full grid.
     await userEvent.click(assoc);
     expect(assoc).toHaveAttribute("aria-pressed", "false");
-    expect(gridTitles()).toHaveLength(2);
+    expect(gridTitles()).toHaveLength(N);
   });
 
   it("filters by the search box and shows the empty state, which Clear all filters resets", async () => {
@@ -96,19 +100,19 @@ describe("CatalogClient", () => {
     expect(screen.getByText(/no certs match those filters/i)).toBeInTheDocument();
 
     await userEvent.click(screen.getByRole("button", { name: /clear all filters/i }));
-    expect(gridTitles()).toHaveLength(2);
+    expect(gridTitles()).toHaveLength(N);
     expect(search).toHaveValue("");
   });
 
   it("shows a removable active-filter tag that restores the grid when removed", async () => {
     render(<CatalogClient certs={CERTS} />);
     await userEvent.click(screen.getByRole("button", { name: /^Professional/i }));
-    expect(gridTitles()).toEqual([expect.stringMatching(AIP_TITLE)]);
+    expect(gridTitles()).toEqual(titlesOf("Professional"));
 
     // A removable tag for the active value appears in the active-filter bar.
     const tag = screen.getByRole("button", { name: /remove Professional/i });
     await userEvent.click(tag);
-    expect(gridTitles()).toHaveLength(2);
+    expect(gridTitles()).toHaveLength(N);
   });
 
   it("focuses the search box on '/' when focus is not already in a field", async () => {
@@ -141,8 +145,8 @@ describe("CatalogClient", () => {
     await userEvent.click(inProgress); // toggle off
 
     await userEvent.click(notStarted);
-    expect(gridTitles()).toHaveLength(0);
-    expect(screen.getByText(/no certs match those filters/i)).toBeInTheDocument();
+    // Every cert except the two with history is Not started (grows with the registry).
+    expect(gridTitles()).toHaveLength(N - 2);
   });
 
   it("keeps chip counts live per value (Status counts reflect local history)", async () => {
@@ -151,10 +155,10 @@ describe("CatalogClient", () => {
 
     // Vendor AWS covers both certs regardless of history.
     const aws = await screen.findByRole("button", { name: /^AWS/i });
-    expect(within(aws).getByText("2")).toBeInTheDocument();
+    expect(within(aws).getByText(String(N))).toBeInTheDocument();
 
     // One cert is Ready, one is Not started after hydration.
     expect(within(screen.getByRole("button", { name: /^Ready/i })).getByText("1")).toBeInTheDocument();
-    expect(within(screen.getByRole("button", { name: /^Not started/i })).getByText("1")).toBeInTheDocument();
+    expect(within(screen.getByRole("button", { name: /^Not started/i })).getByText(String(N - 1))).toBeInTheDocument();
   });
 });
