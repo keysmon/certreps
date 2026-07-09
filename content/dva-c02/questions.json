@@ -401,5 +401,332 @@
     "difficulty": "hard",
     "docUrl": "https://docs.aws.amazon.com/streams/latest/dev/introduction.html",
     "id": "dvac02-0021"
+  },
+  {
+    "domain": "Security",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A mobile application needs to let users sign up and sign in with a username and password (with optional social federation), and separately needs to grant signed-in users temporary AWS credentials to upload files directly to an S3 bucket. Which Amazon Cognito components are needed, and how do they relate?",
+    "options": [
+      "A Cognito identity pool alone handles username/password sign-up and sign-in.",
+      "IAM Identity Center replaces the need for either a user pool or an identity pool.",
+      "A Cognito user pool handles sign-up, sign-in, and issues JSON Web Tokens, and a separate Cognito identity pool exchanges those tokens for temporary AWS credentials mapped to an IAM role.",
+      "A single Cognito user pool both authenticates users and issues temporary AWS credentials directly."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "A <b>user pool</b> is the user directory that handles sign-up, sign-in, and issues JWTs (ID, access, and refresh tokens); a separate <b>identity pool</b> takes those tokens (or another identity provider's tokens) and exchanges them for temporary AWS credentials scoped to an IAM role, letting the app call AWS services like S3 directly. A user pool alone does not grant AWS credentials. An identity pool does not perform username/password authentication itself; it federates existing identities. IAM Identity Center is for workforce access to AWS accounts and applications, not consumer-facing app sign-up.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/cognito/latest/developerguide/what-is-amazon-cognito.html",
+    "id": "dvac02-0022"
+  },
+  {
+    "domain": "Security",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A Lambda function reads from one specific DynamoDB table and writes logs to CloudWatch Logs. The function's current execution role grants dynamodb:* on all resources (Resource: *) plus the AWSLambdaBasicExecutionRole managed policy. A security review flags this as overly permissive. Which change BEST follows least privilege?",
+    "options": [
+      "Replace the DynamoDB permissions with only the specific actions the function needs (for example GetItem, Query, PutItem) scoped to the exact table's ARN.",
+      "Remove the AWSLambdaBasicExecutionRole policy entirely so the function has no logging permissions.",
+      "Keep dynamodb:* but restrict it to only the AWS account root user.",
+      "Attach the AdministratorAccess managed policy so the review cannot flag missing permissions."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "Least privilege means granting only the specific <b>actions</b> the function actually calls (such as GetItem, Query, PutItem) scoped to the <b>exact table ARN</b>, rather than a wildcard action on all resources. Removing basic execution permissions would break the function's CloudWatch Logs writes, which it still needs. Restricting dynamodb:* to the root user does not change what the Lambda execution role itself can do, since the role, not the root user, is the caller. AdministratorAccess is the opposite of least privilege and would fail any security review.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html",
+    "id": "dvac02-0023"
+  },
+  {
+    "domain": "Security",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A Lambda function in Account A must read objects from an S3 bucket owned by Account B. The team wants to avoid storing any long-lived IAM access keys for Account B in Account A's code or configuration. Which approach BEST achieves this?",
+    "options": [
+      "Generate a long-lived IAM access key in Account B and store it as a Lambda environment variable in Account A.",
+      "Make the S3 bucket in Account B fully public so any authenticated Lambda function can read it.",
+      "Copy Account B's IAM user credentials file into the Lambda deployment package.",
+      "Create an IAM role in Account B with a trust policy that allows Account A's Lambda execution role to assume it, and have the function call AWS STS AssumeRole to obtain short-lived credentials scoped to that role's permissions."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "A cross-account <b>IAM role with a trust policy</b> lets Account A's execution role call <b>STS AssumeRole</b> and receive short-lived, automatically expiring credentials scoped to only what the target role allows, with nothing long-lived to store or leak. Storing a long-lived access key in an environment variable creates a durable secret that must be rotated and can be exfiltrated. Making the bucket public removes access control entirely and is a serious security risk. Copying a credentials file into a deployment package hardcodes long-lived secrets into every deployed copy of the function.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use.html",
+    "id": "dvac02-0024"
+  },
+  {
+    "domain": "Security",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "An application must encrypt files that can be several gigabytes each using an AWS KMS customer managed key, but the KMS Encrypt and Decrypt API calls only accept up to 4 KB of data directly. Which approach BEST supports encrypting large files with a KMS key?",
+    "options": [
+      "Increase the KMS key's key spec so it can directly encrypt payloads larger than 4 KB.",
+      "Export the KMS key's private key material and use it locally to encrypt the file with a custom implementation.",
+      "Use envelope encryption: call GenerateDataKey to get a plaintext data key and its KMS-encrypted copy, encrypt the large file locally with the plaintext data key (for example using AES-256), then store the encrypted data key alongside the encrypted file and discard the plaintext key.",
+      "Split the file into 4 KB chunks and call the KMS Encrypt API on every chunk individually."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Envelope encryption</b> uses <b>GenerateDataKey</b> to get a plaintext data key for fast local encryption of arbitrarily large data, plus a KMS-encrypted copy of that same key to store safely; decryption later calls KMS Decrypt only on the small wrapped key, then uses the resulting plaintext key locally. Chunking the file into 4 KB pieces for direct KMS calls does not scale and is far slower and costlier than encrypting once locally. KMS key specs are fixed choices at key creation and are not something you resize to raise the 4 KB direct-encrypt limit. AWS does not export raw key material for a KMS customer managed symmetric key, so a custom local implementation using the actual key is not possible.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html",
+    "id": "dvac02-0025"
+  },
+  {
+    "domain": "Security",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A developer attaches an IAM policy to a Lambda execution role granting kms:Decrypt on a specific KMS key's ARN. The function still receives an AccessDeniedException when calling Decrypt. The KMS key's key policy only contains the default statement granting the account root full access, and does not mention this role. What is the MOST likely cause and fix?",
+    "options": [
+      "kms:Decrypt permissions cannot be granted through IAM policies at all and must always be requested through AWS Support.",
+      "For KMS, both the caller's identity-based policy AND the key's own key policy must allow the action; the key policy must also grant the role's account (or the specific role) permission, typically through a statement that enables IAM policies to grant access to the key.",
+      "IAM policies alone are always sufficient for KMS actions, so the AccessDeniedException must indicate a service outage.",
+      "The function must instead use an S3 bucket policy to grant KMS access."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "KMS is unusual among AWS services in that <b>both</b> the caller's identity-based policy and the key's own <b>key policy</b> must allow the action; a key policy that only trusts the account root, without a statement that enables IAM policies to grant access (or without naming the role directly), will block the call even though the IAM policy allows it. An S3 bucket policy controls S3 access, not the KMS key itself, so it cannot substitute for a missing key policy grant. KMS actions absolutely can be granted through IAM policies, provided the key policy permits it, so no AWS Support ticket is needed for a routine permissions fix like this.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html",
+    "id": "dvac02-0026"
+  },
+  {
+    "domain": "Security",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "An application stores a database password that must be automatically rotated on a schedule with zero application downtime, using a built-in rotation Lambda function AWS provides for supported databases. Which AWS service BEST fits, compared to a plain SSM Parameter Store SecureString parameter?",
+    "options": [
+      "AWS Secrets Manager, which supports built-in automatic rotation on a schedule (including AWS-provided rotation functions for common databases) in addition to encrypting the secret at rest.",
+      "SSM Parameter Store Standard tier, which supports built-in automatic rotation identical to Secrets Manager at no extra cost.",
+      "A SecureString Parameter Store parameter, which rotates itself automatically without any Lambda function or scheduling.",
+      "An IAM access key stored as a plain String parameter, rotated manually every 90 days."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Secrets Manager</b> natively supports scheduled, automatic rotation, including ready-made rotation Lambda functions for services like RDS and Aurora, alongside encryption at rest with KMS. Parameter Store SecureString values are encrypted with KMS but do not include built-in rotation automation; rotating them requires building and scheduling a custom Lambda function and workflow. Nothing in Parameter Store rotates itself with zero configuration. Storing an access key as a plain (non-SecureString) String parameter is both unencrypted and manually rotated, the opposite of what is required here.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/secretsmanager/latest/userguide/rotate-secrets_how.html",
+    "id": "dvac02-0027"
+  },
+  {
+    "domain": "Security",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A company must encrypt objects in an S3 bucket at rest, keep a detailed audit trail in AWS CloudTrail of every use of the encryption key, and control exactly which IAM principals can use that key to decrypt objects. Which S3 server-side encryption option BEST meets these requirements?",
+    "options": [
+      "SSE-C, which requires the client to send the encryption key with every request and manage key storage independently.",
+      "Disabling encryption and relying only on bucket access policies for protection.",
+      "SSE-KMS, using a customer managed KMS key, which logs key usage to CloudTrail and lets the key policy and IAM policies control who can decrypt.",
+      "SSE-S3, which uses keys fully managed by Amazon S3 with no customer-controlled key policy or per-use CloudTrail key logging."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>SSE-KMS</b> with a customer managed key gives fine-grained control over who can use the key through the key policy and IAM policies, and every encrypt/decrypt use of the key is logged to CloudTrail as a distinct API call, satisfying the audit requirement. SSE-S3 encrypts objects with AWS-managed keys but offers no customer-controlled key policy and no dedicated per-key CloudTrail usage trail. SSE-C shifts key management entirely to the client, adding operational burden while still not natively providing detailed per-use CloudTrail logging of that externally managed key. Disabling encryption fails the at-rest encryption requirement outright.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingKMSEncryption.html",
+    "id": "dvac02-0028"
+  },
+  {
+    "domain": "Security",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A web application lets authenticated users download a private object from an S3 bucket directly from their browser, without the application's backend proxying the file bytes, and without making the S3 object or bucket public. Which approach BEST meets this?",
+    "options": [
+      "Give the user's browser the application's long-term IAM access key so it can call S3 directly.",
+      "Proxy every byte of the file through a Lambda function synchronously invoked by API Gateway.",
+      "Generate an S3 presigned URL with a short expiration time and give it to the user's browser to download the object directly.",
+      "Make the object public and share its plain S3 URL with the user."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "A <b>presigned URL</b> is generated using the backend's own credentials but grants time-limited, scoped access to a specific object, so the browser can download it directly from S3 without the object ever being public and without the backend streaming the bytes itself. Making the object public removes access control entirely for anyone with the link. Embedding a long-term IAM access key in browser-side code exposes durable credentials to anyone inspecting the page. Proxying every byte through Lambda and API Gateway adds cost, latency, and payload-size limits that a direct, presigned S3 download avoids.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/ShareObjectPreSignedURL.html",
+    "id": "dvac02-0029"
+  },
+  {
+    "domain": "Security",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A REST API on Amazon API Gateway must validate that every incoming request carries a valid, unexpired JSON Web Token issued by an existing Amazon Cognito user pool, and reject the request before it reaches the backend Lambda function if the token is invalid. Which API Gateway feature BEST fits, with the LEAST custom code?",
+    "options": [
+      "A Cognito user pool authorizer attached to the API method, which validates the token's signature, expiration, and issuer before invoking the backend.",
+      "A Lambda authorizer that reimplements JWT signature verification and claims validation from scratch.",
+      "An IAM authorizer that signs every request with SigV4 instead of using a JWT.",
+      "A resource policy on the API that allow-lists the caller's source IP address."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "A <b>Cognito user pool authorizer</b> is a built-in API Gateway authorizer type that validates the token's signature, expiration, and issuer against the specified user pool automatically, requiring no custom validation code. A Lambda authorizer could also work but means writing and maintaining custom token validation logic that the Cognito authorizer already provides. An IAM (SigV4) authorizer authenticates AWS-signed requests, not bearer JWTs from a user pool, and would require a completely different client-side auth flow. A source-IP resource policy restricts by network location only and does not validate anything about the token itself.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-integrate-with-cognito.html",
+    "id": "dvac02-0030"
+  },
+  {
+    "domain": "Security",
+    "tag": "Domain 2",
+    "type": "multi",
+    "stem": "An application in Account A needs to write objects to an S3 bucket owned by Account B. The security team requires that access be explicitly allowed on BOTH sides and that no long-lived credentials from Account B are ever stored in Account A. Which TWO configurations, used together, correctly implement this? (Select TWO.)",
+    "options": [
+      "A service control policy (SCP) in Account A that denies all S3 actions account-wide.",
+      "An IAM identity-based policy in Account A (attached to the calling role) that allows s3:PutObject on the target bucket's ARN.",
+      "An S3 bucket policy in Account B that explicitly allows the Account A role's ARN (or account) to perform s3:PutObject on the bucket.",
+      "A long-lived IAM access key created in Account B and stored as an environment variable in Account A's application.",
+      "Making the bucket public so any AWS principal can write objects to it."
+    ],
+    "correct": [
+      1,
+      2
+    ],
+    "explanation": "Cross-account S3 access requires permission on <b>both sides</b>: an <b>identity-based policy</b> in the calling account (Account A) allowing the action, and a <b>resource-based bucket policy</b> in the owning account (Account B) explicitly allowing that external principal, with no long-lived keys needed on either side. Storing a long-lived access key in Account A is exactly what the security team wants to avoid. Making the bucket public grants access to everyone, far broader than the specific cross-account principal intended, and fails least privilege. An SCP that denies all S3 actions account-wide would block the access entirely, the opposite of what is needed.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/example-walkthroughs-managing-access-example2.html",
+    "id": "dvac02-0031"
+  },
+  {
+    "domain": "Security",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A company wants an IAM policy that allows an operations team to call EC2 and S3 APIs only when the request originates from the corporate VPN's IP range, regardless of which IAM user or role makes the call. Which IAM policy element BEST enforces this?",
+    "options": [
+      "A permissions boundary with no Condition elements at all.",
+      "A Condition block using the aws:SourceIp global condition key, scoped to the corporate VPN's CIDR range.",
+      "A resource ARN wildcard (*) covering every EC2 and S3 resource.",
+      "An IAM group name that includes the word VPN in its title."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "The <b>aws:SourceIp</b> global condition key, used in a policy's Condition block, restricts when a statement's Allow (or Deny) applies based on the request's source IP address, which is exactly how to require the corporate VPN range regardless of which principal is calling. A resource wildcard only affects which resources are covered, not the network origin of the request. Naming an IAM group VPN has no enforcement effect; it is just a label. A permissions boundary without any Condition elements limits maximum permissions but does not check the caller's IP.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_condition-keys.html",
+    "id": "dvac02-0032"
+  },
+  {
+    "domain": "Security",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A company must ensure that no client can read or write objects in an S3 bucket over plain, unencrypted HTTP, only over HTTPS. Which S3 bucket policy configuration enforces this?",
+    "options": [
+      "Setting the bucket's default encryption to SSE-S3.",
+      "A bucket policy statement that denies all S3 actions on the bucket and its objects when the aws:SecureTransport condition key is false.",
+      "Enabling S3 Transfer Acceleration on the bucket.",
+      "Enabling versioning on the bucket."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "A bucket policy <b>Deny</b> statement with the condition <b>aws:SecureTransport: false</b> blocks any request that did not arrive over HTTPS/TLS, enforcing encryption in transit regardless of client behavior. Transfer Acceleration speeds up uploads over long distances using CloudFront edge locations; it does not require or enforce TLS-only access. Versioning protects against accidental overwrite or deletion and is unrelated to transport security. Default encryption (SSE-S3) protects data at rest, not the protocol used to transmit it.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/amazon-s3-policy-keys.html",
+    "id": "dvac02-0033"
+  },
+  {
+    "domain": "Security",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A component running under a Lambda function needs temporary, narrowly scoped permission to use a KMS key for a single Decrypt operation on behalf of a caller, without modifying the key's key policy or the caller's IAM policy, and the permission should be revocable independently at any time. Which KMS mechanism BEST fits?",
+    "options": [
+      "Rotating the KMS key so a new backing key version has different default permissions.",
+      "A KMS grant, created with CreateGrant, which delegates specific, narrowly scoped permissions on the key to a grantee principal and can be retired or revoked independently of the key policy.",
+      "Editing the key policy directly every time a new temporary permission is needed.",
+      "Attaching a new inline IAM policy to the Lambda execution role for every new caller."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "A <b>KMS grant</b> is designed exactly for temporary, narrowly scoped, programmatically created and revoked delegation of key permissions to a grantee principal, without touching the key policy or any IAM policy, and it can be retired independently later. Editing the key policy for every temporary need is slow, requires key-administrator access, and does not scale for frequent, short-lived delegations. Attaching a new inline IAM policy per caller has the same operational overhead and still requires editing IAM resources rather than a lightweight, revocable grant. KMS key rotation replaces backing key material on a schedule; it does not create or manage per-caller permission delegation.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/kms/latest/developerguide/grants.html",
+    "id": "dvac02-0034"
+  },
+  {
+    "domain": "Security",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A Lambda function currently has its database password hardcoded as a plain-text Lambda environment variable. A security review flags this because anyone with read access to the function's configuration can see the password, and rotating it requires redeploying the function. Which change BEST addresses both concerns?",
+    "options": [
+      "Move the same plain-text password into a Lambda layer instead of an environment variable.",
+      "Base64-encode the password before storing it as the environment variable.",
+      "Store the password in the function's code comments so it is easy to find during audits.",
+      "Store the database password in AWS Secrets Manager and have the function retrieve it at runtime through the Secrets Manager API (optionally with caching), so the value is encrypted at rest and can be rotated without redeploying the function."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Secrets Manager</b> encrypts the secret at rest, controls access through IAM policy rather than configuration visibility, and lets the function fetch the current value at runtime, so rotating the password never requires a redeploy. Moving the same plain-text value into a layer does not encrypt it or add access control; it is still readable configuration. Base64 encoding is not encryption; it is trivially reversible and provides no real protection. Putting a secret in code comments makes it more discoverable, not less, and does not address rotation at all.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html",
+    "id": "dvac02-0035"
+  },
+  {
+    "domain": "Security",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A Lambda function's execution role currently includes the statement: Effect Allow, Action s3:*, Resource *. The function only needs to read objects from a single specific bucket named app-uploads. Which replacement statement BEST follows least privilege?",
+    "options": [
+      "Effect Allow, Action s3:*, Resource arn:aws:s3:::app-uploads/* (all S3 actions, scoped to the one bucket).",
+      "Effect Allow, Action s3:GetObject, Resource * (the read action, with no bucket restriction).",
+      "Effect Deny, Action s3:PutObject, Resource *, added alongside the original Allow s3:* on Resource *.",
+      "Effect Allow, Action s3:GetObject, Resource arn:aws:s3:::app-uploads/* (scoped to only the read action and only that bucket's objects)."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "Least privilege means granting only the <b>specific action</b> actually used (s3:GetObject) and only the <b>specific resource</b> actually needed (the app-uploads bucket's objects), which is precisely this statement. Scoping s3:* (all S3 actions, including deletes and writes) to the one bucket is narrower than the original policy but still grants far more than the read-only need described. Allowing s3:GetObject on Resource * still lets the function read from every bucket in the account, not just app-uploads. Adding a Deny on PutObject while keeping the original Allow s3:* on Resource * still leaves every other S3 action allowed account-wide, which is not least privilege.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html",
+    "id": "dvac02-0036"
+  },
+  {
+    "domain": "Security",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A team encrypts sensitive records with a KMS data key and wants to cryptographically bind each ciphertext to metadata such as the record's customer_id, so decryption fails if the ciphertext is ever moved and decrypted with a mismatched customer_id, without storing the customer_id inside the encrypted payload itself. Which KMS feature BEST fits?",
+    "options": [
+      "An encryption context: a set of non-secret key-value pairs (such as customer_id) passed to Encrypt/GenerateDataKey and required again, identically, on Decrypt, which KMS uses as additional authenticated data.",
+      "A resource tag on the KMS key named customer_id.",
+      "A separate KMS key created for every customer_id value.",
+      "A key policy statement listing every valid customer_id as an allowed principal."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "An <b>encryption context</b> is non-secret, additional authenticated data supplied on encrypt and decrypt; KMS cryptographically verifies it matches on decryption, so ciphertext decrypted with the wrong context (for example, the wrong customer_id) fails, without embedding that value in the ciphertext or needing a new key per value. A resource tag on the key is metadata about the key itself, not a per-ciphertext binding. Creating a separate key per customer_id does not scale and does not use the actual encryption-context feature designed for this. A key policy lists IAM principals allowed to use the key; it cannot enumerate arbitrary business values like customer IDs as a decrypt-time check.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html",
+    "id": "dvac02-0037"
+  },
+  {
+    "domain": "Security",
+    "tag": "Domain 2",
+    "type": "multi",
+    "stem": "A mobile app uses a Cognito identity pool to grant temporary AWS credentials to signed-in users so they can upload photos directly to an S3 bucket. Which TWO statements about how the identity pool grants these credentials are correct? (Select TWO.)",
+    "options": [
+      "The identity pool issues the same long-lived IAM user access keys to every signed-in user.",
+      "The IAM role's own permissions are irrelevant because the identity pool itself enforces all access control.",
+      "Cognito identity pools can only be used with Cognito user pools as the identity source, never with external providers such as Google or SAML.",
+      "The identity pool maps authenticated users to an IAM role, and Cognito calls AWS STS to vend short-lived, automatically expiring credentials scoped to that role's permissions.",
+      "The identity pool can assign a separate, more restrictive IAM role to unauthenticated (guest) users than the one assigned to authenticated users."
+    ],
+    "correct": [
+      3,
+      4
+    ],
+    "explanation": "A Cognito <b>identity pool</b> maps identities to an <b>IAM role</b> and uses <b>AWS STS</b> behind the scenes to hand out short-lived, expiring credentials scoped to that role, and it supports separate roles for authenticated versus unauthenticated (guest) access so guests can be given a more limited role. It does not issue long-lived IAM user keys; the entire point is temporary, automatically expiring credentials. The IAM role's own permissions are exactly what AWS services enforce, so they matter a great deal, not the identity pool by itself. Identity pools support many identity sources beyond Cognito user pools, including external providers such as Google, Facebook, Apple, SAML, and OpenID Connect.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/cognito/latest/developerguide/identity-pools.html",
+    "id": "dvac02-0038"
   }
 ]
