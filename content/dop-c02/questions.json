@@ -382,5 +382,159 @@
     "difficulty": "hard",
     "docUrl": "https://docs.aws.amazon.com/cdk/v2/guide/aspects.html",
     "id": "dopc02-0020"
+  },
+  {
+    "domain": "Resilient Cloud Solutions",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A production RDS database needs automatic failover to a standby in a different Availability Zone if the primary instance becomes unhealthy, with minimal manual intervention. Which RDS feature provides this?",
+    "options": [
+      "A Multi-AZ deployment, which keeps a synchronously replicated standby in a different AZ and automatically fails over to it.",
+      "A read replica, which asynchronously replicates data for read scaling but is not an automatic failover target by default.",
+      "Aurora Serverless v2 autoscaling, which adjusts compute capacity but does not provide cross-AZ automatic failover by itself.",
+      "A manual snapshot restore, performed by an operator after the primary instance fails."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "An RDS <b>Multi-AZ deployment</b> keeps a synchronously replicated standby instance in a different Availability Zone and automatically promotes it and updates the DNS endpoint when the primary becomes unhealthy, with no manual step. A read replica replicates asynchronously for read scaling and is not automatically promoted on primary failure unless an operator or automation explicitly promotes it. Aurora Serverless v2 solves capacity elasticity, not AZ-level automatic failover. A manual snapshot restore is slow, requires a human to initiate it, and is a backup mechanism, not a high-availability one.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html",
+    "id": "dopc02-0021"
+  },
+  {
+    "domain": "Resilient Cloud Solutions",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A team runs an active-active application across two Regions behind Route 53, and wants a safe, auditable way to manually shift all traffic away from a Region during an incident, backed by pre-checks that catch capacity or configuration gaps in the other Region before the team ever needs to rely on it working. Which service BEST fits this?",
+    "options": [
+      "A Route 53 simple routing policy with no health checks, since it always returns a fixed record.",
+      "Route 53 Application Recovery Controller, using its readiness checks together with its routing controls.",
+      "AWS Global Accelerator custom routing endpoint groups configured without any readiness validation.",
+      "CloudFront origin failover configured only for static assets served through the CDN."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Route 53 Application Recovery Controller (ARC)</b> combines <b>readiness checks</b>, which continuously audit whether the standby Region has enough capacity and matching configuration to safely receive traffic, with <b>routing controls</b>, simple and highly available on/off switches operators toggle to redirect traffic, together giving a tested, auditable manual failover path. A simple routing policy has no health or capacity awareness at all. Global Accelerator can route traffic across Regions, but without readiness checks it gives no pre-failover validation that the target Region can actually absorb the load. CloudFront origin failover operates at the CDN layer for cached or static content and does not address a full application-level regional traffic shift.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/r53recovery/latest/dg/what-is-route53-recovery.html",
+    "id": "dopc02-0022"
+  },
+  {
+    "domain": "Resilient Cloud Solutions",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A relational workload needs a secondary Region that can be promoted to accept writes within about a minute during a regional outage, with typical replication lag under a second, and the team does not want to build or operate custom replication tooling. Which architecture BEST fits?",
+    "options": [
+      "An RDS Multi-AZ deployment, since its standby can be promoted to serve as the cross-Region secondary.",
+      "A cross-Region read replica managed with a custom AWS DMS ongoing-replication task built and operated by the team.",
+      "An Aurora Global Database with a secondary Region cluster, promoted to the primary during failover.",
+      "A nightly cross-Region snapshot copy, restored into a new DB instance only when a regional outage is declared."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Aurora Global Database</b> is purpose-built for this: it replicates to a secondary Region cluster with typical lag under a second and a managed failover that can promote the secondary to read/write in about a minute, with no custom replication pipeline to build. An RDS Multi-AZ standby lives within the same Region's AZs, not a separate Region, so it cannot serve as the cross-Region secondary the requirement describes. A custom DMS-based replication pipeline can move data cross-Region but requires the team to build and operate the tooling themselves, and typically has higher lag and a slower, more manual promotion path than Aurora Global Database. A nightly snapshot copy gives an RPO of up to 24 hours and a restore-time RTO far longer than a minute, missing both targets by a wide margin.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-global-database.html",
+    "id": "dopc02-0023"
+  },
+  {
+    "domain": "Resilient Cloud Solutions",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "An engineer wants a stateless web tier to automatically replace instances that fail the load balancer's health checks, and to automatically add capacity as CPU utilization rises, spread across multiple Availability Zones, with minimal manual operations. Which combination BEST achieves this?",
+    "options": [
+      "A single, larger EC2 instance in one AZ with a CloudWatch alarm configured to reboot it whenever CPU spikes.",
+      "An Application Load Balancer on its own, since it automatically launches new EC2 instances when existing ones fail health checks.",
+      "A Systems Manager Automation runbook that an on-call engineer manually triggers after reviewing a CloudWatch dashboard.",
+      "An EC2 Auto Scaling group spanning multiple AZs with ELB health checks enabled, plus a target-tracking scaling policy on CPU utilization."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "An <b>Auto Scaling group spanning multiple AZs, with ELB health checks enabled, replaces instances that fail the load balancer's health checks</b>, and a <b>target-tracking policy on CPU utilization</b> adds or removes capacity automatically as load changes, together meeting both the self-healing and elasticity goals with no manual steps. A single larger instance in one AZ has no multi-AZ redundancy and rebooting on a CPU spike does not address unhealthy-instance replacement. An Application Load Balancer distributes and health-checks traffic but does not launch or terminate EC2 instances by itself; that capacity management is the Auto Scaling group's job. A manually triggered runbook depends on a human noticing and acting, which is not automatic.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/autoscaling/ec2/userguide/what-is-amazon-ec2-auto-scaling.html",
+    "id": "dopc02-0024"
+  },
+  {
+    "domain": "Resilient Cloud Solutions",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A company's disaster recovery requirement specifies an RTO of about 10 minutes and an RPO of about 1 minute for a critical transactional application, at the lowest cost that still meets those targets, minimizing idle infrastructure in the DR Region when there is no disaster. Which DR strategy from the AWS resiliency spectrum BEST matches this?",
+    "options": [
+      "Pilot light: keep only the core data tier continuously replicated (for example, an Aurora Global Database secondary) in the DR Region, with application compute defined but not running, and bring compute online through automation during failover.",
+      "Backup and restore: periodically back up data to the DR Region and restore both data and infrastructure from scratch only after a disaster is declared.",
+      "Warm standby: run a full-scale, fully running copy of the entire production stack in the DR Region at all times, at the same capacity as production.",
+      "Multi-site active-active: run production traffic simultaneously in both Regions at full scale at all times, with a global load balancer splitting live traffic."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Pilot light</b> keeps the data tier warm and continuously replicated so RPO stays in the minutes range, while compute is only defined, not running, so idle-time cost stays low; automation brings the application tier online during failover, landing RTO in the tens-of-minutes range that fits the 10-minute target. Backup and restore typically has an RPO and RTO measured in hours, since both data and infrastructure are rebuilt from backups only after a disaster is declared, missing both targets. Running a full-scale, fully running warm standby stack around the clock meets the RTO/RPO targets but costs far more in idle standby capacity than the requirement calls for, since production-equivalent compute runs continuously even when idle. Multi-site active-active gives the lowest possible RTO/RPO of any strategy but runs full production capacity in both Regions at all times, the most expensive option, which overshoots what a 10-minute RTO and 1-minute RPO target actually requires.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-workloads-on-aws/disaster-recovery-options-in-the-cloud.html",
+    "id": "dopc02-0025"
+  },
+  {
+    "domain": "Resilient Cloud Solutions",
+    "tag": "Domain 3",
+    "type": "multi",
+    "stem": "A team wants to adopt Route 53 Application Recovery Controller (ARC) to enable safe, tested manual failover between two Regions. Which TWO ARC building blocks together provide this capability? (Select TWO.)",
+    "options": [
+      "Routing controls: highly available on/off switches, backed by a resilient cluster of endpoints, that application code or operators toggle to redirect traffic between Regions.",
+      "Readiness checks: continuous audits of whether each Region's resources have the capacity and configuration needed to safely accept failover traffic before it is ever sent there.",
+      "CloudFront origin groups, which retry failed requests against a secondary origin at the CDN edge.",
+      "A Route 53 simple routing policy, which returns one static record with no health or readiness awareness.",
+      "AWS Config conformance packs, which evaluate account-wide compliance rules on a recurring schedule."
+    ],
+    "correct": [
+      0,
+      1
+    ],
+    "explanation": "ARC's two core building blocks are <b>routing controls</b>, simple and highly available switches you toggle to redirect traffic, and <b>readiness checks</b>, which continuously verify that a Region has the capacity and configuration parity to safely receive failover traffic; together they give a tested, auditable way to shift traffic during an incident. CloudFront origin groups retry at the CDN layer and are a separate, unrelated mechanism from ARC. A simple routing policy has no health or readiness awareness at all. AWS Config conformance packs check compliance rules, not regional failover readiness.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/r53recovery/latest/dg/routing-control.html",
+    "id": "dopc02-0026"
+  },
+  {
+    "domain": "Resilient Cloud Solutions",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A company runs its primary application stack in us-east-1 and a passive, fully deployed standby stack in us-west-2. They want DNS to automatically direct users to us-west-2 only when us-east-1's application-level health check fails, using native Route 53 configuration with no custom Lambda logic. Which routing policy should they use?",
+    "options": [
+      "A weighted routing policy that splits traffic by a fixed percentage between the two Regions regardless of health status.",
+      "A failover routing policy, with a Route 53 health check on the primary endpoint, one record set marked PRIMARY and the standby record set marked SECONDARY.",
+      "A geolocation routing policy that sends users to the Region closest to their geographic location.",
+      "A multivalue answer routing policy that returns several healthy records at random with no primary or secondary distinction."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "A <b>failover routing policy with a health check on the primary record</b> is exactly what Route 53 provides for active-passive failover: as long as the primary's health check passes, Route 53 answers with the PRIMARY record, and it automatically switches to the SECONDARY record only when the primary fails its health check. Weighted routing splits traffic by percentage with no concept of primary versus standby or automatic failover. Geolocation routing chooses a Region by requester location, not by health. Multivalue answer routing can incorporate health checks but returns multiple values with no primary/secondary semantics, which does not match the described active-passive requirement.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-failover.html",
+    "id": "dopc02-0027"
+  },
+  {
+    "domain": "Resilient Cloud Solutions",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "An Auto Scaling group and Application Load Balancer serve a multi-AZ application. During a partial impairment of a single Availability Zone (elevated latency and errors, though the AZ is not fully down), the team wants traffic shifted away from the impaired AZ within minutes, without first diagnosing the root cause, and ideally without a human triggering it overnight. Which AWS capability directly addresses this?",
+    "options": [
+      "Cross-Region failover using Route 53 ARC routing controls, treating the single-AZ impairment as a full Regional failover event.",
+      "Manually terminating every instance in the impaired AZ and waiting for Auto Scaling to relaunch replacements, potentially back into the same AZ.",
+      "Route 53 Application Recovery Controller zonal shift (or zonal autoshift), which shifts an Application Load Balancer's traffic and Auto Scaling launches away from an impaired AZ for a bounded time, with autoshift able to trigger automatically.",
+      "Permanently removing the impaired Availability Zone from the VPC's configuration."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Zonal shift, and its automatic counterpart zonal autoshift, in Route 53 Application Recovery Controller</b> is built for exactly this case: it moves an impaired AZ out of an Application Load Balancer's and Auto Scaling group's traffic and capacity rotation for a bounded time, with autoshift able to react automatically without a human paged in the middle of the night. Treating a single-AZ impairment as a full Regional failover is a much heavier, slower response than the localized problem needs. Manually terminating instances does not guarantee Auto Scaling avoids relaunching into the same impaired AZ and requires a human to act. A VPC has no setting to disable an Availability Zone, and permanently removing AZ capacity is not an appropriate response to a transient impairment.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-shift.html",
+    "id": "dopc02-0028"
   }
 ]
