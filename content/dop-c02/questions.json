@@ -196,14 +196,14 @@
     "stem": "A CodeBuild project must run integration tests against an Amazon RDS database that sits in private subnets with no route to the internet, and must also pull dependencies from a CodeArtifact repository, without giving the build environment a public IP address or a route through a NAT gateway. Which TWO actions together satisfy this? (Select TWO.)",
     "options": [
       "Configure the CodeBuild project to run inside the VPC, in the private subnets, with a security group that allows outbound access to the RDS database's port.",
-      "Create VPC interface endpoints (AWS PrivateLink) for the CodeArtifact API and repository endpoints, plus an S3 gateway endpoint for the CodeArtifact-backed S3 bucket, so CodeBuild reaches them without internet access.",
       "Attach an internet gateway directly to the private subnets so CodeBuild can reach CodeArtifact over the public internet.",
+      "Create VPC interface endpoints (AWS PrivateLink) for the CodeArtifact API and repository endpoints, plus an S3 gateway endpoint for the CodeArtifact-backed S3 bucket, so CodeBuild reaches them without internet access.",
       "Disable the CodeBuild project's VPC configuration entirely so it runs in the AWS-managed network instead of the customer VPC.",
       "Give the CodeBuild project's builds a public IP address and rely on a network ACL to block all traffic except CodeArtifact."
     ],
     "correct": [
       0,
-      1
+      2
     ],
     "explanation": "Running the <b>CodeBuild project inside the VPC's private subnets with an appropriate security group</b> lets it reach the RDS database directly, and adding <b>VPC interface endpoints for CodeArtifact plus an S3 gateway endpoint</b> lets it reach CodeArtifact's API and its underlying S3 storage over AWS's private network, with no NAT gateway or public IP needed. Attaching an internet gateway to private subnets converts them into effectively public subnets and still depends on internet routing, which the requirement rules out. Disabling the VPC configuration would prevent CodeBuild from ever reaching the private RDS instance at all. Assigning a public IP directly contradicts the no-public-IP requirement, and a network ACL alone does not provide the private connectivity path to CodeArtifact.",
     "difficulty": "medium",
@@ -330,15 +330,15 @@
     "type": "multi",
     "stem": "A StackSet deploys a stack to 200 accounts across 4 Regions. The platform team wants the rollout to proceed in parallel across many accounts to finish quickly, but wants the StackSet to automatically stop launching new stack instances if more than 10 percent of the attempted instances fail, so a bad template does not roll out everywhere before anyone notices. Which TWO StackSet operation preferences together achieve this? (Select TWO.)",
     "options": [
-      "Set MaxConcurrentPercentage (or MaxConcurrentCount) high enough to deploy to many accounts and Regions in parallel.",
-      "Set FailureTolerancePercentage (or FailureToleranceCount) to 10 percent so the operation stops launching new instances once that failure threshold is crossed.",
       "Set the StackSet's capabilities field to CAPABILITY_NAMED_IAM so failed instances are automatically retried.",
+      "Set MaxConcurrentPercentage (or MaxConcurrentCount) high enough to deploy to many accounts and Regions in parallel.",
       "Disable stack instance drift detection so failed instances are not reported as drifted.",
+      "Set FailureTolerancePercentage (or FailureToleranceCount) to 10 percent so the operation stops launching new instances once that failure threshold is crossed.",
       "Set the deployment order to strictly sequential across Regions and rely on manual review between each Region with no automated stop condition."
     ],
     "correct": [
-      0,
-      1
+      1,
+      3
     ],
     "explanation": "<b>MaxConcurrentPercentage/Count controls how many accounts and Regions StackSets works on simultaneously</b>, giving the parallelism the team wants for a fast rollout, and <b>FailureTolerancePercentage/Count sets the failure threshold that automatically halts the operation</b> before it continues to remaining targets, together delivering a fast but safe deployment. CAPABILITY_NAMED_IAM only acknowledges that a template creates named IAM resources; it has nothing to do with retries or failure thresholds. Disabling drift detection hides configuration drift after the fact and does not stop a failing rollout in progress. A purely sequential, manually reviewed rollout removes the parallelism the team wants and provides no automated stop condition of its own.",
     "difficulty": "hard",
@@ -484,15 +484,15 @@
     "type": "multi",
     "stem": "A team wants to adopt Route 53 Application Recovery Controller (ARC) to enable safe, tested manual failover between two Regions. Which TWO ARC building blocks together provide this capability? (Select TWO.)",
     "options": [
-      "Routing controls: highly available on/off switches, backed by a resilient cluster of endpoints, that application code or operators toggle to redirect traffic between Regions.",
-      "Readiness checks: continuous audits of whether each Region's resources have the capacity and configuration needed to safely accept failover traffic before it is ever sent there.",
       "CloudFront origin groups, which retry failed requests against a secondary origin at the CDN edge.",
       "A Route 53 simple routing policy, which returns one static record with no health or readiness awareness.",
-      "AWS Config conformance packs, which evaluate account-wide compliance rules on a recurring schedule."
+      "Routing controls: highly available on/off switches, backed by a resilient cluster of endpoints, that application code or operators toggle to redirect traffic between Regions.",
+      "AWS Config conformance packs, which evaluate account-wide compliance rules on a recurring schedule.",
+      "Readiness checks: continuous audits of whether each Region's resources have the capacity and configuration needed to safely accept failover traffic before it is ever sent there."
     ],
     "correct": [
-      0,
-      1
+      2,
+      4
     ],
     "explanation": "ARC's two core building blocks are <b>routing controls</b>, simple and highly available switches you toggle to redirect traffic, and <b>readiness checks</b>, which continuously verify that a Region has the capacity and configuration parity to safely receive failover traffic; together they give a tested, auditable way to shift traffic during an incident. CloudFront origin groups retry at the CDN layer and are a separate, unrelated mechanism from ARC. A simple routing policy has no health or readiness awareness at all. AWS Config conformance packs check compliance rules, not regional failover readiness.",
     "difficulty": "hard",
@@ -772,14 +772,14 @@
     "stem": "A platform team is designing an auto-remediation pipeline: whenever a specific CloudTrail-recorded API call happens (for example, deleting a required CloudTrail trail), the change should be detected within seconds and an SSM Automation runbook should run automatically to reverse it, with no engineer polling logs. Which TWO components are required in this pipeline? (Select TWO.)",
     "options": [
       "An EventBridge rule with an event pattern matching the specific CloudTrail management event, so the rule triggers the instant the event is delivered.",
-      "An IAM role attached to the EventBridge rule's target that permits it to start the target SSM Automation runbook (or invoke the target Lambda), authorizing the automation to actually run.",
       "An AWS Config recorder configured to evaluate the resource's configuration once every 24 hours.",
       "A CloudWatch Logs metric filter that counts occurrences of the API call name in a log group, with no EventBridge rule involved.",
+      "An IAM role attached to the EventBridge rule's target that permits it to start the target SSM Automation runbook (or invoke the target Lambda), authorizing the automation to actually run.",
       "An engineer manually re-running the equivalent AWS CLI describe command every few minutes to check whether the resource still matches the required configuration."
     ],
     "correct": [
       0,
-      1
+      3
     ],
     "explanation": "An <b>EventBridge rule matching the specific CloudTrail event</b> reacts within seconds of the event's delivery, and an <b>IAM role granting the rule's target permission to start the runbook or invoke the Lambda</b> is what actually authorizes the automated remediation to execute; together these two pieces make the pipeline both immediate and functional. An AWS Config recorder on a 24-hour evaluation cadence introduces a full day of detection latency, far from the near-real-time goal. A CloudWatch Logs metric filter with no EventBridge rule can count occurrences but has no native mechanism to trigger a remediation action on its own. Manually re-running a CLI command on an interval is exactly the manual polling the team wants to eliminate.",
     "difficulty": "hard",
@@ -906,15 +906,15 @@
     "type": "multi",
     "stem": "A platform team is writing an AWS Organizations SCP intended to prevent every account in a specific OU from ever disabling AWS CloudTrail or GuardDuty, even by an account's own root user. Which TWO statements about how SCPs enforce this are correct? (Select TWO.)",
     "options": [
-      "An SCP with an explicit Deny on the relevant actions applies to every principal in the account, including that account's root user, since SCPs set the maximum available permissions regardless of any identity-based policy.",
-      "An SCP alone grants no permissions by itself; it only defines the ceiling of what identity-based and resource-based policies in the account are allowed to permit, so the account still needs its own IAM policies granting any action it is allowed to use.",
       "SCPs are optional recommendations that an IAM policy can override if a role explicitly allows the denied action.",
+      "An SCP with an explicit Deny on the relevant actions applies to every principal in the account, including that account's root user, since SCPs set the maximum available permissions regardless of any identity-based policy.",
       "SCPs only apply to IAM users and roles created after the SCP is attached; existing principals are grandfathered in and unaffected.",
-      "Attaching an SCP to an OU automatically deletes any existing IAM policies in the member accounts that conflict with it."
+      "Attaching an SCP to an OU automatically deletes any existing IAM policies in the member accounts that conflict with it.",
+      "An SCP alone grants no permissions by itself; it only defines the ceiling of what identity-based and resource-based policies in the account are allowed to permit, so the account still needs its own IAM policies granting any action it is allowed to use."
     ],
     "correct": [
-      0,
-      1
+      1,
+      4
     ],
     "explanation": "SCPs set a <b>permissions ceiling that applies to every principal in the account, including the root user</b>, so an explicit Deny blocks the action no matter what any identity-based policy says, and SCPs are purely restrictive: they <b>never grant permissions on their own</b>, only narrowing what identity-based and resource-based policies inside the account are allowed to permit in practice. It is false that an IAM policy can override an SCP's explicit Deny; SCPs are enforced above account-level policies and cannot be overridden that way. SCPs apply to all principals in affected accounts regardless of when they were created, so there is no grandfathering of existing principals. Attaching an SCP does not modify or delete any existing IAM policy in a member account; it only changes what those policies are allowed to actually grant.",
     "difficulty": "hard",
