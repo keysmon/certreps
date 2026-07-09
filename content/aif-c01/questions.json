@@ -156,7 +156,7 @@
     "stem": "A team is evaluating a fraud-detection model where only 1% of transactions are actually fraudulent. Which TWO statements about evaluating this model are correct? (Select TWO.)",
     "options": [
       "Overall accuracy is a reliable metric here, because a model that always predicts 'not fraud' would score close to 99% accuracy while catching zero fraud.",
-      "Precision and recall are more informative than accuracy here, since they separately capture false positives and false alarms versus missed fraud cases.",
+      "Precision and recall are more informative than accuracy here, since they separately capture false alarms versus missed fraud cases.",
       "The F1 score, the harmonic mean of precision and recall, is a useful single metric for summarizing performance on this imbalanced problem.",
       "Accuracy and F1 score will always be numerically identical for any classification model, regardless of class balance.",
       "Because the classes are imbalanced, evaluation metrics do not matter and any model can be deployed without further review."
