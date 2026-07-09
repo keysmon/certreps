@@ -77,9 +77,9 @@ fix.
 
 ## Debugging agents, retrieval, and latency
 
-- **Agent misbehavior.** When a Bedrock agent returns an unhelpful answer, enable and inspect
-  the **agent trace**. It exposes the model's step-by-step reasoning, which action groups and
-  knowledge bases it invoked, and each step's inputs and outputs, so you can pinpoint where
+- **Agent misbehavior.** When an AgentCore agent returns an unhelpful answer, enable and inspect
+  **AgentCore Observability**. Its OpenTelemetry traces expose the model's step-by-step reasoning,
+  which tools it invoked, and each step's inputs and outputs, so you can pinpoint where
   orchestration went wrong. CloudTrail records API activity, not intermediate reasoning.
 - **Retrieval misses.** When the correct passage exists but never appears in **Retrieve**
   results, the fault is retrieval, not generation. The two usual culprits: a **metadata
