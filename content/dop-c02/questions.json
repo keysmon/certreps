@@ -536,5 +536,138 @@
     "difficulty": "hard",
     "docUrl": "https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-shift.html",
     "id": "dopc02-0028"
+  },
+  {
+    "domain": "Monitoring and Logging",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "An engineer needs to search unstructured application log data across several CloudWatch Logs log groups for a specific error message that occurred once yesterday, without pre-defining a metric ahead of time. Which tool is the BEST fit for this ad hoc investigation?",
+    "options": [
+      "CloudWatch Logs Insights, using an interactive query against the relevant log groups.",
+      "A CloudWatch Logs metric filter, defined after the fact to count occurrences of the error message going forward.",
+      "AWS CloudTrail, searching for the error message among recorded management and data events.",
+      "AWS X-Ray, searching trace segments for the error message text."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>CloudWatch Logs Insights</b> runs ad hoc, interactive queries directly against existing log data across multiple log groups, exactly what a one-off historical search for a specific error message needs. A metric filter only starts counting matches from the moment it is created going forward; it does not retroactively search log data that was already ingested. CloudTrail records AWS API calls and management/data events, not arbitrary application log text. X-Ray stores trace segments describing request timing and errors, not free-form application log messages.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Logs-Insights.html",
+    "id": "dopc02-0029"
+  },
+  {
+    "domain": "Monitoring and Logging",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A platform team wants engineers in a central monitoring account to view CloudWatch metrics, logs, and traces from 25 application accounts in one place, without copying data into the monitoring account, and without granting engineers broad IAM access into each of the 25 accounts. Which approach BEST meets this?",
+    "options": [
+      "Have engineers assume a broad cross-account administrator role into each of the 25 accounts and switch the console context whenever they need to check a different account.",
+      "Configure CloudWatch cross-account observability: designate the monitoring account as a sink and create a link in each of the 25 source accounts to share their telemetry with it.",
+      "Write a custom Lambda function in each source account that copies its CloudWatch metrics and logs into the monitoring account's CloudWatch on a schedule.",
+      "Export CloudWatch metrics and logs from each account to S3 once a day and have engineers query the exported files with Athena."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>CloudWatch cross-account observability</b> is built exactly for this: the monitoring account becomes a sink, each source account creates a link that shares its metrics, logs, and traces, and engineers in the monitoring account can view that data live in dashboards and console tools without the data being copied and without needing broad cross-account IAM roles. Assuming a broad administrator role per account is both an over-broad grant of permissions and a manual, one-account-at-a-time workflow. A custom Lambda copy pipeline duplicates functionality this native feature already provides and adds data-copy latency and operational cost. Daily S3 exports queried through Athena introduce a full day of staleness and lose the live, integrated dashboard experience.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Unified-Cross-Account.html",
+    "id": "dopc02-0030"
+  },
+  {
+    "domain": "Monitoring and Logging",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A team wants to proactively detect when a public API becomes slow or starts returning errors from outside their VPC, by simulating real user requests on a fixed schedule and alerting before customers file a support ticket. Which AWS capability BEST fits this?",
+    "options": [
+      "CloudWatch Application Insights, since it detects problems by analyzing existing logs and metrics from known application frameworks.",
+      "Waiting for customer support tickets to report the outage, then investigating with CloudWatch Logs after the fact.",
+      "A CloudWatch Synthetics canary, scripted to call the endpoint on a schedule, with a CloudWatch alarm on the canary's success rate and duration.",
+      "AWS X-Ray alone, since it will generate synthetic requests automatically if a service receives no real traffic."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "A <b>CloudWatch Synthetics canary</b> runs a scripted, scheduled check that simulates real user traffic against an endpoint from outside the VPC, and an alarm on its success rate and duration gives proactive, before-the-customer-notices detection. Application Insights analyzes telemetry from real traffic and known frameworks; it does not generate synthetic requests when there is little or no real traffic to analyze. Waiting for support tickets is reactive by definition and is exactly what the team wants to avoid. X-Ray traces requests that actually happen; it has no mechanism to generate synthetic traffic on its own.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries.html",
+    "id": "dopc02-0031"
+  },
+  {
+    "domain": "Monitoring and Logging",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A high-traffic service traces every request with X-Ray, and a team wants to configure X-Ray sampling rules so that every request which turns out to be an error or unusually slow is guaranteed to be sampled and recorded, while ordinary successful requests are sampled at a much lower rate to control cost. Which statement correctly describes what X-Ray sampling rules can and cannot do here?",
+    "options": [
+      "X-Ray sampling rules support a built-in 'sample on error' condition that automatically captures 100 percent of erroring or slow requests regardless of the configured sampling rate.",
+      "X-Ray always traces 100 percent of requests by default and provides no way to reduce trace volume or cost through sampling rules.",
+      "Sampling rules can only be scoped per AWS Region and can never be restricted to a specific service name or URL path.",
+      "X-Ray makes its sampling decision before a request completes, based on attributes such as service name, HTTP method, and URL path, so a rule cannot condition on whether a request will turn out to be an error or slow; a lower rate and reservoir can reduce routine trace volume, but guaranteeing every error or slow request is captured requires a mechanism layered on top of sampling, not a sampling-rule condition alone."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "X-Ray's sampling decision happens at the <b>start</b> of a request, before its outcome is known, so a sampling rule's match conditions are limited to request-time attributes like service name, HTTP method, host, and URL path; there is no native 'if this turns out to be an error, force-sample it' condition. A lower rate and reservoir reduce the volume of routine successful traces, but catching every error or slow outlier requires a complementary approach layered on top of sampling. The claim that a built-in 'sample on error' condition exists is incorrect for X-Ray's sampling-rule model. X-Ray defaults to a baseline reservoir and rate rather than literally tracing 100 percent of all requests, and custom sampling rules exist specifically to tune that rate. Sampling rules can be scoped by service name, HTTP method, and URL path, not only by Region, so restricting them to Region-only granularity is also wrong.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/xray/latest/devguide/xray-console-sampling.html",
+    "id": "dopc02-0032"
+  },
+  {
+    "domain": "Monitoring and Logging",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A security team manages 30 AWS accounts under AWS Organizations and wants a single CloudTrail configuration that captures management events from every current and future member account into one centralized, tamper-evident S3 bucket, without configuring a separate trail per account. Which CloudTrail feature should they use?",
+    "options": [
+      "An organization trail, created from the management account with log file validation enabled, delivering to one central S3 bucket.",
+      "An independent trail created separately in each of the 30 member accounts, each delivering to its own separate S3 bucket.",
+      "AWS Config aggregators, configured to collect CloudTrail events centrally across all 30 accounts.",
+      "A CloudWatch Logs subscription filter in each account forwarding events to a shared Kinesis stream, with no CloudTrail trail configured at all."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "An <b>organization trail</b>, created once from the management account, automatically applies to every member account, current and future, and can deliver all of their events into a single, central S3 bucket, with <b>log file validation</b> providing a cryptographic digest chain that proves the delivered logs have not been tampered with. Creating 30 independent trails is exactly the per-account manual overhead an organization trail removes, and scatters logs across 30 buckets instead of one. AWS Config aggregators centralize AWS Config compliance and resource configuration data, not CloudTrail event delivery. Bypassing CloudTrail for a custom CloudWatch Logs and Kinesis pipeline abandons CloudTrail's built-in centralization and tamper-evidence features and requires building that infrastructure from scratch.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/creating-trail-organization.html",
+    "id": "dopc02-0033"
+  },
+  {
+    "domain": "Monitoring and Logging",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A team operates a microservices application on ECS with dozens of services. During an incident, they want to pivot directly from a specific slow X-Ray trace segment to the exact CloudWatch Logs entries and container-level CloudWatch metrics tied to that same request, without manually correlating timestamps and request IDs across three separate consoles. Which AWS capability provides this integrated view?",
+    "options": [
+      "Manually copy the trace ID shown in the X-Ray console and paste it into a separate CloudWatch Logs Insights query by hand each time.",
+      "CloudWatch ServiceLens, which correlates X-Ray traces, CloudWatch metrics, and CloudWatch Logs (through embedded trace IDs) into a single service map and view.",
+      "Enable X-Ray alone, since it independently displays the relevant CloudWatch Logs entries and container metrics inline with no additional configuration.",
+      "Use AWS Config to correlate which resources were involved in handling a specific request."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>CloudWatch ServiceLens</b> ties X-Ray traces, CloudWatch metrics, and CloudWatch Logs together, using embedded trace IDs in log entries, into one service map and drill-down view, so an engineer can move from a slow trace segment straight to the correlated logs and metrics without hand-matching IDs across consoles. Manually copying a trace ID into a separate Logs Insights query works but is exactly the manual correlation ServiceLens is built to remove. X-Ray by itself shows trace and segment data; it does not natively pull in CloudWatch Logs entries or container metrics without ServiceLens tying them together. AWS Config tracks resource configuration and compliance history, not a live, request-level correlation between traces, logs, and metrics.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ServiceLens.html",
+    "id": "dopc02-0034"
+  },
+  {
+    "domain": "Monitoring and Logging",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A service has five separate CloudWatch alarms, one per instance, that each fire independently whenever that instance's error rate spikes, flooding on-call with five separate pages for what is really one incident affecting the whole fleet. The team wants a single, higher-level alert that fires only when a meaningful fraction of the fleet is unhealthy at once, while keeping the five per-instance alarms for detailed diagnosis. Which CloudWatch feature addresses this?",
+    "options": [
+      "Lengthen each individual alarm's evaluation period so each one pages less often.",
+      "Delete four of the five per-instance alarms and keep only one instance's alarm as a stand-in for the whole fleet's health.",
+      "A CloudWatch composite alarm built from a rule expression over the five underlying alarms, for example requiring at least three of the five to be in ALARM state, which triggers its own single notification.",
+      "Route all five alarms to the same SNS topic so on-call receives every page through one shared topic."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "A <b>CloudWatch composite alarm</b> evaluates a Boolean rule expression over multiple underlying alarms and fires its own single alarm state, for example only when at least three of five instance alarms are simultaneously in ALARM, giving exactly one fleet-level page while the five per-instance alarms remain available for detailed diagnosis. Lengthening each alarm's evaluation period reduces false positives per instance but still produces multiple independent pages and creates no fleet-level signal. Deleting four alarms loses the per-instance diagnostic detail the team wants to keep and makes one instance an unreliable proxy for the whole fleet. Routing all five alarms to the same SNS topic still delivers five separate notifications through that topic; it does not combine them into one condition.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Create_Composite_Alarm.html",
+    "id": "dopc02-0035"
   }
 ]
