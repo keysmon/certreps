@@ -998,5 +998,254 @@
     "difficulty": "medium",
     "docUrl": "https://docs.aws.amazon.com/config/latest/developerguide/conformance-packs.html",
     "id": "sapc02-0052"
+  },
+  {
+    "domain": "Accelerate Workload Migration and Modernization",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A company must migrate 200 on-premises Windows and Linux servers to AWS within a tight six-week deadline ahead of a data center lease expiring, with no time budgeted to re-architect any application. An engineer suggests AWS Server Migration Service (SMS) for the lift-and-shift. Which statement correctly evaluates this suggestion and names the appropriate service?",
+    "options": [
+      "AWS Server Migration Service was deprecated in 2022 in favor of AWS Application Migration Service (AWS MGN), which uses continuous block-level replication for a fast, low-risk rehost.",
+      "AWS Server Migration Service is still the current, recommended AWS rehost tool and should be used as suggested.",
+      "Neither AWS Server Migration Service nor AWS Application Migration Service exists; server migrations must be scripted manually with the AWS CLI.",
+      "AWS Server Migration Service is the correct choice specifically because the deadline is under six weeks."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>AWS Server Migration Service (SMS) was deprecated in 2022</b>; its replacement, <b>AWS Application Migration Service (AWS MGN)</b>, is the current AWS rehost tool, using agent-based continuous block-level replication to keep source servers in sync until a fast, low-risk cutover, which fits an unmodified lift-and-shift under a tight deadline. SMS is not the current recommended tool; it was deprecated and is unavailable to new migrations. AWS MGN is a fully supported, actively developed managed service, not a manual CLI scripting exercise. The tight deadline does not favor a deprecated service; if anything, MGN's continuous replication and fast cutover are better suited to a compressed timeline than SMS's older snapshot-based approach ever was.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/mgn/latest/ug/what-is-application-migration-service.html",
+    "id": "sapc02-0053"
+  },
+  {
+    "domain": "Accelerate Workload Migration and Modernization",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "Before committing to a migration plan, a company with 3,000 on-premises servers across five data centers needs to understand which servers are actually in use, their utilization, and their network dependencies on other servers, since no complete inventory or dependency map currently exists. Which AWS capability BEST supports this discovery and planning phase?",
+    "options": [
+      "Skip discovery and begin migrating servers immediately in the order they appear in an old spreadsheet from three years ago.",
+      "AWS Application Discovery Service to collect server utilization and network dependency data, tracked and grouped into migration waves through AWS Migration Hub.",
+      "AWS Trusted Advisor, which reports cost and security best practices for resources already running in AWS, not on-premises servers.",
+      "Manually interview each of the five data center teams and compile findings into a single shared document."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>AWS Application Discovery Service</b> collects detailed server utilization and network connection data from on-premises servers (via an agentless connector or a lightweight agent), and <b>AWS Migration Hub</b> aggregates that data to group servers into migration waves and track progress, which is exactly the dependency-aware discovery and planning capability the company is missing. Migrating in spreadsheet order with no dependency data risks breaking a live dependency between two servers migrated at different times. Trusted Advisor evaluates resources already running in AWS; on-premises servers that have not yet migrated are outside its scope entirely. Manual interviews are slow, inconsistent across five teams, and produce no structured, dependency-aware data set the way an automated discovery tool does.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/application-discovery/latest/userguide/what-is-appdiscovery.html",
+    "id": "sapc02-0054"
+  },
+  {
+    "domain": "Accelerate Workload Migration and Modernization",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A retailer is migrating its on-premises MySQL order database to Amazon RDS for MySQL. The database must remain fully available and accepting orders throughout the migration, with only a few minutes of downtime tolerated at final cutover. Which AWS Database Migration Service (AWS DMS) approach BEST achieves this?",
+    "options": [
+      "A DMS full-load-only task that copies all existing data once, followed immediately by switching the application to the new database.",
+      "Exporting a single mysqldump file and manually importing it into RDS during a scheduled multi-hour maintenance window.",
+      "A DMS task using full load plus ongoing change data capture (CDC), replicating new transactions continuously until replication lag is near zero, then cutting the application over during a brief final sync window.",
+      "Running two independent, unsynchronized copies of the database and reconciling any differences after the fact."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "A DMS task combining <b>full load with ongoing change data capture (CDC)</b> copies the existing data once and then continuously replicates every new transaction as it happens, so by cutover time the target is caught up to within seconds of the source, and the final cutover pause needed to catch the last few transactions is only a few minutes, matching the tight downtime tolerance. A full-load-only task captures a point-in-time snapshot and misses every transaction that occurs afterward, so orders placed during and after the copy would be lost unless the application stops accepting orders for the entire load. A manual mysqldump import requires a multi-hour maintenance window that far exceeds the few-minutes tolerance, and it also has no ongoing replication to catch changes made during that window. Running two unsynchronized copies and reconciling afterward risks lost or conflicting orders and is not a controlled migration approach at all.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Introduction.ChangeDataCapture.html",
+    "id": "sapc02-0055"
+  },
+  {
+    "domain": "Accelerate Workload Migration and Modernization",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A company runs a large on-premises Oracle database with substantial PL/SQL stored procedure logic and wants to migrate to Amazon Aurora PostgreSQL to eliminate Oracle licensing costs. The team wants to automate as much of the schema and stored procedure conversion as possible, and receive a report identifying which objects cannot be automatically converted and need manual rework. Which AWS approach BEST supports this heterogeneous migration?",
+    "options": [
+      "Use AWS Application Migration Service to replicate the Oracle server as-is into an EC2 instance and call the migration finished.",
+      "Use AWS DMS alone, since it fully rewrites stored procedures and triggers from PL/SQL into PostgreSQL syntax automatically.",
+      "Manually rewrite every table definition, stored procedure, and trigger by hand with no tooling assistance.",
+      "Use the AWS Schema Conversion Tool (SCT) to convert schema and PL/SQL objects to PostgreSQL-compatible equivalents and generate an assessment report of items needing manual conversion, then use AWS DMS to migrate the data itself."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "The <b>AWS Schema Conversion Tool (SCT)</b> is purpose-built to convert schema objects and procedural code such as PL/SQL to the target engine's equivalent, and it produces an assessment report flagging exactly which objects it could not fully automate; <b>AWS DMS</b> then handles the actual data migration, together covering both the code conversion and the data movement in this heterogeneous migration. AWS DMS focuses on migrating and replicating data; it does not convert stored procedures or schema objects between different database engines, that is SCT's job. Rewriting everything by hand with no tooling throws away exactly the automation the team is asking for and is far slower and more error-prone for a large PL/SQL codebase. AWS MGN performs server-level rehost replication for entire servers; it would just move the Oracle server as-is, which does not achieve the goal of migrating away from Oracle to Aurora PostgreSQL at all.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/dms/latest/userguide/CHAP_SchemaConversionTool.html",
+    "id": "sapc02-0056"
+  },
+  {
+    "domain": "Accelerate Workload Migration and Modernization",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A company at a remote site with only a 10 Mbps internet connection needs to move 500 TB of archival data to Amazon S3 as part of a data center exit. At that bandwidth, the transfer would take many months over the network. The company needs the data in AWS within three weeks. Which approach is MOST appropriate?",
+    "options": [
+      "Order enough AWS Snowball Edge Storage Optimized devices to hold the 500 TB, load them on site, and ship them to AWS for ingestion into S3.",
+      "Continue transferring over the existing 10 Mbps link and simply wait for it to complete, however long that takes.",
+      "Request AWS Snowmobile, the shipping-container-scale transfer service, to collect the data by truck.",
+      "Set up AWS DataSync over the same 10 Mbps link and expect it to complete within the three-week window through protocol efficiency alone."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "At 10 Mbps, transferring 500 TB over the network would take many months, far past the three-week deadline, so an offline transfer is required: ordering enough <b>Snowball Edge Storage Optimized</b> devices to hold the data, loading them on site, and shipping them back lets AWS ingest the data into S3 without depending on the slow link at all. Waiting out the transfer on the existing link directly misses the three-week deadline by a wide margin. <b>AWS Snowmobile was retired in 2024</b> and is no longer an available option regardless of data volume, so it cannot be requested for this or any migration today. DataSync accelerates and manages online transfers, but it is still bound by the underlying 10 Mbps link's throughput; no amount of protocol efficiency turns a many-months transfer into three weeks over that same connection.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/snowball/latest/developer-guide/device-differences.html",
+    "id": "sapc02-0057"
+  },
+  {
+    "domain": "Accelerate Workload Migration and Modernization",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A company currently operates a self-managed FTP server on-premises so that 40 external partners can upload daily data files. As part of modernizing this workload, the company wants to retire the FTP server, store the files in Amazon S3, and give partners a migration path that requires no change to their existing SFTP client configuration or credentials workflow. Which AWS service BEST fits this?",
+    "options": [
+      "Amazon S3 Transfer Acceleration, which speeds up direct S3 API uploads but does not expose an SFTP endpoint to external partners.",
+      "AWS Transfer Family, which provides a fully managed SFTP (and FTPS/FTP) endpoint backed by Amazon S3, so partners keep using their existing SFTP clients while files land directly in S3.",
+      "AWS DataSync, which synchronizes data between on-premises storage and AWS but does not expose a partner-facing SFTP server endpoint.",
+      "Amazon API Gateway configured with a custom REST API that partners must rewrite their upload tooling to call."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>AWS Transfer Family</b> exposes a fully managed SFTP (or FTPS/FTP) endpoint backed by Amazon S3, so the 40 partners keep pointing their existing SFTP clients and credentials at the new endpoint with no client-side changes, while the company retires its self-managed server and gets the files directly into S3. S3 Transfer Acceleration speeds up direct-to-S3 uploads over the S3 API; it does not provide an SFTP-compatible endpoint for external partners using SFTP clients. AWS DataSync moves data between storage systems the company controls, such as an on-premises NFS/SMB share and S3; it is not designed to be a partner-facing SFTP server. Building a custom API Gateway REST API would require all 40 partners to rewrite their upload tooling, which is exactly the disruption the company wants to avoid.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/transfer/latest/userguide/what-is-aws-transfer-family.html",
+    "id": "sapc02-0058"
+  },
+  {
+    "domain": "Accelerate Workload Migration and Modernization",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A company is rehosting 600 on-premises servers to AWS in scheduled waves over several months, prioritizing low-risk applications first. For each wave, the team wants continuous, near-real-time replication of source servers into AWS during the weeks before cutover, so that a wave's actual cutover only requires a short final synchronization and a server launch, rather than a full data copy on cutover day. Which AWS service is purpose-built for this large-scale, wave-based rehost pattern?",
+    "options": [
+      "Amazon Data Lifecycle Manager, which automates EBS snapshot schedules for already-running AWS resources.",
+      "AWS CloudFormation StackSets, which deploy infrastructure templates but do not replicate live server disk state.",
+      "AWS Application Migration Service (AWS MGN), which continuously replicates source servers at the block level throughout the replication period and launches converted, cutover-ready instances per wave.",
+      "AWS Elastic Beanstalk, which deploys application code packages rather than replicating entire existing servers."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>AWS MGN</b> installs a lightweight replication agent on each source server and continuously replicates block-level changes into a staging area in AWS throughout the weeks before cutover, so when a wave's cutover day arrives, only a short final sync is needed before launching fully configured, cutover-ready instances, which is exactly the low-downtime, wave-based pattern described. CloudFormation StackSets deploy infrastructure-as-code templates across accounts and Regions; they have no mechanism to replicate an existing on-premises server's live disk contents. Amazon Data Lifecycle Manager automates snapshot schedules for EBS volumes that already exist in AWS; it does not perform the initial replication of on-premises servers into AWS at all. Elastic Beanstalk deploys application code onto a managed platform; it does not replicate or migrate entire existing servers, disks, and OS state.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/mgn/latest/ug/what-is-application-migration-service.html",
+    "id": "sapc02-0059"
+  },
+  {
+    "domain": "Accelerate Workload Migration and Modernization",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A company runs a heavily customized, self-hosted, on-premises CRM application that the vendor no longer actively develops, and maintaining it consumes significant engineering time. As part of its cloud migration strategy, the company decides to replace it entirely with a commercial SaaS CRM product instead of migrating the existing application to AWS in any form. Which of the migration \"7 Rs\" does this decision represent?",
+    "options": [
+      "Rehost: moving the existing application as-is onto AWS infrastructure with no changes.",
+      "Replatform: making minor cloud optimizations to the existing application without changing its core architecture.",
+      "Retain: keeping the application running as-is in its current on-premises environment for now.",
+      "Repurchase: replacing the existing application with a different commercial product, typically a SaaS offering."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Repurchase</b> is the migration strategy where an existing application is replaced entirely by a different product, most often a commercial SaaS offering, rather than being moved or modified, which is exactly what switching from the self-hosted CRM to a SaaS CRM does. Rehost means moving the existing application as-is onto AWS infrastructure, which is not what happens here since the CRM application itself is being replaced, not moved. Replatform means making some cloud optimizations while keeping the application's core architecture, which does not apply when the entire application is being swapped out for a different product. Retain means deliberately leaving a workload where it is for now, which contradicts the decision to actively replace the CRM.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/prescriptive-guidance/latest/strategy-migration/overview.html",
+    "id": "sapc02-0060"
+  },
+  {
+    "domain": "Accelerate Workload Migration and Modernization",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A financial institution runs critical batch processing on an aging on-premises mainframe with millions of lines of COBOL code. Rewriting the business logic from scratch is judged too risky and slow, so the company wants to move the workload to AWS while automating as much of the COBOL-to-modern-runtime conversion as possible, rather than manually rewriting the application. Which AWS service is purpose-built for this mainframe modernization?",
+    "options": [
+      "AWS Mainframe Modernization (the M2 service), which provides automated refactoring and replatforming tooling for COBOL and other mainframe workloads to run on AWS.",
+      "AWS Application Migration Service, which replicates entire servers at the block level rather than converting mainframe-specific code.",
+      "AWS Batch, which schedules and runs containerized or EC2-based batch jobs but does not convert COBOL code.",
+      "Amazon EMR, which is designed for big data processing frameworks like Spark and Hadoop rather than mainframe code conversion."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>AWS Mainframe Modernization (M2)</b> provides automated tooling to refactor or replatform COBOL and other mainframe-specific workloads onto AWS-native runtimes, which is exactly the automated conversion path this bank wants instead of a risky full manual rewrite. AWS MGN replicates a server's disks and OS at the block level; a mainframe is not simply an x86 or ARM server MGN can replicate, and MGN does nothing to convert COBOL logic. AWS Batch is a job-scheduling and compute service for already-containerized or EC2-based batch workloads; it has no COBOL conversion capability. Amazon EMR runs big data frameworks such as Spark and Hadoop; it is unrelated to converting or running COBOL mainframe applications.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/m2/latest/userguide/what-is-m2.html",
+    "id": "sapc02-0061"
+  },
+  {
+    "domain": "Accelerate Workload Migration and Modernization",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "As part of a phased migration, a company wants its on-premises applications to keep reading and writing files through a local NFS mount while those files are transparently and asynchronously uploaded to Amazon S3 in the background, with frequently accessed files cached locally for low-latency access, so that dependent applications can be migrated gradually without an all-at-once cutover. Which AWS service BEST supports this transition bridge?",
+    "options": [
+      "Amazon S3 Glacier Deep Archive, intended for long-term archival with retrieval times measured in hours, not active local file access.",
+      "AWS Storage Gateway, using the File Gateway configuration to present an NFS (or SMB) mount backed by S3, with local caching of frequently accessed data.",
+      "AWS DataSync configured for a single one-time migration pass with no ongoing local mount for applications to use.",
+      "Amazon FSx for Lustre, designed for high-performance computing scratch storage rather than a gradual on-premises-to-S3 bridge."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>AWS Storage Gateway's File Gateway</b> configuration presents a local NFS or SMB mount that applications keep using unchanged, while it asynchronously uploads data to S3 in the background and caches frequently accessed files locally for low-latency reads, which is exactly the gradual, non-disruptive bridge the company needs while it migrates dependent applications over time. Glacier Deep Archive is built for infrequently accessed archival data with retrieval times measured in hours; it is not a live, actively mounted file system applications can read and write during a transition. AWS DataSync is well suited to a scheduled or one-time bulk data transfer, but it does not provide the ongoing, locally mounted file interface applications need to keep operating unchanged during the transition. FSx for Lustre is optimized for high-performance, high-throughput computing workloads such as HPC and machine learning training; it is not designed as an on-premises-to-S3 gradual migration bridge.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/storagegateway/latest/userguide/WhatIsStorageGateway.html",
+    "id": "sapc02-0062"
+  },
+  {
+    "domain": "Accelerate Workload Migration and Modernization",
+    "tag": "Domain 4",
+    "type": "multi",
+    "stem": "A team is executing a large, low-downtime PostgreSQL-to-Aurora PostgreSQL migration using AWS DMS with full load plus change data capture. Which TWO steps are part of the CORRECT low-downtime cutover sequence? (Select TWO.)",
+    "options": [
+      "Delete the source database as soon as the full load completes, to force the team to commit to the new target.",
+      "Cut the application over to the target database immediately once the full load finishes, without waiting for CDC to apply any of the transactions that occurred during the load.",
+      "Start the DMS full-load-plus-CDC task well before cutover day, and monitor CDC replication lag until it stays consistently near zero before scheduling the cutover.",
+      "Run the full load and CDC replication for exactly 24 hours regardless of observed replication lag, then cut over automatically on a fixed timer.",
+      "During a brief cutover window, pause writes on the source just long enough for the remaining CDC backlog to apply to the target, validate the target is caught up, then redirect the application to the target."
+    ],
+    "correct": [
+      2,
+      4
+    ],
+    "explanation": "Monitoring <b>CDC replication lag until it is consistently near zero</b> confirms the target has essentially caught up before committing to a cutover date, and then a <b>brief write-pause window</b> to let the last bit of CDC backlog apply, followed by validation and redirecting the application, is the standard low-downtime DMS cutover pattern. Cutting over immediately after the full load finishes, without waiting for CDC to apply transactions that happened during the load, would lose exactly those transactions, defeating the point of using CDC at all. Deleting the source the moment the full load completes removes the ability to fall back if a problem is found during validation, and it happens before CDC or cutover have even been verified. Cutting over on a fixed timer regardless of observed replication lag ignores the actual state of replication and could cut over while the target is still meaningfully behind the source.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Task.CDC.html",
+    "id": "sapc02-0063"
+  },
+  {
+    "domain": "Accelerate Workload Migration and Modernization",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A logistics company is migrating an on-premises order-management application to AWS. The team decides to move the application server as-is onto EC2 with no code changes, but move the database from a self-managed MySQL instance to Amazon RDS for MySQL to remove the operational burden of patching and backups, requiring only minor connection-string changes to the application. Which \"7 Rs\" strategy classification correctly describes the DATABASE portion of this plan?",
+    "options": [
+      "Rehost, since the database's underlying data and engine (MySQL) do not change at all.",
+      "Refactor, since the application's business logic is being redesigned around cloud-native services.",
+      "Replatform, since the database moves to a managed AWS service with minor application changes but without changing the database engine or core architecture.",
+      "Retain, since the database is not being migrated to AWS at all in this plan."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Replatform</b> describes moving a workload to a managed cloud service, here RDS for MySQL, that requires some adaptation, the minor connection-string changes, without changing the underlying engine or redesigning the application's core architecture, which matches the database move exactly. It is not a pure rehost, because rehost means moving onto AWS infrastructure with no adaptation at all, and this plan explicitly requires connection-string changes and adopts a managed service rather than just relocating a self-managed MySQL instance onto an EC2 instance unchanged. It is not refactor, since refactor involves redesigning the application's architecture or business logic around cloud-native patterns, which is not happening here, the same MySQL engine and data model are kept. It is not retain, since the database is actively being moved to AWS as RDS for MySQL, not left running on-premises.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/prescriptive-guidance/latest/strategy-migration/overview.html",
+    "id": "sapc02-0064"
+  },
+  {
+    "domain": "Accelerate Workload Migration and Modernization",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A company runs several hundred VMware vSphere virtual machines on-premises and wants to move them to AWS while continuing to use the same VMware management tools and licenses, without converting any VM to a different hypervisor format or redesigning its architecture. Which of the migration \"7 Rs\" fits this specific move, and which AWS offering supports it?",
+    "options": [
+      "Refactor, using AWS Application Migration Service to convert every VM into a redesigned, cloud-native microservices architecture.",
+      "Retire, decommissioning the VMs entirely instead of moving them anywhere.",
+      "Repurchase, replacing the VMware environment with an unrelated commercial SaaS product.",
+      "Relocate, using VMware Cloud on AWS to move the existing VMware VMs onto AWS infrastructure with the same hypervisor and tooling, unconverted."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Relocate</b> is the migration strategy for moving infrastructure, most commonly VMware-based virtual machines, to the cloud without changing the hypervisor, converting VM formats, or modifying the application, and <b>VMware Cloud on AWS</b> is the AWS offering built for exactly this: it runs the same VMware SDDC stack on AWS infrastructure so existing vSphere tools, licenses, and VM formats carry over unchanged. Refactor means redesigning the application's architecture, the opposite of the no-conversion, no-redesign move described here. Retire means decommissioning a workload that is no longer needed, not moving hundreds of active VMs to AWS. Repurchase means replacing the workload with a different commercial product, which does not apply when the goal is to keep running the exact same VMware-based VMs.",
+    "difficulty": "medium",
+    "docUrl": "https://aws.amazon.com/vmware/",
+    "id": "sapc02-0065"
   }
 ]
