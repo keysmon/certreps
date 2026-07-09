@@ -4,7 +4,7 @@ import { getBank, getMeta } from "./bank";
 
 describe("cert registry", () => {
   it("lists every registered cert in registry order", () => {
-    expect(listCerts().map((c) => c.certId)).toEqual(["aip-c01", "mla-c01", "saa-c03", "clf-c02", "dva-c02"]);
+    expect(listCerts().map((c) => c.certId)).toEqual(["aip-c01", "mla-c01", "saa-c03", "clf-c02", "dva-c02", "sap-c02", "dea-c01", "soa-c03"]);
   });
 
   it("getCert returns the entry for a known cert", () => {
