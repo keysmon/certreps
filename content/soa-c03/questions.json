@@ -268,5 +268,273 @@
     "difficulty": "medium",
     "docUrl": "https://docs.aws.amazon.com/health/latest/ug/cloudwatch-events-health.html",
     "id": "soac03-0014"
+  },
+  {
+    "domain": "Reliability and Business Continuity",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A company runs EC2 instances, RDS databases, and EFS file systems and currently backs up each service with its own separate schedule and retention setting, which makes it hard to prove a consistent recovery point objective across the whole application. The team wants one policy that defines schedule, retention, and lifecycle (including transition to cold storage) and applies it across all three resource types from a single place. Which AWS capability BEST meets this need?",
+    "options": [
+      "Configure RDS automated backups, an EC2 Data Lifecycle Manager policy, and an EFS lifecycle management policy separately, then manually confirm their schedules stay aligned.",
+      "Create a single AWS Backup plan with one backup rule that assigns EC2, RDS, and EFS resources by tag, defining schedule, retention, and cold-storage transition centrally.",
+      "Write a scheduled Lambda function that calls each service's native snapshot or backup API on a timer and stores every result in one S3 bucket.",
+      "Enable AWS Config to record configuration changes for EC2, RDS, and EFS, and treat the configuration history as the backup."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>AWS Backup</b> centralizes backup policy across supported services, including EC2, RDS, and EFS, into a single <b>backup plan</b> with one rule for schedule, retention, and lifecycle transitions, and it assigns resources by tag so new resources are covered automatically. Managing each service's native backup feature separately keeps the inconsistency problem the team is trying to remove. A custom Lambda scheduler reinvents backup orchestration that AWS Backup already provides, with more code to maintain. AWS Config records configuration state for compliance and drift detection; it is not a backup or restore mechanism.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/aws-backup/latest/devguide/creating-a-backup-plan.html",
+    "id": "soac03-0015"
+  },
+  {
+    "domain": "Reliability and Business Continuity",
+    "tag": "Domain 2",
+    "type": "multi",
+    "stem": "A regulated company must retain backups of its production database for seven years and prove to auditors that, once created, no one, including account administrators, can shorten the retention period or delete a recovery point before it expires. The company also wants a copy of every backup stored in a second AWS Region in case the primary Region becomes unavailable. Which TWO AWS Backup capabilities together satisfy these requirements? (Select TWO.)",
+    "options": [
+      "AWS Backup Vault Lock, which can be applied in compliance mode so retention periods can only be extended, never shortened, and recovery points cannot be deleted before they expire, even by the root user.",
+      "A cross-Region copy rule on the backup plan, which automatically copies each recovery point to a backup vault in a second Region on the same schedule.",
+      "Increasing the backup plan's backup window duration, which extends how long a backup job is allowed to run before AWS Backup marks it as failed.",
+      "Turning on S3 Intelligent-Tiering for the backup vault, which automatically enforces the seven-year retention policy on stored recovery points.",
+      "Enabling continuous backup for the database, which replaces the need for a defined retention period entirely."
+    ],
+    "correct": [
+      0,
+      1
+    ],
+    "explanation": "<b>AWS Backup Vault Lock</b> in compliance mode makes retention immutable and prevents early deletion, satisfying the audit requirement, and a <b>cross-Region copy rule</b> on the backup plan automatically places a recovery point copy in a second Region. Extending the backup window only changes how long a job may run before being marked failed; it has nothing to do with retention or Region redundancy. S3 Intelligent-Tiering manages storage class transitions for cost, not retention enforcement, and it does not apply to AWS Backup vaults. Continuous backup enables point-in-time recovery for supported services but does not remove the need for, or replace, a defined retention policy.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/aws-backup/latest/devguide/vault-lock.html",
+    "id": "soac03-0016"
+  },
+  {
+    "domain": "Reliability and Business Continuity",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "An RDS for MySQL database supports a critical order-processing application. The team needs the database to automatically fail over to a standby with no data loss and no manual DNS change if the primary instance or its Availability Zone becomes unavailable, and the standby is not used to offload read traffic. Which RDS deployment option BEST meets this requirement?",
+    "options": [
+      "A Multi-AZ deployment, which synchronously replicates to a standby in a second Availability Zone and automatically fails over, updating the existing DB endpoint to point at the new primary.",
+      "One or more Read Replicas in the same Region, which asynchronously replicate from the primary and can be manually promoted if the primary fails.",
+      "A read replica in a second AWS Region, promoted manually during a Regional outage.",
+      "A single-AZ instance with automated backups enabled, restored to a new instance if the primary fails."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>RDS Multi-AZ</b> keeps a synchronously replicated standby in a different Availability Zone and performs <b>automatic failover</b>, re-pointing the same endpoint with no data loss and no manual DNS change, exactly matching the requirement. Read Replicas replicate asynchronously (so some data loss is possible on failover) and require a manual promotion step, and their normal purpose is to offload reads, not to provide automatic failover. A cross-Region read replica adds latency and still requires a manual promotion, so it does not meet the automatic, no-manual-step requirement. Restoring a single-AZ instance from backup after failure takes materially longer and loses any data since the last backup.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html",
+    "id": "soac03-0017"
+  },
+  {
+    "domain": "Reliability and Business Continuity",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "An analytics application runs heavy reporting queries against a production RDS database, and those queries are starting to compete with transactional traffic for compute and I/O. Separately, the team wants an option they can promote to a standalone, writable database within the same Region during an emergency. Which RDS feature addresses BOTH needs?",
+    "options": [
+      "Enable RDS Multi-AZ, and route the reporting queries to the standby instance.",
+      "Create one or more RDS Read Replicas, route the reporting queries to a replica, and promote a replica to a standalone instance if needed.",
+      "Increase the primary instance's storage IOPS and run the reporting queries directly against production during off-peak hours.",
+      "Enable RDS Performance Insights and use it to throttle the reporting queries automatically."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>RDS Read Replicas</b> serve read-only traffic asynchronously from the primary, offloading reporting queries from production, and a <b>replica can be promoted</b> to a standalone, writable instance, giving the emergency option the team wants. A Multi-AZ standby is not accessible for read traffic in single-AZ-standby deployments and exists purely for failover, not read offload. Raising IOPS and running reports against production still contends with transactional traffic; it does not offload the load. Performance Insights is an observability tool for database load; it has no throttling or workload-routing capability.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReadRepl.html",
+    "id": "soac03-0018"
+  },
+  {
+    "domain": "Reliability and Business Continuity",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A company runs an Aurora MySQL database and wants a disaster recovery target in a second AWS Region with typical replication lag under one second and a documented recovery time objective in the double-digit seconds if the primary Region fails, without managing custom replication tooling. Which approach BEST meets this requirement?",
+    "options": [
+      "Create an Aurora Global Database with the primary cluster's Region and a secondary Region, and promote the secondary cluster during a Regional disruption.",
+      "Take a manual RDS snapshot every hour and copy it to the second Region using the RDS console.",
+      "Configure an RDS Read Replica in the second Region and promote it, expecting several minutes of replication lag under normal load.",
+      "Enable RDS Multi-AZ within the primary Region only, since Multi-AZ already protects against a full Regional failure."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Aurora Global Database</b> uses dedicated, storage-level replication to a secondary Region with typical lag under one second and a fast, documented promotion path, purpose-built for cross-Region DR with low RPO and RTO. Hourly manual snapshot copies leave up to an hour of data loss exposure and a slow manual recovery process. A standard cross-Region Read Replica typically has higher replication lag than a Global Database's dedicated replication path and still requires manual promotion. Multi-AZ protects against an Availability Zone failure within one Region; it provides no protection if the entire Region is unavailable.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-global-database.html",
+    "id": "soac03-0019"
+  },
+  {
+    "domain": "Reliability and Business Continuity",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A gaming company operates a DynamoDB table for player profiles that must accept both reads and writes with low latency from application servers in three AWS Regions simultaneously, with changes made in any Region propagating to the others. Which DynamoDB capability BEST meets this requirement?",
+    "options": [
+      "DynamoDB Accelerator (DAX), deployed independently in each of the three Regions in front of a single-Region table.",
+      "DynamoDB Global Tables, configured as a multi-Region, multi-active table that replicates writes made in any Region to the others.",
+      "A DynamoDB Stream in the primary Region, consumed by a Lambda function in each other Region that writes to a local table copy.",
+      "On-demand backups of the table, restored into a new table in each additional Region on a nightly schedule."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>DynamoDB Global Tables</b> provide a fully managed, multi-Region, multi-active table where writes accepted in any replica Region propagate to the others, giving low-latency local reads and writes everywhere. DAX is a caching layer in front of a table in one Region; deploying it in three Regions does not make writes in one Region visible in another. A custom DynamoDB Streams-and-Lambda pipeline reimplements what Global Tables already provides, with more code and higher operational risk. Nightly backup restores are batch and stale by up to a day; they do not give live, low-latency multi-Region reads and writes.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GlobalTables.html",
+    "id": "soac03-0020"
+  },
+  {
+    "domain": "Reliability and Business Continuity",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A company stores critical compliance documents in a single S3 bucket in one Region. The team wants object-level durability against an entire Region becoming unavailable, plus the ability to recover a previous version of an object if it is accidentally overwritten. Which combination of S3 features BEST meets this requirement?",
+    "options": [
+      "Enable S3 Versioning alone, since versioning already stores every object copy in a second Region automatically.",
+      "Enable S3 Cross-Region Replication to a bucket in a second Region, and enable S3 Versioning on both the source and destination buckets.",
+      "Enable S3 Transfer Acceleration, which mirrors every object to edge locations worldwide for durability.",
+      "Configure a single lifecycle rule that transitions objects to S3 Glacier Deep Archive after 30 days."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>S3 Cross-Region Replication</b> copies objects to a bucket in a second Region for Regional redundancy, and <b>S3 Versioning</b>, which CRR requires on both buckets, preserves prior versions so an accidental overwrite can be rolled back. Versioning alone keeps multiple versions within the same bucket and Region; it does not copy data to another Region. Transfer Acceleration speeds uploads over long distances using CloudFront edge locations; it does not replicate objects for durability. A lifecycle rule to Glacier Deep Archive only changes storage class over time within the same bucket; it neither protects against a Regional outage nor preserves prior versions.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/replication.html",
+    "id": "soac03-0021"
+  },
+  {
+    "domain": "Reliability and Business Continuity",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A CloudOps team manages hundreds of EBS volumes across many EC2 instances and wants automated, policy-driven snapshots on a consistent schedule with automatic retention and cross-Region copy, without writing a custom scheduler. Which AWS capability BEST meets this need?",
+    "options": [
+      "Amazon Data Lifecycle Manager (DLM), which creates policies that automate the creation, retention, and cross-Region copy of EBS snapshots on a schedule.",
+      "Amazon Inspector, configured to take an EBS snapshot whenever it reports a new vulnerability finding.",
+      "AWS Trusted Advisor's fault-tolerance check, which automatically snapshots any volume it flags as unprotected.",
+      "An EC2 instance user-data script that runs the CreateSnapshot API in a loop every night."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Amazon Data Lifecycle Manager</b> lets a team define a policy, by tag, for scheduled snapshot creation, retention, and cross-Region copy, with no custom scheduler to build. Amazon Inspector reports vulnerability findings; it has no snapshot-creation capability. Trusted Advisor's fault-tolerance check only reports a finding; it does not take any automated remediation action like creating a snapshot. A user-data script calling CreateSnapshot in a loop is exactly the custom scheduler the team wants to avoid building and maintaining.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/ebs/latest/userguide/snapshot-lifecycle.html",
+    "id": "soac03-0022"
+  },
+  {
+    "domain": "Reliability and Business Continuity",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A team runs a Valkey-compatible ElastiCache replication group backing a session store. They need the cluster to detect a failed primary node and automatically promote a read replica to primary within seconds, with the endpoint updated automatically, and with no application code change during the failover. Which configuration BEST meets this requirement?",
+    "options": [
+      "Configure the application to catch connection errors and manually issue a failover command to the ElastiCache API.",
+      "Add more read replicas to the replication group, since a larger replica count alone triggers automatic promotion on primary failure.",
+      "Enable at-rest encryption on the replication group, since encrypted replication groups fail over automatically by default.",
+      "Enable Multi-AZ with automatic failover on the ElastiCache replication group."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>ElastiCache Multi-AZ with automatic failover</b> monitors the primary node's health and automatically promotes a replica if the primary fails, updating the cluster's endpoint with no application change required. Requiring the application to catch errors and call a failover API manually is exactly the manual intervention the requirement rules out. Adding more replicas improves read capacity and redundancy but does not by itself enable automatic failover; that requires the Multi-AZ setting. At-rest encryption protects stored data; it has no relationship to failover behavior.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/AutoFailover.html",
+    "id": "soac03-0023"
+  },
+  {
+    "domain": "Reliability and Business Continuity",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "An Auto Scaling group serves traffic through an Application Load Balancer. An instance in the group is passing its EC2 system status checks but the application process on it has stopped responding to the load balancer's health check path. Today the Auto Scaling group only uses the default health check type, so it has not replaced the instance. Which change makes the Auto Scaling group replace this specific instance?",
+    "options": [
+      "Increase the Auto Scaling group's minimum capacity so a new instance launches alongside the unhealthy one.",
+      "Enable cross-zone load balancing on the Application Load Balancer, which automatically deregisters unhealthy targets.",
+      "Change the Auto Scaling group's health check type to ELB, so instance health also reflects the load balancer's target health check, not just the EC2 status check.",
+      "Reduce the Auto Scaling group's cooldown period so scaling activities occur more frequently."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "By default, an Auto Scaling group only considers <b>EC2 status checks</b>, which this instance is passing. Setting the group's <b>health check type to ELB</b> makes it also honor the load balancer's target health check, so an instance failing application-level health checks gets marked unhealthy and replaced. Increasing minimum capacity adds instances but does not detect or replace the specific failing one. Cross-zone load balancing distributes traffic evenly across targets in all enabled Availability Zones; it does not change how Auto Scaling determines instance health. Reducing the cooldown period changes how soon new scaling activities can start; it does not add ELB health check awareness.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-health-checks.html",
+    "id": "soac03-0024"
+  },
+  {
+    "domain": "Reliability and Business Continuity",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A company's DR budget analysis shows they can accept an RTO of a few hours and want to keep DR cost low most of the time, but they need a live-though-minimally-sized version of the environment already running in the recovery Region so a failover only requires scaling it up, not launching a fully cold environment. Which DR strategy BEST matches this requirement?",
+    "options": [
+      "Backup and restore, since restoring from an AWS Backup vault into a brand-new recovery Region environment is fastest when nothing is already running there.",
+      "Pilot light, which keeps only core data replicated and minimal core infrastructure like a database in the recovery Region, requiring the rest of the environment to be built and started at failover time.",
+      "Warm standby, which keeps a minimally sized but fully functional running copy of the environment in the recovery Region, scaled up to full capacity during a failover.",
+      "Multi-site active-active, which runs full production capacity in both Regions simultaneously at all times."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Warm standby</b> keeps a scaled-down but fully functional copy of the whole application already running, so failover is a scale-up operation rather than a full build, matching the requirement for a minimally sized environment that's already live and an RTO of hours. Backup and restore has the lowest cost but the longest RTO, typically many hours to days, since almost nothing runs until restore begins. Pilot light keeps only core data and a minimal core (such as a database) ready, but the rest of the application stack, including compute, still needs to be provisioned at failover time, which is slower than scaling an already-running environment. Multi-site active-active runs full capacity in both Regions continuously, which costs far more than the low-cost requirement calls for.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-workloads-on-aws/disaster-recovery-options-in-the-cloud.html",
+    "id": "soac03-0025"
+  },
+  {
+    "domain": "Reliability and Business Continuity",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A company runs a fleet of on-premises and EC2 servers and wants continuous, block-level replication of those servers to a low-cost staging area in AWS, so that during a disaster they can launch fully booted recovery instances within minutes, matching the source servers' OS and applications, without pre-provisioning full-sized standby servers. Which AWS service BEST fits this requirement?",
+    "options": [
+      "AWS Backup, taking a nightly backup of each server's root volume and restoring a new instance from the latest backup during a disaster.",
+      "AWS Application Migration Service configured for a one-time cutover migration with no ongoing replication.",
+      "Amazon Data Lifecycle Manager, scheduling EBS snapshots of each server's volumes every hour.",
+      "AWS Elastic Disaster Recovery (AWS DRS), which continuously replicates source servers at the block level into a low-cost staging area and launches full recovery instances on failover."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>AWS Elastic Disaster Recovery</b> continuously replicates source servers, on-premises or in AWS, at the block level into a low-cost staging area, and it launches fully provisioned recovery instances within minutes of a failover, which is exactly the pattern of a low-cost standby with a fast recovery. Nightly backups leave up to a day of data loss and a slower manual restore-and-boot process instead of minutes. Application Migration Service and DRS share underlying technology, but a one-time cutover migration is a different use case from an ongoing DR posture with continuous replication. Hourly EBS snapshots protect volume data but do not provide an automated, fast way to boot a full replacement server during a disaster.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/drs/latest/userguide/what-is-drs.html",
+    "id": "soac03-0026"
+  },
+  {
+    "domain": "Reliability and Business Continuity",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A CloudOps team wants to proactively validate, in a controlled experiment, that their application keeps serving traffic correctly if an Availability Zone's EC2 instances suddenly lose power, rather than waiting to discover this during a real outage. Which AWS service is purpose-built to safely run this kind of controlled fault-injection experiment?",
+    "options": [
+      "AWS Config, by writing a custom rule that reports which resources exist in each Availability Zone.",
+      "Amazon Inspector, by scheduling a vulnerability scan targeted at the Availability Zone's instances.",
+      "AWS Fault Injection Service (FIS), which runs a defined experiment template that injects a fault, such as stopping instances in one Availability Zone, while enforcing stop conditions to limit blast radius.",
+      "AWS Trusted Advisor, by reviewing its fault-tolerance check results for the affected Availability Zone."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>AWS Fault Injection Service</b> runs defined experiment templates that inject real faults, like stopping instances in an Availability Zone, under guardrail <b>stop conditions</b> that halt the experiment automatically if things go wrong, purpose-built for controlled resiliency testing. AWS Config only reports resource configuration and inventory; it cannot inject a fault. Amazon Inspector scans for vulnerabilities, not resiliency behavior under fault conditions. Trusted Advisor's fault-tolerance check is a passive, point-in-time configuration review; it does not run any active experiment.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/fis/latest/userguide/what-is.html",
+    "id": "soac03-0027"
+  },
+  {
+    "domain": "Reliability and Business Continuity",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A media company stores render assets on Amazon EFS and needs a second, independently usable copy of the file system in another AWS Region that stays continuously up to date, so the team can mount it and resume work quickly if the primary Region becomes unavailable. Which approach BEST meets this requirement?",
+    "options": [
+      "Schedule a nightly AWS DataSync task that copies the entire file system to S3 and restores it to a new EFS file system only after a disaster is declared.",
+      "Enable EFS lifecycle management to transition infrequently accessed files to EFS Infrequent Access storage class.",
+      "Mount the same EFS file system directly from EC2 instances in a second Region over a VPC peering connection.",
+      "Enable EFS replication to a destination file system in a second Region, which continuously and automatically copies changes from the source file system."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>EFS replication</b> continuously and automatically copies changes to a destination file system in another Region, keeping it nearly current and ready to be promoted for use during a disaster. A nightly DataSync-to-S3-and-restore approach leaves up to a day of data loss and adds a manual restore step that is slower than promoting an already-replicating destination. EFS lifecycle management only changes the storage class for cost savings within the same file system; it does not create a Regional copy. EFS is a Regional service, so an EC2 instance in a second Region cannot mount the same file system directly across Regions with the low latency and independent availability this requirement needs.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/efs/latest/ug/efs-replication.html",
+    "id": "soac03-0028"
   }
 ]
