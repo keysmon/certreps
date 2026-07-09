@@ -2,7 +2,7 @@
   "certId": "dva-c02",
   "idPrefix": "dvac02",
   "vendor": "AWS",
-  "title": "AWS Certified Developer - Associate (DVA-C02)",
+  "title": "AWS Certified Developer - Associate",
   "examCode": "DVA-C02",
   "level": "Associate",
   "mockQuestionCount": 65,
