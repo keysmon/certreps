@@ -391,20 +391,20 @@
     "domain": "Implementation & Integration",
     "tag": "Domain 2",
     "type": "single",
-    "stem": "A company's Bedrock Agent must trigger an action that runs on an on-premises inventory system reachable only from the company's private data center, which AWS Lambda functions cannot reach. The team wants the agent to decide when the action is needed but have their existing on-prem client application actually perform the call. Which action group configuration meets this with the LEAST re-architecture?",
+    "stem": "An AgentCore agent can call hundreds of tools through an AgentCore Gateway, and the catalog keeps growing. Passing every tool definition to the model on each request bloats the prompt, adds latency, and degrades tool choice. What is the BEST way to let the agent use the right tools without placing the entire catalog in every prompt?",
     "options": [
-      "Configure the action group with a Lambda function executor and connect the Lambda to the data center over a VPN",
-      "Configure the action group to return control to the caller so the agent hands back the function name and parameters for the client application to execute",
-      "Replace the agent with a direct InvokeModel call and hard-code the inventory logic in the client",
-      "Store the inventory operations as documents in a Knowledge Base and let the agent retrieve them"
+      "Use AgentCore Gateway semantic tool selection, which searches the tool catalog for the most relevant tools for each request so only those are surfaced to the model",
+      "Paste every tool's full schema into the system prompt on every request",
+      "Merge all operations into a single general-purpose tool to reduce the count",
+      "Select a fixed random subset of tools for each request to keep the prompt small"
     ],
     "correct": [
-      1
+      0
     ],
-    "explanation": "<b>Return of control</b> lets the agent emit the chosen function and parameters back to the caller so the existing on-prem client executes the action -- no new connectivity needed. A Lambda executor over VPN is real re-architecture and still requires network access the team wants to avoid. A raw InvokeModel call throws away the agent's orchestration. A Knowledge Base only retrieves text; it cannot <em>execute</em> an action.",
+    "explanation": "<b>AgentCore Gateway semantic tool selection</b> lets the agent search across the available tools and surface only the most relevant ones per request, so it can draw on a large, growing catalog while keeping prompt size and latency low. <b>Pasting every schema</b> into the prompt is the bloat problem itself. <b>Merging into one giant tool</b> destroys clear per-operation semantics and validation and makes tool choice harder. <b>A random subset</b> keeps the prompt small but routinely omits the tool the request actually needs.",
     "id": "aipc01-0021",
     "difficulty": "hard",
-    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/agents-returncontrol.html"
+    "docUrl": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/gateway.html"
   },
   {
     "domain": "Implementation & Integration",
@@ -581,9 +581,9 @@
     "domain": "Implementation & Integration",
     "tag": "Domain 2",
     "type": "single",
-    "stem": "A Bedrock Agent action group invokes a Lambda that submits payment transactions. Because the agent or client retries can occasionally send the same action twice, the team must ensure a duplicate invocation does not charge the customer twice. What is the MOST reliable way to prevent double execution?",
+    "stem": "An AgentCore agent invokes a tool, backed by an AWS Lambda function through an AgentCore Gateway, that submits payment transactions. Because agent or client retries can occasionally send the same tool call twice, the team must ensure a duplicate invocation does not charge the customer twice. What is the MOST reliable way to prevent double execution?",
     "options": [
-      "Lower the agent's temperature so it is less likely to repeat the action",
+      "Lower the model temperature so it is less likely to repeat the tool call",
       "Wrap the Lambda in a try/except block that ignores the second error",
       "Increase the Lambda timeout so the first call finishes before any retry",
       "Have the Lambda accept an idempotency key and use conditional writes so a repeated key is processed only once"
@@ -591,7 +591,7 @@
     "correct": [
       3
     ],
-    "explanation": "An <b>idempotency key</b> combined with a conditional write guarantees that a repeated request maps to the same single result regardless of how many times it arrives. Temperature does not control retry behavior of the surrounding system. Swallowing an error does not stop a second real charge. A longer timeout does not prevent a duplicate request from executing again.",
+    "explanation": "An <b>idempotency key</b> combined with a conditional write guarantees that a repeated request maps to the same single result no matter how many times it arrives. <b>Temperature</b> does not control the surrounding system's retry behavior. <b>Swallowing an error</b> does not stop a second real charge. A <b>longer timeout</b> does not prevent a duplicate request from executing again.",
     "id": "aipc01-0031",
     "difficulty": "medium",
     "docUrl": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/WorkingWithItems.html"
@@ -600,39 +600,39 @@
     "domain": "Implementation & Integration",
     "tag": "Domain 2",
     "type": "single",
-    "stem": "A developer is defining a Bedrock Agent action group with three simple operations, each taking a couple of scalar parameters. They want to describe the actions to the agent with the LEAST authoring overhead and without maintaining a full REST specification. Which action group definition should they use?",
+    "stem": "A developer is exposing three simple operations, each taking a couple of scalar parameters, as tools for an AgentCore agent through an AgentCore Gateway. They want the LEAST authoring overhead and do not want to maintain a full REST specification. Which Gateway tool definition should they use?",
     "options": [
-      "Function definitions (a function schema listing each function's name, description, and parameters)",
-      "A complete OpenAPI 3.0 schema uploaded to Amazon S3",
+      "A Lambda target with an inline tool schema listing each function's name, description, and scalar parameters",
+      "A full OpenAPI 3.0 specification uploaded for the operations",
       "An Amazon SageMaker inference component definition",
       "An IAM policy document describing the allowed actions"
     ],
     "correct": [
       0
     ],
-    "explanation": "For simple actions, a <b>function schema</b> lets you list names, descriptions, and parameters directly with minimal authoring and no REST spec to maintain. A full OpenAPI schema is heavier than needed here. A SageMaker inference component is unrelated to agent action definitions. An IAM policy governs permissions, not the action interface the agent reasons over.",
+    "explanation": "For a few simple operations, a <b>Lambda target with an inline tool schema</b> lets you list names, descriptions, and scalar parameters directly, with no OpenAPI or REST specification to maintain. A <b>full OpenAPI spec</b> is heavier than needed here. A <b>SageMaker inference component</b> serves models and is unrelated to defining agent tools. An <b>IAM policy</b> governs permissions, not the tool interface the agent reasons over.",
     "id": "aipc01-0032",
     "difficulty": "medium",
-    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/agents-action-create.html"
+    "docUrl": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/gateway.html"
   },
   {
     "domain": "Implementation & Integration",
     "tag": "Domain 2",
     "type": "single",
-    "stem": "A Bedrock Agent already performs booking actions through a Lambda action group. Stakeholders now want the same agent to also answer policy questions grounded in the company's PDF handbooks and cite the source passages, without building a separate retrieval service. What is the LEAST-effort way to add this?",
+    "stem": "An AgentCore agent already performs booking actions through a tool. Stakeholders now want the same agent to answer policy questions grounded in the company's PDF handbooks and cite the source passages, without building a separate retrieval service. What is the LEAST-effort way to add this?",
     "options": [
       "Fine-tune the agent's foundation model on the handbook PDFs",
-      "Paste the entire handbook text into the agent's instruction prompt",
-      "Associate a Bedrock Knowledge Base built from the handbooks with the agent so it can retrieve and cite passages",
-      "Add a second Lambda action group that returns raw PDF bytes to the agent"
+      "Paste the entire handbook text into the agent's instructions",
+      "Connect an Amazon Bedrock Knowledge Base built from the handbooks so the agent can retrieve and cite passages",
+      "Add a tool that returns raw PDF bytes to the agent"
     ],
     "correct": [
       2
     ],
-    "explanation": "<b>Associating a Knowledge Base</b> with the agent adds managed retrieval and citations over the handbooks with no custom retrieval service. Fine-tuning is costly, slow to update, and does not produce citations. Pasting whole handbooks bloats the prompt and does not scale. Returning raw PDF bytes leaves parsing, chunking, and grounding for the team to build.",
+    "explanation": "Connecting an <b>Amazon Bedrock Knowledge Base</b> adds managed retrieval and citations over the handbooks with no custom retrieval service to build. <b>Fine-tuning</b> is costly, slow to update, and produces no citations. <b>Pasting whole handbooks</b> bloats the prompt and does not scale. Returning <b>raw PDF bytes</b> leaves parsing, chunking, and grounding for the team to build.",
     "id": "aipc01-0033",
     "difficulty": "easy",
-    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/agents.html"
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base.html"
   },
   {
     "domain": "Implementation & Integration",
@@ -680,22 +680,22 @@
     "domain": "Implementation & Integration",
     "tag": "Domain 2",
     "type": "multi",
-    "stem": "An architect is configuring a Bedrock Agent that must both take actions (create tickets through an internal API) and answer questions grounded in internal documentation with citations. Which TWO components must be configured on the agent to satisfy BOTH requirements? (Select TWO.)",
+    "stem": "An architect is building an AgentCore agent that must both take actions (create tickets through an internal API) and answer questions grounded in internal documentation with citations. Which TWO components must be configured to satisfy BOTH requirements? (Select TWO.)",
     "options": [
       "Provisioned Throughput for the foundation model",
-      "An action group backed by a Lambda executor or return of control for the ticket operations",
-      "Amazon CloudWatch model invocation logging",
+      "A Gateway tool (for example a Lambda target) for the ticket-creation operations",
+      "AgentCore Observability logging",
       "A Bedrock Guardrail to block profanity",
-      "An associated Bedrock Knowledge Base for grounded, cited answers"
+      "A connected Amazon Bedrock Knowledge Base for grounded, cited answers"
     ],
     "correct": [
       1,
       4
     ],
-    "explanation": "An <b>action group</b> gives the agent the ability to create tickets, and an associated <b>Knowledge Base</b> supplies grounded, cited answers from the documentation -- together they cover both requirements. Provisioned Throughput is a capacity option, not a functional requirement. CloudWatch logging aids observability only. A Guardrail enforces safety but neither performs actions nor grounds answers.",
+    "explanation": "A <b>Gateway tool</b> gives the agent the ability to create tickets, and a connected <b>Amazon Bedrock Knowledge Base</b> supplies grounded, cited answers from the documentation - together they cover both requirements. <b>Provisioned Throughput</b> is a capacity option, not a functional requirement. <b>Observability</b> aids debugging and monitoring only. A <b>Guardrail</b> enforces safety but neither performs actions nor grounds answers.",
     "id": "aipc01-0036",
     "difficulty": "medium",
-    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/agents.html"
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base.html"
   },
   {
     "domain": "Implementation & Integration",
@@ -798,19 +798,19 @@
     "domain": "AI Safety, Security & Governance",
     "tag": "Domain 3",
     "type": "multi",
-    "stem": "A public-facing agent built on Amazon Bedrock can call internal tools through action groups. Security wants layered defenses so that prompt-injection attempts in user input are both detected and unable to cause damage if one slips through. Which TWO actions best achieve this? (Select TWO.)",
+    "stem": "A public-facing AgentCore agent can call internal tools through an AgentCore Gateway. Security wants layered defenses so that prompt-injection attempts in user input are both detected and unable to cause damage if one slips through. Which TWO actions best achieve this? (Select TWO.)",
     "options": [
-      "Enable the Amazon Bedrock Guardrails prompt-attack (jailbreak/prompt-injection) filter on the input.",
-      "Scope the agent's action-group tools and IAM permissions to least privilege so a successful injection cannot trigger high-impact actions.",
-      "Add a sentence to the system prompt telling the model to ignore any malicious instructions.",
-      "Switch to a larger foundation model because larger models are immune to prompt injection.",
-      "Raise the temperature so the model's behavior is harder for an attacker to predict."
+      "Enable the Amazon Bedrock Guardrails prompt-attack (jailbreak/prompt-injection) filter on the input",
+      "Scope the agent's Gateway tools and IAM permissions (and an AgentCore Policy) to least privilege so a successful injection cannot trigger high-impact actions",
+      "Add a sentence to the system prompt telling the model to ignore any malicious instructions",
+      "Switch to a larger foundation model because larger models are immune to prompt injection",
+      "Raise the temperature so the model's behavior is harder for an attacker to predict"
     ],
     "correct": [
       0,
       1
     ],
-    "explanation": "The <b>prompt-attack filter</b> detects and blocks injection/jailbreak patterns in input, and <b>least-privilege scoping of the action-group tools and IAM permissions</b> limits the blast radius if an attack still gets through -- defense in depth. A <b>system-prompt instruction</b> is easily overridden and is not an enforced control. <b>Larger models are not immune</b> to injection. <b>Higher temperature</b> adds randomness without adding security.",
+    "explanation": "The <b>prompt-attack filter</b> detects and blocks injection and jailbreak patterns in input, and <b>least-privilege scoping of the agent's Gateway tools, IAM permissions, and AgentCore Policy</b> limits the blast radius if an attack still gets through - defense in depth. A <b>system-prompt instruction</b> is easily overridden and is not an enforced control. <b>Larger models are not immune</b> to injection. <b>Higher temperature</b> adds randomness without adding security.",
     "id": "aipc01-0042",
     "difficulty": "hard",
     "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails.html"
@@ -1755,57 +1755,57 @@
     "domain": "Implementation & Integration",
     "tag": "Domain 2",
     "type": "single",
-    "stem": "A Bedrock Agent must pass the authenticated user's account ID to its action group Lambda on every turn so the Lambda can scope database queries, but this ID must NOT be inserted into the model prompt or influence generation. Which session state mechanism should the developer use?",
+    "stem": "An AgentCore agent must pass the authenticated user's account ID to its backend tool on every turn so the tool can scope database queries, but this ID must NOT be inserted into the model prompt or be influenceable by the model. How should the developer supply it?",
     "options": [
-      "Set the account ID as a prompt session attribute so it is added to the model prompt each turn.",
-      "Append the account ID to the user message text on every turn.",
-      "Set the account ID as a session attribute, which is passed to the action group Lambda but not inserted into the prompt.",
-      "Store the account ID in the agent instruction so the model always includes it."
+      "Add the account ID to the system prompt on every turn",
+      "Append the account ID to the user message text on every turn",
+      "Pass the account ID to the tool through the agent's runtime session and identity context, so it reaches the backend tool out of band and is never placed in the model prompt",
+      "Put the account ID in the agent's instructions so the model always includes it"
     ],
     "correct": [
       2
     ],
-    "explanation": "A <b>session attribute</b> is passed to the action group Lambda across turns but is not inserted into the model prompt, meeting the requirement. A <em>prompt</em> session attribute, appending to the message, or embedding it in the instruction would all expose the ID to generation.",
+    "explanation": "Passing the account ID through the agent's <b>runtime session and identity context</b> delivers it to the backend tool out of band, so the tool can scope queries while the value never enters the model prompt or influences generation. Adding it to the <b>system prompt</b>, the <b>user message</b>, or the <b>agent instructions</b> all expose the ID to the model, which the requirement forbids.",
     "difficulty": "hard",
-    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/agents-session-state.html",
+    "docUrl": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-sessions.html",
     "id": "aipc01-0091"
   },
   {
     "domain": "Implementation & Integration",
     "tag": "Domain 2",
     "type": "single",
-    "stem": "Users ask a Bedrock Agent to perform ad hoc numeric analysis and generate charts from uploaded CSV files. The team wants the agent to write and run code in a secure sandbox to compute results rather than relying on the model to reason arithmetic in text. Which built-in agent feature should they enable?",
+    "stem": "Users ask an AgentCore agent to perform ad hoc numeric analysis and generate charts from uploaded CSV files. The team wants the agent to write and run code in a secure sandbox to compute results rather than having the model do arithmetic in text. Which built-in AgentCore tool should they use?",
     "options": [
-      "A custom Lambda action group that reimplements a Python runtime from scratch.",
-      "Code interpretation, which lets the agent generate and run code in a secure managed sandbox to compute results and produce charts.",
-      "Attaching a knowledge base of statistics articles.",
-      "Increasing the model temperature so it computes math more accurately."
+      "A custom Lambda tool that reimplements a Python runtime from scratch",
+      "AgentCore Code Interpreter, which lets the agent write and run code in a secure managed sandbox to compute results and produce charts",
+      "A Knowledge Base of statistics articles",
+      "A higher model temperature so it computes math more accurately"
     ],
     "correct": [
       1
     ],
-    "explanation": "<b>Code interpretation</b> lets the agent write and run code in a managed sandbox to compute results and generate charts, which is more reliable than text-based arithmetic. A hand-built runtime, a knowledge base, or higher temperature do not provide sandboxed execution.",
+    "explanation": "<b>AgentCore Code Interpreter</b> lets the agent write and run code in an isolated managed sandbox (Python, JavaScript, TypeScript) to process CSV data, compute results, and generate charts, which is far more reliable than text-based arithmetic. A <b>hand-built Lambda runtime</b>, a <b>knowledge base</b>, and a <b>higher temperature</b> do not provide sandboxed code execution.",
     "difficulty": "easy",
-    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/agents-code-interpretation.html",
+    "docUrl": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/code-interpreter-tool.html",
     "id": "aipc01-0092"
   },
   {
     "domain": "Implementation & Integration",
     "tag": "Domain 2",
     "type": "single",
-    "stem": "A developer is adding a Bedrock Agent action that submits a deeply nested order object (line items, addresses, and payment details with required and optional fields). They want the agent to understand the full request structure and validation rules. Which action group definition is MOST appropriate?",
+    "stem": "A developer is adding a tool for an AgentCore agent that submits a deeply nested order object (line items, addresses, and payment details with required and optional fields). They want the agent to understand the full request structure and validation rules. Which Gateway tool definition is MOST appropriate?",
     "options": [
-      "A function schema listing a few scalar parameters.",
-      "An OpenAPI schema that models the nested request body, data types, and required fields.",
-      "Plain-text instructions describing the object in the agent prompt only.",
-      "A knowledge base document that describes the JSON shape."
+      "A Lambda target with a simple inline schema of a few scalar parameters",
+      "An OpenAPI (or Smithy) specification as the Gateway target, which models the nested request body, data types, and required fields",
+      "Plain-text instructions describing the object in the agent prompt only",
+      "A Knowledge Base document that describes the JSON shape"
     ],
     "correct": [
       1
     ],
-    "explanation": "An <b>OpenAPI schema</b> can model a deeply nested request body with data types and required fields, which a simple function schema of scalar parameters cannot. Prompt text or a knowledge base document do not define an invokable action contract.",
+    "explanation": "An <b>OpenAPI (or Smithy) specification</b> as the Gateway target models a deeply nested request body with data types and required fields, which a simple inline schema of scalar parameters cannot. <b>Prompt text</b> or a <b>knowledge base document</b> do not define an invokable tool contract the agent can call.",
     "difficulty": "medium",
-    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/agents-action-create.html",
+    "docUrl": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/gateway.html",
     "id": "aipc01-0093"
   },
   {
@@ -1926,19 +1926,19 @@
     "domain": "Implementation & Integration",
     "tag": "Domain 2",
     "type": "single",
-    "stem": "A Bedrock Agent should remember a returning customer's earlier issues across separate conversations that occur days apart, so a new session can build on summaries of prior ones. Which agent capability provides this cross-session recall?",
+    "stem": "An AgentCore agent should remember a returning customer's earlier issues across separate conversations that occur days apart, so a new session can build on what happened before. Which capability provides this cross-session recall?",
     "options": [
-      "Rely on session attributes, which persist only within a single active session.",
-      "Enable agent memory, which stores a summary of each session under a memory identifier for use in later sessions.",
-      "Increase the model context window size and hope earlier chats fit.",
-      "Store every past transcript in the agent static instructions."
+      "Short-term memory, which persists only within a single active session",
+      "AgentCore Memory long-term memory, which extracts and stores key facts and summaries that persist across sessions",
+      "A larger model context window, hoping earlier chats fit",
+      "Storing every past transcript in the agent's static instructions"
     ],
     "correct": [
       1
     ],
-    "explanation": "Enabling <b>agent memory</b> stores a summary of each session under a memory identifier so later sessions can recall prior context. Session attributes persist only within one session, a larger context window does not carry data between sessions, and static instructions cannot hold per-user history.",
+    "explanation": "<b>AgentCore Memory long-term memory</b> extracts and persists key facts, preferences, and session summaries so a later session can recall prior context. <b>Short-term memory</b> lasts only within one session, a <b>larger context window</b> does not carry data between sessions, and <b>static instructions</b> cannot hold evolving per-customer history.",
     "difficulty": "medium",
-    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/agents-memory.html",
+    "docUrl": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/memory.html",
     "id": "aipc01-0100"
   },
   {
@@ -2195,19 +2195,19 @@
     "tag": "Domain 3",
     "type": "multi",
     "difficulty": "medium",
-    "stem": "A Bedrock agent calls a Lambda-backed action group, and the Lambda's resource-based policy grants access to the Bedrock service principal. Security wants to prevent a confused-deputy attack from another account and to bound the agent's autonomy on high-impact operations. Which TWO measures BEST achieve this? (Select TWO.)",
+    "stem": "An AgentCore agent calls a Lambda-backed tool through an AgentCore Gateway, and the Lambda's resource-based policy grants access to the calling service principal. Security wants to prevent a confused-deputy attack from another account and to bound the agent's autonomy on high-impact operations. Which TWO measures BEST achieve this? (Select TWO.)",
     "options": [
-      "Add aws:SourceArn and aws:SourceAccount condition keys to the Lambda's resource-based policy so only the intended agent in the intended account can invoke it.",
-      "Grant the agent's service role broad administrative permissions so tool calls never fail.",
-      "Switch to a larger foundation model, which cannot be tricked into misusing tools.",
-      "Require user confirmation (return of control) before the agent runs high-impact tool actions.",
-      "Raise the model temperature so tool selection is less predictable to attackers."
+      "Add aws:SourceArn and aws:SourceAccount condition keys to the Lambda's resource-based policy so only the intended gateway/agent in the intended account can invoke it",
+      "Grant the agent's service role broad administrative permissions so tool calls never fail",
+      "Switch to a larger foundation model, which cannot be tricked into misusing tools",
+      "Require human-in-the-loop confirmation before the agent runs high-impact tool actions",
+      "Raise the model temperature so tool selection is less predictable to attackers"
     ],
     "correct": [
       0,
       3
     ],
-    "explanation": "Adding <b>aws:SourceArn and aws:SourceAccount condition keys</b> to the resource-based policy ensures the Bedrock service principal can invoke the Lambda only on behalf of the intended agent and account, preventing a confused-deputy attack, and <b>requiring user confirmation</b> for high-impact actions bounds the agent's autonomy. <b>Broad admin permissions</b> increase the blast radius. A <b>larger model</b> is not immune to tool misuse. <b>Higher temperature</b> adds randomness, not security.",
+    "explanation": "Adding <b>aws:SourceArn and aws:SourceAccount condition keys</b> to the resource-based policy ensures the calling service principal can invoke the Lambda only on behalf of the intended gateway and account, preventing a confused-deputy attack, and requiring <b>human-in-the-loop confirmation</b> for high-impact actions bounds the agent's autonomy. <b>Broad admin permissions</b> enlarge the blast radius. A <b>larger model</b> is not immune to tool misuse. <b>Higher temperature</b> adds randomness, not security.",
     "docUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/confused-deputy.html",
     "id": "aipc01-0114"
   },
