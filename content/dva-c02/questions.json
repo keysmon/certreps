@@ -728,5 +728,294 @@
     "difficulty": "medium",
     "docUrl": "https://docs.aws.amazon.com/cognito/latest/developerguide/identity-pools.html",
     "id": "dvac02-0038"
+  },
+  {
+    "domain": "Deployment",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A developer has written a serverless application consisting of a Lambda function, an API Gateway REST API, and a DynamoDB table, defined in a single template.yaml file using AWS SAM syntax. Which SAM CLI commands are used, in order, to build, package the local artifacts to S3, and deploy the CloudFormation stack?",
+    "options": [
+      "sam local invoke, which uploads the template directly to CloudFormation.",
+      "sam validate, which both packages and deploys the stack in one step.",
+      "sam logs, which packages the function code and pushes it to Amazon ECR.",
+      "sam build to compile dependencies, then sam deploy --guided (which packages artifacts to S3 and creates or updates the CloudFormation stack)."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "The standard SAM workflow is <b>sam build</b> to resolve dependencies and prepare artifacts, followed by <b>sam deploy</b> (which packages local artifacts to S3 and creates or updates the underlying CloudFormation stack). sam local invoke only runs a function locally for testing; it does not upload anything or touch CloudFormation. sam validate only checks the template's syntax; it does not package or deploy. sam logs only tails a deployed function's CloudWatch Logs and has nothing to do with packaging or ECR.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-command-reference-sam-deploy.html",
+    "id": "dvac02-0039"
+  },
+  {
+    "domain": "Deployment",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "Before deploying a change to a Lambda function defined in a SAM template, a developer wants to run the function locally in a Docker container with a sample event payload to confirm its behavior, without deploying anything to AWS. Which SAM CLI command BEST fits?",
+    "options": [
+      "sam package, which only uploads artifacts to S3 without executing any code.",
+      "sam local invoke FunctionLogicalId -e event.json, which runs the function locally in a Lambda-like Docker container using the given sample event.",
+      "sam deploy --guided, which deploys the function to AWS and then tails its logs.",
+      "sam logs -n FunctionLogicalId --tail, which streams a deployed function's CloudWatch Logs."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>sam local invoke</b> runs the function locally inside a Docker container that emulates the Lambda execution environment, using a supplied event JSON file, so the developer can validate behavior entirely offline before deploying. sam deploy --guided deploys to AWS, the opposite of local-only testing. sam logs only streams logs from an already-deployed function; nothing is deployed yet in this scenario. sam package uploads build artifacts to S3 for deployment; it never executes the function's code.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-command-reference-sam-local-invoke.html",
+    "id": "dvac02-0040"
+  },
+  {
+    "domain": "Deployment",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A CodeBuild project must install dependencies, run unit tests that fail the build if any test fails, compile the application, and finally upload the compiled artifacts. Which buildspec.yml structure BEST accomplishes this?",
+    "options": [
+      "Use the phases section with install (install dependencies), pre_build (run unit tests, so a non-zero exit code fails the build), and build (compile the app), then declare a top-level artifacts section listing the files CodeBuild uploads.",
+      "Put every step, including uploading artifacts, inside a single install phase.",
+      "Skip the phases section and rely only on the artifacts section to both build and test the code.",
+      "Use only the post_build phase for installing dependencies, testing, and compiling, since post_build runs first."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "A buildspec's <b>phases</b> map cleanly onto the pipeline: <b>install</b> for dependencies, <b>pre_build</b> for steps like tests that should fail the build early, <b>build</b> for compilation, and the top-level <b>artifacts</b> section to declare which output files CodeBuild packages and uploads afterward. Cramming every step into install ignores the phase ordering CodeBuild relies on to run steps in sequence and fail fast. The artifacts section only declares output file locations; it cannot execute build or test commands. post_build runs last, not first, so critical early steps like installing dependencies cannot correctly live there.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/codebuild/latest/userguide/build-spec-ref.html",
+    "id": "dvac02-0041"
+  },
+  {
+    "domain": "Deployment",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A CodePipeline pipeline has a Source stage (from CodeCommit), a Build stage (CodeBuild), and a Deploy stage (CodeDeploy). How does CodePipeline pass the output of the Build stage to the Deploy stage?",
+    "options": [
+      "Every stage in the pipeline shares the same EC2 instance's local disk to pass files.",
+      "CodePipeline emails the build artifacts to the account owner, who must manually upload them to the Deploy stage.",
+      "CodePipeline stores each stage's declared output artifacts in an S3 artifact bucket, and the next stage's action references that artifact as an input, so the Deploy stage retrieves the Build stage's output from S3.",
+      "CodeBuild invokes CodeDeploy's API directly with the compiled files attached to the API call."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "CodePipeline persists each action's declared <b>output artifacts</b> to an S3 <b>artifact store</b>, and a downstream action lists that artifact as an input, so the Deploy stage automatically retrieves exactly what the Build stage produced. CodeBuild does not call CodeDeploy directly with files attached; the pipeline orchestrates the handoff through S3. Pipeline stages are not tied to a single EC2 instance's disk; actions run on managed, ephemeral compute. There is no manual email-and-upload step in a properly configured pipeline.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/codepipeline/latest/userguide/concepts-how-it-works.html",
+    "id": "dvac02-0042"
+  },
+  {
+    "domain": "Deployment",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A team deploying a new Lambda function version through CodeDeploy wants traffic shifted gradually: 10 percent of traffic to the new version, then wait 5 minutes checking CloudWatch alarms, then automatically shift the remaining 90 percent if no alarm fires. Which CodeDeploy deployment configuration type describes this?",
+    "options": [
+      "An all-at-once deployment configuration, which shifts all traffic to the new version immediately.",
+      "A linear deployment configuration, which shifts an equal percentage every few minutes across several steps until reaching 100 percent.",
+      "An in-place deployment configuration used only for EC2 and on-premises compute.",
+      "A canary deployment configuration (for example Canary10Percent5Minutes), which shifts a fixed percentage first, waits an interval, then shifts the rest."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "A <b>canary</b> deployment configuration (named like Canary10Percent5Minutes) shifts a first, smaller percentage of traffic, pauses for a fixed interval to evaluate alarms, then shifts the remainder all at once, exactly matching a 10 percent then 5-minute-wait then rest pattern. All-at-once shifts 100 percent immediately with no gradual step. Linear shifts traffic in multiple equal increments over several intervals rather than one small step followed by the rest. In-place deployments apply to EC2/on-premises compute groups, not Lambda traffic shifting, which always uses canary, linear, or all-at-once configurations.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/codedeploy/latest/userguide/deployment-configurations.html",
+    "id": "dvac02-0043"
+  },
+  {
+    "domain": "Deployment",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A CodeDeploy in-place deployment to EC2 instances uses an AppSpec file with lifecycle event hooks. The team needs to stop the old application, install the new revision's files, run a script to configure the app, then start it, and finally run a script that confirms the app responds to health checks before marking the deployment successful. Which hook ORDER is correct for an in-place EC2/on-premises deployment?",
+    "options": [
+      "ValidateService, then ApplicationStart, then AfterInstall, then BeforeInstall, then ApplicationStop.",
+      "AfterInstall runs before the application's files are copied to the instance.",
+      "ApplicationStart must run before ApplicationStop in every deployment.",
+      "ApplicationStop, then (after the revision's files are copied) BeforeInstall, AfterInstall, ApplicationStart, and finally ValidateService."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "CodeDeploy's in-place lifecycle runs, in order: <b>ApplicationStop</b> (stop the old app), the revision's files are copied to the instance, then <b>BeforeInstall</b>, <b>AfterInstall</b> (configure the newly installed files), <b>ApplicationStart</b> (start the app), and finally <b>ValidateService</b> to confirm the deployment succeeded, which matches the described sequence exactly. Running ValidateService or ApplicationStart before the stop/install steps reverses the required order and would validate or start an application that has not been properly installed yet. AfterInstall always runs after the file copy, not before. ApplicationStart must come after ApplicationStop in a fresh in-place deployment cycle, never before.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/codedeploy/latest/userguide/reference-appspec-file-structure-hooks.html",
+    "id": "dvac02-0044"
+  },
+  {
+    "domain": "Deployment",
+    "tag": "Domain 3",
+    "type": "multi",
+    "stem": "A team uses AWS CodeDeploy to perform blue/green deployments of a containerized service on Amazon ECS, with an Application Load Balancer routing traffic. They want a bad deployment to roll back automatically without a person watching dashboards. Which TWO CodeDeploy capabilities support this for an ECS blue/green deployment? (Select TWO.)",
+    "options": [
+      "Automatic rollback on alarm requires a human to manually click rollback in the CodeDeploy console after being paged.",
+      "ECS blue/green deployments through CodeDeploy do not support any load balancer integration and route traffic only through DNS changes.",
+      "CodeDeploy provisions a new (green) ECS task set alongside the running (blue) one, then shifts the load balancer's traffic from blue to green according to the chosen deployment configuration.",
+      "CodeDeploy can be configured to automatically roll back the deployment if a specified CloudWatch alarm enters the ALARM state during the deployment, or if the deployment's health checks fail.",
+      "CodeDeploy blue/green for ECS replaces containers in place on the same running task set, without provisioning any new tasks."
+    ],
+    "correct": [
+      2,
+      3
+    ],
+    "explanation": "CodeDeploy's ECS blue/green model provisions a brand-new (<b>green</b>) task set next to the existing (<b>blue</b>) one and then shifts <b>load balancer</b> traffic from blue to green per the deployment configuration, keeping the old task set available for a fast rollback. CodeDeploy also supports <b>automatic rollback</b> triggered by a specified CloudWatch alarm entering ALARM state, or by deployment lifecycle failures, with no human needed to click anything. In-place container replacement on the same task set describes a rolling ECS deployment, not CodeDeploy blue/green. Automatic rollback is, by definition, automatic and does not require a manual console click. ECS blue/green deployments integrate directly with an Application Load Balancer (or Network Load Balancer) to shift traffic, rather than relying only on DNS changes.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/codedeploy/latest/userguide/deployment-steps-ecs.html",
+    "id": "dvac02-0045"
+  },
+  {
+    "domain": "Deployment",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A team runs a stateless web application on Elastic Beanstalk across multiple EC2 instances and cannot tolerate ANY downtime during deployment. They want a full set of new instances launched and health-checked before any old instance is terminated, so a failed deployment never affects the currently running fleet. Which Elastic Beanstalk deployment policy BEST fits?",
+    "options": [
+      "Rolling deployment, which updates a batch of existing instances, taking capacity out of service during each batch.",
+      "Rolling with additional batch, which is faster than immutable but still deploys directly to reused existing instances.",
+      "Immutable deployment, which launches a full set of new instances in a temporary Auto Scaling group, verifies their health, and only then shifts traffic and terminates the old instances.",
+      "All-at-once deployment, which deploys to every existing instance simultaneously with a brief service interruption."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Immutable</b> deployments launch an entirely new, temporary set of instances in a separate Auto Scaling group, run health checks, and only then shift traffic and terminate the old instances, so a bad deployment never touches the currently running fleet and there is no downtime. All-at-once deploys straight to every existing instance at once, causing a service interruption during the update. Rolling deployments reduce capacity during each batch as they update existing instances in place, which is not zero-downtime in the same sense. Rolling with an additional batch adds temporary capacity to avoid reduced capacity, but it still updates instances in place rather than launching an entirely new, isolated fleet like immutable does.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/using-features.rolling-version-deploy.html",
+    "id": "dvac02-0046"
+  },
+  {
+    "domain": "Deployment",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A team wants to package a Lambda function as a container image (to reuse existing container tooling and include large native dependencies up to 10 GB) rather than a .zip deployment package. Which combination of steps is required?",
+    "options": [
+      "Store the image in Amazon S3 and reference the S3 key as the function's PackageType.",
+      "Build an image from an AWS base image for Lambda (or a compatible custom image implementing the Lambda Runtime API), push it to Amazon ECR, and create or update the Lambda function specifying that ECR image URI as its code source.",
+      "Push the image to Docker Hub, since Lambda can only pull container images from Docker Hub.",
+      "Upload the container image as a .zip file through the Lambda console's inline code editor."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "Lambda container image support requires building an image from an <b>AWS base image for Lambda</b> or any image implementing the <b>Lambda Runtime API</b>, pushing it to <b>Amazon ECR</b>, and pointing the function's code source at that image URI, which also raises the effective package size limit up to 10 GB. Lambda pulls container images specifically from Amazon ECR, not Docker Hub or another generic registry. The inline code editor only supports small .zip-based code and cannot accept a container image. Lambda does not source container images from S3; ECR is the required registry for this deployment path.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/lambda/latest/dg/images-create.html",
+    "id": "dvac02-0047"
+  },
+  {
+    "domain": "Deployment",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "Before applying an update to a production CloudFormation stack, a team wants to preview exactly which resources will be added, modified, or replaced (including any that would be destructively replaced) without actually changing any running resources yet. Which CloudFormation feature BEST fits?",
+    "options": [
+      "A change set, which computes and displays the proposed changes to the stack's resources without executing them until explicitly applied.",
+      "A stack policy, which only restricts which resources can ever be updated or deleted.",
+      "A nested stack, which organizes templates into reusable components.",
+      "Drift detection, which compares the stack's current resource state to the template after a change has already been made outside CloudFormation."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "A <b>change set</b> computes the specific additions, modifications, and replacements an update would make and lets the team review it, including which resources would be destructively replaced, before choosing to execute or discard it. A stack policy restricts which update actions are allowed on specific resources; it does not preview anything. Nested stacks are an organizational technique for reusing templates and do not preview pending changes. Drift detection identifies out-of-band changes made outside CloudFormation after the fact; it does not preview an upcoming update.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-changesets.html",
+    "id": "dvac02-0048"
+  },
+  {
+    "domain": "Deployment",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A team wants their CodePipeline pipeline to pause after staging deployment and require a named individual to explicitly approve before the pipeline proceeds to deploy to production. Which CodePipeline feature BEST fits?",
+    "options": [
+      "A Manual Approval action added as its own stage (or step) between the staging and production deploy stages.",
+      "A CodeBuild buildspec step that automatically continues after a fixed sleep delay.",
+      "An IAM policy that denies the production deploy action to everyone.",
+      "A CloudWatch alarm attached to the pipeline that pauses it when CPU utilization is high."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "A <b>Manual Approval action</b> halts the pipeline at that point until an authorized person approves (or rejects) it in the console or through the API, which is exactly the gate the team wants before production. A fixed sleep delay in a buildspec just waits a set time; it does not require any human decision. An IAM policy that denies the action to everyone would block production deployment permanently, not pause it for review. A CloudWatch alarm on CPU utilization is unrelated to a deliberate, human-in-the-loop approval gate.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/codepipeline/latest/userguide/approvals.html",
+    "id": "dvac02-0049"
+  },
+  {
+    "domain": "Deployment",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A SAM template defines eight Lambda functions that all need the same Runtime, MemorySize, Timeout, and a common set of environment variables. Repeating these properties in every AWS::Serverless::Function resource is becoming error-prone. Which SAM template section BEST reduces this duplication?",
+    "options": [
+      "The Globals section, which sets common properties (such as Runtime, MemorySize, Timeout, and Environment) once for all AWS::Serverless::Function resources in the template, while still letting individual functions override specific values.",
+      "A CloudFormation Mapping, which only maps a fixed key to a value per AWS Region.",
+      "A separate template.yaml file for every function with no shared sections at all.",
+      "The Outputs section, which only exports values for use by other stacks."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "The <b>Globals</b> section in a SAM template lets you declare shared properties once for every resource of a given type (like AWS::Serverless::Function), while any individual function can still override a specific property when it needs to differ, cutting duplication across many functions. A Mapping is a generic CloudFormation lookup table keyed by criteria such as Region; it does not apply default properties to resources. Splitting into a separate template per function multiplies the duplication instead of removing it. The Outputs section only exposes values to be consumed elsewhere; it cannot set default resource properties.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-template-anatomy-globals.html",
+    "id": "dvac02-0050"
+  },
+  {
+    "domain": "Deployment",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A CodeBuild project's buildspec.yml declares an artifacts section listing the compiled files to output. When this project runs as a Build action inside a CodePipeline pipeline, where do those declared artifacts actually end up so the next pipeline stage can use them?",
+    "options": [
+      "CodeBuild emails the artifacts directly to the next stage's owner.",
+      "The artifacts are written only to CloudWatch Logs as base64-encoded text.",
+      "CodePipeline uploads the CodeBuild project's declared output artifacts into the pipeline's own S3 artifact bucket, from which the next stage's action retrieves them as its input artifact.",
+      "The artifacts remain only on the CodeBuild compute instance's local disk and are discarded when the build finishes."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "When CodeBuild runs as a pipeline action, CodePipeline takes the artifacts the buildspec declares and stores them in the pipeline's <b>S3 artifact bucket</b>, and the next stage's action lists that output as its input artifact to retrieve it automatically. Ephemeral CodeBuild compute is torn down after the build, so anything not captured as a declared artifact is lost rather than deliberately kept on local disk for later stages. CodeBuild has no artifact-by-email mechanism. CloudWatch Logs capture build output logs, not the actual build artifact files.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/codebuild/latest/userguide/build-spec-ref.html",
+    "id": "dvac02-0051"
+  },
+  {
+    "domain": "Deployment",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A developer has a SAM template defining three Lambda functions, each triggered by a different API Gateway route, and wants to test how a client would exercise all three routes together locally, including path parameters and query strings, before deploying anything. Which SAM CLI command BEST supports this integration-style local test?",
+    "options": [
+      "sam local generate-event, which only prints a sample event JSON to the terminal.",
+      "sam local start-api, which starts a local HTTP server that emulates API Gateway and routes requests to the correct local Lambda container based on the template's defined routes.",
+      "sam local invoke, run once per function with a hardcoded event file, to simulate the entire API Gateway routing layer.",
+      "sam validate, which checks template syntax but starts no local server."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>sam local start-api</b> stands up a local HTTP endpoint that mimics API Gateway's routing, so requests with real paths, path parameters, and query strings are dispatched to the matching function running locally in a container, letting the developer exercise multiple routes together like a real client would. sam local invoke only runs a single function against one manually supplied event and does not provide an HTTP routing layer across multiple functions. sam validate only lints the template's syntax and starts nothing. sam local generate-event only prints a sample event payload for use elsewhere; it does not run any code or start a server.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-command-reference-sam-local-start-api.html",
+    "id": "dvac02-0052"
+  },
+  {
+    "domain": "Deployment",
+    "tag": "Domain 3",
+    "type": "multi",
+    "stem": "A team configures an AWS CodeDeploy deployment group with automatic rollback enabled and a CloudWatch alarm monitoring the target's error rate. Which TWO statements about this configuration are correct? (Select TWO.)",
+    "options": [
+      "Automatic rollback can also be configured to trigger when the deployment itself fails (for example, a lifecycle hook script returns a non-zero exit code), independent of any CloudWatch alarm.",
+      "Automatic rollback on alarm requires the deployment to have already completed a 100 percent traffic shift before it can trigger.",
+      "CodeDeploy deletes the previous application revision entirely as soon as a new deployment starts, so rollback has nothing to restore.",
+      "A CloudWatch alarm used for rollback must be in the OK state before a deployment is allowed to start, and after that it is ignored for the rest of the deployment.",
+      "If the configured CloudWatch alarm enters the ALARM state during the deployment, CodeDeploy stops the deployment and rolls back to the last known good revision."
+    ],
+    "correct": [
+      0,
+      4
+    ],
+    "explanation": "When the monitored alarm transitions to <b>ALARM</b> during a deployment, CodeDeploy stops it and automatically <b>rolls back</b> to the last known good revision. Rollback can independently trigger on <b>deployment failure</b> itself, such as a lifecycle hook script exiting non-zero, regardless of any alarm. Rollback is designed to trigger during the deployment, including partial traffic shifts, not only after it reaches 100 percent; waiting until full completion would defeat the purpose of catching a bad rollout early. CodeDeploy keeps prior revisions available specifically so a rollback has something to restore to; it does not delete them the moment a new deployment starts. The alarm continues to be monitored throughout the deployment, not just checked once before it starts.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/codedeploy/latest/userguide/deployments-rollback-and-redeploy.html",
+    "id": "dvac02-0053"
   }
 ]
