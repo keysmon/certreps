@@ -22,7 +22,9 @@
   /* text */
   --text: #eaf1f8;
   --muted: #93a6ba;
-  --faint: #68809a;
+  /* Lightened one shade from the design's #68809a: 4.21:1 on panel was sub-AA and the
+     micro-label pattern spread to ~8 sites - #7189a4 clears 4.5 (4.76 panel / 5.35 ink). */
+  --faint: #7189a4;
 
   /* gold - the single action accent */
   --gold: #e9b44c;
