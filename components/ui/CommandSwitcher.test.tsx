@@ -109,7 +109,7 @@ describe("CommandSwitcher", () => {
     render(<CommandSwitcher />);
     await userEvent.click(trigger());
     const options = await screen.findAllByRole("option");
-    expect(options).toHaveLength(listCerts().length);
+    expect(options).toHaveLength(Math.min(listCerts().length, 12));
     // Cert with progress (mla) sorts ahead of the untouched aip.
     expect(options[0]).toHaveTextContent(MLA_TITLE);
     expect(options[0]).toHaveTextContent(/100%/);
