@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CertReps — My Progress</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+<style>
+/* tokens: see ../styles.css */
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:
+   radial-gradient(1200px 560px at 12% -8%, rgba(233,180,76,.05), transparent 60%),
+   radial-gradient(1000px 560px at 100% -4%, rgba(90,169,240,.055), transparent 55%),
+   var(--ink);
+  color:var(--text);font-family:var(--font-sans);line-height:1.55;-webkit-font-smoothing:antialiased;min-height:100%}
+h1,h2,h3,h4{font-family:var(--font-display);margin:0;line-height:1.12;letter-spacing:-.01em}
+.eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);font-weight:500}
+.mono{font-family:var(--font-mono)}.muted{color:var(--muted)}.faint{color:var(--faint)}
+a{color:var(--gold);text-decoration:none}a:hover{color:var(--gold-bright)}
+.btn{font-family:var(--font-sans);font-size:14.5px;font-weight:600;border:none;border-radius:11px;padding:12px 20px;cursor:pointer;display:inline-flex;align-items:center;gap:9px;text-decoration:none;transition:.14s}
+.btn-primary{background:var(--gold);color:var(--on-gold);box-shadow:0 8px 24px -10px rgba(233,180,76,.7)}
+.btn-primary:hover{background:var(--gold-bright)}
+.btn-ghost{background:transparent;color:var(--text);border:1px solid var(--line-strong)}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold)}
+.btn-sm{padding:8px 14px;font-size:13px;border-radius:9px}
+.pill{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;border-radius:20px;padding:4px 10px;border:1px solid var(--line-strong);color:var(--muted);white-space:nowrap}
+.pill.lvl{color:var(--gold);border-color:var(--gold-dim);background:var(--gold-soft)}
+
+.topnav{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:18px;padding:14px 32px;border-bottom:1px solid var(--line);background:rgba(10,14,21,.82);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:800;font-size:18px;letter-spacing:-.02em;cursor:pointer}
+.logo .loop{width:32px;height:32px;border-radius:9px;background:#0a0e15;border:1px solid var(--line-strong);display:grid;place-items:center}
+.switcher{display:flex;align-items:center;gap:11px;background:var(--panel);border:1px solid var(--line-strong);border-radius:11px;padding:8px 13px;cursor:pointer;min-width:260px;transition:.14s}
+.switcher:hover{border-color:var(--gold-dim)}
+.switcher .vd{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.switcher .sc-name{font-size:13.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.switcher .sc-sub{font-family:var(--font-mono);font-size:11px;color:var(--faint)}
+.switcher .kbd{margin-left:auto;font-family:var(--font-mono);font-size:10.5px;color:var(--faint);border:1px solid var(--line);border-radius:6px;padding:2px 7px}
+.navspacer{flex:1}
+.navlink{font-size:13.5px;color:var(--muted);cursor:pointer}.navlink:hover{color:var(--text)}.navlink.on{color:var(--text);font-weight:600}
+.avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--panel-3),var(--panel-2));border:1px solid var(--line-strong);display:grid;place-items:center;font-family:var(--font-mono);font-size:12px;color:var(--gold)}
+
+.wrap{max-width:1180px;margin:0 auto;padding:30px 34px 90px}
+.statstrip{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:22px 0 34px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+.stat .sv{font-family:var(--font-display);font-size:32px;font-weight:800;line-height:1}
+.stat .sl{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-top:8px}
+.sectitle{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin:0 0 14px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.ccard{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px;overflow:hidden;display:flex;gap:18px;align-items:center}
+.ccard .accent{position:absolute;left:0;top:0;bottom:0;width:3px}
+.ring{width:76px;height:76px;position:relative;display:grid;place-items:center;flex-shrink:0}
+.ring svg{transform:rotate(-90deg);position:absolute;inset:0}
+.ring .num{font-family:var(--font-display);font-size:20px;font-weight:700}
+.ccard .info{flex:1;min-width:0}
+.ccard .vn{font-family:var(--font-mono);font-size:11px;color:var(--muted);display:flex;align-items:center;gap:7px}
+.ccard .vd{width:8px;height:8px;border-radius:50%}
+.ccard h3{font-size:16px;font-weight:700;margin:5px 0 3px;line-height:1.2}
+.ccard .sub{font-family:var(--font-mono);font-size:11px;color:var(--faint)}
+.ccard .acts{display:flex;gap:8px;margin-top:12px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:8px 20px}
+.act{display:flex;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid var(--line)}
+.act:last-child{border-bottom:none}
+.act .ad{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.act .amode{font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:6px;border:1px solid var(--line-strong);color:var(--muted)}
+.act .an{flex:1;min-width:0;font-size:14px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.act .asc{font-family:var(--font-mono);font-size:13px;font-weight:600}
+.act .awhen{font-family:var(--font-mono);font-size:11px;color:var(--faint);width:86px;text-align:right}
+.empty{text-align:center;padding:90px 20px}
+.empty .big{font-family:var(--font-display);font-size:26px;font-weight:800;margin:16px 0 8px}
+.hide{display:none!important}
+@media(max-width:900px){.statstrip{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}}
+@media(max-width:560px){.topnav .navlink{display:none}.switcher .sc-sub{display:none}.wrap{padding:24px 18px 70px}.act .awhen{display:none}}
+</style>
+</head>
+<body>
+
+<div class="topnav">
+  <div class="logo" onclick="location.href='CertReps Catalog.html'"><span class="loop"><svg viewBox="0 0 32 32" width="20" height="20"><circle cx="16" cy="16" r="8.5" fill="none" stroke="#e9b44c" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="42 11.4" transform="rotate(-35 16 16)"/></svg></span>CertReps</div>
+  <div class="switcher" id="switcher"><span class="vd"></span><div><div class="sc-name">—</div><div class="sc-sub">—</div></div><span class="kbd">⌘K</span></div>
+  <div class="navspacer"></div>
+  <span class="navlink" onclick="location.href='CertReps Catalog.html'">Catalog</span><span class="navlink on">My progress</span>
+  <div class="avatar" id="avatar">JD</div>
+</div>
+
+<div class="wrap">
+  <div id="has-data">
+    <span class="eyebrow" id="acctLine">Progress saved on this device</span>
+    <h1 style="font-size:34px;font-weight:800;margin:10px 0 0">Your progress</h1>
+
+    <div id="syncBanner" style="margin-top:18px"></div>
+
+    <div class="statstrip" id="statstrip"></div>
+
+    <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:14px">
+      <h2 class="sectitle" style="margin:0">Continue studying</h2>
+      <a href="CertReps Catalog.html" style="font-family:var(--font-mono);font-size:12px;margin-left:auto">Browse all certs →</a>
+    </div>
+    <div class="grid2" id="continue"></div>
+
+    <h2 class="sectitle" style="margin:34px 0 14px">Recent activity</h2>
+    <div class="panel" id="activity"></div>
+
+    <div style="display:flex;justify-content:flex-end;margin-top:20px">
+      <span class="mono faint" id="resetDemo" style="font-size:11px;cursor:pointer">Reset demo data</span>
+    </div>
+  </div>
+
+  <div id="no-data" class="empty hide">
+    <div style="width:64px;height:64px;border-radius:16px;background:var(--panel);border:1px solid var(--line-strong);display:grid;place-items:center;margin:0 auto">
+      <svg viewBox="0 0 32 32" width="34" height="34"><circle cx="16" cy="16" r="8.5" fill="none" stroke="#e9b44c" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="30 25" transform="rotate(-35 16 16)"/></svg>
+    </div>
+    <div class="big">No practice yet</div>
+    <p class="muted" style="max-width:420px;margin:0 auto 22px">Pick a certification and run a quick drill — your scores, readiness, and weak areas will show up here.</p>
+    <button class="btn btn-primary" onclick="location.href='CertReps Catalog.html'">Browse certifications →</button>
+  </div>
+</div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="../_ds_bundle.js"></script>
+<script src="certs.js"></script>
+<script src="progress.js"></script>
+<script>
+const {V,certByCode}=window;
+const P=window.Progress;
+const ip=P.inProgress();
+
+/* ---- account / sync state ---- */
+const acct=P.account();
+document.getElementById('avatar').textContent = acct ? P.initials() : 'JD';
+document.getElementById('acctLine').textContent = acct
+  ? `Synced as ${acct.email} · via ${acct.provider}`
+  : 'Progress saved on this device';
+(function(){
+  const b=document.getElementById('syncBanner');
+  if(acct){
+    b.innerHTML=`<div style="display:flex;align-items:center;gap:14px;background:var(--emerald-soft);border:1px solid rgba(63,207,142,.4);border-radius:14px;padding:14px 18px">
+      <span style="width:9px;height:9px;border-radius:50%;background:var(--emerald)"></span>
+      <div style="flex:1"><div style="font-weight:600;font-size:14px">Syncing on</div><div class="mono" style="font-size:11.5px;color:var(--muted);margin-top:2px">Your scores back up automatically to ${acct.email}.</div></div>
+      <span class="mono" id="signOut" style="font-size:12px;color:var(--gold);cursor:pointer">Sign out</span></div>`;
+  }else{
+    b.innerHTML=`<div style="display:flex;align-items:center;gap:14px;background:var(--gold-soft);border:1px solid var(--gold-dim);border-radius:14px;padding:14px 18px">
+      <span style="width:9px;height:9px;border-radius:50%;background:var(--gold)"></span>
+      <div style="flex:1"><div style="font-weight:600;font-size:14px">Progress is saved on this device</div><div class="mono" style="font-size:11.5px;color:var(--muted);margin-top:2px">Sign in to sync across devices and never lose your reps.</div></div>
+      <button class="btn btn-primary btn-sm" onclick="location.href='Sign In.html'">Sign in to sync</button></div>`;
+  }
+  const so=document.getElementById('signOut');
+  if(so)so.onclick=()=>{P.signOut();location.reload();};
+})();
+document.getElementById('avatar').onclick=()=>{location.href='Settings.html';};
+
+function rel(ts){const d=(Date.now()-ts)/86400000;if(d<1)return"today";if(d<2)return"yesterday";if(d<7)return Math.floor(d)+"d ago";return Math.floor(d/7)+"w ago";}
+function ringSvg(pct,size){const r=size/2-6;const circ=2*Math.PI*r;const col=pct>=72?'var(--emerald)':pct>=50?'#e9b44c':'var(--rose)';
+  return `<div class="ring" style="width:${size}px;height:${size}px"><svg width="${size}" height="${size}"><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="rgba(132,170,208,.14)" stroke-width="6"/><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="${col}" stroke-width="6" stroke-linecap="round" stroke-dasharray="${(pct/100*circ).toFixed(0)} ${circ.toFixed(0)}"/></svg><div class="num">${pct}%</div></div>`;}
+
+if(!ip.length){
+  document.getElementById('has-data').classList.add('hide');
+  document.getElementById('no-data').classList.remove('hide');
+}else{
+  // switcher
+  const top=ip[0],tc=certByCode(top.code),tm=V[tc.v];
+  const sw=document.getElementById('switcher');
+  sw.querySelector('.vd').style.background=tm.c;
+  sw.querySelector('.sc-name').textContent=`${tm.n} — ${tc.name}`;
+  sw.querySelector('.sc-sub').textContent=`${tc.code} · ${top.prog}% ready`;
+  sw.onclick=()=>location.href='Cert Detail.html?c='+encodeURIComponent(tc.code);
+
+  // stats
+  const t=P.totals();
+  document.getElementById('statstrip').innerHTML=[
+    [t.inProgress,"Certs in progress"],
+    [t.practiced,"Questions practiced"],
+    [t.best+"%","Best score"],
+    [t.ready,"Exam-ready (≥72%)"]
+  ].map(s=>`<div class="stat"><div class="sv">${s[0]}</div><div class="sl">${s[1]}</div></div>`).join('');
+
+  // continue cards
+  document.getElementById('continue').innerHTML=ip.map(r=>{
+    const c=certByCode(r.code),m=V[c.v];
+    const weak=P.weakestDomain(r.code);
+    const weakTxt=weak?`Weakest: ${weak.d.split(' ').slice(0,3).join(' ')} · ${Math.round(weak.p*100)}%`:'Just getting started';
+    return `<div class="ccard">
+      <span class="accent" style="background:${m.c}"></span>
+      <div class="ring-mount" data-pct="${r.prog}"></div>
+      <div class="info">
+        <div class="vn"><span class="vd" style="background:${m.c}"></span>${m.n} · ${c.code}</div>
+        <h3>${c.name}</h3>
+        <div class="sub">${weakTxt} · last studied ${rel(r.lastActivity)}</div>
+        <div class="acts">
+          <button class="btn btn-primary btn-sm" onclick="location.href='Practice.html?c=${encodeURIComponent(c.code)}&mode=drill'">Resume →</button>
+          ${weak?`<button class="btn btn-ghost btn-sm" onclick="location.href='Practice.html?c=${encodeURIComponent(c.code)}&mode=drill&domain=${encodeURIComponent(weak.d)}'">Drill weakest</button>`:''}
+          <button class="btn btn-ghost btn-sm" onclick="location.href='Cert Detail.html?c=${encodeURIComponent(c.code)}'">Details</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  document.querySelectorAll('#continue .ring-mount').forEach(el=>{
+    ReactDOM.createRoot(el).render(React.createElement(window.CertRepsDesignSystem_48aca3.ScoreRing,{pct:+el.dataset.pct,size:76,stroke:6}));
+  });
+
+  // recent activity (merge histories)
+  const acts=[];
+  ip.forEach(r=>{(r.history||[]).forEach(h=>acts.push({...h,code:r.code}));});
+  acts.sort((a,b)=>b.ts-a.ts);
+  document.getElementById('activity').innerHTML=acts.slice(0,10).map(h=>{
+    const c=certByCode(h.code),m=V[c.v];
+    const col=h.pct>=72?'var(--emerald)':h.pct>=50?'var(--gold)':'var(--rose)';
+    return `<div class="act">
+      <span class="ad" style="background:${m.c}"></span>
+      <span class="amode">${h.mode}</span>
+      <span class="an">${c.name}</span>
+      <span class="asc" style="color:${col}">${h.pct}%</span>
+      <span class="mono faint" style="font-size:11px">${h.correct}/${h.total}</span>
+      <span class="awhen">${rel(h.ts)}</span>
+    </div>`;
+  }).join('') || '<div class="act"><span class="muted" style="padding:8px 0">No sessions yet.</span></div>';
+
+  document.getElementById('resetDemo').onclick=()=>{if(confirm('Reset all demo progress on this device?')){P.resetDemo();location.reload();}};
+}
+</script>
+</body>
+</html>
