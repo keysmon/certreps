@@ -244,7 +244,7 @@
     "explanation": "<b>A customer managed AWS KMS key</b> gives the bank control over key policy, rotation, auditing via CloudTrail, and the ability to disable or revoke the key. Service-owned default keys are not customer-controlled or auditable at the key level, a hardcoded application key is insecure and unmanageable, and security groups do not provide encryption at rest.",
     "id": "aipc01-0013",
     "difficulty": "easy",
-    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/encryption.html"
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/data-encryption.html"
   },
   {
     "domain": "Foundation Model Integration & Compliance",
@@ -461,7 +461,7 @@
     "explanation": "<b>Exponential backoff with jitter</b> spreads retries over time and de-synchronizes concurrent callers, which is the recommended handling for ThrottlingException. A tight loop worsens the overload. Failing fast needlessly drops recoverable requests. A fixed one-second interval still lets many instances retry in lockstep, recreating the storm.",
     "id": "aipc01-0024",
     "difficulty": "easy",
-    "docUrl": "https://docs.aws.amazon.com/general/latest/gr/api-retries.html"
+    "docUrl": "https://docs.aws.amazon.com/sdkref/latest/guide/feature-retry-behavior.html"
   },
   {
     "domain": "Implementation & Integration",
@@ -929,7 +929,7 @@
     "explanation": "<b>Amazon SageMaker Clarify</b> measures bias and produces explainability reports, and supports foundation model evaluations for toxicity and stereotyping -- exactly the quantified, documentable output required. <b>Guardrails content filters</b> block unsafe content at runtime but do not measure or report bias. <b>Macie</b> discovers sensitive data. <b>CloudTrail</b> is an API-activity audit log, not a bias-measurement tool.",
     "id": "aipc01-0048",
     "difficulty": "easy",
-    "docUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-fairness-and-explainability.html"
+    "docUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-detect-post-training-bias.html"
   },
   {
     "domain": "AI Safety, Security & Governance",
@@ -1142,7 +1142,7 @@
     "explanation": "<b>LLM-as-a-judge</b> in an Amazon Bedrock model evaluation job lets you bring your own prompt dataset and automatically score nuanced dimensions like coherence and faithfulness at scale, so it can run on every release. Human evaluation is accurate but too slow and costly to repeat on thousands of items each release. Reference-based automatic metrics such as BERTScore and F1 require gold reference summaries and poorly capture faithfulness. A CloudWatch alarm on summary length measures nothing about quality.",
     "id": "aipc01-0059",
     "difficulty": "medium",
-    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-evaluation.html"
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/evaluation.html"
   },
   {
     "domain": "Testing, Validation & Troubleshooting",
@@ -1426,7 +1426,7 @@
     "correct": [
       1
     ],
-    "explanation": "Since a 2025 update, custom models from supported base families - Amazon Nova Micro, Nova Lite, Nova Pro, and Meta Llama 3.3 70B - can be deployed for <b>on-demand inference</b> using a custom model deployment (in US East N. Virginia or US West Oregon), so the recent Nova Micro fine-tune does not need reserved capacity. Anthropic Claude is <b>not</b> on the supported-for-on-demand list, so a Claude fine-tune still requires <b>Provisioned Throughput</b>. That makes the claims that both support on-demand, that neither does, or that only Claude supports on-demand all incorrect.",
+    "explanation": "Since a 2025 update, custom models from supported base families - currently the Amazon Nova family (Nova Micro, Nova Lite, Nova 2 Lite, Nova Pro) and Meta Llama 3.3 70B - can be deployed for <b>on-demand inference</b> using a custom model deployment (in US East N. Virginia or US West Oregon), so the recent Nova Micro fine-tune does not need reserved capacity. Anthropic Claude is <b>not</b> on the supported-for-on-demand list, so a Claude fine-tune still requires <b>Provisioned Throughput</b>. That makes the claims that both support on-demand, that neither does, or that only Claude supports on-demand all incorrect.",
     "difficulty": "hard",
     "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/deploy-custom-model-on-demand.html",
     "id": "aipc01-0074"
@@ -1523,7 +1523,7 @@
     ],
     "explanation": "<b>Meta Llama</b> models are open-weight and openly licensed, so the same base model is available both in Bedrock and for self-hosting elsewhere, supporting portability. <b>Claude</b> and <b>Amazon Nova</b> are proprietary models accessed only via API and are not distributed as open weights. <b>Titan Text Embeddings V2</b> is a proprietary embeddings model, not a general open-weight text-generation family.",
     "difficulty": "medium",
-    "docUrl": "https://aws.amazon.com/bedrock/llama/",
+    "docUrl": "https://aws.amazon.com/bedrock/meta/",
     "id": "aipc01-0079"
   },
   {
@@ -1919,7 +1919,7 @@
     ],
     "explanation": "A <b>circuit breaker</b> detects the failing dependency, stops calling it for a cooldown, and fails fast or returns a fallback, protecting the thread pool. Removing timeouts, unbounded threads, and tight retry loops worsen the cascade.",
     "difficulty": "medium",
-    "docUrl": "https://docs.aws.amazon.com/prescriptiveguidance/latest/cloud-design-patterns/circuit-breaker.html",
+    "docUrl": "https://docs.aws.amazon.com/prescriptive-guidance/latest/cloud-design-patterns/circuit-breaker.html",
     "id": "aipc01-0099"
   },
   {
@@ -2109,7 +2109,7 @@
       0
     ],
     "explanation": "Amazon Bedrock exposes the <b>bedrock:GuardrailIdentifier</b> IAM condition key, so a policy can <b>deny InvokeModel and InvokeModelWithResponseStream unless the approved guardrail is supplied</b> -- a preventive, request-time control. <b>Environment variables and developer discipline</b> are not enforced. <b>CloudTrail</b> is detective, catching omissions only after they happen. <b>AWS WAF</b> inspects HTTP traffic and cannot bind a Bedrock guardrail to model invocations.",
-    "docUrl": "https://docs.aws.amazon.com/service-authorization/latest/reference/list_amazonbedrock.html",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-permissions-id.html",
     "id": "aipc01-0109"
   },
   {

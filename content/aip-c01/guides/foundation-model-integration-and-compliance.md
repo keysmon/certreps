@@ -13,7 +13,7 @@ the exam's model-selection and compliance scenarios live here.
 
 Match the model to the workload's context length, modality, cost, and licensing.
 
-- **Anthropic Claude has a 200K-token context window** and strong reasoning, so it is the answer
+- **Anthropic Claude has a large context window (200K tokens, and more on the newest Claude models)** and strong reasoning, so it is the answer
   for ingesting a very long document (a 250-page contract) in one pass and reasoning across
   distant sections.
 - **Amazon Nova Micro is text-only with the lowest latency and very low cost**, the pick for
@@ -94,9 +94,10 @@ fine-tuning, then continued pre-training.**
   **JSONL file where each line is a JSON object with prompt and completion fields.**
 - **Continued pre-training** consumes a large *unlabeled* corpus to teach domain vocabulary and
   style; use it when there are no labeled prompt-and-completion pairs.
-- Serving custom models (2025 update): **custom Nova Micro, Nova Lite, Nova Pro, and Meta
-  Llama 3.3 70B models can be deployed for on-demand inference** (in US East N. Virginia or US
-  West Oregon), while **an Anthropic Claude fine-tune still requires Provisioned Throughput.**
+- Serving custom models (2025 update): **custom Amazon Nova models (Nova Micro, Nova Lite,
+  Nova 2 Lite, Nova Pro) and Meta Llama 3.3 70B can be deployed for on-demand inference** (in
+  US East N. Virginia or US West Oregon), while **an Anthropic Claude fine-tune still requires
+  Provisioned Throughput.**
 
 ## Data protection and compliance
 
