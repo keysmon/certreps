@@ -669,5 +669,140 @@
     "difficulty": "hard",
     "docUrl": "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Create_Composite_Alarm.html",
     "id": "dopc02-0035"
+  },
+  {
+    "domain": "Incident and Event Response",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A security team wants any time an EC2 security group rule is created that allows inbound traffic from 0.0.0.0/0 on port 22 to have the offending rule automatically revoked within seconds, with no human action needed to detect or act on the event. Which combination provides this with the least custom polling code?",
+    "options": [
+      "An EventBridge rule matching the AuthorizeSecurityGroupIngress CloudTrail event, targeting a Lambda function (or an SSM Automation runbook) that revokes the offending rule.",
+      "A cron-scheduled Lambda function that lists every security group every 5 minutes and revokes any open rules it finds.",
+      "An AWS Config rule with only a periodic evaluation schedule configured and no automatic remediation action attached.",
+      "An engineer manually reviewing CloudTrail logs each morning for suspicious security group changes."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "An <b>EventBridge rule that matches the specific CloudTrail management event</b> fires within seconds of the API call, and targeting a <b>Lambda function or SSM Automation runbook</b> lets the fix run immediately with no polling. A cron-scheduled Lambda only catches the problem on its next scheduled run, leaving a window of exposure measured in minutes, not seconds. An AWS Config rule with only a periodic evaluation and no remediation action attached will eventually flag the issue but never fixes it automatically, and periodic evaluation is not near-real-time. Manually reviewing logs each morning is fully manual and leaves the open port exposed for up to a full day.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-rules.html",
+    "id": "dopc02-0036"
+  },
+  {
+    "domain": "Incident and Event Response",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A team wants CloudWatch alarms tied to critical services to automatically start a formal incident record when they fire, page the correct on-call responder according to an escalation plan, and run a documented response runbook, all without a human first deciding whether to declare an incident. Which AWS service should they use?",
+    "options": [
+      "AWS Chatbot alone, since it posts alarm notifications into a chat channel with no formal incident record or escalation engine.",
+      "AWS Systems Manager Incident Manager, configured with a response plan that triggers from the CloudWatch alarm, engages the on-call escalation plan, and runs the associated runbook.",
+      "Amazon SNS with an email subscription that notifies the entire engineering team.",
+      "Systems Manager Automation used alone, with no Incident Manager response plan configured."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Systems Manager Incident Manager</b> is built for exactly this: a response plan tied to the alarm automatically opens an incident record, engages the configured on-call escalation plan, and can kick off an associated runbook, with no human needed to first decide an incident is happening. AWS Chatbot only relays notifications into chat; it has no escalation plan or incident record of its own. Emailing the whole team has no formal on-call rotation, escalation logic, or incident documentation. Systems Manager Automation runs remediation steps but does not manage on-call engagement, escalation, or an incident timeline by itself; that is Incident Manager's job.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/incident-manager/latest/userguide/what-is-incident-manager.html",
+    "id": "dopc02-0037"
+  },
+  {
+    "domain": "Incident and Event Response",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A team wants to be notified automatically, through their existing ChatOps Slack channel, whenever AWS reports a service issue or scheduled maintenance event that affects resources in their specific account, rather than a generic public status-page-level event, with no manual dashboard checking. Which combination of services accomplishes this?",
+    "options": [
+      "Periodically check the public AWS Health Dashboard status page for updates.",
+      "Rely on generic CloudWatch alarms on resource metrics to infer that an AWS-side issue is occurring.",
+      "Subscribe to AWS Health events for the account through an EventBridge rule that matches Health events, targeting AWS Chatbot configured to post into the Slack channel.",
+      "Have an engineer manually post to the Slack channel whenever they happen to notice a status page banner."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>AWS Health events, routed through an EventBridge rule to AWS Chatbot</b>, deliver account-specific operational and scheduled-maintenance issues directly into the team's chat channel automatically, including issues that have not yet caused a visible metric impact. The public status page shows broad, account-agnostic service health and requires someone to check it manually. A CloudWatch alarm only reacts once the AWS-side issue's downstream effects already show up in the team's own metrics, and gives no advance notice of scheduled maintenance. Manually posting when someone happens to notice a banner is unreliable and not automated.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/health/latest/ug/getting-started-health-eventbridge.html",
+    "id": "dopc02-0038"
+  },
+  {
+    "domain": "Incident and Event Response",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A CloudWatch alarm fires when a specific application process on an EC2 fleet stops responding. The team wants this to automatically trigger an SSM Automation runbook that restarts the process, but wants a human paged only if the automated restart is attempted three times within an hour without success, so a restart loop does not silently mask a deeper problem. Which architecture BEST supports this?",
+    "options": [
+      "Have the CloudWatch alarm page a human immediately every time it fires, and let the human decide whether to run the runbook manually on each occurrence.",
+      "Configure EventBridge to invoke the runbook on every alarm transition with no attempt tracking, so it restarts indefinitely with no escalation ever added.",
+      "Use only a CloudWatch composite alarm with no EventBridge rule or runbook, since a composite alarm can directly restart the process by itself.",
+      "An EventBridge rule reacting to the alarm's state change invokes the SSM Automation runbook directly, while the runbook (or a companion Lambda) tracks the attempt count and pages a human only once the threshold is exceeded."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "An <b>EventBridge rule invoking the SSM Automation runbook directly, combined with attempt tracking that escalates to a human only past a threshold</b>, gives automatic remediation for the routine case while still guaranteeing a human sees a problem that keeps recurring. Paging a human on every occurrence defeats the goal of unattended remediation for the routine case. Restarting indefinitely with no tracked threshold means a persistent underlying problem is masked forever, since no escalation condition ever fires. A composite alarm only combines the states of other alarms into a single alarm condition; it has no ability to execute a remediation action on its own.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-automation.html",
+    "id": "dopc02-0039"
+  },
+  {
+    "domain": "Incident and Event Response",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "An on-call engineer wants to receive a CloudWatch alarm notification directly in a Slack channel, and from that same channel run a small set of pre-approved read-only AWS CLI commands (for example, checking an ECS service's status) during an incident, without opening the AWS Management Console. Which AWS service enables this two-way chat integration?",
+    "options": [
+      "AWS Chatbot, configured with an IAM role scoped to the approved read-only actions and integrated with the chat channel.",
+      "Amazon SNS alone, which only delivers one-way notifications with no ability to run commands back from chat.",
+      "A CloudWatch dashboard shared as a public, view-only link.",
+      "AWS Systems Manager Session Manager, opened directly from a browser tab with no chat integration at all."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>AWS Chatbot</b> integrates with Slack (and Microsoft Teams) to both deliver alarm notifications and let engineers run a scoped set of AWS CLI commands directly from the chat channel, constrained by an IAM role attached to the Chatbot configuration. Amazon SNS on its own only pushes notifications; it has no mechanism to accept commands back from chat. A shared CloudWatch dashboard link is view-only and cannot execute commands. Session Manager gives interactive shell access through the console or CLI but has no native chat-channel integration of its own.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/chatbot/latest/adminguide/what-is.html",
+    "id": "dopc02-0040"
+  },
+  {
+    "domain": "Incident and Event Response",
+    "tag": "Domain 5",
+    "type": "multi",
+    "stem": "A platform team is designing an auto-remediation pipeline: whenever a specific CloudTrail-recorded API call happens (for example, deleting a required CloudTrail trail), the change should be detected within seconds and an SSM Automation runbook should run automatically to reverse it, with no engineer polling logs. Which TWO components are required in this pipeline? (Select TWO.)",
+    "options": [
+      "An EventBridge rule with an event pattern matching the specific CloudTrail management event, so the rule triggers the instant the event is delivered.",
+      "An IAM role attached to the EventBridge rule's target that permits it to start the target SSM Automation runbook (or invoke the target Lambda), authorizing the automation to actually run.",
+      "An AWS Config recorder configured to evaluate the resource's configuration once every 24 hours.",
+      "A CloudWatch Logs metric filter that counts occurrences of the API call name in a log group, with no EventBridge rule involved.",
+      "An engineer manually re-running the equivalent AWS CLI describe command every few minutes to check whether the resource still matches the required configuration."
+    ],
+    "correct": [
+      0,
+      1
+    ],
+    "explanation": "An <b>EventBridge rule matching the specific CloudTrail event</b> reacts within seconds of the event's delivery, and an <b>IAM role granting the rule's target permission to start the runbook or invoke the Lambda</b> is what actually authorizes the automated remediation to execute; together these two pieces make the pipeline both immediate and functional. An AWS Config recorder on a 24-hour evaluation cadence introduces a full day of detection latency, far from the near-real-time goal. A CloudWatch Logs metric filter with no EventBridge rule can count occurrences but has no native mechanism to trigger a remediation action on its own. Manually re-running a CLI command on an interval is exactly the manual polling the team wants to eliminate.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-what-is.html",
+    "id": "dopc02-0041"
+  },
+  {
+    "domain": "Incident and Event Response",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "After a production incident is resolved through Systems Manager Incident Manager, the team wants to conduct a structured post-incident review that captures a timeline of what happened, contributing factors, and follow-up action items, directly tied to that incident record rather than a brand-new, disconnected document. Which Incident Manager capability should they use?",
+    "options": [
+      "Manually re-type a timeline from memory into a separate wiki page that is not connected to the incident record.",
+      "Create an Incident Manager analysis linked to the resolved incident, building on its automatically captured timeline of chat, runbook steps, and alarm events as the starting point for root-cause documentation and action items.",
+      "Rely on the original CloudWatch alarm history alone, treating it as a complete substitute for a post-incident review.",
+      "Close the incident with no further documentation, since the runbook already remediated the immediate symptom."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "An Incident Manager <b>analysis</b> is linked directly to the resolved incident and starts from its <b>automatically captured timeline</b>, so root-cause documentation, contributing factors, and action items build on real incident data instead of memory. Manually re-typing a timeline into a disconnected wiki page discards that automatically captured data and loses the link back to the incident record. CloudWatch alarm history only shows alarm state transitions, not the human response timeline, contributing factors, or resulting action items. Closing the incident with no analysis skips root-cause work entirely, so nothing prevents the same failure from recurring.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/incident-manager/latest/userguide/analysis.html",
+    "id": "dopc02-0042"
   }
 ]
