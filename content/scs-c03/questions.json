@@ -1,0 +1,139 @@
+[
+  {
+    "domain": "Detection",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A security engineer wants a fully managed threat detection service that continuously analyzes VPC Flow Logs, DNS query logs, and CloudTrail management events to identify malicious or unauthorized behavior, without deploying any agents or sensors. Which AWS service BEST fits this requirement?",
+    "options": [
+      "Amazon GuardDuty, which continuously analyzes VPC Flow Logs, DNS logs, and CloudTrail events using threat intelligence and machine learning to generate findings with no agents required.",
+      "AWS Config, which records resource configuration changes and evaluates them against rules.",
+      "Amazon Inspector, which scans EC2 instances, container images, and Lambda functions for software vulnerabilities.",
+      "AWS Trusted Advisor, which reviews the account against best-practice checks across cost, performance, and security."
+    ],
+    "correct": [0],
+    "explanation": "<b>Amazon GuardDuty</b> is an agentless threat detection service that continuously analyzes VPC Flow Logs, DNS query logs, and CloudTrail management events (plus S3 and EKS data events when those protection plans are enabled) against threat intelligence feeds and machine learning models to produce findings, with nothing to deploy or manage. AWS Config tracks configuration compliance, not threat behavior. Amazon Inspector finds software vulnerabilities in workloads, not behavioral threats in account activity. Trusted Advisor gives best-practice recommendations across several categories but does not perform continuous behavioral threat detection.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/guardduty/latest/ug/what-is-guardduty.html",
+    "id": "scsc03-0001"
+  },
+  {
+    "domain": "Detection",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A company runs AWS Organizations with 40 member accounts and wants GuardDuty enabled in every account and every Region automatically as new accounts are created, with findings visible from one central account, without each account owner having to enable GuardDuty manually. Which configuration meets this requirement?",
+    "options": [
+      "Enable GuardDuty independently in each of the 40 accounts and export findings to a shared Amazon S3 bucket using a scheduled job.",
+      "Designate a delegated administrator account for GuardDuty through AWS Organizations, and turn on auto-enable so GuardDuty activates automatically in existing and new member accounts with findings aggregated to the delegated administrator.",
+      "Create an AWS Config aggregator in the management account to collect GuardDuty findings from every member account.",
+      "Attach a service control policy that requires each account owner to enable GuardDuty within 24 hours of account creation."
+    ],
+    "correct": [1],
+    "explanation": "GuardDuty integrates with <b>AWS Organizations</b>: a <b>delegated administrator</b> account can manage GuardDuty for the whole organization, and turning on <b>auto-enable</b> activates GuardDuty automatically for existing and future member accounts, with all findings visible centrally to the delegated administrator, none of which requires per-account manual setup. Enabling it account by account and exporting to S3 on a schedule is exactly the manual, non-automatic approach the requirement rules out. A Config aggregator collects AWS Config compliance data, not GuardDuty findings. An SCP can restrict or require API call patterns, but it cannot itself enable a regional detector or guarantee GuardDuty actually gets turned on, so it does not satisfy 'automatically enabled.'",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_organizations.html",
+    "id": "scsc03-0002"
+  },
+  {
+    "domain": "Detection",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "GuardDuty raises a finding that an EC2 instance's credentials were used from an unusual geographic location. A security analyst wants to quickly understand the full scope of the incident: what this instance's role has done historically, whether the same credentials were used elsewhere, and how this activity connects to other resources and API calls over the past weeks, presented as a visual timeline, without writing custom Athena queries. Which service BEST supports this investigation?",
+    "options": [
+      "Amazon Macie, to classify sensitive data that the instance may have accessed.",
+      "AWS Config, to review the instance's configuration history.",
+      "Amazon Detective, which automatically builds a behavior graph from CloudTrail, VPC Flow Logs, and GuardDuty findings so an analyst can visually explore related activity and history without writing queries.",
+      "AWS Systems Manager Inventory, to list software installed on the instance."
+    ],
+    "correct": [2],
+    "explanation": "<b>Amazon Detective</b> ingests CloudTrail, VPC Flow Logs, and GuardDuty findings, and automatically builds a linked <b>behavior graph</b> so analysts can pivot visually across principals, resources, IP addresses, and time to scope an incident, which is exactly the deep, historical, no-query investigation described. GuardDuty is what raised the finding but is not the visual investigation tool. Macie classifies sensitive data and does not build activity timelines. AWS Config tracks configuration state over time, not API and network behavior. Systems Manager Inventory lists installed software and metadata, not security-relevant historical activity across resources.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/detective/latest/userguide/what-is-detective.html",
+    "id": "scsc03-0003"
+  },
+  {
+    "domain": "Detection",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A company operates 15 AWS accounts across two Regions and wants a single, unified view of security findings from GuardDuty, Inspector, and IAM Access Analyzer, normalized into one common finding format, aggregated into one Region for a central security team to triage. Which AWS service BEST meets this requirement?",
+    "options": [
+      "Amazon CloudWatch Logs Insights, to run ad hoc queries across each account's log groups.",
+      "AWS Config aggregator, to collect resource configuration compliance from every account.",
+      "AWS Organizations consolidated billing, to view cost data across accounts.",
+      "AWS Security Hub, which ingests findings from GuardDuty, Inspector, IAM Access Analyzer, and partner tools, normalizes them into the AWS Security Finding Format, and can aggregate findings from multiple Regions into one Region."
+    ],
+    "correct": [3],
+    "explanation": "<b>AWS Security Hub</b> is purpose-built to collect findings from GuardDuty, Inspector, IAM Access Analyzer, Config, and partner security products, normalize them into the <b>AWS Security Finding Format (ASFF)</b>, and, with <b>finding aggregation</b> enabled, roll up findings from linked Regions into one aggregation Region for centralized triage. CloudWatch Logs Insights queries log data but does not normalize or aggregate security findings across services. A Config aggregator only covers AWS Config resource compliance, not the broader finding set. Consolidated billing addresses cost visibility, not security findings.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/securityhub/latest/userguide/what-is-securityhub.html",
+    "id": "scsc03-0004"
+  },
+  {
+    "domain": "Detection",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A company enables GuardDuty S3 Protection and later receives a finding indicating that an IAM principal is exhibiting a pattern of unusual API calls that retrieve large numbers of objects from a sensitive S3 bucket, at a volume inconsistent with that principal's history. Which GuardDuty data source made this specific detection possible?",
+    "options": [
+      "S3 Protection, which analyzes S3 data event activity from CloudTrail to detect suspicious access patterns such as unusual API call volume or data exfiltration behavior against a bucket.",
+      "VPC Flow Log analysis, which only inspects network traffic metadata at the ENI level and has no visibility into S3 API activity.",
+      "Malware Protection for EC2, which scans attached EBS volumes for malicious files.",
+      "AWS Config configuration snapshots, which record the bucket's settings but not API call activity."
+    ],
+    "correct": [0],
+    "explanation": "GuardDuty <b>S3 Protection</b> consumes S3 data event activity (object-level API calls) from CloudTrail and applies threat intelligence and anomaly detection to flag patterns like unusual data access volume, suspicious API sequences, or requests from anomalous locations, which is exactly the scenario described. VPC Flow Log analysis sees network metadata, not S3 object API semantics, so it could not identify this pattern by itself. Malware Protection for EC2 scans EBS volumes for malware, unrelated to S3 API behavior. AWS Config records configuration state changes, not the API call volume needed to detect this kind of exfiltration pattern.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/guardduty/latest/ug/s3-protection.html",
+    "id": "scsc03-0005"
+  },
+  {
+    "domain": "Detection",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A team wants automated, continuous scanning of their EC2 instances, container images stored in Amazon ECR, and Lambda functions for known software vulnerabilities (CVEs) and network reachability issues, with a risk score to help prioritize remediation. Which AWS service BEST fits?",
+    "options": [
+      "AWS Trusted Advisor, which offers point-in-time best-practice checks across several categories.",
+      "Amazon Inspector, which continuously scans EC2 instances, ECR container images, and Lambda functions for known vulnerabilities and unintended network exposure, producing a risk score for prioritization.",
+      "AWS Config, which evaluates whether resource configurations comply with defined rules.",
+      "Amazon GuardDuty, which detects malicious behavior and anomalies from log and network data sources."
+    ],
+    "correct": [1],
+    "explanation": "<b>Amazon Inspector</b> continuously and automatically scans EC2 instances, ECR container images, and Lambda functions for known software vulnerabilities and, for EC2, network reachability issues, and assigns a risk score that blends CVE severity with exploitability and network exposure to help prioritize fixes. Trusted Advisor's security checks are broader but point-in-time best-practice checks, not continuous CVE and reachability scanning. AWS Config evaluates configuration state against rules, not vulnerabilities in installed software. GuardDuty detects behavioral and network threats from logs, not software vulnerabilities in workloads.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/inspector/latest/user/what-is-inspector.html",
+    "id": "scsc03-0006"
+  },
+  {
+    "domain": "Detection",
+    "tag": "Domain 1",
+    "type": "multi",
+    "stem": "A security team wants to detect anomalous account and network behavior using AWS-native machine learning and statistical baselining, without writing and maintaining custom detection rules or thresholds. Which TWO AWS capabilities provide this out of the box? (Select TWO.)",
+    "options": [
+      "AWS Config, which evaluates resources against user-authored or managed rules on a schedule.",
+      "Amazon GuardDuty, which applies machine learning and threat intelligence to CloudTrail, VPC Flow Logs, and DNS logs to flag anomalous behavior without any custom rule authoring.",
+      "Amazon S3 Storage Lens, which reports storage usage and activity metrics for cost and usage optimization.",
+      "AWS CloudTrail Insights, which uses statistical baselining on management event volume to automatically surface unusual API call rates and patterns without configuring thresholds.",
+      "AWS Systems Manager Inventory, which catalogs installed software and metadata across managed instances."
+    ],
+    "correct": [1, 3],
+    "explanation": "<b>GuardDuty</b> applies machine learning and curated threat intelligence directly to CloudTrail, VPC Flow Logs, and DNS query logs to flag anomalies with zero custom rule authoring, and <b>CloudTrail Insights</b> builds a statistical baseline of normal API call volume and automatically surfaces unusual spikes or patterns in management events, again with no thresholds to configure. AWS Config only evaluates against rules a person defines or selects, which is the opposite of automatic anomaly baselining. S3 Storage Lens reports usage metrics for cost and storage optimization, not security anomalies. Systems Manager Inventory catalogs installed software and instance metadata; it does not detect anomalous behavior.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-insights-events-with-cloudtrail.html",
+    "id": "scsc03-0007"
+  },
+  {
+    "domain": "Detection",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A company runs Amazon EKS clusters and Amazon RDS databases and wants GuardDuty findings that cover suspicious Kubernetes audit log activity, such as privilege escalation attempts within a cluster, as well as anomalous database login behavior, such as a pattern associated with brute-force or credential-stuffing activity against RDS. Which GuardDuty protection plans together cover both scenarios?",
+    "options": [
+      "Malware Protection for EC2 and S3 Protection.",
+      "S3 Protection and Lambda Protection.",
+      "EKS Protection, which monitors Kubernetes audit logs (and, with Runtime Monitoring, in-cluster behavior) for suspicious activity, together with RDS Protection, which analyzes login activity for anomalous or suspicious database access attempts.",
+      "Malware Protection for EC2 and RDS Protection only, since EKS activity is covered by VPC Flow Log analysis alone."
+    ],
+    "correct": [2],
+    "explanation": "<b>EKS Protection</b> analyzes Kubernetes audit logs for suspicious cluster activity such as privilege escalation, and its <b>Runtime Monitoring</b> component adds in-cluster behavioral detection, while <b>RDS Protection</b> profiles login activity to flag anomalous or suspicious database login attempts, together covering both scenarios in the question. Malware Protection for EC2 scans EBS volumes for malware and does not see Kubernetes audit events or RDS logins, so pairing it with S3 Protection or with RDS Protection alone still misses the EKS audit-log detection. Lambda Protection detects malicious behavior in Lambda function network activity, unrelated to Kubernetes clusters. VPC Flow Log analysis alone sees network metadata and does not parse Kubernetes audit log semantics, so EKS Protection is still required.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/guardduty/latest/ug/kubernetes-protection.html",
+    "id": "scsc03-0008"
+  }
+]
