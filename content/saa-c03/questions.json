@@ -690,5 +690,313 @@
     "difficulty": "hard",
     "docUrl": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-dead-letter-queues.html",
     "id": "saac03-0036"
+  },
+  {
+    "domain": "Design High-Performing Architectures",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A DynamoDB-backed application has a small set of items that are read far more often than others, causing higher read latency during peak traffic even though DynamoDB is not being throttled. Which caching solution reduces read latency for this workload with the least application refactoring?",
+    "options": [
+      "Switch the table from on-demand to provisioned capacity with a higher read capacity setting.",
+      "Add Amazon DynamoDB Accelerator (DAX) in front of the table, which provides a microsecond-latency, DynamoDB API-compatible in-memory cache.",
+      "Enable DynamoDB Streams and process every read request through a Lambda function.",
+      "Move the table to Amazon RDS to get a query cache."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>DynamoDB Accelerator (DAX) is a DynamoDB API-compatible, in-memory cache</b> that sits in front of the table and serves frequently read items in microseconds, requiring only an endpoint change in the application, not a data-model refactor. Raising provisioned read capacity increases throughput headroom but does not reduce the per-request latency of hot items the way an in-memory cache does. DynamoDB Streams captures a change log for event-driven processing; it is not a caching mechanism, and adding Lambda per read would add latency, not remove it. Moving to RDS is a full database migration and re-architecture, not a targeted caching fix.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DAX.html",
+    "id": "saac03-0037"
+  },
+  {
+    "domain": "Design High-Performing Architectures",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A relational application backed by Amazon RDS is seeing high read latency during peak hours because the same set of product catalog queries run repeatedly. The team wants to reduce load on the database without changing the database engine. Which approach BEST addresses this?",
+    "options": [
+      "Increase the RDS instance's storage size, since more storage improves read throughput.",
+      "Disable RDS automated backups during peak hours to free up I/O capacity.",
+      "Add more read replicas configured with a smaller instance class than the primary.",
+      "Add Amazon ElastiCache (Redis or Memcached) as a cache in front of the database for the repeated catalog queries, using a cache-aside pattern."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Amazon ElastiCache placed in front of the database with a cache-aside pattern</b> serves the repeated catalog queries from an in-memory cache instead of hitting RDS every time, directly cutting database read load and latency for hot queries. Increasing storage size affects capacity, not the throughput of repeated read queries. Disabling automated backups removes a durability safeguard and has little to no effect on read query performance. Read replicas do help distribute read traffic, but sizing them smaller than the primary would create a performance bottleneck rather than solve the caching problem, and it does not target the specific repeated-query pattern the way a cache does.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/elasticache-use-cases.html",
+    "id": "saac03-0038"
+  },
+  {
+    "domain": "Design High-Performing Architectures",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A media company serves images and videos stored in Amazon S3 to users worldwide and wants to reduce latency for users far from the bucket's Region while also reducing the number of requests that hit the S3 origin directly. Which service should the company add in front of the S3 bucket?",
+    "options": [
+      "Amazon CloudFront, configured with the S3 bucket as the origin, to cache content at edge locations close to users.",
+      "AWS Direct Connect, to establish a dedicated network link from every user's location to the bucket's Region.",
+      "Amazon Route 53 latency-based routing pointed at a single S3 bucket.",
+      "AWS Site-to-Site VPN between each user's office and the bucket's Region."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Amazon CloudFront with the S3 bucket as origin</b> caches content at edge locations around the world, so users are served from a nearby edge location instead of the origin Region, cutting latency and offloading repeat requests from S3 itself. Direct Connect and Site-to-Site VPN build private network links from a specific on-premises location and are not a practical or scalable way to serve arbitrary public internet users worldwide. Route 53 latency-based routing selects among multiple endpoints in different Regions but does nothing to cache content or reduce origin load when there is only a single bucket.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html",
+    "id": "saac03-0039"
+  },
+  {
+    "domain": "Design High-Performing Architectures",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A company runs a global multiplayer gaming backend over a custom UDP protocol across endpoints in multiple Regions and needs a fixed set of static IP addresses that automatically route each player to the closest healthy Regional endpoint. Which service fits this requirement?",
+    "options": [
+      "Amazon CloudFront, which caches HTTP and HTTPS content at edge locations.",
+      "Amazon Route 53 alias records pointed at each Region's endpoint with no health checks.",
+      "AWS Global Accelerator, which provides static anycast IP addresses and routes TCP or UDP traffic to the closest healthy endpoint across Regions using the AWS global network.",
+      "An Application Load Balancer deployed in each Region with no cross-Region routing."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>AWS Global Accelerator provides a fixed set of static anycast IP addresses and routes non-HTTP TCP or UDP traffic, as well as HTTP traffic, over the AWS global network to the closest healthy endpoint</b>, which fits a custom UDP game protocol needing static IPs and automatic Regional failover. CloudFront is built for HTTP and HTTPS content caching, not arbitrary UDP protocols. Plain Route 53 alias records with no health checks provide DNS resolution but no health-based routing or static IPs, and DNS-based routing does not have Global Accelerator's fast failover or fixed IP guarantees. Independent ALBs per Region with no cross-Region routing would not automatically direct players to the closest healthy Region.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/global-accelerator/latest/dg/what-is-global-accelerator.html",
+    "id": "saac03-0040"
+  },
+  {
+    "domain": "Design High-Performing Architectures",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A production RDS database serves both transactional writes from the application and heavy analytical reporting queries. The reporting queries are slowing down the transactional workload. Which change offloads the reporting workload with the LEAST impact on the primary database's write performance?",
+    "options": [
+      "Run the reporting queries directly against the primary database during off-peak hours only.",
+      "Create one or more RDS read replicas and point the reporting queries at a read replica instead of the primary.",
+      "Increase the primary instance's storage IOPS to absorb both workloads.",
+      "Convert the database to Multi-AZ, which adds a second instance that can serve reporting queries."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>RDS read replicas</b> receive asynchronously replicated copies of the data and can serve read-only reporting queries independently of the primary, isolating that load from the primary's write path. Running reporting only off-peak still competes with the primary during those hours and does not scale as data or reporting needs grow. Increasing IOPS can help overall throughput but does not separate the two workloads or stop reporting queries from contending with transactional queries on the same instance. A Multi-AZ standby is for failover only; it is not accessible for read queries the way a read replica is.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReadRepl.html",
+    "id": "saac03-0041"
+  },
+  {
+    "domain": "Design High-Performing Architectures",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "An Auto Scaling group must automatically add or remove EC2 instances to keep average CPU utilization close to 50%, without the team manually defining scaling thresholds and step adjustments. Which Auto Scaling policy type should the team configure?",
+    "options": [
+      "A scheduled scaling action that adds instances at a fixed time every day.",
+      "A step scaling policy with manually defined CloudWatch alarm thresholds for each scaling step.",
+      "Simple scaling with a single fixed capacity increment on every alarm breach.",
+      "A target tracking scaling policy set to maintain average CPU utilization at 50%, letting Auto Scaling manage the underlying alarms and adjustments automatically."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>A target tracking scaling policy</b> lets the team specify a target value for a metric such as average CPU utilization, and Auto Scaling automatically creates and manages the CloudWatch alarms and capacity adjustments needed to hold that target, with no manual threshold tuning. Scheduled scaling only handles predictable, time-based capacity changes and does not react to actual utilization. Step scaling and simple scaling both require the team to define alarm thresholds and adjustment amounts manually, which is exactly the manual effort target tracking is meant to remove.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-scaling-target-tracking.html",
+    "id": "saac03-0042"
+  },
+  {
+    "domain": "Design High-Performing Architectures",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A latency-sensitive transactional database on EC2 requires consistent sub-millisecond latency and up to 256,000 IOPS on a single volume, far beyond what General Purpose SSD volumes can provide. Which EBS volume type should the team use?",
+    "options": [
+      "io2 Block Express, provisioned IOPS SSD designed for the highest performance tier with sub-millisecond latency and very high IOPS and throughput per volume.",
+      "gp3 General Purpose SSD, which tops out at a much lower baseline and maximum IOPS per volume than the workload needs.",
+      "st1 Throughput Optimized HDD, designed for large sequential workloads such as big data and log processing.",
+      "sc1 Cold HDD, designed for infrequently accessed data at the lowest storage cost."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>io2 Block Express volumes are the highest-performance EBS tier</b>, purpose-built for sub-millisecond latency and IOPS levels far above what gp3 supports on a single volume, making them the right fit for the most demanding transactional database workloads. gp3 is a strong general-purpose default but has a much lower maximum IOPS and throughput ceiling than io2 Block Express. st1 and sc1 are HDD-based volumes optimized for large sequential throughput or infrequent access, not the low-latency random I/O a transactional database needs, and neither approaches the IOPS levels required here.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/ebs/latest/userguide/ebs-volume-types.html",
+    "id": "saac03-0043"
+  },
+  {
+    "domain": "Design High-Performing Architectures",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A genomics workload runs thousands of parallel EC2 instances that all read and write to a shared Amazon EFS file system simultaneously, generating far more total throughput and operations than a single-instance workload would. Which EFS configuration is designed for this highly parallelized access pattern?",
+    "options": [
+      "General Purpose performance mode, which is optimized for the lowest per-operation latency with a single client at a time.",
+      "Bursting Throughput mode only, with General Purpose performance mode, and no changes to performance mode.",
+      "Max I/O performance mode, which scales to higher levels of aggregate throughput and operations per second across a large number of clients accessing the file system concurrently.",
+      "A single EBS Provisioned IOPS volume shared across all instances using Multi-Attach."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>EFS Max I/O performance mode is built to scale to higher levels of aggregate throughput and operations per second when many clients access the file system in parallel</b>, trading a small amount of per-operation latency for much higher parallel scalability, which fits thousands of concurrent instances. General Purpose mode is optimized for the lowest latency per operation and is the right default for latency-sensitive, moderately parallel workloads, but it is not the mode built for this scale of concurrent access. Leaving performance mode as General Purpose and only adjusting throughput mode does not address the concurrency scaling need Max I/O is designed for. EBS Multi-Attach works only within a single Availability Zone with a limited number of instances and is not a shared file system solution for thousands of clients.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/efs/latest/ug/performance.html",
+    "id": "saac03-0044"
+  },
+  {
+    "domain": "Design High-Performing Architectures",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A latency-sensitive API backed by AWS Lambda occasionally shows response-time spikes when a new execution environment must initialize before handling a request, especially right after a traffic increase. Which Lambda configuration reduces this cold-start latency for a predictable baseline of traffic?",
+    "options": [
+      "Increase the Lambda function's timeout setting so cold starts have more time to complete.",
+      "Configure Provisioned Concurrency for the function, which keeps a specified number of execution environments initialized and ready to respond immediately.",
+      "Reduce the function's memory allocation to make each execution environment start faster.",
+      "Switch the function's trigger from API Gateway to an SQS queue to avoid cold starts entirely."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Provisioned Concurrency keeps a specified number of Lambda execution environments pre-initialized</b>, so requests within that baseline are served immediately without waiting for a cold start. Increasing the timeout only allows a slow cold start to run longer; it does not prevent the delay the caller experiences. Reducing memory allocation can actually slow down initialization and execution, since Lambda allocates CPU proportionally to memory. Changing the trigger to SQS does not eliminate cold starts; it just changes what invokes the function, and cold starts can still occur for SQS-triggered invocations after periods of inactivity.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/lambda/latest/dg/provisioned-concurrency.html",
+    "id": "saac03-0045"
+  },
+  {
+    "domain": "Design High-Performing Architectures",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A company needs to process a continuous stream of clickstream events at very high volume, preserve the order of events within each user's session, and allow multiple independent applications to consume and replay the same stream of events for up to 7 days. Which service BEST fits these requirements?",
+    "options": [
+      "Amazon SQS standard queues, which the company will configure with multiple consumers to replay old messages as needed.",
+      "Amazon SQS FIFO queues, since ordering is required and FIFO queues can support unlimited concurrent independent consumer applications replaying history.",
+      "AWS Step Functions, using a state machine to fan out events to multiple consumers with built-in replay.",
+      "Amazon Kinesis Data Streams, using a partition key based on user session to preserve per-session order, with multiple consumer applications reading independently and a configurable retention period for replay."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Kinesis Data Streams preserves order within a shard by partition key, supports very high throughput, and lets multiple independent consumer applications read the same stream at their own pace, with configurable retention up to extended periods for replay</b>, matching every requirement in the scenario. SQS standard queues do not guarantee ordering, and once a message is deleted by one consumer, other consumers cannot independently replay it without extra plumbing. SQS FIFO queues preserve order but are designed around a single logical queue with a much lower throughput ceiling than Kinesis and are not built for multiple independent consumers replaying full history the way Kinesis is. Step Functions orchestrates workflows and state transitions; it is not a high-throughput event streaming and replay service.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/streams/latest/dev/introduction.html",
+    "id": "saac03-0046"
+  },
+  {
+    "domain": "Design High-Performing Architectures",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A DynamoDB table uses order date as its partition key. During checkout events, most write traffic lands on the single partition for the current date, causing throttling even though the table's overall provisioned throughput is not fully used. What is the BEST fix?",
+    "options": [
+      "Redesign the partition key to include a high-cardinality attribute, such as a customer ID or a random suffix, so writes spread evenly across many partitions instead of concentrating on one date value.",
+      "Increase the table's overall provisioned write capacity units without changing the partition key.",
+      "Switch the table to on-demand capacity mode, which removes hot partitions entirely regardless of key design.",
+      "Add a global secondary index on the order date attribute to absorb the extra write traffic."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Choosing a partition key with high cardinality, such as customer ID or a random suffix, spreads writes across many partitions</b> instead of concentrating them on a single date value, which is the root cause of the throttling regardless of overall provisioned capacity. Raising overall provisioned write capacity does not help if most of that capacity sits on partitions other than the single hot one for the current date. On-demand capacity mode scales overall table throughput automatically but does not fix a skewed key design; a poorly chosen partition key can still create a hot partition under on-demand mode. A global secondary index adds its own partition key and write cost; it does not fix the base table's hot partition problem, and would itself likely inherit a similar skew if it also keyed on date.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-partition-key-design.html",
+    "id": "saac03-0047"
+  },
+  {
+    "domain": "Design High-Performing Architectures",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A Lambda function connects directly to an RDS database and scales up to thousands of concurrent executions during traffic spikes, which exhausts the database's maximum connection limit and causes connection errors. Which solution addresses this with the LEAST application code change?",
+    "options": [
+      "Reduce the Lambda function's reserved concurrency to zero so it never scales.",
+      "Rewrite the database schema to support more simultaneous connections.",
+      "Place Amazon RDS Proxy between the Lambda function and the database to pool and share a smaller number of database connections across the many concurrent Lambda executions.",
+      "Switch the database engine to one with no maximum connection limit."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Amazon RDS Proxy sits between the application and the database and pools connections</b>, so thousands of concurrent Lambda executions share a much smaller, efficiently managed pool of actual database connections, with only a connection endpoint change required in the function. Reducing concurrency to zero disables the function entirely, which is not a fix. Rewriting the schema does not change a connection limit, which is a database engine and instance-class setting, not a schema property. No supported relational engine offered by RDS has an unlimited connection count, so switching engines does not solve the underlying scaling mismatch.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-proxy.html",
+    "id": "saac03-0048"
+  },
+  {
+    "domain": "Design High-Performing Architectures",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A tightly coupled HPC workload runs across many EC2 instances that communicate heavily with each other over the network and needs the lowest possible inter-instance network latency and highest network throughput. Which EC2 placement strategy should the team use?",
+    "options": [
+      "A spread placement group, which places each instance on distinct underlying hardware for fault isolation.",
+      "A cluster placement group, which packs instances close together within a single Availability Zone to achieve low-latency, high-throughput networking between them.",
+      "A partition placement group, which spreads instances across logical partitions with separate racks to limit correlated failures.",
+      "No placement group, relying on the default placement of instances across the Region."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>A cluster placement group packs instances close together within a single Availability Zone</b>, minimizing network latency and maximizing throughput between them, which is exactly what a tightly coupled HPC workload with heavy inter-instance communication needs. A spread placement group optimizes for fault isolation by separating instances onto distinct hardware, which increases inter-instance latency rather than minimizing it. A partition placement group is designed for large distributed systems such as Hadoop or Cassandra that need to limit correlated failures across racks, not for minimizing latency between all instances. Leaving instances unplaced across the Region gives no guarantee of proximity and typically results in higher latency for this workload.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html",
+    "id": "saac03-0049"
+  },
+  {
+    "domain": "Design High-Performing Architectures",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A company runs a compute-intensive, horizontally scalable web service on x86-based EC2 instances and wants to improve price-performance for this workload, given that its application and container images already support ARM64 with no code changes required. Which change BEST improves price-performance?",
+    "options": [
+      "Move the workload to instances with more vCPUs of the same x86 processor family.",
+      "Switch to Spot Instances of the same x86 instance family purely for cost reduction, with no consideration of performance.",
+      "Increase the EBS volume size attached to each instance.",
+      "Migrate to AWS Graviton (ARM64) based instances of an equivalent instance family, which typically offer better price-performance than comparable x86 instances for supported workloads."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>AWS Graviton processors are custom-built ARM64 chips that typically deliver better price-performance than comparable x86 instances</b> for workloads that support ARM64, and since the application already supports ARM64 with no code changes needed, migrating instance families to Graviton directly improves price-performance. Simply adding more vCPUs of the same x86 family increases cost roughly in proportion to capacity without necessarily improving the underlying price-performance ratio. Spot Instances reduce cost through interruptible pricing but do not, by themselves, change the underlying price-performance of the compute, and they carry interruption risk that a straightforward price-performance improvement should treat separately. Increasing EBS volume size affects storage capacity, not compute price-performance.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/ec2/latest/instancetypes/instance-types.html",
+    "id": "saac03-0050"
+  },
+  {
+    "domain": "Design High-Performing Architectures",
+    "tag": "Domain 3",
+    "type": "multi",
+    "stem": "A media company uploads very large video files (each 5-50 GB) from offices around the world directly to a single S3 bucket in one AWS Region, and wants to reduce upload time. Which TWO changes improve upload performance for this use case? (Select TWO.)",
+    "options": [
+      "Use the S3 multipart upload API to split each large object into parts that upload in parallel and can be retried individually on failure.",
+      "Enable S3 Transfer Acceleration on the bucket, which routes uploads through nearby CloudFront edge locations onto the AWS backbone network to the bucket's Region.",
+      "Upload each file with a single, non-resumable PUT request regardless of file size.",
+      "Move the bucket's storage class to S3 Glacier Deep Archive before the upload completes to reduce storage cost during transfer.",
+      "Disable the bucket's default encryption to reduce processing overhead during upload."
+    ],
+    "correct": [
+      0,
+      1
+    ],
+    "explanation": "<b>Multipart upload splits a large object into parts that can upload in parallel and be retried independently</b>, which speeds up large transfers and improves resilience to network blips, and <b>Transfer Acceleration routes the upload over the AWS backbone from the nearest edge location</b>, cutting the long-haul internet leg of the trip for offices far from the bucket's Region; combining both gives the biggest improvement for large global uploads. A single non-resumable PUT for a 5-50 GB file is slow and forces a full restart on any failure. Glacier Deep Archive is an archival storage class with slow retrieval and has nothing to do with upload speed. Disabling default encryption does not meaningfully change upload throughput and removes a security control for no performance benefit.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/mpuoverview.html",
+    "id": "saac03-0051"
+  },
+  {
+    "domain": "Design High-Performing Architectures",
+    "tag": "Domain 3",
+    "type": "multi",
+    "stem": "An Application Load Balancer has targets spread unevenly across three Availability Zones, and some targets are consistently handling more concurrent long-running requests than others. Which TWO changes improve even distribution of load across all targets? (Select TWO.)",
+    "options": [
+      "Reduce the number of targets registered in the target group.",
+      "Switch the target group's routing algorithm from round robin to least outstanding requests, which sends new requests to the target with the fewest requests currently in flight.",
+      "Disable target group health checks so unhealthy targets keep receiving traffic.",
+      "Enable cross-zone load balancing so requests are distributed evenly across all registered targets in every Availability Zone rather than only within each zone.",
+      "Switch every target's instance type to the smallest available size."
+    ],
+    "correct": [
+      1,
+      3
+    ],
+    "explanation": "<b>Least outstanding requests routing sends each new request to the target with the fewest requests currently in flight</b>, which handles uneven, long-running requests far better than round robin, since round robin ignores how long each in-flight request is taking, and <b>cross-zone load balancing spreads requests evenly across all registered targets in every Availability Zone</b> instead of only balancing within each zone first, correcting for zones that happen to have fewer targets. Reducing the number of targets does not fix distribution and lowers overall capacity. Disabling health checks risks routing to unhealthy targets and does not address load distribution among healthy ones. Shrinking every target's instance type reduces each target's capacity without changing how requests are distributed among them.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-target-groups.html",
+    "id": "saac03-0052"
   }
 ]
