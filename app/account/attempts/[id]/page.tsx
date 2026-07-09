@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ReviewPastClient } from "./ReviewPastClient";
+import "../../account.css";
 
 export const metadata: Metadata = {
   title: "Attempt review",
@@ -11,7 +12,7 @@ export const metadata: Metadata = {
 export default async function ReviewPastPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   return (
-    <main className="container" style={{ paddingTop: 48, paddingBottom: 48 }}>
+    <main className="pg-wrap">
       <ReviewPastClient id={id} />
     </main>
   );

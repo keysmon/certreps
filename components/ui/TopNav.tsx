@@ -11,9 +11,9 @@ import "./TopNav.css";
  * unavailable (env-less = v1a parity), a "Sign in" ghost button when signed out,
  * and identity + "Sign out" when signed in. The landing page mounts this in place
  * of the layout's AuthButton strip; later tasks adopt it on interior pages too.
- * `active` marks the current nav link (bolder, aria-current) - Catalog is the only link today.
+ * `active` marks the current nav link (bolder, aria-current) - Catalog and My progress today.
  */
-export function TopNav({ active }: { active?: "catalog" }) {
+export function TopNav({ active }: { active?: "catalog" | "progress" }) {
   const { session, available } = useSession();
   const label = session?.user.email ?? (session?.user.user_metadata?.name as string | undefined);
 
@@ -44,6 +44,13 @@ export function TopNav({ active }: { active?: "catalog" }) {
         aria-current={active === "catalog" ? "page" : undefined}
       >
         Catalog
+      </Link>
+      <Link
+        href="/account"
+        className={`tn-link${active === "progress" ? " tn-link-on" : ""}`}
+        aria-current={active === "progress" ? "page" : undefined}
+      >
+        My progress
       </Link>
       {available &&
         (session ? (

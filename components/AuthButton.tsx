@@ -23,6 +23,9 @@ export function AuthButton() {
   if (pathname === "/" || pathname === "/catalog") return null;
   // Cert detail (/aws/<certId>) mounts TopNav too (Task 5).
   if (pathname && /^\/aws\/[^/]+$/.test(pathname)) return null;
+  // The My progress dashboard mounts TopNav (Task 8) - it owns the auth surface there.
+  // Scoped to the exact page: /account/attempts/<id> (review-past) has no TopNav and keeps this strip.
+  if (pathname === "/account") return null;
   // The exam room is distraction-free chrome by design (Task 6): the practice surface has
   // its own slim bar and no auth affordance - signing in mid-exam is not a real flow.
   if (pathname && /^\/aws\/[^/]+\/practice$/.test(pathname)) return null;

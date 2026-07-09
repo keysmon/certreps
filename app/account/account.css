@@ -1,0 +1,73 @@
+/* My Progress dashboard (app/account) - ported from design/redesign/MyProgress.html.
+   Shares the TopNav chrome; the wrap widens the account shell to 1180, and the
+   review-past attempt page inherits that room (Task 8 owns the account-shell width).
+   Class names are pg- prefixed to stay collision-free with the engine/catalog styles. */
+.pg-glow {
+  background:
+    radial-gradient(1200px 560px at 12% -8%, rgba(233, 180, 76, 0.05), transparent 60%),
+    radial-gradient(1000px 560px at 100% -4%, rgba(90, 169, 240, 0.055), transparent 55%);
+}
+.pg-wrap { max-width: 1180px; margin: 0 auto; padding: 30px 34px 90px; }
+
+.pg-eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); font-weight: 500; }
+.pg-h1 { font-size: 34px; font-weight: 800; margin: 10px 0 0; line-height: 1.12; letter-spacing: -0.01em; }
+
+/* Sync banner (signed-out gold prompt / signed-in emerald confirmation). */
+.pg-banner { display: flex; align-items: center; gap: 14px; border-radius: 14px; padding: 14px 18px; margin-top: 18px; }
+.pg-banner.gold { background: var(--gold-soft); border: 1px solid var(--gold-dim); }
+.pg-banner.emerald { background: var(--emerald-soft); border: 1px solid rgba(63, 207, 142, 0.4); }
+.pg-banner .dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.pg-banner .body { flex: 1; min-width: 0; }
+.pg-banner .bt { font-weight: 600; font-size: 14px; }
+.pg-banner .bs { font-family: var(--font-mono); font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+.pg-signout { font-family: var(--font-mono); font-size: 12px; color: var(--gold); cursor: pointer; background: none; border: none; padding: 0; }
+.pg-signout:hover { color: var(--gold-bright); }
+
+.pg-statstrip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin: 22px 0 34px; }
+.pg-stat { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; }
+.pg-stat .sv { font-family: var(--font-display); font-size: 32px; font-weight: 800; line-height: 1; }
+.pg-stat .sl { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); margin-top: 8px; }
+
+.pg-sechead { display: flex; align-items: baseline; gap: 12px; margin-bottom: 14px; }
+.pg-sectitle { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); margin: 0; font-weight: 500; }
+.pg-browse { font-family: var(--font-mono); font-size: 12px; margin-left: auto; }
+
+.pg-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.pg-ccard { position: relative; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; overflow: hidden; display: flex; gap: 18px; align-items: center; }
+.pg-ccard .accent { position: absolute; left: 0; top: 0; bottom: 0; width: 3px; }
+.pg-ccard .info { flex: 1; min-width: 0; }
+.pg-ccard .vn { font-family: var(--font-mono); font-size: 11px; color: var(--muted); display: flex; align-items: center; gap: 7px; }
+.pg-ccard h3 { font-size: 16px; font-weight: 700; margin: 5px 0 3px; line-height: 1.2; }
+.pg-ccard .sub { font-family: var(--font-mono); font-size: 11px; color: var(--faint); }
+.pg-ccard .acts { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+
+.pg-panel { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 8px 20px; }
+.pg-act { display: flex; align-items: center; gap: 14px; padding: 13px 0; border-bottom: 1px solid var(--line); color: inherit; text-decoration: none; }
+.pg-act:last-child { border-bottom: none; }
+.pg-act:hover { color: inherit; background: rgba(132, 170, 208, 0.03); }
+.pg-act .ad { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.pg-act .amode { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 8px; border-radius: 6px; border: 1px solid var(--line-strong); color: var(--muted); white-space: nowrap; }
+.pg-act .an { flex: 1; min-width: 0; font-size: 14px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pg-act .asc { font-family: var(--font-mono); font-size: 13px; font-weight: 600; }
+.pg-act .acount { font-family: var(--font-mono); font-size: 11px; color: var(--faint); }
+.pg-act .awhen { font-family: var(--font-mono); font-size: 11px; color: var(--faint); width: 86px; text-align: right; }
+.pg-act .empty { color: var(--muted); padding: 8px 0; font-size: 14px; }
+
+.pg-empty { text-align: center; padding: 90px 20px; }
+.pg-empty .glyph { width: 64px; height: 64px; border-radius: 16px; background: var(--panel); border: 1px solid var(--line-strong); display: grid; place-items: center; margin: 0 auto; }
+.pg-empty .big { font-family: var(--font-display); font-size: 26px; font-weight: 800; margin: 16px 0 8px; }
+.pg-empty p { max-width: 420px; margin: 0 auto 22px; }
+
+.pg-orphan { font-family: var(--font-mono); font-size: 12px; color: var(--faint); margin: 26px 0 0; }
+
+/* Review-past inherits the 1180 shell but keeps Results at its designed 940 stage width. */
+.pg-wrap .results { max-width: 940px; }
+
+@media (max-width: 900px) {
+  .pg-statstrip { grid-template-columns: repeat(2, 1fr); }
+  .pg-grid2 { grid-template-columns: 1fr; }
+}
+@media (max-width: 560px) {
+  .pg-wrap { padding: 24px 18px 70px; }
+  .pg-act .awhen { display: none; }
+}

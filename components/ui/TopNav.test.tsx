@@ -35,11 +35,19 @@ beforeEach(() => vi.clearAllMocks());
 afterEach(() => vi.clearAllMocks());
 
 describe("TopNav", () => {
-  it("always renders the home logo and Catalog link", () => {
+  it("always renders the home logo, Catalog, and My progress links", () => {
     mockedAvailable.mockReturnValue(false);
     render(<TopNav />);
     expect(screen.getByRole("link", { name: /certreps home/i })).toHaveAttribute("href", "/");
     expect(screen.getByRole("link", { name: "Catalog" })).toHaveAttribute("href", "/catalog");
+    expect(screen.getByRole("link", { name: "My progress" })).toHaveAttribute("href", "/account");
+  });
+
+  it("marks My progress as the current page when active", () => {
+    mockedAvailable.mockReturnValue(false);
+    render(<TopNav active="progress" />);
+    expect(screen.getByRole("link", { name: "My progress" })).toHaveAttribute("aria-current", "page");
+    expect(screen.getByRole("link", { name: "Catalog" })).not.toHaveAttribute("aria-current");
   });
 
   it("shows no auth control when Supabase is unavailable", () => {

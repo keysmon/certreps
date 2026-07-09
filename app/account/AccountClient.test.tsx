@@ -6,9 +6,8 @@ import { getMeta } from "@/lib/bank";
 import type { Attempt } from "@/lib/types";
 
 // The page reaches Supabase only through these two helpers. Held unavailable so `session`
-// resolves to null synchronously (no async auth) and the trend/account surfaces stay hidden -
-// that isolates the multi-cert history grouping, and lets the parity test assert on the
-// ABSENCE of any section heading without a Readiness/Account h3 muddying the query.
+// resolves to null synchronously (no async auth) and the sync banner stays hidden - that
+// isolates the dashboard derivation (stat tiles, continue cards, recent activity, empty state).
 vi.mock("@/lib/supabase/client", () => ({
   getSupabase: vi.fn(() => null),
   supabaseAvailable: vi.fn(() => false),
@@ -41,41 +40,50 @@ function attempt(over: Partial<Attempt>): Attempt {
 
 beforeEach(() => localStorage.clear());
 
-describe("AccountClient multi-cert history", () => {
-  it("renders one headed section per cert when attempts span two certs", async () => {
-    writeAll([
-      attempt({ certId: AIP, attemptId: "aip-1" }),
-      attempt({ certId: UNKNOWN, attemptId: "unk-1" }),
-    ]);
+// The multi-cert section headings of the pre-v1d /account page are gone: the dashboard now renders
+// a stat strip, continue-studying cards, and a recent-activity list (grouping semantics moved into
+// those derivations). These tests are rewritten to the new structure; the welcome-sync effect is
+// unchanged and still verified through its own load path, and removed-cert resilience is preserved
+// as an honest footnote instead of a per-cert "no longer available" card.
+describe("AccountClient dashboard", () => {
+  it("shows the empty state with a catalog CTA when there is no practice", async () => {
     render(<AccountClient welcome={false} />);
-
-    // Both section headings must appear (examCode for the known cert, raw certId for the removed one).
-    const known = await screen.findByText(new RegExp(getMeta().examCode, "i"));
-    const removed = screen.getByText(UNKNOWN);
-    expect(known.tagName).toBe("H3");
-    expect(removed.tagName).toBe("H3");
-    // ...in registry order first, then unknown certs - getAllByRole returns DOM order.
-    const headings = screen.getAllByRole("heading", { level: 3 });
-    expect(headings).toHaveLength(2);
-    expect(headings[0]).toBe(known);
-    expect(headings[1]).toBe(removed);
+    expect(await screen.findByText(/no practice yet/i)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /browse certifications/i })).toHaveAttribute("href", "/catalog");
   });
 
-  it("renders NO section heading when exactly one cert has attempts (visual parity gate)", async () => {
-    writeAll([attempt({ certId: AIP, attemptId: "aip-1" })]);
+  it("renders stat tiles, a continue card, and a recent-activity link for a finished attempt", async () => {
+    writeAll([attempt({ attemptId: "aip-1", finishedAt: 1_700_000_100_000 })]);
     render(<AccountClient welcome={false} />);
 
-    // The single in-progress row proves the history loaded; the parity gate is the h3 absence.
-    await screen.findByText(/in progress/i);
-    expect(screen.queryByRole("heading", { level: 3 })).not.toBeInTheDocument();
+    // Stat strip labels (values are derived - just prove the four tiles render).
+    expect(await screen.findByText("Certs in progress")).toBeInTheDocument();
+    expect(screen.getByText("Questions practiced")).toBeInTheDocument();
+    expect(screen.getByText("Best score")).toBeInTheDocument();
+    expect(screen.getByText("Exam-ready")).toBeInTheDocument();
+
+    // The continue card headlines the cert; the recent-activity row links to its replay.
+    expect(screen.getByRole("heading", { level: 3, name: getMeta().title })).toBeInTheDocument();
+    const replay = screen.getAllByRole("link").find((l) => l.getAttribute("href") === "/account/attempts/aip-1");
+    expect(replay).toBeDefined();
   });
 
-  it("renders a removed-cert section without crashing when a cert left the registry", async () => {
+  it("renders a removed-cert footnote without crashing, never the empty state", async () => {
     writeAll([attempt({ certId: UNKNOWN, attemptId: "unk-1", finishedAt: 1_700_000_100_000 })]);
     render(<AccountClient welcome={false} />);
 
-    // Removed cert -> a distinct "no longer available" card, never the empty-history state or a fake 0%.
     expect(await screen.findByText(/no longer available/i)).toBeInTheDocument();
-    expect(screen.queryByText(/no practice history yet/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/no practice yet/i)).not.toBeInTheDocument();
+  });
+
+  it("shows known-cert cards alongside a footnote when attempts span a removed cert", async () => {
+    writeAll([
+      attempt({ attemptId: "aip-1", finishedAt: 1_700_000_100_000 }),
+      attempt({ certId: UNKNOWN, attemptId: "unk-1", finishedAt: 1_700_000_100_000 }),
+    ]);
+    render(<AccountClient welcome={false} />);
+
+    expect(await screen.findByRole("heading", { level: 3, name: getMeta().title })).toBeInTheDocument();
+    expect(screen.getByText(/1 attempt from certifications no longer available/i)).toBeInTheDocument();
   });
 });
