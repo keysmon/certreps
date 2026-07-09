@@ -580,5 +580,159 @@
     "difficulty": "hard",
     "docUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic.html",
     "id": "scsc03-0034"
+  },
+  {
+    "domain": "Data Protection",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "An application calls AWS KMS to encrypt a 50 MB file. Because KMS cannot directly encrypt data larger than a few KB, the application uses envelope encryption. Which sequence correctly describes how KMS envelope encryption works for this file?",
+    "options": [
+      "The application sends the entire 50 MB file to KMS, which encrypts it directly with the CMK and returns the ciphertext.",
+      "KMS generates a single plaintext data key and stores it permanently inside the CMK's metadata for future decryption.",
+      "The application calls GenerateDataKey; KMS returns a plaintext data key and a copy of that data key encrypted under the CMK; the application uses the plaintext data key to encrypt the file locally, discards the plaintext data key, and stores the encrypted data key alongside the ciphertext for later decryption.",
+      "KMS encrypts the file with the CMK directly, then generates a data key only for auditing purposes and discards it."
+    ],
+    "correct": [2],
+    "explanation": "<b>Envelope encryption</b> works by calling <b>GenerateDataKey</b>, which returns both a plaintext data key and the same data key encrypted under the customer master key (CMK); the application uses the plaintext data key to encrypt the large file locally, since KMS itself only encrypts small payloads up to a few KB directly, immediately discards the plaintext data key from memory, and stores the encrypted data key next to the ciphertext so it can later ask KMS to decrypt just that small encrypted data key and recover the plaintext key to decrypt the file. KMS does not accept a 50 MB payload for direct encryption; the CMK size limit is why envelope encryption exists in the first place. KMS never stores a plaintext data key inside the CMK's metadata; only the CMK itself is retained inside KMS, and encrypted data keys are stored by the caller. KMS does not encrypt the file directly and does not generate a data key purely for auditing; the encrypted data key is the actual key material needed later for decryption.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html",
+    "id": "scsc03-0035"
+  },
+  {
+    "domain": "Data Protection",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "An administrator attaches an IAM policy to a role that grants kms:Decrypt on a specific customer managed KMS key, but the key's key policy does not include any statement granting that role, or the account via IAM policies, permission to use the key. Can the role successfully call kms:Decrypt using that key?",
+    "options": [
+      "Yes, because IAM identity-based policies alone are always sufficient to grant access to any KMS key.",
+      "Yes, because KMS keys, unlike other AWS resources, ignore resource policies entirely and rely solely on IAM.",
+      "No, but only because the role is missing a permission boundary, which is unrelated to the actual cause here.",
+      "No, because a KMS key's key policy is the resource policy that must explicitly allow use of the key, either directly or by delegating to IAM policies via a statement such as allowing the account root to manage permissions via IAM, and without that delegation, an IAM identity-based policy alone cannot grant access to the key."
+    ],
+    "correct": [3],
+    "explanation": "Unlike most AWS resources, a KMS key's <b>key policy is mandatory and acts as the root of trust</b> for that key: unless the key policy grants access directly or explicitly delegates permission management to IAM policies, commonly through a statement granting the account root user administrative rights over the key, which allows IAM policies to also govern access, an IAM identity-based policy alone cannot grant use of the key. Here, the key policy grants nothing and does not delegate to IAM, so the identity-based Allow on kms:Decrypt has no effect and the call fails. IAM identity-based policies are not sufficient by themselves for KMS keys precisely because of this key-policy requirement. KMS keys do not ignore resource policies; the key policy is central to how access is evaluated. A permission boundary is a real IAM concept but is not the actual blocker in this scenario, since the key policy's lack of delegation is what causes the denial regardless of any boundary.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html",
+    "id": "scsc03-0036"
+  },
+  {
+    "domain": "Data Protection",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A company uses both AWS managed KMS keys (such as aws/s3) and customer managed KMS keys across its accounts and wants to understand the default key rotation behavior of each. Which statement is correct?",
+    "options": [
+      "AWS managed keys are automatically rotated by AWS on a fixed one-year schedule that cannot be disabled, while customer managed keys support automatic rotation but it must be explicitly enabled, and is off by default.",
+      "Both AWS managed keys and customer managed keys rotate automatically every 90 days by default, with no way to change the interval.",
+      "Neither AWS managed keys nor customer managed keys ever rotate, since rotating a KMS key would break all previously encrypted data.",
+      "Customer managed keys rotate automatically every year with no option to disable it, while AWS managed keys never rotate."
+    ],
+    "correct": [0],
+    "explanation": "<b>AWS managed keys</b>, the ones AWS creates on your behalf such as aws/s3, are rotated automatically by AWS approximately every year, and you cannot disable this. <b>Customer managed keys</b>, which you create yourself, support automatic annual rotation as an opt-in feature that is off by default, and you can enable or disable it, or rotate on demand. Rotating a KMS key does not break previously encrypted data: KMS retains prior key material as backing key versions, so data encrypted under an older key version can still be decrypted after rotation, which is why rotation is safe to enable. Neither the '90 days for both' nor the 'customer managed keys always auto-rotate while AWS managed keys never do' statements match the actual, documented default behavior of each key type.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/kms/latest/developerguide/rotate-keys.html",
+    "id": "scsc03-0037"
+  },
+  {
+    "domain": "Data Protection",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A company stores objects in S3 and wants AWS to manage both the encryption process and the encryption key entirely, with no way for the company to control key policies, grants, or rotation of that specific key, and no per-object customer-supplied key material to manage. Which S3 server-side encryption option matches this?",
+    "options": [
+      "SSE-C (server-side encryption with customer-provided keys), where the customer supplies and manages the encryption key with every request.",
+      "SSE-S3 (server-side encryption with Amazon S3 managed keys), where AWS fully owns and manages the encryption key with no customer-controlled key policy, grants, or rotation settings.",
+      "SSE-KMS (server-side encryption with AWS KMS keys), where the customer can define key policies, grants, and control rotation on a customer managed KMS key.",
+      "Client-side encryption, where the application encrypts the object before uploading it and manages its own key entirely outside of AWS."
+    ],
+    "correct": [1],
+    "explanation": "<b>SSE-S3</b> uses keys that Amazon S3 itself creates, owns, and manages entirely; there is no customer-controlled key policy, no grants to configure, and rotation happens transparently under AWS's control, matching a request for AWS to fully own the key with zero customer key management. SSE-C requires the customer to supply the actual encryption key with every request, which is the opposite of 'no per-object customer-supplied key material.' SSE-KMS uses a KMS key, AWS managed or customer managed, where a customer managed key does let the customer define key policies, grants, and rotation settings, which the requirement explicitly rules out. Client-side encryption puts key management entirely on the customer's own application, the opposite of what is being asked for.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingEncryption.html",
+    "id": "scsc03-0038"
+  },
+  {
+    "domain": "Data Protection",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A team stores two kinds of secrets: database credentials that must rotate automatically on a schedule with built-in Lambda-based rotation functions for supported databases, and simple application configuration values that change infrequently and do not need rotation. Which pairing of AWS services is the MOST cost-effective and appropriate match?",
+    "options": [
+      "Store both types of secrets in AWS Secrets Manager, since Parameter Store cannot store any secret values.",
+      "Store both types of values in Systems Manager Parameter Store SecureString parameters, since Parameter Store also provides built-in automatic rotation for database credentials.",
+      "Use AWS Secrets Manager for the database credentials, taking advantage of its built-in rotation Lambda functions for supported databases, and use Systems Manager Parameter Store SecureString parameters for the infrequently changing configuration values, which is lower cost and does not need rotation.",
+      "Use Amazon S3 with server-side encryption to store both the database credentials and the configuration values as encrypted objects."
+    ],
+    "correct": [2],
+    "explanation": "<b>AWS Secrets Manager</b> provides built-in, native <b>automatic rotation</b> support, including prebuilt Lambda rotation functions for services like Amazon RDS and Aurora, making it the right fit for credentials that must rotate on a schedule, while <b>Systems Manager Parameter Store SecureString</b> parameters store encrypted values at a lower cost and suit configuration values that change rarely and do not need built-in rotation. Parameter Store does support SecureString encryption via KMS, but it does not provide Secrets Manager's built-in automatic rotation workflow, so it is not an equally suitable replacement for the rotating database credentials. Storing both secret types only in Secrets Manager works technically but costs more for the configuration values that never needed rotation in the first place, so it is not the most cost-effective pairing. Storing credentials as generic encrypted S3 objects provides no rotation workflow, no fine-grained secret versioning, and no native secret-retrieval API, making it a poor fit for either use case.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/secretsmanager/latest/userguide/rotating-secrets.html",
+    "id": "scsc03-0039"
+  },
+  {
+    "domain": "Data Protection",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A company wants to grant a specific application temporary, narrowly scoped permission to use a particular customer managed KMS key for encryption operations, without modifying the key's key policy and without waiting for an IAM policy change to propagate, and wants the permission to be revocable at any time by the grantor. Which KMS mechanism BEST fits this need?",
+    "options": [
+      "Edit the key policy directly to add the application's role, since key policies are the only mechanism KMS supports for delegating access.",
+      "Create a new customer managed key dedicated to this application, since permissions cannot be scoped more narrowly than an entire key.",
+      "Attach an IAM permission boundary to the application's role restricting it to kms:Encrypt only.",
+      "Create a KMS grant that specifies the application's principal, the allowed operations such as Encrypt, and optional constraints, which takes effect without editing the key policy and can be revoked at any time with RevokeGrant."
+    ],
+    "correct": [3],
+    "explanation": "A <b>KMS grant</b> is a mechanism for delegating a specific set of permissions on a customer managed key to a specific principal, with optional constraints, entirely separate from the key policy; grants are commonly used for programmatic, temporary delegation, for example by AWS services acting on a customer's behalf, and can be revoked immediately with <b>RevokeGrant</b> without touching the key policy at all. Editing the key policy directly works but is not the narrowly scoped, easily revocable, no-key-policy-change mechanism the requirement calls for, and key policies are not the only delegation mechanism, since grants exist for exactly this purpose. Creating an entirely new KMS key is unnecessary overhead when a grant can scope permissions on the existing key. An IAM permission boundary constrains what the identity's own policies can grant but does not itself grant access to the KMS key; the key policy or a grant is still required for the identity to use the key at all.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/kms/latest/developerguide/grants.html",
+    "id": "scsc03-0040"
+  },
+  {
+    "domain": "Data Protection",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A team needs a publicly trusted TLS certificate for an Application Load Balancer and a CloudFront distribution, and wants AWS to handle certificate issuance and automatic renewal with no manual certificate management or renewal reminders. Which AWS service BEST fits?",
+    "options": [
+      "AWS Certificate Manager (ACM), which provisions public and private TLS certificates and automatically renews certificates it manages for supported integrated services such as ALB and CloudFront.",
+      "AWS Secrets Manager, which stores TLS private keys as secrets but does not issue or renew certificates.",
+      "Amazon Inspector, which scans workloads for known vulnerabilities but does not issue certificates.",
+      "AWS Key Management Service (KMS), which manages encryption keys but does not issue X.509 TLS certificates."
+    ],
+    "correct": [0],
+    "explanation": "<b>AWS Certificate Manager (ACM)</b> issues publicly trusted TLS/SSL certificates at no additional cost and automatically renews certificates for integrated services like an Application Load Balancer or a CloudFront distribution as long as the certificate remains in use and domain validation stays in place, removing manual renewal work entirely. Secrets Manager can store arbitrary secret values, including private keys, but it is not a certificate authority and does not issue or automatically renew TLS certificates. Amazon Inspector scans for software vulnerabilities and has no certificate issuance capability. AWS KMS manages symmetric and asymmetric encryption keys but does not issue X.509 certificates the way ACM does.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/acm/latest/userguide/acm-overview.html",
+    "id": "scsc03-0041"
+  },
+  {
+    "domain": "Data Protection",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A company encrypts data with a KMS key in us-east-1 and needs to replicate that encrypted data to eu-west-1 so it can be decrypted there using a key with the same key ID and key material, without re-encrypting the data with a different key after replication. Which KMS capability BEST supports this?",
+    "options": [
+      "A KMS alias, which provides a friendly name for a key but does not replicate key material to another Region.",
+      "A KMS multi-Region key, created as a primary key in one Region and replicated as related replica keys in other Regions, sharing the same key material and key ID so ciphertext encrypted under the primary can be decrypted with a replica without re-encryption.",
+      "Cross-Region Replication (CRR) for KMS keys, a native S3 feature that automatically re-encrypts every replicated object under a new, unrelated key in the destination Region.",
+      "AWS Backup, which copies KMS-encrypted resource backups across Regions and automatically decrypts them for storage in plaintext at the destination."
+    ],
+    "correct": [1],
+    "explanation": "A <b>KMS multi-Region key</b> starts as a primary key in one Region and can be replicated as one or more <b>related replica keys</b> in other Regions; the primary and its replicas share the same key ID and underlying key material, though they remain distinct AWS resources with independent key policies and grants, so data encrypted under the primary key can be decrypted using a replica key in another Region without any re-encryption step, which directly matches the requirement. A KMS alias only maps a friendly name to a key ARN within one Region and does not replicate key material anywhere. S3 Cross-Region Replication copies objects between buckets in different Regions and can re-encrypt them under a different, unrelated KMS key at the destination unless multi-Region keys are specifically used, so plain replication by itself does not preserve decryptability under 'the same key ID and key material.' AWS Backup copies backups across Regions but does not store resources in plaintext; it does not eliminate the need for compatible KMS key material at the destination.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/kms/latest/developerguide/multi-region-keys-overview.html",
+    "id": "scsc03-0042"
+  },
+  {
+    "domain": "Data Protection",
+    "tag": "Domain 5",
+    "type": "multi",
+    "stem": "A security team wants to guarantee that a set of S3 buckets can never be made publicly accessible, even if a future bucket policy or object ACL mistakenly grants public access, using account-level and bucket-level controls with no dependency on developers remembering to configure each new bucket correctly. Which TWO controls together BEST achieve this? (Select TWO.)",
+    "options": [
+      "Enable S3 Transfer Acceleration on every bucket, which encrypts data in transit and prevents public access as a side effect.",
+      "Enable S3 Block Public Access at the account level, which overrides any public bucket policy or ACL and applies automatically to every current and future bucket in the account unless explicitly and separately turned off.",
+      "Rely solely on training developers to manually review every bucket policy before deployment, with no automated enforcement.",
+      "Enable S3 Block Public Access at the bucket level for each existing bucket, and also apply it at the account level so any newly created bucket inherits the same public-access block automatically without a separate step.",
+      "Grant s3:PutBucketPolicy only to a single administrator, which prevents any developer from ever needing a bucket policy at all."
+    ],
+    "correct": [1, 3],
+    "explanation": "<b>S3 Block Public Access</b> at the <b>account level</b> overrides any public-granting bucket policy or ACL across every bucket in the account, including buckets created in the future, without relying on each developer to configure it correctly, and applying it consistently at both the account level and on individual buckets closes any gap for buckets that might otherwise be excluded. Transfer Acceleration only speeds up transfers over the CloudFront network and has nothing to do with public access controls. Relying solely on manual developer review is exactly the unenforced, human-dependent process the requirement explicitly wants to avoid. Restricting s3:PutBucketPolicy to one administrator might reduce who can create a policy, but it does not itself block public access if that administrator, or any other permission path such as an object ACL, ever misconfigures a bucket, and it does not automatically apply to future buckets the way account-level Block Public Access does.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-control-block-public-access.html",
+    "id": "scsc03-0043"
   }
 ]
