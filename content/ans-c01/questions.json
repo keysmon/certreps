@@ -345,17 +345,17 @@
     "domain": "Network Implementation",
     "tag": "Domain 2",
     "type": "single",
-    "stem": "A team is implementing IPv6 outbound-only access for a private subnet. After associating an IPv6 CIDR block with the VPC and allocating a /64 IPv6 range to the subnet, which route table entry correctly completes the implementation?",
+    "stem": "A team needs EC2 instances in a private subnet, which has neither a NAT gateway nor an internet gateway, to reach Amazon S3 without their traffic traversing the public internet and without adding any hourly endpoint charge. Which VPC endpoint type and configuration meets this requirement?",
     "options": [
-      "A route for the subnet's own IPv6 CIDR pointing to a NAT gateway.",
-      "A route for 0.0.0.0/0 pointing to the egress-only internet gateway.",
-      "A route for ::/0 pointing to the egress-only internet gateway.",
-      "A route for ::/0 pointing to a standard internet gateway."
+      "An interface VPC endpoint for Amazon S3, which provisions an elastic network interface in the subnet and bills per hour and per gigabyte processed.",
+      "A NAT gateway dedicated to Amazon S3 traffic, with a route for the Amazon S3 prefix list pointing to the NAT gateway.",
+      "A gateway VPC endpoint for Amazon S3, which adds a route to the subnet's route table that targets the endpoint using the AWS-managed Amazon S3 prefix list and carries no hourly or data-processing charge.",
+      "A Direct Connect public virtual interface, which is required for any private access from a VPC to Amazon S3."
     ],
     "correct": [2],
-    "explanation": "Outbound-only IPv6 internet access needs a route for <b>::/0 (all IPv6 destinations) pointing to the egress-only internet gateway</b> in the subnet's route table, alongside the local routes for the VPC's own CIDR blocks. Routing the subnet's own CIDR to a NAT gateway does not make sense for outbound-to-internet traffic, and NAT gateways are IPv4-only besides. 0.0.0.0/0 is the IPv4 default-route syntax, not IPv6. Routing ::/0 to a standard internet gateway would make the subnet's globally routable IPv6 addresses reachable from the internet, defeating the outbound-only requirement.",
+    "explanation": "A <b>gateway VPC endpoint</b> (supported only for Amazon S3 and DynamoDB) adds a route to each selected subnet's route table whose destination is the <b>AWS-managed prefix list for the service</b> and whose target is the endpoint, keeping traffic on the AWS network with no internet gateway or NAT device, and <b>there is no additional charge for gateway endpoints</b>. An interface endpoint for Amazon S3 does exist, but it provisions an elastic network interface and bills per hour and per gigabyte, so it fails the no-hourly-charge requirement. A NAT gateway routes traffic to Amazon S3's public endpoint through an internet gateway and adds hourly and data-processing charges, rather than providing a private, no-cost path. A Direct Connect public virtual interface is for hybrid connectivity from on-premises and is not required for a VPC's own instances to reach Amazon S3.",
     "difficulty": "easy",
-    "docUrl": "https://docs.aws.amazon.com/vpc/latest/userguide/egress-only-internet-gateway.html",
+    "docUrl": "https://docs.aws.amazon.com/vpc/latest/privatelink/gateway-endpoints.html",
     "id": "ansc01-0021"
   },
   {
