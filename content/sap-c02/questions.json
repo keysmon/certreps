@@ -304,7 +304,7 @@
     ],
     "explanation": "<b>AWS Cloud WAN</b> is purpose-built for exactly this problem: it defines the global network, segments, routing, and policy, in one central network policy document and automatically provisions and manages the underlying core network edges and attachments across Regions, removing the manual per-Region Transit Gateway peering mesh. Continuing to add Transit Gateway peering attachments as Regions grow scales the mesh complexity roughly quadratically and keeps routing policy managed separately per Region, worsening the exact problem described. Replacing Transit Gateways with VPC peering removes the transitive routing Transit Gateway already provides and would require even more individual connections. A shared wiki is a documentation convention, not a technical control, and does nothing to centrally enforce or automatically apply the policy.",
     "difficulty": "hard",
-    "docUrl": "https://docs.aws.amazon.com/network-manager/latest/cloudwan/cloudwan-welcome.html",
+    "docUrl": "https://docs.aws.amazon.com/network-manager/latest/cloudwan/what-is-cloudwan.html",
     "id": "sapc02-0016"
   },
   {
@@ -323,7 +323,7 @@
     ],
     "explanation": "<b>Consolidated billing</b> in AWS Organizations shares Reserved Instance and Savings Plan discounts across all linked accounts by default: unused reserved capacity purchased in one account automatically applies to matching, eligible usage in any other linked account in the same organization, with no manual transfer or per-purchase opt-in required. There is no manual RI transfer step needed for this default behavior to work, and Budgets is a spend-alerting tool with no role in how RI or Savings Plan discounts are shared across accounts. Sharing is on by default at the payer level; an account can opt out of sharing its discounts, but sharing does not require every account to individually opt in per purchase before it works.",
     "difficulty": "medium",
-    "docUrl": "https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/ri-sharing.html",
+    "docUrl": "https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/ri-turn-off.html",
     "id": "sapc02-0017"
   },
   {
@@ -399,7 +399,7 @@
     ],
     "explanation": "<b>Aurora Global Database</b> replicates at the storage layer with typical latency under a second between Regions, and its managed failover can promote a secondary Region to a fully read/write cluster in under a minute, meeting both the near-real-time read requirement and the fast cross-region promotion requirement without any application-level replication code. A standard RDS cross-region read replica uses logical replication with lag that can run into seconds or minutes under load, which is not reliably under a second, and its promotion is also slower than Aurora Global Database's managed failover. DynamoDB Global Tables fit a key-value access pattern and accept eventual consistency between Regions, which does not guarantee the roughly one-second cross-region freshness this relational e-commerce platform needs. Two independent clusters kept in sync by application-level dual writes pushes replication correctness, conflict handling, and failover entirely onto the application, which is far more operational overhead than a managed global database.",
     "difficulty": "hard",
-    "docUrl": "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.GlobalDatabase.html",
+    "docUrl": "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-global-database.html",
     "id": "sapc02-0021"
   },
   {
@@ -482,7 +482,7 @@
     "domain": "Design for New Solutions",
     "tag": "Domain 2",
     "type": "multi",
-    "stem": "As part of the warm-standby design above, the team needs Amazon Route 53 to automatically stop sending traffic to the primary Region's endpoint and start sending it to the DR Region's endpoint if the primary becomes unhealthy, with no human intervention. Which TWO Route 53 configurations are required? (Select TWO.)",
+    "stem": "In a warm-standby design with an active primary Region endpoint and a standby DR Region endpoint, the team needs Amazon Route 53 to automatically stop sending traffic to the primary Region's endpoint and start sending it to the DR Region's endpoint if the primary becomes unhealthy, with no human intervention. Which TWO Route 53 configurations are required? (Select TWO.)",
     "options": [
       "A weighted routing policy splitting traffic evenly between the primary and DR Region endpoints at all times.",
       "A geolocation routing policy that routes European users to the DR Region regardless of health.",
@@ -695,19 +695,19 @@
     "domain": "Continuous Improvement for Existing Solutions",
     "tag": "Domain 3",
     "type": "single",
-    "stem": "A company is building a brand-new CI/CD pipeline for a service and has no existing preference for a source repository. An engineer suggests using AWS CodeCommit as the pipeline's source stage. Which statement correctly describes the current state of that option and the recommended path forward?",
+    "stem": "An existing production web application already publishes request-count, latency, and error-rate metrics to Amazon CloudWatch. Today the operations team only learns about elevated error rates when customers complain, and it wants to be notified automatically the moment a key metric crosses a defined threshold, using the metrics it already collects and without building any custom monitoring service. What is the SIMPLEST way to add this?",
     "options": [
-      "AWS CodeCommit stopped onboarding new customers in mid-2024, so a new pipeline should use a third-party source provider such as GitHub or Bitbucket, or Amazon CodeCatalyst, as the CodePipeline source stage instead.",
-      "AWS CodeCommit is the only source provider CodePipeline supports, so it must be used regardless of when the project started.",
-      "AWS CodeCommit was retired entirely in 2024 and no longer works even for existing customers.",
-      "AWS CodeCommit is AWS's newest source-control offering and is the recommended default for all new projects."
+      "Rely on AWS CloudTrail to alert the team, since it records the API activity that reflects application errors.",
+      "Have an engineer watch the CloudWatch dashboard during business hours and raise an incident manually whenever a metric looks high.",
+      "Create Amazon CloudWatch alarms on the existing metrics that publish to an Amazon SNS topic when a threshold is breached, so the team is notified automatically without watching dashboards.",
+      "Enable AWS Config rules to evaluate whether the application's error rate stays within acceptable limits."
     ],
     "correct": [
-      0
+      2
     ],
-    "explanation": "<b>AWS CodeCommit stopped onboarding new customers in mid-2024</b>; existing customers can keep using it, but a brand-new project cannot create a new CodeCommit repository, so the practical recommendation is a third-party provider such as GitHub, GitLab, or Bitbucket, or Amazon CodeCatalyst, connected to CodePipeline as the source stage. CodePipeline supports many source providers beyond CodeCommit, including the third-party providers just named, so CodeCommit was never the only option. CodeCommit was not retired for existing customers; AWS explicitly continues to support current users, it simply closed new sign-ups. Since it is closed to new customers, it is the opposite of a recommended default for a brand-new project.",
+    "explanation": "<b>Amazon CloudWatch alarms</b> watch a metric the application already publishes and, when it crosses a defined threshold, automatically notify an <b>Amazon SNS</b> topic (email, chat, or an incident tool), giving the team immediate, hands-off alerting with no custom monitoring service to build. AWS CloudTrail records management and data-plane API calls for auditing; it does not evaluate application performance metrics or fire threshold-based alerts on an error rate. Having an engineer watch a dashboard is manual, limited to when someone is actually looking, and is exactly the reactive pattern the team wants to replace. AWS Config evaluates whether resource configurations comply with rules; it does not monitor a running application's error-rate or latency metrics, so it cannot alert on a metric-threshold breach.",
     "difficulty": "easy",
-    "docUrl": "https://docs.aws.amazon.com/codepipeline/latest/userguide/welcome.html",
+    "docUrl": "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ConsoleAlarms.html",
     "id": "sapc02-0037"
   },
   {
@@ -878,7 +878,7 @@
     ],
     "explanation": "<b>Systems Manager Patch Manager</b>, paired with maintenance windows, applies patch baselines to instances on an automated schedule across the fleet and reports patch compliance per instance, which replaces the manual, inconsistent process with a scheduled, auditable one. Manually SSH-ing into each of 2,000 instances is the exact ad hoc, unscalable process the team wants to eliminate. Config rules can report which instances are missing patches, but on their own they do not apply patches; they still need Patch Manager (or similar automation) to actually remediate. Rebuilding from a new AMI every time a patch is needed is a heavier, slower process than in-place scheduled patching and still lacks a fleet-wide scheduling and reporting mechanism by itself.",
     "difficulty": "medium",
-    "docUrl": "https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-patch.html",
+    "docUrl": "https://docs.aws.amazon.com/systems-manager/latest/userguide/patch-manager.html",
     "id": "sapc02-0046"
   },
   {
@@ -1015,7 +1015,7 @@
     ],
     "explanation": "<b>AWS Server Migration Service (SMS) was deprecated in 2022</b>; its replacement, <b>AWS Application Migration Service (AWS MGN)</b>, is the current AWS rehost tool, using agent-based continuous block-level replication to keep source servers in sync until a fast, low-risk cutover, which fits an unmodified lift-and-shift under a tight deadline. SMS is not the current recommended tool; it was deprecated and is unavailable to new migrations. AWS MGN is a fully supported, actively developed managed service, not a manual CLI scripting exercise. The tight deadline does not favor a deprecated service; if anything, MGN's continuous replication and fast cutover are better suited to a compressed timeline than SMS's older snapshot-based approach ever was.",
     "difficulty": "easy",
-    "docUrl": "https://docs.aws.amazon.com/mgn/latest/ug/what-is-application-migration-service.html",
+    "docUrl": "https://docs.aws.amazon.com/mgn/latest/ug/what-is-mgn.html",
     "id": "sapc02-0053"
   },
   {
@@ -1053,7 +1053,7 @@
     ],
     "explanation": "A DMS task combining <b>full load with ongoing change data capture (CDC)</b> copies the existing data once and then continuously replicates every new transaction as it happens, so by cutover time the target is caught up to within seconds of the source, and the final cutover pause needed to catch the last few transactions is only a few minutes, matching the tight downtime tolerance. A full-load-only task captures a point-in-time snapshot and misses every transaction that occurs afterward, so orders placed during and after the copy would be lost unless the application stops accepting orders for the entire load. A manual mysqldump import requires a multi-hour maintenance window that far exceeds the few-minutes tolerance, and it also has no ongoing replication to catch changes made during that window. Running two unsynchronized copies and reconciling afterward risks lost or conflicting orders and is not a controlled migration approach at all.",
     "difficulty": "medium",
-    "docUrl": "https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Introduction.ChangeDataCapture.html",
+    "docUrl": "https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Task.CDC.html",
     "id": "sapc02-0055"
   },
   {
@@ -1072,7 +1072,7 @@
     ],
     "explanation": "The <b>AWS Schema Conversion Tool (SCT)</b> is purpose-built to convert schema objects and procedural code such as PL/SQL to the target engine's equivalent, and it produces an assessment report flagging exactly which objects it could not fully automate; <b>AWS DMS</b> then handles the actual data migration, together covering both the code conversion and the data movement in this heterogeneous migration. AWS DMS focuses on migrating and replicating data; it does not convert stored procedures or schema objects between different database engines, that is SCT's job. Rewriting everything by hand with no tooling throws away exactly the automation the team is asking for and is far slower and more error-prone for a large PL/SQL codebase. AWS MGN performs server-level rehost replication for entire servers; it would just move the Oracle server as-is, which does not achieve the goal of migrating away from Oracle to Aurora PostgreSQL at all.",
     "difficulty": "hard",
-    "docUrl": "https://docs.aws.amazon.com/dms/latest/userguide/CHAP_SchemaConversionTool.html",
+    "docUrl": "https://docs.aws.amazon.com/SchemaConversionTool/latest/userguide/CHAP_Welcome.html",
     "id": "sapc02-0056"
   },
   {
@@ -1129,7 +1129,7 @@
     ],
     "explanation": "<b>AWS MGN</b> installs a lightweight replication agent on each source server and continuously replicates block-level changes into a staging area in AWS throughout the weeks before cutover, so when a wave's cutover day arrives, only a short final sync is needed before launching fully configured, cutover-ready instances, which is exactly the low-downtime, wave-based pattern described. CloudFormation StackSets deploy infrastructure-as-code templates across accounts and Regions; they have no mechanism to replicate an existing on-premises server's live disk contents. Amazon Data Lifecycle Manager automates snapshot schedules for EBS volumes that already exist in AWS; it does not perform the initial replication of on-premises servers into AWS at all. Elastic Beanstalk deploys application code onto a managed platform; it does not replicate or migrate entire existing servers, disks, and OS state.",
     "difficulty": "medium",
-    "docUrl": "https://docs.aws.amazon.com/mgn/latest/ug/what-is-application-migration-service.html",
+    "docUrl": "https://docs.aws.amazon.com/mgn/latest/ug/what-is-mgn.html",
     "id": "sapc02-0059"
   },
   {
@@ -1186,7 +1186,7 @@
     ],
     "explanation": "<b>AWS Storage Gateway's File Gateway</b> configuration presents a local NFS or SMB mount that applications keep using unchanged, while it asynchronously uploads data to S3 in the background and caches frequently accessed files locally for low-latency reads, which is exactly the gradual, non-disruptive bridge the company needs while it migrates dependent applications over time. Glacier Deep Archive is built for infrequently accessed archival data with retrieval times measured in hours; it is not a live, actively mounted file system applications can read and write during a transition. AWS DataSync is well suited to a scheduled or one-time bulk data transfer, but it does not provide the ongoing, locally mounted file interface applications need to keep operating unchanged during the transition. FSx for Lustre is optimized for high-performance, high-throughput computing workloads such as HPC and machine learning training; it is not designed as an on-premises-to-S3 gradual migration bridge.",
     "difficulty": "medium",
-    "docUrl": "https://docs.aws.amazon.com/storagegateway/latest/userguide/WhatIsStorageGateway.html",
+    "docUrl": "https://docs.aws.amazon.com/filegateway/latest/files3/what-is-file-s3.html",
     "id": "sapc02-0062"
   },
   {
@@ -1238,14 +1238,14 @@
       "Refactor, using AWS Application Migration Service to convert every VM into a redesigned, cloud-native microservices architecture.",
       "Retire, decommissioning the VMs entirely instead of moving them anywhere.",
       "Repurchase, replacing the VMware environment with an unrelated commercial SaaS product.",
-      "Relocate, using VMware Cloud on AWS to move the existing VMware VMs onto AWS infrastructure with the same hypervisor and tooling, unconverted."
+      "Relocate, using Amazon Elastic VMware Service (Amazon EVS) to run the existing VMware Cloud Foundation environment natively on AWS with the same hypervisor and tooling and migrate the VMs unconverted."
     ],
     "correct": [
       3
     ],
-    "explanation": "<b>Relocate</b> is the migration strategy for moving infrastructure, most commonly VMware-based virtual machines, to the cloud without changing the hypervisor, converting VM formats, or modifying the application, and <b>VMware Cloud on AWS</b> is the AWS offering built for exactly this: it runs the same VMware SDDC stack on AWS infrastructure so existing vSphere tools, licenses, and VM formats carry over unchanged. Refactor means redesigning the application's architecture, the opposite of the no-conversion, no-redesign move described here. Retire means decommissioning a workload that is no longer needed, not moving hundreds of active VMs to AWS. Repurchase means replacing the workload with a different commercial product, which does not apply when the goal is to keep running the exact same VMware-based VMs.",
+    "explanation": "<b>Relocate</b> is the migration strategy for moving infrastructure, most commonly VMware-based virtual machines, to the cloud without changing the hypervisor, converting VM formats, or modifying the application, and <b>Amazon Elastic VMware Service (Amazon EVS)</b> is the AWS-native offering built for exactly this: it runs a VMware Cloud Foundation environment directly on AWS so existing vSphere tools and licenses carry over and the VMs migrate without conversion. Refactor means redesigning the application's architecture, the opposite of the no-conversion, no-redesign move described here. Retire means decommissioning a workload that is no longer needed, not moving hundreds of active VMs to AWS. Repurchase means replacing the workload with a different commercial product, which does not apply when the goal is to keep running the exact same VMware-based VMs.",
     "difficulty": "medium",
-    "docUrl": "https://aws.amazon.com/vmware/",
+    "docUrl": "https://docs.aws.amazon.com/evs/latest/userguide/what-is-evs.html",
     "id": "sapc02-0065"
   }
 ]
