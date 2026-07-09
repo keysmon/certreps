@@ -135,5 +135,125 @@
     "difficulty": "hard",
     "docUrl": "https://docs.aws.amazon.com/guardduty/latest/ug/kubernetes-protection.html",
     "id": "scsc03-0008"
+  },
+  {
+    "domain": "Incident Response",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A security analyst confirms that an EC2 instance is compromised and is actively communicating with a known command-and-control server. The team wants to stop the instance from making further outbound connections and prevent lateral movement, while preserving its running state, memory, and attached volumes for later forensic analysis. Which containment action is BEST?",
+    "options": [
+      "Terminate the instance immediately to stop the malicious activity.",
+      "Reboot the instance to clear the malicious process from memory.",
+      "Detach the instance's IAM instance profile only, leaving its security group and network access unchanged.",
+      "Isolate the instance by replacing its security group with one that denies all inbound and outbound traffic (or allows only traffic to a forensic tooling host), keeping the instance running so its memory and volumes remain intact for investigation."
+    ],
+    "correct": [3],
+    "explanation": "Replacing the compromised instance's <b>security group</b> with a quarantine group that denies all inbound and outbound traffic (or permits only a narrow forensic path) immediately stops further command-and-control communication and lateral movement while leaving the instance running, which preserves volatile memory state and the attached EBS volumes for forensic imaging. Terminating the instance destroys memory contents and can trigger deletion of volumes, losing evidence. Rebooting clears running processes and in-memory artifacts that a responder needs to analyze. Detaching only the instance profile stops further AWS API abuse from that instance's role but does nothing to stop network-based command-and-control communication or lateral movement over the network, so it is an incomplete containment step by itself.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html",
+    "id": "scsc03-0009"
+  },
+  {
+    "domain": "Incident Response",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "During an incident, a security team must preserve forensic evidence from a compromised EC2 instance's attached EBS volume without shutting down or otherwise disturbing the running instance, so the evidence can be analyzed later in an isolated forensic account. Which action BEST achieves this while maintaining a defensible chain of custody?",
+    "options": [
+      "Create an EBS snapshot of the volume while the instance continues running, then copy the snapshot to a dedicated, access-restricted forensic account for analysis.",
+      "Attach an Amazon S3 bucket policy to the compromised instance's root volume to prevent further writes.",
+      "Stop the instance so its EBS volumes are no longer changing, then analyze the volume in place within the production account.",
+      "Enable EBS encryption on the volume after the incident to protect the evidence going forward."
+    ],
+    "correct": [0],
+    "explanation": "Taking an <b>EBS snapshot</b> captures a point-in-time copy of the volume without stopping the instance, and copying that snapshot into a separate, tightly access-controlled <b>forensic account</b> isolates the evidence from the potentially compromised production environment and establishes a clear, auditable chain of custody for later analysis. An S3 bucket policy has no effect on an EBS volume, since the two are different storage services. Stopping the instance loses volatile memory contents that are often critical to the investigation, and analyzing evidence in place in the production account risks further tampering and weakens chain of custody. Enabling encryption after the fact does not preserve or transfer the evidence and does not address the immediate forensic requirement.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/ebs/latest/userguide/ebs-snapshots.html",
+    "id": "scsc03-0010"
+  },
+  {
+    "domain": "Incident Response",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A security team discovers that an IAM user's long-term access key was committed to a public GitHub repository. Which sequence of actions is the BEST immediate response?",
+    "options": [
+      "Wait for GuardDuty to raise a finding before taking any action, since manual intervention could interfere with automated detection.",
+      "Immediately deactivate or delete the exposed access key to cut off further use, then review CloudTrail event history for that key to identify any unauthorized actions already taken, and rotate any credentials or secrets the compromised principal could have accessed.",
+      "Delete the IAM user entirely without reviewing any activity, since the user can simply be re-created later.",
+      "Change the account's root user password, since the root user is the primary concern in an access-key exposure."
+    ],
+    "correct": [1],
+    "explanation": "The immediate priority is to <b>cut off further use of the exposed key</b> by deactivating or deleting it, then use <b>CloudTrail event history</b> to determine exactly what the key was used for during the exposure window, followed by rotating any downstream credentials or secrets the compromised principal could reach, since the blast radius may extend beyond the key itself. Waiting for GuardDuty is passive and leaves the key usable in the meantime, and GuardDuty may not even generate a finding depending on how the key is used. Deleting the user without any investigation forfeits the chance to learn what already happened and to scope the damage. The account root user password is unrelated to an IAM user's own access key, and rotating it does nothing to contain this specific exposure.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html",
+    "id": "scsc03-0011"
+  },
+  {
+    "domain": "Incident Response",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A security team wants a fully automated response so that whenever GuardDuty generates a high-severity finding indicating a compromised EC2 instance, a quarantine security group is applied to that instance within seconds, with no analyst having to manually trigger the remediation. Which architecture BEST achieves this?",
+    "options": [
+      "Configure a scheduled AWS Config rule that evaluates GuardDuty findings once every 24 hours and reports noncompliant instances.",
+      "Have analysts poll the GuardDuty console every few minutes and manually apply the quarantine security group when they see a new high-severity finding.",
+      "Create an Amazon EventBridge rule that matches high-severity GuardDuty findings and targets a Lambda function that automatically applies the quarantine security group to the affected instance.",
+      "Enable GuardDuty S3 Protection so that S3 automatically blocks all public access whenever any finding is generated."
+    ],
+    "correct": [2],
+    "explanation": "GuardDuty findings are delivered as events to <b>Amazon EventBridge</b>; an <b>EventBridge rule</b> can match on finding severity or type and invoke a <b>Lambda function</b> that automatically reassigns the quarantine security group to the affected instance, achieving near real-time, fully automated containment with no human trigger. A daily Config rule check is both far too slow for a compromised instance and is not how GuardDuty findings are consumed for automated response. Manual console polling is explicitly the un-automated approach the requirement rules out. Enabling S3 Protection only adds an S3-focused GuardDuty data source and does not perform any EC2 remediation action.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_findings_eventbridge.html",
+    "id": "scsc03-0012"
+  },
+  {
+    "domain": "Incident Response",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A compromised IAM role's temporary credentials, issued via sts:AssumeRole, are still valid for another 45 minutes and the attacker is actively using them. Deleting or modifying the role's trust policy will not invalidate credentials already issued. Which action immediately invalidates all active sessions issued from this role before their natural expiration?",
+    "options": [
+      "Delete the IAM role entirely, since AWS automatically invalidates any credentials issued from a deleted role within seconds.",
+      "Rotate the value of the role's trust policy ExternalId, since active sessions revalidate the trust policy on every API call.",
+      "Wait for the credentials to expire naturally, since IAM has no way to revoke temporary credentials early.",
+      "Attach or update an inline policy on the role that denies all actions for principals whose credentials were issued before the current time, using the aws:TokenIssueTime condition key, which immediately invalidates every active session from that role regardless of when it expires."
+    ],
+    "correct": [3],
+    "explanation": "IAM lets you <b>revoke active sessions</b> for a role by attaching a policy that denies access based on the <b>aws:TokenIssueTime</b> condition key, set to the current time; because every API call made with temporary credentials is evaluated against the role's policies at request time, this immediately blocks all sessions issued before that point, regardless of their remaining validity window. Deleting the role does not carry a documented guarantee of instantly invalidating already-issued credentials on every call, and it also removes the role for any legitimate future use, which is disruptive. The ExternalId condition on a trust policy is checked only during the AssumeRole call itself, not on every subsequent action taken with the resulting credentials, so changing it has no effect on sessions already established. Waiting for natural expiration leaves the attacker's active session usable for the full remaining window, which the scenario says is unacceptable.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_control-access_disable-perms.html",
+    "id": "scsc03-0013"
+  },
+  {
+    "domain": "Incident Response",
+    "tag": "Domain 2",
+    "type": "multi",
+    "stem": "An IAM user's long-term access key appears in a public code repository. Which TWO actions should the incident responder take FIRST, before any further investigation? (Select TWO.)",
+    "options": [
+      "Immediately deactivate or delete the exposed access key so it can no longer be used to authenticate.",
+      "Enable S3 Transfer Acceleration on all buckets in the account to speed up the eventual audit.",
+      "Wait until the next scheduled access review to decide whether the key should be rotated.",
+      "Permanently disable AWS CloudTrail logging in the affected Region to reduce noise while investigating.",
+      "Review CloudTrail event history for every API call made with the exposed key during the exposure window, to scope what the attacker may have accessed or changed."
+    ],
+    "correct": [0, 4],
+    "explanation": "The two immediate priorities are to <b>deactivate or delete the exposed key</b> so it stops working right away, and to <b>review CloudTrail event history</b> for that key to scope exactly what was accessed or changed during the exposure window, which together stop the bleeding and tell the responder what to investigate and remediate next. Enabling S3 Transfer Acceleration has nothing to do with containment or investigation. Waiting for a scheduled review leaves a known-compromised key active far too long. Disabling CloudTrail logging is actively harmful: it removes the very audit trail the response depends on and can itself look like an attempt to cover tracks.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html",
+    "id": "scsc03-0014"
+  },
+  {
+    "domain": "Incident Response",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A security team triages Security Hub findings manually today. They want specific findings, when an analyst selects them in the console, to automatically kick off a predefined SSM Automation runbook that isolates the affected resource, without the analyst needing to switch to a different tool or copy any details by hand. Which Security Hub capability enables this?",
+    "options": [
+      "A Security Hub custom action, which sends the selected findings as an event to Amazon EventBridge, where a rule can target an SSM Automation runbook, directly or via Lambda, to execute the response.",
+      "Security Hub finding aggregation, which consolidates findings from multiple Regions into one Region.",
+      "Security Hub consolidated control findings, which reduce duplicate findings for the same control across standards.",
+      "A Security Hub insight, which is a saved, grouped view of findings by a chosen attribute."
+    ],
+    "correct": [0],
+    "explanation": "A Security Hub <b>custom action</b> lets an analyst select one or more findings in the console and send them as an event to <b>Amazon EventBridge</b>; an EventBridge rule matching that custom action event can target an <b>SSM Automation runbook</b>, directly or through a Lambda function, to execute the isolation response, all without leaving the Security Hub console or copying data manually. Finding aggregation only centralizes findings across Regions and does not trigger any response. Consolidated control findings reduce duplicate findings for the same underlying check, a data-hygiene feature unrelated to triggering automation. An insight is a saved, grouped query for reporting and does not execute any action.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-cwe-custom-actions.html",
+    "id": "scsc03-0015"
   }
 ]
