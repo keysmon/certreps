@@ -72,7 +72,7 @@
     ],
     "explanation": "A CodeDeploy AppSpec for Lambda supports <b>PreTraffic and PostTraffic hook functions</b>; the PreTraffic hook runs before any live traffic is shifted, and reporting a failure status from it aborts the deployment before customers are affected. A smaller canary window still exposes some percentage of real traffic to an untested version, which is exactly what the team wants to avoid entirely. A CloudWatch alarm on Errors only reacts after traffic, and therefore real errors, has already occurred. Publishing to $LATEST bypasses CodeDeploy's traffic-shifting and hook mechanism altogether.",
     "difficulty": "medium",
-    "docUrl": "https://docs.aws.amazon.com/lambda/latest/dg/automating-updates-to-serverless-apps.html",
+    "docUrl": "https://docs.aws.amazon.com/codedeploy/latest/userguide/reference-appspec-file-structure-hooks.html",
     "id": "dopc02-0004"
   },
   {
@@ -167,7 +167,7 @@
     ],
     "explanation": "<b>CDK Pipelines</b> is purpose-built for this: bootstrapping each target account and Region creates the trust relationships CDK needs, the pipeline definition lives in code alongside the application, and a <b>self-mutation stage</b> updates the pipeline's own CodePipeline and CodeBuild resources automatically whenever the pipeline construct changes, without hand-maintained cross-account roles. Three independent templates triggered manually reintroduce the manual, error-prone process CDK Pipelines exists to remove. Long-term access keys in environment variables violate least privilege and are unnecessary since CDK Pipelines uses assumed roles. Skipping dev and test does not satisfy the stated requirement of deploying to all three accounts.",
     "difficulty": "hard",
-    "docUrl": "https://docs.aws.amazon.com/cdk/v2/guide/cdk_pipeline.html",
+    "docUrl": "https://docs.aws.amazon.com/cdk/v2/guide/cdk-pipeline.html",
     "id": "dopc02-0009"
   },
   {
@@ -245,7 +245,7 @@
     ],
     "explanation": "<b>Service-managed permissions with trusted access to AWS Organizations enabled</b> let StackSets create and manage the required IAM roles automatically, and targeting an OU with automatic deployment ensures accounts that join later receive the stack instance with no manual step. Self-managed permissions would work but require creating and maintaining the administration and execution roles by hand in every account, exactly the manual overhead the team wants to avoid. SCPs only set permission guardrails; they cannot deploy or create resources. Independent per-account stacks updated manually do not scale and reintroduce the drift and effort StackSets exists to remove.",
     "difficulty": "medium",
-    "docUrl": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-associate-stackset-with-organization.html",
+    "docUrl": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-associate-stackset-with-org.html",
     "id": "dopc02-0013"
   },
   {
@@ -321,7 +321,7 @@
     ],
     "explanation": "A <b>State Manager association</b> is built for exactly this: it applies a specified configuration document to targeted instances on a recurring schedule and continuously reports and re-enforces compliance, self-healing drift without operator action. A one-time Automation runbook execution only remediates once and depends on someone remembering to re-run it, which does not meet the continuous, unattended goal. Session Manager gives interactive shell access but is a manual, one-instance-at-a-time action, not fleet-wide automation. Inventory only collects and reports current state; it does not apply or enforce any configuration.",
     "difficulty": "medium",
-    "docUrl": "https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-state-manager.html",
+    "docUrl": "https://docs.aws.amazon.com/systems-manager/latest/userguide/state-manager-about.html",
     "id": "dopc02-0017"
   },
   {
@@ -342,7 +342,7 @@
     ],
     "explanation": "<b>MaxConcurrentPercentage/Count controls how many accounts and Regions StackSets works on simultaneously</b>, giving the parallelism the team wants for a fast rollout, and <b>FailureTolerancePercentage/Count sets the failure threshold that automatically halts the operation</b> before it continues to remaining targets, together delivering a fast but safe deployment. CAPABILITY_NAMED_IAM only acknowledges that a template creates named IAM resources; it has nothing to do with retries or failure thresholds. Disabling drift detection hides configuration drift after the fact and does not stop a failing rollout in progress. A purely sequential, manually reviewed rollout removes the parallelism the team wants and provides no automated stop condition of its own.",
     "difficulty": "hard",
-    "docUrl": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-options.html",
+    "docUrl": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/concurrency-mode.html",
     "id": "dopc02-0018"
   },
   {
@@ -553,7 +553,7 @@
     ],
     "explanation": "<b>CloudWatch Logs Insights</b> runs ad hoc, interactive queries directly against existing log data across multiple log groups, exactly what a one-off historical search for a specific error message needs. A metric filter only starts counting matches from the moment it is created going forward; it does not retroactively search log data that was already ingested. CloudTrail records AWS API calls and management/data events, not arbitrary application log text. X-Ray stores trace segments describing request timing and errors, not free-form application log messages.",
     "difficulty": "easy",
-    "docUrl": "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Logs-Insights.html",
+    "docUrl": "https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/AnalyzingLogData.html",
     "id": "dopc02-0029"
   },
   {
@@ -648,7 +648,7 @@
     ],
     "explanation": "<b>CloudWatch ServiceLens</b> ties X-Ray traces, CloudWatch metrics, and CloudWatch Logs together, using embedded trace IDs in log entries, into one service map and drill-down view, so an engineer can move from a slow trace segment straight to the correlated logs and metrics without hand-matching IDs across consoles. Manually copying a trace ID into a separate Logs Insights query works but is exactly the manual correlation ServiceLens is built to remove. X-Ray by itself shows trace and segment data; it does not natively pull in CloudWatch Logs entries or container metrics without ServiceLens tying them together. AWS Config tracks resource configuration and compliance history, not a live, request-level correlation between traces, logs, and metrics.",
     "difficulty": "hard",
-    "docUrl": "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ServiceLens.html",
+    "docUrl": "https://docs.aws.amazon.com/xray/latest/devguide/xray-console-servicemap.html",
     "id": "dopc02-0034"
   },
   {
@@ -724,7 +724,7 @@
     ],
     "explanation": "<b>AWS Health events, routed through an EventBridge rule to AWS Chatbot</b>, deliver account-specific operational and scheduled-maintenance issues directly into the team's chat channel automatically, including issues that have not yet caused a visible metric impact. The public status page shows broad, account-agnostic service health and requires someone to check it manually. A CloudWatch alarm only reacts once the AWS-side issue's downstream effects already show up in the team's own metrics, and gives no advance notice of scheduled maintenance. Manually posting when someone happens to notice a banner is unreliable and not automated.",
     "difficulty": "medium",
-    "docUrl": "https://docs.aws.amazon.com/health/latest/ug/getting-started-health-eventbridge.html",
+    "docUrl": "https://docs.aws.amazon.com/health/latest/ug/creating-event-bridge-events-rule-for-aws-health.html",
     "id": "dopc02-0038"
   },
   {
@@ -840,7 +840,7 @@
     ],
     "explanation": "A cross-account role with a scoped, read-only policy and a unique <b>ExternalId condition in the trust policy</b> lets the vendor assume temporary credentials with no long-term secret to manage, and the ExternalId specifically defends against the confused-deputy problem where the vendor's own role could otherwise be tricked into acting on the wrong customer's behalf. Sharing a long-term access key is exactly the durable, hard-to-rotate credential the requirement wants to avoid. Trusting the vendor's account with full administrator access and no ExternalId is both over-broad and leaves the confused-deputy risk completely unaddressed. Using root account credentials for any delegated access, vendor or otherwise, violates the standard rule against using the root account for day-to-day or delegated operations.",
     "difficulty": "medium",
-    "docUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-user_externalid.html",
+    "docUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_common-scenarios_third-party.html",
     "id": "dopc02-0044"
   },
   {
