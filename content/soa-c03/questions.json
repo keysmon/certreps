@@ -1,0 +1,272 @@
+[
+  {
+    "domain": "Monitoring, Logging, Analysis, Remediation, and Performance Optimization",
+    "tag": "Domain 1",
+    "type": "multi",
+    "stem": "A CloudOps team wants a single CloudWatch alarm that only enters ALARM state when both an ALB 5xx-error alarm and at least two of three per-instance CPU alarms are simultaneously in ALARM, so the on-call engineer is paged only for a real correlated incident instead of every transient per-instance blip. The individual alarms must keep evaluating and recording their own history for diagnostics. Which TWO statements about meeting this requirement with a composite alarm are correct? (Select TWO.)",
+    "options": [
+      "A composite alarm combines other alarms using an alarm rule expression built from AND, OR, and NOT operators over ALARM() functions referencing each underlying alarm.",
+      "Creating a composite alarm automatically deletes the underlying alarms it references, so only the composite alarm remains for diagnostics.",
+      "The underlying alarms keep evaluating independently and retain their own state history after being referenced by a composite alarm.",
+      "A composite alarm can reference at most two underlying alarms and cannot express a rule like at least two of three.",
+      "Composite alarms evaluate on a fixed one-minute period regardless of the underlying alarms, so every per-instance alarm must be changed to match."
+    ],
+    "correct": [
+      0,
+      2
+    ],
+    "explanation": "A <b>composite alarm</b> is built from an alarm rule expression that combines other alarms' ALARM() states with AND, OR, and NOT, so it can express exactly a rule like the 5xx alarm AND at least two of the three CPU alarms. The <b>underlying alarms keep evaluating and recording their own history</b> unchanged, so they stay useful for diagnostics and dashboards. Creating a composite alarm does not delete or modify the alarms it references. A composite alarm can reference many underlying alarms, not just two, which is exactly what makes at-least-two-of-three expressions possible. A composite alarm has no fixed one-minute evaluation period of its own; it reacts to the state of the alarms in its rule.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Create_Composite_Alarm.html",
+    "id": "soac03-0001"
+  },
+  {
+    "domain": "Monitoring, Logging, Analysis, Remediation, and Performance Optimization",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A support engineer must find the five endpoints that returned the most HTTP 500 responses across a fleet of application servers in the last hour, using the structured JSON access logs already stored in a CloudWatch Logs log group. Which approach requires the LEAST setup?",
+    "options": [
+      "Run a CloudWatch Logs Insights query that parses the log fields, filters on status 500, and uses stats count() by endpoint with a sort and limit.",
+      "Export the log group to Amazon S3, load it into Amazon Athena with an AWS Glue crawler, and run a SQL GROUP BY query.",
+      "Create a separate CloudWatch Logs metric filter for every possible endpoint value, then compare each metric's alarm history.",
+      "Connect to each application server with Session Manager and grep the local log file on every instance by hand."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>CloudWatch Logs Insights</b> queries structured or unstructured log data directly with fields, filter, and stats, so a single ad hoc query returns the top five endpoints with no extra infrastructure. Exporting to S3 and standing up a Glue crawler plus Athena is a much heavier pipeline for a one-time ranking. A metric filter per endpoint requires knowing every endpoint value in advance and does not produce a ranked top-N. Grepping each server manually over Session Manager does not scale across a fleet and is not ad hoc query capable.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/AnalyzingLogData.html",
+    "id": "soac03-0002"
+  },
+  {
+    "domain": "Monitoring, Logging, Analysis, Remediation, and Performance Optimization",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "An application team wants to publish a custom business metric, checkout_latency_ms, from application code running on ECS tasks, using the same structured JSON log line the application already writes to stdout, and without adding a separate CloudWatch PutMetricData API call in the request path. Which approach BEST meets this need?",
+    "options": [
+      "Call the CloudWatch PutMetricData API directly from the checkout code on every request.",
+      "Write the metric using the CloudWatch embedded metric format in the existing structured log line, and let the CloudWatch agent or Lambda extension extract it into a CloudWatch metric automatically.",
+      "Store the latency value only in a DynamoDB table and build a nightly batch job to compute an average.",
+      "Increase the CloudWatch Logs retention period so the value can be found later by scanning the raw logs."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "The <b>CloudWatch embedded metric format (EMF)</b> lets an application emit metrics as part of the structured log line it already writes; the CloudWatch agent or the Lambda extension parses the EMF metadata block and creates a real CloudWatch metric with no direct API call in the hot path. Calling PutMetricData directly is exactly the extra call the team wants to avoid. Writing to DynamoDB and batching a nightly average does not create a CloudWatch metric available for real-time alarms or dashboards. Longer log retention only keeps raw logs around longer; it does not create a metric.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/publishingMetrics.html",
+    "id": "soac03-0003"
+  },
+  {
+    "domain": "Monitoring, Logging, Analysis, Remediation, and Performance Optimization",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A CloudOps team wants to know within minutes when a customer-facing login page becomes unreachable or its response time degrades, even during low-traffic overnight hours when real user requests are too sparse to produce a meaningful CloudWatch alarm from actual traffic metrics. Which approach BEST provides this proactive signal?",
+    "options": [
+      "Enable AWS X-Ray tracing on the login service and review the collected traces the next business day.",
+      "Create a CloudWatch Logs metric filter on the login service's error logs.",
+      "Create a CloudWatch Synthetics canary that runs a scripted login flow on a fixed schedule from outside the account and alarms on failures or elevated duration.",
+      "Enable Amazon GuardDuty and create a CloudWatch alarm on any HIGH severity finding."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "A <b>CloudWatch Synthetics canary</b> runs a scripted flow on a schedule regardless of real user traffic, so it produces a steady, proactive availability and latency signal even overnight. Reviewing X-Ray traces the next business day is reactive, not a near-real-time signal. A metric filter on error logs still depends on real requests occurring to generate log lines, which is exactly what's sparse overnight. GuardDuty detects security threats, not login-page availability or latency, so it would not surface this kind of degradation.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries.html",
+    "id": "soac03-0004"
+  },
+  {
+    "domain": "Monitoring, Logging, Analysis, Remediation, and Performance Optimization",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "An application writes the string OutOfMemoryError to its CloudWatch Logs log group whenever a worker process crashes, but no CloudWatch metric tracks this event today. The team wants an alarm that notifies an SNS topic within a few minutes of the tenth occurrence in a 5-minute window, without changing the application code. Which combination of steps accomplishes this?",
+    "options": [
+      "Enable CloudWatch cross-account observability so the log data streams to a separate monitoring account.",
+      "Create an AWS Config rule that evaluates the log group's retention setting and reports noncompliant resources.",
+      "Turn on CloudWatch Application Insights for the log group and wait for its automated dashboard to appear.",
+      "Create a CloudWatch Logs metric filter matching the pattern OutOfMemoryError, publish it as a custom metric, then create a CloudWatch alarm on that metric with a threshold of 10 over a 5-minute period and an SNS alarm action."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "A <b>CloudWatch Logs metric filter</b> turns a matching log pattern into a custom metric with no code change, and a standard <b>CloudWatch alarm</b> on that metric with an SNS action delivers the threshold-based notification the team wants. Cross-account observability changes where data can be viewed, not whether an alarm fires on a log pattern. An AWS Config rule evaluates resource configuration, such as retention settings, not log content. Application Insights builds an automated dashboard and some baseline alarms for a detected stack, but it does not create a targeted alarm on a specific custom error string on demand.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/MonitoringLogData.html",
+    "id": "soac03-0005"
+  },
+  {
+    "domain": "Monitoring, Logging, Analysis, Remediation, and Performance Optimization",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A security-conscious CloudOps team wants any Amazon EC2 instance that transitions to the running state without a required CostCenter tag to be automatically stopped within seconds, with no human review step and no scheduled polling job. Which design BEST meets this requirement?",
+    "options": [
+      "Create an EventBridge rule that matches the EC2 instance state-change event for the running state, and target a Lambda function that checks the instance's tags and stops it if CostCenter is missing.",
+      "Schedule an AWS Config rule evaluation to run once every 24 hours and stop noncompliant instances at the next evaluation.",
+      "Create a CloudWatch alarm on the EC2 StatusCheckFailed metric and configure an EC2 action to stop the instance.",
+      "Enable AWS Trusted Advisor's cost checks and review the weekly email report for untagged instances."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "EC2 publishes an <b>instance state-change event</b> the moment an instance reaches running, so an <b>EventBridge rule targeting a Lambda function</b> reacts within seconds with no polling and no person in the loop. A daily AWS Config evaluation is polling and can leave a noncompliant instance running for up to 24 hours. A StatusCheckFailed alarm reacts to instance health failures, not tag compliance, so it would never fire for a missing tag. Trusted Advisor's weekly email is a manual, delayed report, not an automated near-real-time control.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/monitoring-instance-state-changes.html",
+    "id": "soac03-0006"
+  },
+  {
+    "domain": "Monitoring, Logging, Analysis, Remediation, and Performance Optimization",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A CloudWatch alarm enters ALARM state when a critical Windows service stops responding on a fleet of managed EC2 instances. The team wants this alarm to trigger a self-healing AWS Systems Manager Automation runbook that restarts the service, without writing and maintaining a Lambda function whose only job is to call the SSM StartAutomationExecution API. Which approach BEST meets this requirement?",
+    "options": [
+      "Configure the alarm to publish to an SNS topic, and have an on-call engineer manually run the runbook from the Systems Manager console when paged.",
+      "Create an EventBridge rule that matches the CloudWatch alarm's state-change event and specifies an AWS Systems Manager Automation runbook directly as the rule's target, passing the instance ID as input.",
+      "Add a CloudWatch alarm action that invokes AWS Trusted Advisor to flag the instance for review the next business day.",
+      "Grant the alarm's default service role the ssm:StartAutomationExecution permission, since a CloudWatch alarm action can call any AWS API directly."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>EventBridge can target an AWS Systems Manager Automation runbook directly</b> from a rule, so a rule matching the CloudWatch alarm state-change event can start the runbook with no Lambda function in between. Paging a human to run the runbook manually reintroduces the delay and human step the team wants to remove. Trusted Advisor has no alarm-action integration and would not restart anything. CloudWatch alarm actions are limited to a fixed set of native action types (SNS, Auto Scaling, EC2, and SSM OpsItem or Incident Manager); they cannot be granted a role to call an arbitrary API.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-targets.html",
+    "id": "soac03-0007"
+  },
+  {
+    "domain": "Monitoring, Logging, Analysis, Remediation, and Performance Optimization",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A CloudOps team monitors request latency for a service whose normal traffic pattern varies predictably by time of day and day of week: busy at lunch, quiet overnight, and heavier on weekdays. A single static latency threshold either misses real degradations during quiet hours or pages the on-call engineer constantly during expected peak hours. Which CloudWatch capability BEST fits this metric?",
+    "options": [
+      "Configure a composite alarm that requires two static-threshold alarms to both be in ALARM before paging.",
+      "Increase the alarm's evaluation period to 24 hours so daily peaks are averaged out.",
+      "Enable CloudWatch anomaly detection on the metric so it models expected values from historical data and builds a dynamic band, then alarm when the metric falls outside that band.",
+      "Switch the metric to a one-second high-resolution metric so more data points are collected per hour."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>CloudWatch anomaly detection</b> learns the metric's historical pattern, including time-of-day and day-of-week seasonality, and creates a dynamic expected-value band, so an alarm on it reacts to genuine deviations instead of a fixed number. A composite alarm of two static thresholds still relies on static thresholds and does not model the daily pattern. Averaging over a 24-hour evaluation period hides real short-lived degradations rather than detecting them. Raising the metric's resolution changes how many data points are collected, not whether the threshold accounts for expected variation.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Anomaly_Detection.html",
+    "id": "soac03-0008"
+  },
+  {
+    "domain": "Monitoring, Logging, Analysis, Remediation, and Performance Optimization",
+    "tag": "Domain 1",
+    "type": "multi",
+    "stem": "An operations team runs a multi-tenant API on API Gateway and Lambda. After a deployment, the overall 5xx error rate rises on a shared CloudWatch metric, but the team cannot tell which of thousands of tenant API keys is responsible without scanning every log stream by hand. The application already ships structured JSON access logs, including a tenant_id field, to a CloudWatch Logs log group. Which TWO statements about using CloudWatch Contributor Insights to find the top contributors are correct? (Select TWO.)",
+    "options": [
+      "Contributor Insights requires migrating the log group's data into an Amazon OpenSearch Service domain before it can rank contributors.",
+      "Contributor Insights runs a rule against the log group's structured fields, such as tenant_id, and produces a time series ranking the top contributors, without the team writing a Logs Insights query by hand.",
+      "Contributor Insights only supports AWS-provided rules for VPC Flow Logs and DynamoDB metrics and cannot define a custom rule against an application's own log fields.",
+      "A Contributor Insights report can be added to a CloudWatch dashboard as a graph, and its computed values can also be retrieved as data points through the GetInsightRuleReport API.",
+      "Enabling Contributor Insights on a log group deletes the raw log events once they are summarized, retaining only the aggregated ranking."
+    ],
+    "correct": [
+      1,
+      3
+    ],
+    "explanation": "<b>Contributor Insights rules</b> operate directly on a log group's structured log fields to produce a ranked, time-series view of top contributors, such as tenant_id, with no separate query written by the team. That ranking <b>can be graphed on a CloudWatch dashboard and pulled programmatically with GetInsightRuleReport</b>. It does not require moving data into OpenSearch Service; it reads the log group in place. AWS provides some built-in rules for services like VPC Flow Logs and DynamoDB, but custom rules against an application's own fields are fully supported. Enabling Contributor Insights does not delete or alter the underlying raw log events.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContributorInsights.html",
+    "id": "soac03-0009"
+  },
+  {
+    "domain": "Monitoring, Logging, Analysis, Remediation, and Performance Optimization",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A checkout workflow calls four microservices in sequence: cart, pricing, inventory, and payment. End users report the checkout is slow, but the team does not know which of the four services, or which downstream call within a service, is responsible for the added latency. Which AWS service BEST helps pinpoint the specific call and its latency contribution within the request chain?",
+    "options": [
+      "Amazon CloudWatch Contributor Insights, to rank which customer accounts issue the most checkout requests.",
+      "AWS Config, to check whether each microservice's infrastructure matches a desired-state rule.",
+      "Amazon Inspector, to scan each service's container image for software vulnerabilities.",
+      "AWS X-Ray, to trace the request across all four services and view a service map with per-segment latency breakdown."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>AWS X-Ray</b> traces a single request as it moves through every service, building a <b>service map with per-segment latency</b> so the slow call is directly visible. Contributor Insights ranks contributors to a metric or log field, such as top accounts, but does not trace a single request's path or per-call latency. AWS Config evaluates resource configuration against rules, not runtime request latency. Amazon Inspector scans for vulnerabilities, not performance bottlenecks.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/xray/latest/devguide/aws-xray.html",
+    "id": "soac03-0010"
+  },
+  {
+    "domain": "Monitoring, Logging, Analysis, Remediation, and Performance Optimization",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "An Amazon RDS for PostgreSQL instance shows high CPU utilization in CloudWatch, but the team cannot tell which specific SQL statements or wait events are driving the load. Which AWS capability gives a database-level view of top SQL statements and wait states without installing any agent on the database?",
+    "options": [
+      "Amazon RDS Performance Insights, which visualizes database load and lets the team drill down to top SQL statements and wait events.",
+      "CloudWatch Logs metric filters on the general query log, counting each unique query string.",
+      "AWS Trusted Advisor's cost-optimization checks for the RDS instance.",
+      "Amazon Inspector network reachability findings for the RDS instance's security group."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>RDS Performance Insights</b> is built into the managed RDS engine and visualizes database load broken down by top SQL statements, waits, hosts, and users, with no agent to install. A metric filter on the general query log can count query occurrences but does not classify wait events or database load, and requires the general query log to be enabled and parsed. Trusted Advisor's cost checks address spend, not database load. Inspector's network reachability findings check security group exposure, not query performance.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PerfInsights.html",
+    "id": "soac03-0011"
+  },
+  {
+    "domain": "Monitoring, Logging, Analysis, Remediation, and Performance Optimization",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A CloudOps team wants ongoing, data-driven right-sizing recommendations for over-provisioned EC2 instances, EBS volumes, and Auto Scaling groups, based on utilization history, without manually building and maintaining CloudWatch dashboards and thresholds for every resource. Which AWS service BEST fits this need?",
+    "options": [
+      "AWS Budgets, configured with a monthly cost threshold and an alert action.",
+      "AWS Compute Optimizer, which analyzes CloudWatch utilization metrics and recommends optimal instance types, EBS volume configurations, and Auto Scaling group sizes.",
+      "Amazon CloudWatch Application Insights, which builds dashboards and alarms for a detected application stack.",
+      "The AWS Well-Architected Tool, filling out the Cost Optimization pillar questionnaire manually each quarter."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>AWS Compute Optimizer</b> continuously analyzes CloudWatch utilization history and produces specific rightsizing recommendations for EC2, EBS, and Auto Scaling groups with no dashboards to build. AWS Budgets alerts on spend thresholds; it does not recommend resource sizing. Application Insights focuses on automated health monitoring and alarms for a detected stack, not rightsizing guidance. The Well-Architected Tool is a manual, periodic self-assessment questionnaire, not a continuous, data-driven recommendation engine.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/compute-optimizer/latest/ug/what-is-compute-optimizer.html",
+    "id": "soac03-0012"
+  },
+  {
+    "domain": "Monitoring, Logging, Analysis, Remediation, and Performance Optimization",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A company runs workloads across 12 AWS accounts organized under AWS Organizations. The CloudOps team wants engineers in a single central monitoring account to search CloudWatch Logs, view metrics, and see traces originating in any of the 12 accounts from one CloudWatch console, without copying or duplicating the underlying log and metric data into the central account. Which capability BEST meets this requirement?",
+    "options": [
+      "Configure cross-account IAM roles and require each engineer to switch roles into every source account one at a time to view its own CloudWatch console.",
+      "Set up CloudWatch Logs subscription filters that stream every source account's logs into Kinesis Data Streams and land them in the central account's own log groups.",
+      "Enable CloudWatch cross-account observability, designating the 12 accounts as monitoring account sources and the central account as the monitoring account, to view their metrics, logs, and traces directly from its console.",
+      "Turn on AWS Config aggregation so the central account receives a copy of each account's Config compliance findings."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>CloudWatch cross-account observability</b> lets a designated monitoring account query metrics, logs, and traces from linked source accounts directly, in place, from one console, with no data duplication. Switching IAM roles into each account one at a time works but never presents a single unified console view. Streaming logs into the central account's own log groups via subscription filters is exactly the kind of copying the requirement rules out. AWS Config aggregation centralizes compliance findings, not CloudWatch metrics, logs, or traces, and it also works by replicating data into the aggregator.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Unified-Cross-Account.html",
+    "id": "soac03-0013"
+  },
+  {
+    "domain": "Monitoring, Logging, Analysis, Remediation, and Performance Optimization",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A CloudOps team wants to be notified automatically, inside their existing incident-management pipeline, whenever AWS Health reports a scheduled maintenance event or service issue affecting a specific EC2 instance or RDS database the team owns, instead of relying on someone to check the Personal Health Dashboard manually. Which approach BEST meets this requirement?",
+    "options": [
+      "Subscribe to the public AWS Service Health Dashboard RSS feed, which lists account-specific events affecting the team's resources.",
+      "Create a daily scheduled Lambda function that calls the EC2 DescribeInstances API and compares instance status checks against a hardcoded list.",
+      "Grant the team's IAM users read access to AWS Trusted Advisor checks and review the fault-tolerance category weekly.",
+      "Create an EventBridge rule that matches AWS Health events for the team's affected resources and targets an SNS topic or the existing incident-management integration."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>AWS Health publishes events to EventBridge</b>, so a rule matching those events can route account- and resource-specific maintenance and issue notifications straight into an existing incident-management pipeline with no manual checking. The public Service Health Dashboard RSS feed covers general service status, not account-specific, resource-level events. A custom Lambda function polling DescribeInstances only sees instance status checks, not the broader set of AWS Health events like scheduled maintenance. Trusted Advisor's fault-tolerance checks review configuration best practices, not live AWS Health service events.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/health/latest/ug/cloudwatch-events-health.html",
+    "id": "soac03-0014"
+  }
+]
