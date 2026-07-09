@@ -325,5 +325,370 @@
     "difficulty": "medium",
     "docUrl": "https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/ri-sharing.html",
     "id": "sapc02-0017"
+  },
+  {
+    "domain": "Design for New Solutions",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A startup is building a new customer-facing API with highly unpredictable and spiky traffic, ranging from near zero requests at night to thousands of requests per second during flash sales. The team has two backend engineers and wants to avoid managing servers or capacity planning entirely, paying only for actual requests processed. Which architecture is MOST appropriate for this new solution?",
+    "options": [
+      "Amazon API Gateway in front of AWS Lambda functions, with DynamoDB as the data store, all of which scale automatically with request volume and bill per use.",
+      "A fleet of EC2 instances behind an Application Load Balancer, sized for peak flash-sale traffic and left running at that size continuously.",
+      "A single large EC2 instance running the API server and a self-managed MySQL database, resized manually before each expected sales event.",
+      "An Amazon ECS cluster on the EC2 launch type with a fixed number of container instances sized for average traffic."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>API Gateway plus Lambda plus DynamoDB</b> is a fully serverless stack: every layer scales automatically with request volume (Lambda concurrency, DynamoDB on-demand capacity, API Gateway's own request handling), there is no server to patch or provision, and cost is driven entirely by actual usage, which fits a two-person team with unpredictable spiky traffic and no interest in capacity planning. Sizing an EC2 fleet for peak and leaving it running continuously wastes money at night and still requires the team to manage patching and scaling policy. A single manually resized EC2 instance and self-managed database reintroduces exactly the capacity-planning and server-management burden the team wants to avoid, and it is a single point of failure. A fixed-size ECS cluster on EC2 sized for average traffic will be overwhelmed during a flash sale and still leaves EC2 instances to manage.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/lambda/latest/dg/welcome.html",
+    "id": "sapc02-0018"
+  },
+  {
+    "domain": "Design for New Solutions",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A platform team is designing a new container platform for a company that already runs Kubernetes on-premises, uses Helm charts and custom Kubernetes operators extensively, and wants its AWS workloads to use the same Kubernetes APIs and tooling as its on-premises clusters. Which AWS container service is the BEST fit for this new solution?",
+    "options": [
+      "Amazon ECS with the Fargate launch type, since it removes the need to manage worker nodes.",
+      "Amazon Elastic Kubernetes Service (EKS), which runs a conformant Kubernetes control plane and lets the team reuse its existing Helm charts, operators, and kubectl-based tooling.",
+      "AWS Elastic Beanstalk with a Docker platform, which abstracts away the underlying orchestrator entirely.",
+      "AWS Batch with EC2 compute environments, oriented toward batch job scheduling rather than long-running services."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Amazon EKS</b> runs an upstream-conformant Kubernetes control plane, so Helm charts, custom operators, and kubectl workflows built for the on-premises clusters carry over directly, which is exactly the portability and tooling reuse the team needs. ECS is AWS's own container orchestrator with its own task and service model; it does not run the Kubernetes API, so existing Helm charts and Kubernetes operators would need to be rewritten for ECS. Elastic Beanstalk is a higher-level PaaS that hides the underlying orchestrator, which works against a team that specifically wants direct Kubernetes API access. AWS Batch is built for scheduling batch and queued compute jobs, not for running a general Kubernetes-based platform with Helm-managed long-running services.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/eks/latest/userguide/what-is-eks.html",
+    "id": "sapc02-0019"
+  },
+  {
+    "domain": "Design for New Solutions",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A small team is containerizing a new nightly reporting job. They want to run the container on a schedule, pay only while the job executes, and have zero EC2 instances, AMIs, or worker-node patching to manage. Which approach is the BEST fit?",
+    "options": [
+      "Run the container on a fleet of EC2 Spot Instances managed by an Auto Scaling group that stays at a minimum size of one instance.",
+      "Deploy the container to Amazon EKS with self-managed worker nodes sized for the job's peak memory usage.",
+      "Run the container as an Amazon ECS task using the Fargate launch type, triggered on a schedule with Amazon EventBridge Scheduler.",
+      "Run the container on a single always-on EC2 instance with a cron job invoking the container."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>ECS with the Fargate launch type</b> runs containers without provisioning or managing any EC2 instances at all, and pairing it with an <b>EventBridge Scheduler</b> rule starts the task on the desired schedule; the team pays only for the duration the task actually runs, with zero AMIs or worker-node patching. An Auto Scaling group of EC2 Spot Instances still leaves the team responsible for the underlying instances and AMIs, even at a minimum size of one. Self-managed EKS worker nodes add both a Kubernetes control plane and EC2 node management for a job simple enough not to need either. A single always-on EC2 instance is billed continuously whether or not the nightly job is running, and the team must patch and maintain that instance indefinitely.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/Welcome.html",
+    "id": "sapc02-0020"
+  },
+  {
+    "domain": "Design for New Solutions",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A new global e-commerce platform is being designed with a primary Region in North America and a secondary Region in Europe. The design must support cross-region disaster recovery with a promotion time of under a minute, and European read traffic must reflect writes made in North America within about one second, without the application needing to manage its own replication logic. Which database architecture BEST satisfies these requirements?",
+    "options": [
+      "A standard Amazon RDS for MySQL instance with a cross-region read replica, which typically has replication lag of several seconds to minutes depending on write load.",
+      "Amazon DynamoDB Global Tables in active-active mode across both Regions, accepting eventual consistency between Regions.",
+      "Two independent Aurora MySQL clusters in each Region, kept in sync by an application-level dual-write pattern.",
+      "Amazon Aurora Global Database, which uses dedicated storage-level replication to typically replicate under a second across Regions and can promote a secondary Region to full read/write in under a minute."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Aurora Global Database</b> replicates at the storage layer with typical latency under a second between Regions, and its managed failover can promote a secondary Region to a fully read/write cluster in under a minute, meeting both the near-real-time read requirement and the fast cross-region promotion requirement without any application-level replication code. A standard RDS cross-region read replica uses logical replication with lag that can run into seconds or minutes under load, which is not reliably under a second, and its promotion is also slower than Aurora Global Database's managed failover. DynamoDB Global Tables fit a key-value access pattern and accept eventual consistency between Regions, which does not guarantee the roughly one-second cross-region freshness this relational e-commerce platform needs. Two independent clusters kept in sync by application-level dual writes pushes replication correctness, conflict handling, and failover entirely onto the application, which is far more operational overhead than a managed global database.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.GlobalDatabase.html",
+    "id": "sapc02-0021"
+  },
+  {
+    "domain": "Design for New Solutions",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A new mobile gaming backend must serve players in North America, Europe, and Asia with single-digit-millisecond read and write latency from whichever Region is closest to the player, and the game design already tolerates a player's action appearing slightly out of order across Regions during network partitions. Which data store design BEST fits this new solution?",
+    "options": [
+      "Amazon DynamoDB Global Tables configured across all three Regions in active-active mode, so writes in any Region replicate to the others.",
+      "A single Amazon Aurora MySQL cluster in North America, with players in Europe and Asia connecting over the public internet directly to it.",
+      "Amazon Aurora Global Database with North America as the sole write Region and Europe and Asia as read-only secondary Regions.",
+      "Amazon ElastiCache for Redis deployed independently in each Region with no cross-region replication."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>DynamoDB Global Tables</b> in active-active mode let every Region accept writes locally with single-digit-millisecond latency and replicate them to the other Regions, matching both the low-latency-everywhere requirement and the game's tolerance for eventual, occasionally out-of-order convergence. A single Aurora cluster in North America forces every European and Asian player to cross an ocean on every read and write, which cannot meet single-digit-millisecond latency from those Regions. Aurora Global Database allows only one Region to accept writes at a time, so European and Asian players could read locally but would still have to write across a Region to North America, missing the local-write requirement. Independent, non-replicated ElastiCache caches in each Region would not share game state across Regions at all, so a player's progress would differ depending on which Region served them.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GlobalTables.html",
+    "id": "sapc02-0022"
+  },
+  {
+    "domain": "Design for New Solutions",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A media company's new ingestion pipeline receives video files in an S3 bucket, and three independent teams (transcoding, content moderation, and analytics) each need to be notified the moment a new file arrives and process it independently, without polling S3 and without one team's processing failure blocking another team's processing. Which design BEST meets this?",
+    "options": [
+      "Have each of the three teams run a scheduled job that lists the S3 bucket every minute and processes any new objects it finds.",
+      "Configure S3 Event Notifications to publish to an Amazon SNS topic, and have each team subscribe its own SQS queue to that topic.",
+      "Configure S3 Event Notifications to invoke a single Lambda function directly, which then calls each team's processing code sequentially in one function.",
+      "Have the transcoding team's system poll the content moderation team's database for new records after it finishes processing."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "Publishing <b>S3 Event Notifications to an SNS topic</b>, with each team subscribing its own <b>SQS queue</b>, gives every team an independent, durable copy of every event: no polling is needed, and a backlog or failure in one team's queue has no effect on the other two teams' queues, satisfying the independent-processing requirement. Scheduled polling every minute adds needless latency and API calls, and still could not decouple failures the way independent queues do. Invoking a single Lambda function that calls each team's code sequentially couples all three teams into one function's execution and failure domain, exactly the coupling the design must avoid. Having one team poll another team's database creates a hard dependency between teams and does not solve notification for the third team at all.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/EventNotifications.html",
+    "id": "sapc02-0023"
+  },
+  {
+    "domain": "Design for New Solutions",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A visual-effects studio is designing a new render farm for a movie project. Render jobs are stateless, can be interrupted and resumed from the last completed frame, and the studio wants to minimize compute cost for this new, non-time-critical batch workload while still finishing renders within a few days. Which compute approach is the MOST cost-effective?",
+    "options": [
+      "On-Demand EC2 Instances in a single Availability Zone, sized for the busiest rendering day.",
+      "EC2 Reserved Instances purchased for a one-year term to cover the render farm's peak capacity.",
+      "An Auto Scaling group using a mixed instances policy across several EC2 Spot Instance types and Availability Zones, resuming interrupted frames from the last checkpoint.",
+      "AWS Lambda functions with the maximum 15-minute timeout, splitting each multi-hour render job into many short invocations."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Spot Instances</b> across a mixed instances policy cost significantly less than On-Demand for interruptible, checkpoint-resumable batch work like stateless rendering, and spreading the fleet across several instance types and Availability Zones reduces the chance of losing large portions of capacity to any single Spot interruption event. On-Demand sized for the busiest day pays full price every day, including the many days that are not the busiest, and a single Availability Zone adds unnecessary capacity risk. A one-year Reserved Instance commitment is a poor fit for a single, finite movie project with no ongoing steady-state capacity need after the render farm winds down. Lambda's 15-minute timeout would force splitting a multi-hour render into many small invocations with checkpoint and re-entry logic to build, and Lambda pricing per invocation is generally not the cheapest option for large, sustained batch compute compared to Spot.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/autoscaling/ec2/userguide/what-is-amazon-ec2-auto-scaling.html",
+    "id": "sapc02-0024"
+  },
+  {
+    "domain": "Design for New Solutions",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A company is designing disaster recovery for a new order-processing system. The business requires the system to be back online within 15 minutes of a Regional outage (RTO) and to lose no more than about 1 minute of transactions (RPO), while keeping ongoing DR infrastructure cost meaningfully lower than running a full duplicate of production at all times. Which DR strategy BEST fits these numbers?",
+    "options": [
+      "Backup and restore: back up data to S3 nightly and restore infrastructure from CloudFormation templates only after a disaster is declared.",
+      "Pilot light: keep only the database continuously replicating in the DR Region, with all compute resources fully stopped until a disaster is declared.",
+      "Multi-site active-active: run full production capacity simultaneously in both Regions at all times.",
+      "Warm standby: run a scaled-down but fully functional copy of the full stack continuously in the DR Region, with database replication active, and scale it up to full capacity on failover."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Warm standby</b> keeps a smaller, fully functional copy of every tier already running and already replicating data, so failover means scaling capacity up rather than building the stack from nothing, which comfortably fits a 15-minute RTO and a roughly 1-minute RPO while still costing less than running full duplicate capacity around the clock. Backup and restore typically has an RTO measured in hours, since infrastructure must be provisioned and data restored from backups after the disaster is declared, which is far slower than 15 minutes. Pilot light keeps only data replicating with compute fully stopped, so the team must still launch and configure compute resources during the outage, which usually takes longer than 15 minutes for a full stack and makes hitting that RTO risky. Multi-site active-active meets the RTO and RPO easily but runs full production capacity in both Regions continuously, which is the expensive option the business specifically wants to avoid.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-workloads-on-aws/disaster-recovery-options-in-the-cloud.html",
+    "id": "sapc02-0025"
+  },
+  {
+    "domain": "Design for New Solutions",
+    "tag": "Domain 2",
+    "type": "multi",
+    "stem": "As part of the warm-standby design above, the team needs Amazon Route 53 to automatically stop sending traffic to the primary Region's endpoint and start sending it to the DR Region's endpoint if the primary becomes unhealthy, with no human intervention. Which TWO Route 53 configurations are required? (Select TWO.)",
+    "options": [
+      "A weighted routing policy splitting traffic evenly between the primary and DR Region endpoints at all times.",
+      "A geolocation routing policy that routes European users to the DR Region regardless of health.",
+      "A failover routing policy with the primary Region's record set as PRIMARY and the DR Region's record set as SECONDARY.",
+      "A latency-based routing policy that always routes to whichever Region currently has the lowest network latency.",
+      "An Amazon Route 53 health check on the primary endpoint that marks the PRIMARY record unhealthy when it fails, triggering automatic failover to SECONDARY."
+    ],
+    "correct": [
+      2,
+      4
+    ],
+    "explanation": "A <b>failover routing policy</b>, with the primary endpoint's record marked PRIMARY and the DR Region's record marked SECONDARY, combined with a <b>health check</b> on the primary endpoint, is exactly Route 53's built-in mechanism for detecting an unhealthy primary and automatically shifting all traffic to the secondary with no human intervention. Weighted routing splits traffic by a fixed ratio regardless of health and does not implement all-or-nothing failover behavior. Geolocation routing directs users based on their location, not based on which Region is healthy, so it would keep sending European users to an unhealthy DR Region or bypass failover logic entirely. Latency-based routing optimizes for network performance, not health, so it could keep routing to a primary Region that is up but experiencing an application-level outage that a health check would catch.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-failover.html",
+    "id": "sapc02-0026"
+  },
+  {
+    "domain": "Design for New Solutions",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A team is building a new public mobile API and needs user sign-up, sign-in, and token-based authorization on every API call, without operating its own authentication servers or user directory. Which combination is the simplest way to add this to a new Amazon API Gateway-fronted API?",
+    "options": [
+      "Amazon Cognito user pools for sign-up and sign-in, with a Cognito user pool authorizer configured on the API Gateway routes to validate JWT tokens on every request.",
+      "A self-hosted OpenLDAP server on EC2, with API Gateway calling out to it synchronously on every request.",
+      "IAM users created for every mobile app end user, with API Gateway configured for SigV4 request signing.",
+      "No authentication layer at launch, adding a custom authentication service once the user base grows large enough to justify the engineering investment."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Amazon Cognito user pools</b> provide managed sign-up, sign-in, and token issuance, and a <b>Cognito authorizer</b> on API Gateway validates the resulting JWT on every request automatically, all without the team operating any authentication infrastructure. A self-hosted OpenLDAP server on EC2 is exactly the kind of authentication infrastructure the team wants to avoid operating, and it adds a synchronous dependency on every request. Creating an IAM user per mobile end user does not scale operationally and is not how IAM is designed to be used for a public consumer-facing app; IAM principals are meant for AWS accounts and workloads, not large, dynamic end-user populations. Shipping with no authentication layer leaves the API open to anyone, which is a security gap that only grows more expensive to close as usage grows.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/apigateway/latest/developerguide/welcome.html",
+    "id": "sapc02-0027"
+  },
+  {
+    "domain": "Design for New Solutions",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A new SaaS platform ingests events from its own microservices as well as from third-party SaaS partners, and different downstream teams need to subscribe to specific event types and payload attributes without redeploying the producer of the events every time a new consumer or filtering rule is added. Which service is the BEST fit for this integration layer?",
+    "options": [
+      "Amazon SQS standard queues, with every consumer required to poll the same queue and discard events it does not need.",
+      "Amazon EventBridge, using an event bus with rules that match on event source, detail type, and payload content to route matching events to each consumer's target.",
+      "Amazon SNS with a single topic and no message filtering, where every subscriber receives every message.",
+      "A shared Amazon RDS table that every producer writes to and every consumer polls on a schedule."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Amazon EventBridge</b> is built for exactly this integration pattern: rules matching on event source, detail type, and specific payload attributes route only matching events to each target, new consumers and rules can be added without touching the producer, and it has native integrations for many third-party SaaS event sources. Plain SQS standard queues have no content-based filtering built in, so every consumer would have to receive and discard events it does not need, and adding a new independent subscriber means adding a new queue and subscription plumbing by hand. SNS without message filtering broadcasts every message to every subscriber, pushing the filtering problem onto each consumer instead of solving it centrally. A shared database table polled on a schedule adds polling latency, lacks event-type filtering, and creates tight coupling between every producer and consumer through a single shared schema.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-what-is.html",
+    "id": "sapc02-0028"
+  },
+  {
+    "domain": "Design for New Solutions",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A new clickstream analytics platform needs three independent applications, a real-time dashboard, a fraud-detection model, and a data lake loader, to each read every event from the same stream independently, in order, with the ability for any one of them to reprocess the last 24 hours of events if it falls behind or needs to be redeployed. Which streaming service BEST supports this pattern?",
+    "options": [
+      "Amazon SQS standard queues, with a separate queue per consumer populated by fan-out from the producer.",
+      "Amazon SNS with three subscribers, one per consuming application.",
+      "Amazon Kinesis Data Streams, with each application reading independently from the stream using its own iterator, and a retention period long enough to support 24 hours of replay.",
+      "AWS Step Functions with a state machine invoked once per event, one per consuming application."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Kinesis Data Streams</b> retains events for a configurable window (up to 24 hours by default and longer with extended retention) and lets any number of consumer applications read the stream independently, each tracking its own position, so any one of them can fall behind, redeploy, and later replay from an earlier point without affecting the others. Plain SQS has no replay capability once a message is deleted after processing, and building fan-out to three separate queues would need an extra component (like SNS or Kinesis) in front of it anyway. SNS delivers each message once to each subscriber with no built-in replay if a subscriber was down when the message was published. Invoking a Step Functions execution per event, per consumer, is an expensive and complex way to get ordered, replayable stream processing that Kinesis already provides natively.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/streams/latest/dev/introduction.html",
+    "id": "sapc02-0029"
+  },
+  {
+    "domain": "Design for New Solutions",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A company already runs a large on-premises Apache Kafka cluster with dozens of producer and consumer applications written against the open-source Kafka client libraries. As part of a new cloud architecture, the company wants to move the Kafka cluster itself to AWS while changing as little of the existing producer and consumer code as possible. Which AWS service BEST fits this requirement?",
+    "options": [
+      "Amazon SQS, rewriting every producer and consumer to use the SQS API instead of the Kafka client.",
+      "Amazon SNS, since it supports high fan-out to many subscribers.",
+      "Amazon Kinesis Data Streams, rewriting producers and consumers to use the Kinesis Producer and Consumer Libraries.",
+      "Amazon Managed Streaming for Apache Kafka (Amazon MSK), which runs actual Kafka brokers and is compatible with existing Kafka client applications with little to no code change."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Amazon MSK</b> runs genuine Apache Kafka brokers and is wire-compatible with the standard Kafka client libraries, so existing producer and consumer applications can generally point at the new MSK bootstrap endpoints with little to no code change, which is exactly the low-disruption migration the company wants. Moving to SQS or rewriting for the Kinesis Producer and Consumer Libraries both require rewriting every producer and consumer away from the Kafka API the company already has dozens of applications built on. SNS is a pub/sub notification service without Kafka's partitioned log, consumer group, and replay semantics, so it is not a compatible replacement for a Kafka-based architecture either.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/msk/latest/developerguide/what-is-msk.html",
+    "id": "sapc02-0030"
+  },
+  {
+    "domain": "Design for New Solutions",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A new high-traffic product catalog API reads the same hot items from Amazon DynamoDB many thousands of times per second. The team wants to add a caching layer that returns cached results in microseconds, requires no changes to the DynamoDB data model, and needs the application code to keep using the same DynamoDB API calls it already uses today. Which caching approach BEST fits?",
+    "options": [
+      "Amazon DynamoDB Accelerator (DAX), an in-memory cache purpose-built for DynamoDB that sits in front of the table and is called using the same API, transparently caching reads.",
+      "Amazon ElastiCache for Redis, with the application rewritten to implement its own cache-aside logic against a separate Redis API.",
+      "Amazon ElastiCache for Memcached, with a custom write-through layer built by the application team.",
+      "Amazon CloudFront in front of the DynamoDB endpoint, caching responses at edge locations."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>DAX</b> is a DynamoDB-specific, in-memory caching layer that the application accesses through the same DynamoDB API surface (via the DAX client), returning cached reads in microseconds with no data-model changes and minimal code changes, which matches every requirement in the scenario. ElastiCache for Redis or Memcached both require the application team to build and maintain its own cache-aside or write-through logic against a separate cache API, which is more application code to write and keep in sync with DynamoDB, not less. CloudFront caches HTTP responses at edge locations for content delivery; it is not designed to sit in front of a DynamoDB API and transparently cache individual item reads the way DAX does.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DAX.html",
+    "id": "sapc02-0031"
+  },
+  {
+    "domain": "Design for New Solutions",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A company is retiring an on-premises Windows file server that its finance team uses for SMB file shares, and wants a new fully managed AWS file storage service that supports the SMB protocol, integrates with the company's AWS Managed Microsoft AD for Windows-native permissions, and supports data deduplication to control storage cost. Which AWS storage service is the BEST fit for this new solution?",
+    "options": [
+      "Amazon EFS, a Linux-native NFS file system without native SMB or Windows ACL support.",
+      "Amazon FSx for Windows File Server, a fully managed native Windows file system with SMB support, AD integration, and data deduplication.",
+      "Amazon S3 with the S3 File Gateway exposing an NFS mount, without native Windows ACL or SMB semantics.",
+      "Amazon EBS volumes attached to a single EC2 instance running Windows Server and File and Storage Services."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Amazon FSx for Windows File Server</b> is a fully managed native Windows file system that speaks SMB natively, integrates directly with AWS Managed Microsoft AD (or self-managed AD) for Windows-native permissions and Group Policy, and supports data deduplication out of the box, covering every requirement without the team managing an underlying file server. Amazon EFS is a Linux-native NFS file system; it does not natively speak SMB or use Windows ACLs the way this Windows-shop finance team needs. An S3 File Gateway exposes a network file interface backed by S3, but it is not a native Windows file system with AD-integrated permissions and deduplication built the way FSx for Windows File Server is. Running File and Storage Services on a single EC2 instance with EBS reintroduces the exact server management, patching, and single-instance failure risk the company is trying to retire.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/fsx/latest/WindowsGuide/what-is.html",
+    "id": "sapc02-0032"
+  },
+  {
+    "domain": "Design for New Solutions",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A new multiplayer game backend uses UDP for real-time player position updates and needs the lowest possible, most consistent latency for players connecting from many countries, along with automatic routing around a Regional network problem without waiting for DNS caches to expire. Which AWS networking service BEST fits these new-solution requirements?",
+    "options": [
+      "Amazon CloudFront, which caches HTTP and HTTPS content at edge locations close to users.",
+      "Amazon Route 53 latency-based routing alone, directing players to the Region with the lowest measured DNS latency.",
+      "AWS Global Accelerator, which provides static anycast IP addresses that route player traffic over the AWS global network backbone to the closest healthy endpoint and can shift away from an unhealthy Region within seconds.",
+      "A third-party CDN placed in front of the game servers to cache UDP game state packets."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>AWS Global Accelerator</b> supports TCP and UDP traffic, gives players static anycast IP addresses that always route onto the AWS global network backbone as early as possible for consistent low latency, and performs health-check-driven failover at the network layer within seconds, without depending on client-side DNS cache expiry. CloudFront is built for caching HTTP and HTTPS content; it does not accelerate or cache real-time UDP game traffic. Route 53 latency-based routing alone still relies on DNS resolution and client-side DNS caches, which can delay failover for clients holding a stale record, unlike Global Accelerator's IP-layer redirection. UDP game-state packets are per-session and not cacheable content, so a CDN built for caching HTTP responses is not a fit for this real-time traffic pattern.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/global-accelerator/latest/dg/what-is-global-accelerator.html",
+    "id": "sapc02-0033"
+  },
+  {
+    "domain": "Design for New Solutions",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A team designing a new relational workload needs both high availability with automatic failover in under a minute and the ability to scale out read traffic across multiple reader endpoints, and wants to achieve both with a single database engine rather than layering separate Multi-AZ and read-replica configurations by hand. Which approach BEST fits this new solution?",
+    "options": [
+      "A single-AZ RDS for PostgreSQL instance, adding read replicas only if read traffic grows.",
+      "An RDS for MySQL Multi-AZ instance with no read replicas, since Multi-AZ alone provides read scaling.",
+      "Self-managed MySQL replication across multiple EC2 instances configured by the team.",
+      "Amazon Aurora with a cluster of one writer and multiple reader instances, which provides fast automatic failover and lets reader endpoints absorb read traffic within the same managed cluster."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Aurora</b> is architected around a shared, distributed storage volume with a writer and multiple readers in the same cluster: any reader can be promoted on failover in under a minute, and the reader endpoint load-balances read traffic across all reader instances, delivering both requirements from one engine instead of separately configuring Multi-AZ and read replicas. A single-AZ RDS for PostgreSQL instance has no automatic failover at all, since Multi-AZ is what adds a standby to fail over to. An RDS for MySQL Multi-AZ instance provides a synchronous standby purely for failover; the standby cannot serve read traffic, so Multi-AZ by itself does not provide read scaling, and read replicas would still need to be added separately. Self-managed MySQL replication across EC2 instances puts failover detection, promotion, and replica health monitoring entirely on the team to build, which is far more operational work than a managed Aurora cluster.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Overview.html",
+    "id": "sapc02-0034"
+  },
+  {
+    "domain": "Design for New Solutions",
+    "tag": "Domain 2",
+    "type": "multi",
+    "stem": "A team is implementing the warm-standby DR architecture decided on for the order-processing system. They need to select the specific components that keep the DR Region continuously ready for a fast promotion, consistent with a warm-standby (rather than pilot-light or backup-and-restore) design. Which TWO of the following belong in that design? (Select TWO.)",
+    "options": [
+      "A scaled-down but running copy of the application tier in the DR Region at all times, sized to handle a baseline amount of traffic and ready to scale up on failover.",
+      "Application servers in the DR Region that remain fully stopped (not running) until a disaster is declared, then are started and configured from an AMI.",
+      "Database backups stored only in the primary Region's S3 bucket, restored to the DR Region only after a disaster is declared.",
+      "Continuous database replication (such as an Aurora Global Database secondary cluster or equivalent) already active in the DR Region before any disaster occurs.",
+      "A manual runbook requiring an engineer to provision the entire DR Region's infrastructure from scratch using CloudFormation after the outage begins."
+    ],
+    "correct": [
+      0,
+      3
+    ],
+    "explanation": "Warm standby means the DR Region already has a <b>running, scaled-down copy of the application tier</b> and <b>active, continuous database replication</b>, so failover is primarily a scale-up operation rather than a from-scratch provisioning or restore operation. Fully stopped application servers that must be started and configured from an AMI after the disaster describes pilot light or a cold-start pattern, not warm standby, since nothing application-level is actually running yet. Database backups restored only after a disaster is declared describes backup and restore, the slowest and cheapest strategy, not warm standby, and it would not meet a tight RTO. A manual runbook that provisions the entire Region from scratch after the outage begins is closer to a cold or pilot-light approach and works against the fast RTO warm standby is chosen to achieve.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-workloads-on-aws/disaster-recovery-options-in-the-cloud.html",
+    "id": "sapc02-0035"
+  },
+  {
+    "domain": "Design for New Solutions",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A new order-fulfillment workflow must call a Lambda function to validate an order, run an ECS task to reserve inventory, wait for a human approval step on orders over a dollar threshold, and retry any failed step with exponential backoff, all while giving the operations team a visual view of where any given order is in the process. Which AWS service is BEST suited to building this new workflow?",
+    "options": [
+      "AWS Step Functions, defining the sequence of Lambda, ECS, and human-approval (callback) steps as a state machine with built-in retry, error handling, and visual execution tracking.",
+      "A single long-running Lambda function that calls the ECS task, polls for human approval in a loop, and implements retries manually in code.",
+      "Amazon SQS queues chained together, with each queue's consumer manually invoking the next step and no built-in visual tracking.",
+      "AWS Batch, designed for scheduling and running batch computational jobs rather than multi-step application workflows with human approval steps."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>AWS Step Functions</b> is purpose-built for exactly this kind of multi-step orchestration: it natively models Lambda and ECS task steps, supports a wait-for-callback pattern for human approval, has built-in retry and error-handling configuration per state, and gives the operations team a visual execution graph showing exactly where each order is. A single long-running Lambda function has a maximum execution duration and would need to hand-roll retry logic, human-approval polling, and progress visibility that Step Functions already provides. Chaining SQS queues manually pushes orchestration logic into each consumer and provides no built-in visual tracking of an order's overall progress. AWS Batch schedules and runs batch computational jobs; it has no native concept of a human-approval step or a visual multi-service workflow graph.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/step-functions/latest/dg/welcome.html",
+    "id": "sapc02-0036"
   }
 ]
