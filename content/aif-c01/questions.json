@@ -420,5 +420,275 @@
     "domain": "Fundamentals of GenAI",
     "tag": "Domain 2",
     "id": "aifc01-0022"
+  },
+  {
+    "type": "single",
+    "stem": "A developer is calling a foundation model through Amazon Bedrock and wants the model's text output to be more deterministic and repetitive for a fact-lookup feature, rather than creative and varied. Which inference parameter should the developer LOWER to achieve this?",
+    "options": [
+      "Temperature, which controls the randomness of token selection; lowering it makes output more deterministic and focused.",
+      "Max tokens, which limits output length but does not control randomness.",
+      "Context window size, a fixed property of the model architecture, not a per-request randomness control.",
+      "Embedding dimension, a property of the vector representation, unrelated to text-generation randomness."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Temperature</b> directly controls the randomness of next-token selection: lowering it makes the model favor its highest-probability tokens, producing more deterministic, repetitive output, which is exactly the desired effect here. <b>Max tokens</b> caps output length, not randomness. <b>Context window size</b> is a fixed model property, not a per-request creativity dial. <b>Embedding dimension</b> describes the size of vector representations and has no bearing on output randomness.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/inference-parameters.html",
+    "domain": "Applications of Foundation Models",
+    "tag": "Domain 3",
+    "id": "aifc01-0023"
+  },
+  {
+    "type": "single",
+    "stem": "A team calling a foundation model API notices that responses are cut off mid-sentence for long outputs. Which inference parameter should the team INCREASE to allow longer, uncut responses, while staying mindful of the added per-request cost?",
+    "options": [
+      "Temperature, which controls the randomness of the output, not its length.",
+      "Top-k, which limits the model's sampling pool for the next token, not its output length.",
+      "The maximum output tokens (max tokens) parameter, which caps how many tokens the model can generate before stopping.",
+      "The model's training batch size, a training-time setting with no effect on inference output length."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "The <b>maximum output tokens (max tokens)</b> parameter directly caps how much text a model can generate in one response; raising it removes the cutoff, at the cost of potentially longer, more expensive responses. <b>Temperature</b> affects randomness, not length. <b>Top-k</b> narrows the candidate pool for the next token, also unrelated to total output length. <b>Training batch size</b> is set during training and has no effect on how long an already-deployed model's responses can be.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/inference-parameters.html",
+    "domain": "Applications of Foundation Models",
+    "tag": "Domain 3",
+    "id": "aifc01-0024"
+  },
+  {
+    "type": "single",
+    "stem": "A team feeds an entire 300-page legal contract into a single prompt, and the model only appears to consider the last portion of the document when answering. Which concept explains this limitation?",
+    "options": [
+      "The temperature setting, which was likely set too low for this task.",
+      "The model's training data cutoff date, which determines how recent the model's knowledge is.",
+      "The embedding dimension, which determines the size of the model's vector representations.",
+      "The context window, the maximum amount of text (measured in tokens) a model can consider at once, which the full contract exceeded."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "The <b>context window</b> is the maximum amount of text, measured in tokens, that a model can take into account in one request; when input exceeds it, earlier content is effectively dropped or truncated, matching the described behavior. Temperature governs randomness, not how much text fits in a request. The training data cutoff date affects the model's factual knowledge horizon, not how much of a given prompt it can process. Embedding dimension describes vector size, unrelated to how much input text a model can consider at once.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html",
+    "domain": "Applications of Foundation Models",
+    "tag": "Domain 3",
+    "id": "aifc01-0025"
+  },
+  {
+    "type": "single",
+    "stem": "A company wants its customer-support chatbot to answer questions using the latest internal product documentation, which changes weekly, without retraining the underlying foundation model every time the documentation changes. Which technique BEST fits this need?",
+    "options": [
+      "Increasing the model's temperature so it generates more varied answers.",
+      "Retrieval Augmented Generation (RAG), which retrieves relevant passages from an external knowledge source at query time and includes them in the prompt so the model can ground its answer in current information.",
+      "Full fine-tuning of the foundation model on the entire documentation set every week.",
+      "Reducing the model's context window so it processes requests faster."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Retrieval Augmented Generation (RAG)</b> retrieves the most relevant passages from a current external knowledge source at query time and feeds them into the prompt, letting answers stay current without retraining the model, exactly what weekly-changing documentation needs. Raising temperature affects randomness, not factual grounding. Retraining the entire model every week is costly and slow compared to RAG's lightweight retrieval step. Shrinking the context window would reduce, not improve, how much reference material the model can use.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-how-it-works.html",
+    "domain": "Applications of Foundation Models",
+    "tag": "Domain 3",
+    "id": "aifc01-0026"
+  },
+  {
+    "type": "single",
+    "stem": "To support a RAG-based chatbot, a team stores embeddings of thousands of internal documents so it can quickly find the passages most semantically similar to an incoming question. Which type of data store is purpose-built for this similarity search over embeddings?",
+    "options": [
+      "A relational database using only exact-match SQL WHERE clauses.",
+      "An object storage service that stores raw files without any search capability.",
+      "A vector database (or a vector-search-enabled store), which indexes embeddings and efficiently finds the nearest vectors to a query embedding.",
+      "A key-value cache optimized for exact key lookups."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "A <b>vector database</b> indexes high-dimensional embeddings and efficiently performs nearest-neighbor (similarity) search, which is exactly what a RAG retrieval step over document embeddings needs. A relational database's exact-match WHERE clauses cannot rank results by semantic similarity. Plain object storage holds raw files but provides no similarity-search capability on its own. A key-value cache is built for exact key lookups, not for finding the nearest vectors to a query.",
+    "difficulty": "medium",
+    "docUrl": "https://aws.amazon.com/what-is/vector-databases/",
+    "domain": "Applications of Foundation Models",
+    "tag": "Domain 3",
+    "id": "aifc01-0027"
+  },
+  {
+    "type": "single",
+    "stem": "A prompt engineer provides a foundation model with three example question-and-answer pairs directly in the prompt before asking it to answer a new, similar question, without any additional model training. What is this prompting technique called?",
+    "options": [
+      "Few-shot prompting, which includes a small number of example input-output pairs in the prompt to guide the model's response format and behavior.",
+      "Zero-shot prompting, which gives the model no examples at all.",
+      "Fine-tuning, which updates the model's weights using labeled examples.",
+      "Retrieval Augmented Generation, which retrieves external documents to ground a response."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Few-shot prompting</b> supplies a handful of example input-output pairs directly inside the prompt to steer the model's format and behavior, without any weight updates, matching this scenario exactly. <b>Zero-shot prompting</b> is the opposite case: no examples are given at all. <b>Fine-tuning</b> would actually update the model's weights, which did not happen here. <b>Retrieval Augmented Generation</b> pulls in external documents at query time, not illustrative examples embedded in the prompt.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-engineering-guidelines.html",
+    "domain": "Applications of Foundation Models",
+    "tag": "Domain 3",
+    "id": "aifc01-0028"
+  },
+  {
+    "type": "single",
+    "stem": "A prompt asks a model to 'think step by step' and show its intermediate reasoning before giving a final answer to a multi-step math word problem. Which prompt engineering technique is being used?",
+    "options": [
+      "Zero-shot prompting, which provides no guidance on reasoning steps.",
+      "Prompt injection, which is a security attack, not a legitimate prompting technique.",
+      "Retrieval Augmented Generation, which pulls in external documents rather than reasoning steps.",
+      "Chain-of-thought prompting, which guides the model to work through intermediate reasoning steps before producing a final answer, often improving accuracy on multi-step problems."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Chain-of-thought prompting</b> explicitly asks the model to reason step by step before giving a final answer, which typically improves accuracy on multi-step problems such as this math word problem. Plain zero-shot prompting gives no such reasoning guidance. Prompt injection is a malicious attack technique, not a legitimate way to structure a prompt. Retrieval Augmented Generation is about pulling in external reference documents, unrelated to guiding step-by-step reasoning.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-engineering-guidelines.html",
+    "domain": "Applications of Foundation Models",
+    "tag": "Domain 3",
+    "id": "aifc01-0029"
+  },
+  {
+    "type": "single",
+    "stem": "An attacker embeds hidden text inside a web page that a company's AI assistant summarizes, and the hidden text instructs the model to ignore its original instructions and reveal confidential system prompt content instead. What is this attack called?",
+    "options": [
+      "Model drift, a gradual change in a deployed model's behavior over time.",
+      "Data poisoning, which corrupts a model's training data before training happens.",
+      "Prompt injection, where malicious input is crafted to override or manipulate a model's intended instructions, potentially causing it to leak information or take unintended actions.",
+      "Overfitting, where a model memorizes its training data too closely."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Prompt injection</b> is exactly this attack: malicious content hidden in input data is crafted to override a model's original instructions, here causing it to leak confidential system prompt content. <b>Model drift</b> describes a gradual, unintentional performance change over time, not a crafted attack. <b>Data poisoning</b> corrupts training data before training, which is a different attack surface than manipulating a live prompt. <b>Overfitting</b> is a generalization problem from training, unrelated to an attacker's crafted input at inference time.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails.html",
+    "domain": "Applications of Foundation Models",
+    "tag": "Domain 3",
+    "id": "aifc01-0030"
+  },
+  {
+    "type": "multi",
+    "stem": "Which TWO of the following are recognized security risks associated with prompt engineering and foundation model deployments? (Select TWO.)",
+    "options": [
+      "Jailbreaking, where a crafted prompt tries to bypass a model's safety guidelines to produce restricted or harmful content.",
+      "Prompt engineering always eliminates every security risk, so no additional safeguards are ever needed.",
+      "Faster inference latency, which is a performance characteristic, not a security risk.",
+      "Higher training throughput, which is a training-infrastructure benefit, not a security risk.",
+      "Prompt leaking, where crafted input is designed to expose the confidential system prompt or instructions that were not meant to be shared."
+    ],
+    "correct": [
+      0,
+      4
+    ],
+    "explanation": "<b>Jailbreaking</b> (bypassing safety guidelines through crafted prompts) and <b>prompt leaking</b> (exposing confidential system instructions) are both well-documented risks that foundation model applications must defend against, for example with guardrails and input validation. The claim that prompt engineering eliminates every security risk is false and overstates reality; safeguards are still required. Faster inference latency and higher training throughput are performance and infrastructure characteristics, not security risks, so both are miscategorized in this list.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails.html",
+    "domain": "Applications of Foundation Models",
+    "tag": "Domain 3",
+    "id": "aifc01-0031"
+  },
+  {
+    "type": "single",
+    "stem": "After pre-training, a foundation model is further refined using human raters who rank multiple candidate responses to the same prompt; those rankings train a reward model that is then used to adjust the foundation model's behavior. Which technique is this?",
+    "options": [
+      "Reinforcement Learning from Human Feedback (RLHF), which uses human preference rankings to train a reward model that then guides further training of the foundation model toward more helpful, human-preferred outputs.",
+      "Zero-shot prompting, which requires no additional training at all.",
+      "Data labeling for a supervised image classifier, unrelated to reward-based language model refinement.",
+      "Transfer learning applied to a computer vision model, a different domain and technique."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Reinforcement Learning from Human Feedback (RLHF)</b> is exactly this process: human raters rank candidate outputs, those rankings train a reward model, and the reward model then guides further training so the foundation model produces more human-preferred responses. <b>Zero-shot prompting</b> involves no training update at all. <b>Image-classifier data labeling</b> is a supervised computer vision task, unrelated to reward-based language model refinement. <b>Transfer learning in computer vision</b> is a different domain and technique from RLHF.",
+    "difficulty": "medium",
+    "docUrl": "https://aws.amazon.com/what-is/reinforcement-learning-from-human-feedback/",
+    "domain": "Applications of Foundation Models",
+    "tag": "Domain 3",
+    "id": "aifc01-0032"
+  },
+  {
+    "type": "single",
+    "stem": "A team preparing a dataset to fine-tune a foundation model for customer-support responses has a small set of transcripts with inconsistent formatting and some incorrect labels. Which action BEST improves fine-tuning results?",
+    "options": [
+      "Add as many transcripts as possible regardless of quality, since fine-tuning always benefits more from volume than from accuracy.",
+      "Skip data preparation entirely, since foundation models require no fine-tuning data cleaning.",
+      "Increase the model's temperature parameter to compensate for inconsistent training data.",
+      "Clean and consistently format a smaller, high-quality, correctly labeled set of examples, since fine-tuning quality depends heavily on the accuracy and consistency of the training examples."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "Fine-tuning results depend heavily on training-example quality, so <b>cleaning and consistently formatting a smaller, correctly labeled dataset</b> typically outperforms a larger but noisy, inconsistently labeled one. Piling on more transcripts regardless of quality tends to reinforce the same formatting problems and incorrect labels at greater scale. Skipping data preparation ignores a well-documented cause of poor fine-tuning outcomes. Temperature is an inference-time generation setting and cannot compensate for problems in the training data itself.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-customization-prepare.html",
+    "domain": "Applications of Foundation Models",
+    "tag": "Domain 3",
+    "id": "aifc01-0033"
+  },
+  {
+    "type": "single",
+    "stem": "A team evaluating a foundation model's text-summarization quality wants an automated metric that measures the overlap of words and phrases between the generated summary and a human-written reference summary. Which metric is designed for this?",
+    "options": [
+      "BLEU, which is designed primarily to evaluate machine translation quality against reference translations.",
+      "ROUGE, which measures the overlap of n-grams between a generated summary and reference summaries, and is widely used to evaluate summarization quality.",
+      "Accuracy, a classification metric that measures the fraction of correct predictions among a fixed set of labels.",
+      "F1 score, the harmonic mean of precision and recall, typically used for classification tasks."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>ROUGE</b> is purpose-built to measure n-gram overlap between a generated summary and one or more human reference summaries, making it the standard automated metric for summarization quality. <b>BLEU</b> is the closely related metric designed primarily for machine translation, not summarization. <b>Accuracy</b> and <b>F1 score</b> are classification metrics that compare predicted labels to true labels among a fixed set of categories, not generated text to reference text.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/evaluation.html",
+    "domain": "Applications of Foundation Models",
+    "tag": "Domain 3",
+    "id": "aifc01-0034"
+  },
+  {
+    "type": "single",
+    "stem": "A team needs to judge whether a foundation model's marketing copy sounds authentic, creative, and on-brand, qualities that are difficult to capture with a fixed formula. Which evaluation approach is BEST suited to judging these subjective qualities?",
+    "options": [
+      "BLEU score, an automated metric designed primarily for comparing machine translations to reference translations.",
+      "Human evaluation, where people directly review and rate model outputs against criteria such as tone, creativity, and brand fit.",
+      "Classification accuracy, a metric for measuring correct predictions among discrete labels.",
+      "Training loss, a numeric value tracked during model training, not a measure of output quality."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Human evaluation</b> is the right tool for subjective, hard-to-formalize qualities like tone, creativity, and brand fit, since human raters can judge these dimensions directly in a way fixed formulas cannot. BLEU compares generated text to reference translations using n-gram overlap, not subjective tone. Classification accuracy applies to discrete-label prediction tasks, not open-ended creative writing quality. Training loss is an internal training signal, not a measure of the qualitative properties of finished output.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/evaluation.html",
+    "domain": "Applications of Foundation Models",
+    "tag": "Domain 3",
+    "id": "aifc01-0035"
+  },
+  {
+    "type": "multi",
+    "stem": "A company is choosing AWS AI services for a customer-experience project. Which TWO of the following service-to-capability pairings are correct? (Select TWO.)",
+    "options": [
+      "Amazon Transcribe converts spoken audio into text.",
+      "Amazon Polly converts spoken audio into text.",
+      "Amazon Rekognition analyzes images and video to detect objects, faces, and scenes.",
+      "Amazon Kendra is a text-to-speech service for generating natural-sounding voice audio.",
+      "Amazon Lex is a managed relational database service for storing conversation transcripts."
+    ],
+    "correct": [
+      0,
+      2
+    ],
+    "explanation": "<b>Amazon Transcribe</b> performs automatic speech recognition, converting spoken audio into text, and <b>Amazon Rekognition</b> analyzes images and video to detect objects, faces, and scenes, so both pairings are correct. The Polly pairing is backwards: Polly performs text-to-speech, turning text into natural-sounding audio, the opposite of speech-to-text. Kendra is an intelligent enterprise search service, not a text-to-speech service. Lex builds conversational chatbot interfaces using voice and text; it is not a relational database.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/transcribe/latest/dg/what-is.html",
+    "domain": "Applications of Foundation Models",
+    "tag": "Domain 3",
+    "id": "aifc01-0036"
   }
 ]
