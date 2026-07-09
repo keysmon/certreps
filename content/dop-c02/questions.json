@@ -804,5 +804,159 @@
     "difficulty": "hard",
     "docUrl": "https://docs.aws.amazon.com/incident-manager/latest/userguide/analysis.html",
     "id": "dopc02-0042"
+  },
+  {
+    "domain": "Security and Compliance",
+    "tag": "Domain 6",
+    "type": "single",
+    "stem": "A Lambda function needs to read objects from one specific S3 bucket and write its own CloudWatch Logs. Which IAM configuration follows least privilege?",
+    "options": [
+      "Attach an execution role whose policy grants s3:GetObject scoped to that specific bucket's ARN (and prefix if needed), plus the standard Lambda basic execution logging permissions, and nothing broader.",
+      "Attach the AWS managed AdministratorAccess policy to the function's execution role for simplicity.",
+      "Embed a long-term IAM user access key as a Lambda environment variable instead of using an execution role at all.",
+      "Grant s3:* on Resource: \"*\" so the function will work regardless of which bucket it might need in the future."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "Scoping the execution role's policy to <b>only s3:GetObject on the specific bucket (and prefix) plus basic logging permissions</b> grants exactly what the function needs and nothing more, the definition of least privilege. AdministratorAccess grants full control over every AWS service, wildly exceeding what a single read-only S3 function needs. Embedding a long-term access key bypasses the execution-role model entirely and introduces a static credential that must be manually rotated and can be exfiltrated from function configuration. A wildcard s3:* on Resource: \"*\" grants read, write, and delete across every bucket in the account, far beyond a single read-only need, purely to save a future edit.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/lambda/latest/dg/lambda-intro-execution-role.html",
+    "id": "dopc02-0043"
+  },
+  {
+    "domain": "Security and Compliance",
+    "tag": "Domain 6",
+    "type": "single",
+    "stem": "A third-party monitoring vendor needs read-only access to a customer's AWS account to pull CloudWatch metrics. The customer wants to avoid creating a long-term IAM user or access key for the vendor, and also wants to protect against the 'confused deputy' problem, since the vendor serves many customers with similar role names. Which IAM pattern should the customer use?",
+    "options": [
+      "Create an IAM user in the customer's account and share its long-term access key with the vendor directly.",
+      "Create an IAM role in the customer's account that trusts the vendor's AWS account, scoped to only the needed read-only permissions, and require a unique ExternalId in the trust policy that the vendor must supply when calling sts:AssumeRole.",
+      "Trust the vendor's account root ARN with full AdministratorAccess and no ExternalId condition.",
+      "Have the vendor connect using the customer's own AWS account root credentials."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "A cross-account role with a scoped, read-only policy and a unique <b>ExternalId condition in the trust policy</b> lets the vendor assume temporary credentials with no long-term secret to manage, and the ExternalId specifically defends against the confused-deputy problem where the vendor's own role could otherwise be tricked into acting on the wrong customer's behalf. Sharing a long-term access key is exactly the durable, hard-to-rotate credential the requirement wants to avoid. Trusting the vendor's account with full administrator access and no ExternalId is both over-broad and leaves the confused-deputy risk completely unaddressed. Using root account credentials for any delegated access, vendor or otherwise, violates the standard rule against using the root account for day-to-day or delegated operations.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-user_externalid.html",
+    "id": "dopc02-0044"
+  },
+  {
+    "domain": "Security and Compliance",
+    "tag": "Domain 6",
+    "type": "single",
+    "stem": "A compliance team wants to deploy the same set of about 15 AWS Config rules, each with an automatic remediation action, consistently across 50 accounts in an OU, and wants a single compliance score per account without hand-configuring each rule 50 times. Which approach BEST fits?",
+    "options": [
+      "Manually create each of the 15 Config rules by hand in the console, once in every one of the 50 accounts.",
+      "Configure a single Config aggregator in one account with no rules deployed to any member account, assuming it evaluates their resources centrally on its own.",
+      "Deploy a Config conformance pack, a packaged collection of Config rules and remediation actions, across the OU using a StackSet, so every account gets the same rules, remediations, and a single conformance pack compliance score.",
+      "Write custom Lambda functions that call each account's APIs directly to check for public buckets and unencrypted volumes."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "A <b>Config conformance pack deployed through a StackSet</b> packages the rules and their remediation actions together, rolls them out identically to every targeted account, and rolls up a single compliance score per account, with no per-account manual setup. Creating each rule by hand 50 times is exactly the manual, error-prone repetition the team wants to avoid. A Config aggregator only aggregates compliance results that member accounts' own Config rules have already produced; it does not deploy or evaluate rules on their behalf. Custom Lambda functions checking each account's resources directly duplicate functionality Config conformance packs already provide, adding unnecessary code to build and maintain.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/config/latest/developerguide/conformance-packs.html",
+    "id": "dopc02-0045"
+  },
+  {
+    "domain": "Security and Compliance",
+    "tag": "Domain 6",
+    "type": "single",
+    "stem": "A security team wants one consolidated view of security findings from GuardDuty, AWS Config, Amazon Inspector, and IAM Access Analyzer across every account in the organization, with a normalized severity score so findings from different services can be prioritized together, without building a custom findings aggregator. Which service should they use?",
+    "options": [
+      "GuardDuty alone, assuming it already ingests findings from every other listed security service.",
+      "A custom Lambda pipeline that polls each service's API in every account and writes normalized results into a shared DynamoDB table.",
+      "Each account's own service consoles, with an analyst manually cross-referencing findings across all four services and every account.",
+      "AWS Security Hub, with an administrator account and AWS Organizations integration enabled to automatically aggregate findings from every member account."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Security Hub</b> is built to aggregate and normalize findings from GuardDuty, Config, Inspector, IAM Access Analyzer, and other services into one view with a consistent severity scoring model, and Organizations integration extends that aggregation automatically across every member account. GuardDuty only produces its own threat-detection findings; it does not ingest findings from Config, Inspector, or Access Analyzer. A custom Lambda polling pipeline duplicates functionality Security Hub already provides natively and requires ongoing code maintenance. Manually cross-referencing four consoles across every account does not scale and is exactly the manual correlation the team wants to eliminate.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/securityhub/latest/userguide/what-is-securityhub.html",
+    "id": "dopc02-0046"
+  },
+  {
+    "domain": "Security and Compliance",
+    "tag": "Domain 6",
+    "type": "single",
+    "stem": "A short-lived Lambda-based batch job needs temporary permission to decrypt objects encrypted with a customer managed KMS key for the next few hours only, and the security team does not want to edit the KMS key's resource policy, which would require a change-review cycle, just for this temporary need. Which KMS mechanism fits this?",
+    "options": [
+      "Create a KMS grant authorizing the specific principal (the Lambda execution role) to use the key for the needed operations, and retire the grant once the job finishes, with no change to the key policy.",
+      "Edit the key policy to add the Lambda role as a key user, then remember to remove that statement once the job finishes.",
+      "Rely on IAM permissions alone that name the KMS action, assuming that is sufficient regardless of what the key's own policy allows.",
+      "Create a brand-new KMS key just for this job and re-encrypt the existing data under it temporarily."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "A <b>KMS grant</b> is designed exactly for temporary, self-service, revocable delegation: it authorizes a specific principal to use the key for defined operations without touching the key's resource policy, and it is retired (or simply expires) when no longer needed. Editing the key policy is precisely the change-review-cycle edit the team wants to avoid, and remembering to manually remove it later is an easy step to forget. KMS requires both IAM permissions and the key's own policy to allow the action (unless the key policy defers to IAM policies), so IAM permissions alone are not guaranteed sufficient, and a grant is still the standard mechanism for short-lived delegation rather than a workaround. Creating a new key and re-encrypting data adds unnecessary overhead and does not grant temporary access to the objects already encrypted under the original key.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/kms/latest/developerguide/grants.html",
+    "id": "dopc02-0047"
+  },
+  {
+    "domain": "Security and Compliance",
+    "tag": "Domain 6",
+    "type": "multi",
+    "stem": "A platform team is writing an AWS Organizations SCP intended to prevent every account in a specific OU from ever disabling AWS CloudTrail or GuardDuty, even by an account's own root user. Which TWO statements about how SCPs enforce this are correct? (Select TWO.)",
+    "options": [
+      "An SCP with an explicit Deny on the relevant actions applies to every principal in the account, including that account's root user, since SCPs set the maximum available permissions regardless of any identity-based policy.",
+      "An SCP alone grants no permissions by itself; it only defines the ceiling of what identity-based and resource-based policies in the account are allowed to permit, so the account still needs its own IAM policies granting any action it is allowed to use.",
+      "SCPs are optional recommendations that an IAM policy can override if a role explicitly allows the denied action.",
+      "SCPs only apply to IAM users and roles created after the SCP is attached; existing principals are grandfathered in and unaffected.",
+      "Attaching an SCP to an OU automatically deletes any existing IAM policies in the member accounts that conflict with it."
+    ],
+    "correct": [
+      0,
+      1
+    ],
+    "explanation": "SCPs set a <b>permissions ceiling that applies to every principal in the account, including the root user</b>, so an explicit Deny blocks the action no matter what any identity-based policy says, and SCPs are purely restrictive: they <b>never grant permissions on their own</b>, only narrowing what identity-based and resource-based policies inside the account are allowed to permit in practice. It is false that an IAM policy can override an SCP's explicit Deny; SCPs are enforced above account-level policies and cannot be overridden that way. SCPs apply to all principals in affected accounts regardless of when they were created, so there is no grandfathering of existing principals. Attaching an SCP does not modify or delete any existing IAM policy in a member account; it only changes what those policies are allowed to actually grant.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps.html",
+    "id": "dopc02-0048"
+  },
+  {
+    "domain": "Security and Compliance",
+    "tag": "Domain 6",
+    "type": "single",
+    "stem": "A Lambda function currently reads a third-party API key from a plaintext environment variable, which is visible to any IAM principal with lambda:GetFunctionConfiguration permission. The security team wants the secret's value protected from casual read access by principals who only need to invoke, not configure, the function, and wants to rotate it independently of a Lambda deployment. What should they do?",
+    "options": [
+      "Keep the plaintext environment variable, but restrict lambda:GetFunctionConfiguration to nobody at all, including operators who need to deploy the function.",
+      "Store the API key in AWS Secrets Manager and have the function retrieve it at runtime through the Secrets Manager API (or a caching extension), instead of a plaintext environment variable.",
+      "Base64-encode the value before placing it in the environment variable.",
+      "Hardcode the API key directly in the function's source code, committed to the Git repository."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "Storing the secret in <b>Secrets Manager and retrieving it at runtime</b> keeps the value out of function configuration entirely, restricts read access to whichever IAM principals are explicitly granted Secrets Manager permissions, and lets the team rotate it at any time with no Lambda deployment involved. Locking lambda:GetFunctionConfiguration down for everyone, including operators, breaks normal deployment and configuration workflows and still does not provide independent rotation. Base64 encoding is trivially reversible by anyone who can read the variable and provides no real access control or rotation capability. Hardcoding the key in source code committed to Git makes the exposure worse, since it now lives in version-control history too, and is still not centrally rotatable.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html",
+    "id": "dopc02-0049"
+  },
+  {
+    "domain": "Security and Compliance",
+    "tag": "Domain 6",
+    "type": "single",
+    "stem": "GuardDuty raises a high-severity finding indicating an EC2 instance is communicating with a known command-and-control IP address. The security team wants this specific finding type to automatically quarantine the instance, for example by replacing its security groups with a locked-down isolation group, within seconds of the finding, while preserving the instance for later forensics rather than terminating it immediately. Which architecture BEST fits?",
+    "options": [
+      "Configure GuardDuty to automatically terminate any instance associated with a high-severity finding.",
+      "Wait for the weekly security review meeting to manually decide what to do with affected instances.",
+      "An EventBridge rule matching the specific GuardDuty finding type invokes a Lambda function that swaps the instance's security groups to an isolation group, leaving the instance running for forensic investigation.",
+      "Rely on VPC Flow Logs analysis alone, which passively records traffic metadata."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "An <b>EventBridge rule matching the specific GuardDuty finding, invoking a Lambda function that swaps security groups to an isolation group</b>, contains the instance's network access within seconds while keeping it running and intact for forensic analysis, exactly matching both the speed and evidence-preservation goals. Automatically terminating the instance destroys volatile forensic evidence and may be an overreaction before the finding is even investigated. Waiting for a weekly meeting leaves a compromised instance talking to a command-and-control server for up to a week. VPC Flow Logs analysis only records traffic metadata passively; it never isolates or contains an instance by itself.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/guardduty/latest/ug/what-is-guardduty.html",
+    "id": "dopc02-0050"
   }
 ]
