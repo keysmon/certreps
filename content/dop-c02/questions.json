@@ -196,14 +196,14 @@
     "stem": "A CodeBuild project must run integration tests against an Amazon RDS database that sits in private subnets with no route to the internet, and must also pull dependencies from a CodeArtifact repository, without giving the build environment a public IP address or a route through a NAT gateway. Which TWO actions together satisfy this? (Select TWO.)",
     "options": [
       "Configure the CodeBuild project to run inside the VPC, in the private subnets, with a security group that allows outbound access to the RDS database's port.",
-      "Create VPC interface endpoints (AWS PrivateLink) for the CodeArtifact API and repository endpoints, plus an S3 gateway endpoint for the CodeArtifact-backed S3 bucket, so CodeBuild reaches them without internet access.",
       "Attach an internet gateway directly to the private subnets so CodeBuild can reach CodeArtifact over the public internet.",
+      "Create VPC interface endpoints (AWS PrivateLink) for the CodeArtifact API and repository endpoints, plus an S3 gateway endpoint for the CodeArtifact-backed S3 bucket, so CodeBuild reaches them without internet access.",
       "Disable the CodeBuild project's VPC configuration entirely so it runs in the AWS-managed network instead of the customer VPC.",
       "Give the CodeBuild project's builds a public IP address and rely on a network ACL to block all traffic except CodeArtifact."
     ],
     "correct": [
       0,
-      1
+      2
     ],
     "explanation": "Running the <b>CodeBuild project inside the VPC's private subnets with an appropriate security group</b> lets it reach the RDS database directly, and adding <b>VPC interface endpoints for CodeArtifact plus an S3 gateway endpoint</b> lets it reach CodeArtifact's API and its underlying S3 storage over AWS's private network, with no NAT gateway or public IP needed. Attaching an internet gateway to private subnets converts them into effectively public subnets and still depends on internet routing, which the requirement rules out. Disabling the VPC configuration would prevent CodeBuild from ever reaching the private RDS instance at all. Assigning a public IP directly contradicts the no-public-IP requirement, and a network ACL alone does not provide the private connectivity path to CodeArtifact.",
     "difficulty": "medium",
@@ -330,15 +330,15 @@
     "type": "multi",
     "stem": "A StackSet deploys a stack to 200 accounts across 4 Regions. The platform team wants the rollout to proceed in parallel across many accounts to finish quickly, but wants the StackSet to automatically stop launching new stack instances if more than 10 percent of the attempted instances fail, so a bad template does not roll out everywhere before anyone notices. Which TWO StackSet operation preferences together achieve this? (Select TWO.)",
     "options": [
-      "Set MaxConcurrentPercentage (or MaxConcurrentCount) high enough to deploy to many accounts and Regions in parallel.",
-      "Set FailureTolerancePercentage (or FailureToleranceCount) to 10 percent so the operation stops launching new instances once that failure threshold is crossed.",
       "Set the StackSet's capabilities field to CAPABILITY_NAMED_IAM so failed instances are automatically retried.",
+      "Set MaxConcurrentPercentage (or MaxConcurrentCount) high enough to deploy to many accounts and Regions in parallel.",
       "Disable stack instance drift detection so failed instances are not reported as drifted.",
+      "Set FailureTolerancePercentage (or FailureToleranceCount) to 10 percent so the operation stops launching new instances once that failure threshold is crossed.",
       "Set the deployment order to strictly sequential across Regions and rely on manual review between each Region with no automated stop condition."
     ],
     "correct": [
-      0,
-      1
+      1,
+      3
     ],
     "explanation": "<b>MaxConcurrentPercentage/Count controls how many accounts and Regions StackSets works on simultaneously</b>, giving the parallelism the team wants for a fast rollout, and <b>FailureTolerancePercentage/Count sets the failure threshold that automatically halts the operation</b> before it continues to remaining targets, together delivering a fast but safe deployment. CAPABILITY_NAMED_IAM only acknowledges that a template creates named IAM resources; it has nothing to do with retries or failure thresholds. Disabling drift detection hides configuration drift after the fact and does not stop a failing rollout in progress. A purely sequential, manually reviewed rollout removes the parallelism the team wants and provides no automated stop condition of its own.",
     "difficulty": "hard",
@@ -484,15 +484,15 @@
     "type": "multi",
     "stem": "A team wants to adopt Route 53 Application Recovery Controller (ARC) to enable safe, tested manual failover between two Regions. Which TWO ARC building blocks together provide this capability? (Select TWO.)",
     "options": [
-      "Routing controls: highly available on/off switches, backed by a resilient cluster of endpoints, that application code or operators toggle to redirect traffic between Regions.",
-      "Readiness checks: continuous audits of whether each Region's resources have the capacity and configuration needed to safely accept failover traffic before it is ever sent there.",
       "CloudFront origin groups, which retry failed requests against a secondary origin at the CDN edge.",
       "A Route 53 simple routing policy, which returns one static record with no health or readiness awareness.",
-      "AWS Config conformance packs, which evaluate account-wide compliance rules on a recurring schedule."
+      "Routing controls: highly available on/off switches, backed by a resilient cluster of endpoints, that application code or operators toggle to redirect traffic between Regions.",
+      "AWS Config conformance packs, which evaluate account-wide compliance rules on a recurring schedule.",
+      "Readiness checks: continuous audits of whether each Region's resources have the capacity and configuration needed to safely accept failover traffic before it is ever sent there."
     ],
     "correct": [
-      0,
-      1
+      2,
+      4
     ],
     "explanation": "ARC's two core building blocks are <b>routing controls</b>, simple and highly available switches you toggle to redirect traffic, and <b>readiness checks</b>, which continuously verify that a Region has the capacity and configuration parity to safely receive failover traffic; together they give a tested, auditable way to shift traffic during an incident. CloudFront origin groups retry at the CDN layer and are a separate, unrelated mechanism from ARC. A simple routing policy has no health or readiness awareness at all. AWS Config conformance packs check compliance rules, not regional failover readiness.",
     "difficulty": "hard",
@@ -669,5 +669,294 @@
     "difficulty": "hard",
     "docUrl": "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Create_Composite_Alarm.html",
     "id": "dopc02-0035"
+  },
+  {
+    "domain": "Incident and Event Response",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A security team wants any time an EC2 security group rule is created that allows inbound traffic from 0.0.0.0/0 on port 22 to have the offending rule automatically revoked within seconds, with no human action needed to detect or act on the event. Which combination provides this with the least custom polling code?",
+    "options": [
+      "An EventBridge rule matching the AuthorizeSecurityGroupIngress CloudTrail event, targeting a Lambda function (or an SSM Automation runbook) that revokes the offending rule.",
+      "A cron-scheduled Lambda function that lists every security group every 5 minutes and revokes any open rules it finds.",
+      "An AWS Config rule with only a periodic evaluation schedule configured and no automatic remediation action attached.",
+      "An engineer manually reviewing CloudTrail logs each morning for suspicious security group changes."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "An <b>EventBridge rule that matches the specific CloudTrail management event</b> fires within seconds of the API call, and targeting a <b>Lambda function or SSM Automation runbook</b> lets the fix run immediately with no polling. A cron-scheduled Lambda only catches the problem on its next scheduled run, leaving a window of exposure measured in minutes, not seconds. An AWS Config rule with only a periodic evaluation and no remediation action attached will eventually flag the issue but never fixes it automatically, and periodic evaluation is not near-real-time. Manually reviewing logs each morning is fully manual and leaves the open port exposed for up to a full day.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-rules.html",
+    "id": "dopc02-0036"
+  },
+  {
+    "domain": "Incident and Event Response",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A team wants CloudWatch alarms tied to critical services to automatically start a formal incident record when they fire, page the correct on-call responder according to an escalation plan, and run a documented response runbook, all without a human first deciding whether to declare an incident. Which AWS service should they use?",
+    "options": [
+      "AWS Chatbot alone, since it posts alarm notifications into a chat channel with no formal incident record or escalation engine.",
+      "AWS Systems Manager Incident Manager, configured with a response plan that triggers from the CloudWatch alarm, engages the on-call escalation plan, and runs the associated runbook.",
+      "Amazon SNS with an email subscription that notifies the entire engineering team.",
+      "Systems Manager Automation used alone, with no Incident Manager response plan configured."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Systems Manager Incident Manager</b> is built for exactly this: a response plan tied to the alarm automatically opens an incident record, engages the configured on-call escalation plan, and can kick off an associated runbook, with no human needed to first decide an incident is happening. AWS Chatbot only relays notifications into chat; it has no escalation plan or incident record of its own. Emailing the whole team has no formal on-call rotation, escalation logic, or incident documentation. Systems Manager Automation runs remediation steps but does not manage on-call engagement, escalation, or an incident timeline by itself; that is Incident Manager's job.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/incident-manager/latest/userguide/what-is-incident-manager.html",
+    "id": "dopc02-0037"
+  },
+  {
+    "domain": "Incident and Event Response",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A team wants to be notified automatically, through their existing ChatOps Slack channel, whenever AWS reports a service issue or scheduled maintenance event that affects resources in their specific account, rather than a generic public status-page-level event, with no manual dashboard checking. Which combination of services accomplishes this?",
+    "options": [
+      "Periodically check the public AWS Health Dashboard status page for updates.",
+      "Rely on generic CloudWatch alarms on resource metrics to infer that an AWS-side issue is occurring.",
+      "Subscribe to AWS Health events for the account through an EventBridge rule that matches Health events, targeting AWS Chatbot configured to post into the Slack channel.",
+      "Have an engineer manually post to the Slack channel whenever they happen to notice a status page banner."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>AWS Health events, routed through an EventBridge rule to AWS Chatbot</b>, deliver account-specific operational and scheduled-maintenance issues directly into the team's chat channel automatically, including issues that have not yet caused a visible metric impact. The public status page shows broad, account-agnostic service health and requires someone to check it manually. A CloudWatch alarm only reacts once the AWS-side issue's downstream effects already show up in the team's own metrics, and gives no advance notice of scheduled maintenance. Manually posting when someone happens to notice a banner is unreliable and not automated.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/health/latest/ug/getting-started-health-eventbridge.html",
+    "id": "dopc02-0038"
+  },
+  {
+    "domain": "Incident and Event Response",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A CloudWatch alarm fires when a specific application process on an EC2 fleet stops responding. The team wants this to automatically trigger an SSM Automation runbook that restarts the process, but wants a human paged only if the automated restart is attempted three times within an hour without success, so a restart loop does not silently mask a deeper problem. Which architecture BEST supports this?",
+    "options": [
+      "Have the CloudWatch alarm page a human immediately every time it fires, and let the human decide whether to run the runbook manually on each occurrence.",
+      "Configure EventBridge to invoke the runbook on every alarm transition with no attempt tracking, so it restarts indefinitely with no escalation ever added.",
+      "Use only a CloudWatch composite alarm with no EventBridge rule or runbook, since a composite alarm can directly restart the process by itself.",
+      "An EventBridge rule reacting to the alarm's state change invokes the SSM Automation runbook directly, while the runbook (or a companion Lambda) tracks the attempt count and pages a human only once the threshold is exceeded."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "An <b>EventBridge rule invoking the SSM Automation runbook directly, combined with attempt tracking that escalates to a human only past a threshold</b>, gives automatic remediation for the routine case while still guaranteeing a human sees a problem that keeps recurring. Paging a human on every occurrence defeats the goal of unattended remediation for the routine case. Restarting indefinitely with no tracked threshold means a persistent underlying problem is masked forever, since no escalation condition ever fires. A composite alarm only combines the states of other alarms into a single alarm condition; it has no ability to execute a remediation action on its own.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-automation.html",
+    "id": "dopc02-0039"
+  },
+  {
+    "domain": "Incident and Event Response",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "An on-call engineer wants to receive a CloudWatch alarm notification directly in a Slack channel, and from that same channel run a small set of pre-approved read-only AWS CLI commands (for example, checking an ECS service's status) during an incident, without opening the AWS Management Console. Which AWS service enables this two-way chat integration?",
+    "options": [
+      "AWS Chatbot, configured with an IAM role scoped to the approved read-only actions and integrated with the chat channel.",
+      "Amazon SNS alone, which only delivers one-way notifications with no ability to run commands back from chat.",
+      "A CloudWatch dashboard shared as a public, view-only link.",
+      "AWS Systems Manager Session Manager, opened directly from a browser tab with no chat integration at all."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>AWS Chatbot</b> integrates with Slack (and Microsoft Teams) to both deliver alarm notifications and let engineers run a scoped set of AWS CLI commands directly from the chat channel, constrained by an IAM role attached to the Chatbot configuration. Amazon SNS on its own only pushes notifications; it has no mechanism to accept commands back from chat. A shared CloudWatch dashboard link is view-only and cannot execute commands. Session Manager gives interactive shell access through the console or CLI but has no native chat-channel integration of its own.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/chatbot/latest/adminguide/what-is.html",
+    "id": "dopc02-0040"
+  },
+  {
+    "domain": "Incident and Event Response",
+    "tag": "Domain 5",
+    "type": "multi",
+    "stem": "A platform team is designing an auto-remediation pipeline: whenever a specific CloudTrail-recorded API call happens (for example, deleting a required CloudTrail trail), the change should be detected within seconds and an SSM Automation runbook should run automatically to reverse it, with no engineer polling logs. Which TWO components are required in this pipeline? (Select TWO.)",
+    "options": [
+      "An EventBridge rule with an event pattern matching the specific CloudTrail management event, so the rule triggers the instant the event is delivered.",
+      "An AWS Config recorder configured to evaluate the resource's configuration once every 24 hours.",
+      "A CloudWatch Logs metric filter that counts occurrences of the API call name in a log group, with no EventBridge rule involved.",
+      "An IAM role attached to the EventBridge rule's target that permits it to start the target SSM Automation runbook (or invoke the target Lambda), authorizing the automation to actually run.",
+      "An engineer manually re-running the equivalent AWS CLI describe command every few minutes to check whether the resource still matches the required configuration."
+    ],
+    "correct": [
+      0,
+      3
+    ],
+    "explanation": "An <b>EventBridge rule matching the specific CloudTrail event</b> reacts within seconds of the event's delivery, and an <b>IAM role granting the rule's target permission to start the runbook or invoke the Lambda</b> is what actually authorizes the automated remediation to execute; together these two pieces make the pipeline both immediate and functional. An AWS Config recorder on a 24-hour evaluation cadence introduces a full day of detection latency, far from the near-real-time goal. A CloudWatch Logs metric filter with no EventBridge rule can count occurrences but has no native mechanism to trigger a remediation action on its own. Manually re-running a CLI command on an interval is exactly the manual polling the team wants to eliminate.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-what-is.html",
+    "id": "dopc02-0041"
+  },
+  {
+    "domain": "Incident and Event Response",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "After a production incident is resolved through Systems Manager Incident Manager, the team wants to conduct a structured post-incident review that captures a timeline of what happened, contributing factors, and follow-up action items, directly tied to that incident record rather than a brand-new, disconnected document. Which Incident Manager capability should they use?",
+    "options": [
+      "Manually re-type a timeline from memory into a separate wiki page that is not connected to the incident record.",
+      "Create an Incident Manager analysis linked to the resolved incident, building on its automatically captured timeline of chat, runbook steps, and alarm events as the starting point for root-cause documentation and action items.",
+      "Rely on the original CloudWatch alarm history alone, treating it as a complete substitute for a post-incident review.",
+      "Close the incident with no further documentation, since the runbook already remediated the immediate symptom."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "An Incident Manager <b>analysis</b> is linked directly to the resolved incident and starts from its <b>automatically captured timeline</b>, so root-cause documentation, contributing factors, and action items build on real incident data instead of memory. Manually re-typing a timeline into a disconnected wiki page discards that automatically captured data and loses the link back to the incident record. CloudWatch alarm history only shows alarm state transitions, not the human response timeline, contributing factors, or resulting action items. Closing the incident with no analysis skips root-cause work entirely, so nothing prevents the same failure from recurring.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/incident-manager/latest/userguide/analysis.html",
+    "id": "dopc02-0042"
+  },
+  {
+    "domain": "Security and Compliance",
+    "tag": "Domain 6",
+    "type": "single",
+    "stem": "A Lambda function needs to read objects from one specific S3 bucket and write its own CloudWatch Logs. Which IAM configuration follows least privilege?",
+    "options": [
+      "Attach an execution role whose policy grants s3:GetObject scoped to that specific bucket's ARN (and prefix if needed), plus the standard Lambda basic execution logging permissions, and nothing broader.",
+      "Attach the AWS managed AdministratorAccess policy to the function's execution role for simplicity.",
+      "Embed a long-term IAM user access key as a Lambda environment variable instead of using an execution role at all.",
+      "Grant s3:* on Resource: \"*\" so the function will work regardless of which bucket it might need in the future."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "Scoping the execution role's policy to <b>only s3:GetObject on the specific bucket (and prefix) plus basic logging permissions</b> grants exactly what the function needs and nothing more, the definition of least privilege. AdministratorAccess grants full control over every AWS service, wildly exceeding what a single read-only S3 function needs. Embedding a long-term access key bypasses the execution-role model entirely and introduces a static credential that must be manually rotated and can be exfiltrated from function configuration. A wildcard s3:* on Resource: \"*\" grants read, write, and delete across every bucket in the account, far beyond a single read-only need, purely to save a future edit.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/lambda/latest/dg/lambda-intro-execution-role.html",
+    "id": "dopc02-0043"
+  },
+  {
+    "domain": "Security and Compliance",
+    "tag": "Domain 6",
+    "type": "single",
+    "stem": "A third-party monitoring vendor needs read-only access to a customer's AWS account to pull CloudWatch metrics. The customer wants to avoid creating a long-term IAM user or access key for the vendor, and also wants to protect against the 'confused deputy' problem, since the vendor serves many customers with similar role names. Which IAM pattern should the customer use?",
+    "options": [
+      "Create an IAM user in the customer's account and share its long-term access key with the vendor directly.",
+      "Create an IAM role in the customer's account that trusts the vendor's AWS account, scoped to only the needed read-only permissions, and require a unique ExternalId in the trust policy that the vendor must supply when calling sts:AssumeRole.",
+      "Trust the vendor's account root ARN with full AdministratorAccess and no ExternalId condition.",
+      "Have the vendor connect using the customer's own AWS account root credentials."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "A cross-account role with a scoped, read-only policy and a unique <b>ExternalId condition in the trust policy</b> lets the vendor assume temporary credentials with no long-term secret to manage, and the ExternalId specifically defends against the confused-deputy problem where the vendor's own role could otherwise be tricked into acting on the wrong customer's behalf. Sharing a long-term access key is exactly the durable, hard-to-rotate credential the requirement wants to avoid. Trusting the vendor's account with full administrator access and no ExternalId is both over-broad and leaves the confused-deputy risk completely unaddressed. Using root account credentials for any delegated access, vendor or otherwise, violates the standard rule against using the root account for day-to-day or delegated operations.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-user_externalid.html",
+    "id": "dopc02-0044"
+  },
+  {
+    "domain": "Security and Compliance",
+    "tag": "Domain 6",
+    "type": "single",
+    "stem": "A compliance team wants to deploy the same set of about 15 AWS Config rules, each with an automatic remediation action, consistently across 50 accounts in an OU, and wants a single compliance score per account without hand-configuring each rule 50 times. Which approach BEST fits?",
+    "options": [
+      "Manually create each of the 15 Config rules by hand in the console, once in every one of the 50 accounts.",
+      "Configure a single Config aggregator in one account with no rules deployed to any member account, assuming it evaluates their resources centrally on its own.",
+      "Deploy a Config conformance pack, a packaged collection of Config rules and remediation actions, across the OU using a StackSet, so every account gets the same rules, remediations, and a single conformance pack compliance score.",
+      "Write custom Lambda functions that call each account's APIs directly to check for public buckets and unencrypted volumes."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "A <b>Config conformance pack deployed through a StackSet</b> packages the rules and their remediation actions together, rolls them out identically to every targeted account, and rolls up a single compliance score per account, with no per-account manual setup. Creating each rule by hand 50 times is exactly the manual, error-prone repetition the team wants to avoid. A Config aggregator only aggregates compliance results that member accounts' own Config rules have already produced; it does not deploy or evaluate rules on their behalf. Custom Lambda functions checking each account's resources directly duplicate functionality Config conformance packs already provide, adding unnecessary code to build and maintain.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/config/latest/developerguide/conformance-packs.html",
+    "id": "dopc02-0045"
+  },
+  {
+    "domain": "Security and Compliance",
+    "tag": "Domain 6",
+    "type": "single",
+    "stem": "A security team wants one consolidated view of security findings from GuardDuty, AWS Config, Amazon Inspector, and IAM Access Analyzer across every account in the organization, with a normalized severity score so findings from different services can be prioritized together, without building a custom findings aggregator. Which service should they use?",
+    "options": [
+      "GuardDuty alone, assuming it already ingests findings from every other listed security service.",
+      "A custom Lambda pipeline that polls each service's API in every account and writes normalized results into a shared DynamoDB table.",
+      "Each account's own service consoles, with an analyst manually cross-referencing findings across all four services and every account.",
+      "AWS Security Hub, with an administrator account and AWS Organizations integration enabled to automatically aggregate findings from every member account."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Security Hub</b> is built to aggregate and normalize findings from GuardDuty, Config, Inspector, IAM Access Analyzer, and other services into one view with a consistent severity scoring model, and Organizations integration extends that aggregation automatically across every member account. GuardDuty only produces its own threat-detection findings; it does not ingest findings from Config, Inspector, or Access Analyzer. A custom Lambda polling pipeline duplicates functionality Security Hub already provides natively and requires ongoing code maintenance. Manually cross-referencing four consoles across every account does not scale and is exactly the manual correlation the team wants to eliminate.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/securityhub/latest/userguide/what-is-securityhub.html",
+    "id": "dopc02-0046"
+  },
+  {
+    "domain": "Security and Compliance",
+    "tag": "Domain 6",
+    "type": "single",
+    "stem": "A short-lived Lambda-based batch job needs temporary permission to decrypt objects encrypted with a customer managed KMS key for the next few hours only, and the security team does not want to edit the KMS key's resource policy, which would require a change-review cycle, just for this temporary need. Which KMS mechanism fits this?",
+    "options": [
+      "Create a KMS grant authorizing the specific principal (the Lambda execution role) to use the key for the needed operations, and retire the grant once the job finishes, with no change to the key policy.",
+      "Edit the key policy to add the Lambda role as a key user, then remember to remove that statement once the job finishes.",
+      "Rely on IAM permissions alone that name the KMS action, assuming that is sufficient regardless of what the key's own policy allows.",
+      "Create a brand-new KMS key just for this job and re-encrypt the existing data under it temporarily."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "A <b>KMS grant</b> is designed exactly for temporary, self-service, revocable delegation: it authorizes a specific principal to use the key for defined operations without touching the key's resource policy, and it is retired (or simply expires) when no longer needed. Editing the key policy is precisely the change-review-cycle edit the team wants to avoid, and remembering to manually remove it later is an easy step to forget. KMS requires both IAM permissions and the key's own policy to allow the action (unless the key policy defers to IAM policies), so IAM permissions alone are not guaranteed sufficient, and a grant is still the standard mechanism for short-lived delegation rather than a workaround. Creating a new key and re-encrypting data adds unnecessary overhead and does not grant temporary access to the objects already encrypted under the original key.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/kms/latest/developerguide/grants.html",
+    "id": "dopc02-0047"
+  },
+  {
+    "domain": "Security and Compliance",
+    "tag": "Domain 6",
+    "type": "multi",
+    "stem": "A platform team is writing an AWS Organizations SCP intended to prevent every account in a specific OU from ever disabling AWS CloudTrail or GuardDuty, even by an account's own root user. Which TWO statements about how SCPs enforce this are correct? (Select TWO.)",
+    "options": [
+      "SCPs are optional recommendations that an IAM policy can override if a role explicitly allows the denied action.",
+      "An SCP with an explicit Deny on the relevant actions applies to every principal in the account, including that account's root user, since SCPs set the maximum available permissions regardless of any identity-based policy.",
+      "SCPs only apply to IAM users and roles created after the SCP is attached; existing principals are grandfathered in and unaffected.",
+      "Attaching an SCP to an OU automatically deletes any existing IAM policies in the member accounts that conflict with it.",
+      "An SCP alone grants no permissions by itself; it only defines the ceiling of what identity-based and resource-based policies in the account are allowed to permit, so the account still needs its own IAM policies granting any action it is allowed to use."
+    ],
+    "correct": [
+      1,
+      4
+    ],
+    "explanation": "SCPs set a <b>permissions ceiling that applies to every principal in the account, including the root user</b>, so an explicit Deny blocks the action no matter what any identity-based policy says, and SCPs are purely restrictive: they <b>never grant permissions on their own</b>, only narrowing what identity-based and resource-based policies inside the account are allowed to permit in practice. It is false that an IAM policy can override an SCP's explicit Deny; SCPs are enforced above account-level policies and cannot be overridden that way. SCPs apply to all principals in affected accounts regardless of when they were created, so there is no grandfathering of existing principals. Attaching an SCP does not modify or delete any existing IAM policy in a member account; it only changes what those policies are allowed to actually grant.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps.html",
+    "id": "dopc02-0048"
+  },
+  {
+    "domain": "Security and Compliance",
+    "tag": "Domain 6",
+    "type": "single",
+    "stem": "A Lambda function currently reads a third-party API key from a plaintext environment variable, which is visible to any IAM principal with lambda:GetFunctionConfiguration permission. The security team wants the secret's value protected from casual read access by principals who only need to invoke, not configure, the function, and wants to rotate it independently of a Lambda deployment. What should they do?",
+    "options": [
+      "Keep the plaintext environment variable, but restrict lambda:GetFunctionConfiguration to nobody at all, including operators who need to deploy the function.",
+      "Store the API key in AWS Secrets Manager and have the function retrieve it at runtime through the Secrets Manager API (or a caching extension), instead of a plaintext environment variable.",
+      "Base64-encode the value before placing it in the environment variable.",
+      "Hardcode the API key directly in the function's source code, committed to the Git repository."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "Storing the secret in <b>Secrets Manager and retrieving it at runtime</b> keeps the value out of function configuration entirely, restricts read access to whichever IAM principals are explicitly granted Secrets Manager permissions, and lets the team rotate it at any time with no Lambda deployment involved. Locking lambda:GetFunctionConfiguration down for everyone, including operators, breaks normal deployment and configuration workflows and still does not provide independent rotation. Base64 encoding is trivially reversible by anyone who can read the variable and provides no real access control or rotation capability. Hardcoding the key in source code committed to Git makes the exposure worse, since it now lives in version-control history too, and is still not centrally rotatable.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html",
+    "id": "dopc02-0049"
+  },
+  {
+    "domain": "Security and Compliance",
+    "tag": "Domain 6",
+    "type": "single",
+    "stem": "GuardDuty raises a high-severity finding indicating an EC2 instance is communicating with a known command-and-control IP address. The security team wants this specific finding type to automatically quarantine the instance, for example by replacing its security groups with a locked-down isolation group, within seconds of the finding, while preserving the instance for later forensics rather than terminating it immediately. Which architecture BEST fits?",
+    "options": [
+      "Configure GuardDuty to automatically terminate any instance associated with a high-severity finding.",
+      "Wait for the weekly security review meeting to manually decide what to do with affected instances.",
+      "An EventBridge rule matching the specific GuardDuty finding type invokes a Lambda function that swaps the instance's security groups to an isolation group, leaving the instance running for forensic investigation.",
+      "Rely on VPC Flow Logs analysis alone, which passively records traffic metadata."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "An <b>EventBridge rule matching the specific GuardDuty finding, invoking a Lambda function that swaps security groups to an isolation group</b>, contains the instance's network access within seconds while keeping it running and intact for forensic analysis, exactly matching both the speed and evidence-preservation goals. Automatically terminating the instance destroys volatile forensic evidence and may be an overreaction before the finding is even investigated. Waiting for a weekly meeting leaves a compromised instance talking to a command-and-control server for up to a week. VPC Flow Logs analysis only records traffic metadata passively; it never isolates or contains an instance by itself.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/guardduty/latest/ug/what-is-guardduty.html",
+    "id": "dopc02-0050"
   }
 ]
