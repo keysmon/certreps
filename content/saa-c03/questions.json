@@ -363,5 +363,332 @@
     "difficulty": "medium",
     "docUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-policy-generation.html",
     "id": "saac03-0019"
+  },
+  {
+    "domain": "Design Resilient Architectures",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A company runs a production Amazon RDS for MySQL database and needs automatic failover to a standby in a different Availability Zone if the primary database instance becomes unavailable, with no application-level failover logic. Which configuration meets this requirement?",
+    "options": [
+      "Create a read replica in the same Availability Zone as the primary.",
+      "Take manual snapshots of the database every hour and restore from the latest snapshot after a failure.",
+      "Enable RDS Multi-AZ deployment, which synchronously replicates to a standby in another AZ and automatically fails over the DB endpoint during an outage.",
+      "Rely on the application to detect failures and reconnect to a newly launched database instance."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>RDS Multi-AZ deployment</b> maintains a synchronous standby replica in a different Availability Zone and automatically flips the DB endpoint's DNS record to the standby during a failure or maintenance event, with no application changes needed. A read replica in the same AZ does not protect against an AZ-level outage, and read replicas use asynchronous replication and require manual promotion, not automatic failover. Hourly manual snapshots lose up to an hour of data and require a slow manual restore. Waiting on the application to detect failures and reconnect is not automatic failover and adds downtime.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html",
+    "id": "saac03-0020"
+  },
+  {
+    "domain": "Design Resilient Architectures",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A company runs its website on two separate stacks in two AWS Regions for disaster recovery. Route 53 must automatically direct users to the secondary Region if the primary Region's endpoint stops responding to health checks, and automatically direct users back to the primary Region once it recovers. Which Route 53 routing configuration meets this requirement?",
+    "options": [
+      "Failover routing policy with a primary and secondary record, each associated with a Route 53 health check on the respective endpoint.",
+      "Weighted routing with a fixed 50/50 split between the two Regions.",
+      "Geolocation routing policy based on the user's country.",
+      "Simple routing policy pointing only to the primary Region's endpoint."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Route 53 failover routing with health checks</b> on the primary and secondary records automatically routes traffic to the primary record when its health check passes and shifts to the secondary record when the primary health check fails, then shifts back once the primary recovers. Weighted routing splits traffic by a fixed ratio regardless of health and is meant for testing or gradual rollout, not failover. Geolocation routing selects a target based on the user's location, not endpoint health. Simple routing with only the primary configured provides no failover at all.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-failover.html",
+    "id": "saac03-0021"
+  },
+  {
+    "domain": "Design Resilient Architectures",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "An application runs on EC2 instances behind an Application Load Balancer and must continue serving traffic without manual intervention even if an entire Availability Zone becomes unavailable. Which design meets this requirement?",
+    "options": [
+      "Run a single large EC2 instance in one Availability Zone to minimize network hops.",
+      "Configure the Auto Scaling group to launch all instances in the same Availability Zone as the RDS primary for lowest latency.",
+      "Manually launch a replacement instance in a different zone after an outage is detected.",
+      "Configure an Auto Scaling group that spans multiple Availability Zones with the ALB targeting instances in each zone, so instances in the healthy zones continue serving traffic."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>An Auto Scaling group spanning multiple Availability Zones, with the ALB targeting instances in each zone</b>, continues to route traffic to the healthy zones automatically if one zone fails, and Auto Scaling launches replacement capacity in the remaining zones without any manual step. A single instance in one zone has no protection from a zone outage. Concentrating all instances in one zone for latency reasons reintroduces the same single-zone risk. Manually launching a replacement instance after detecting an outage is not automatic and adds downtime.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/autoscaling/ec2/userguide/auto-scaling-benefits.html",
+    "id": "saac03-0022"
+  },
+  {
+    "domain": "Design Resilient Architectures",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "An order-processing application calls a downstream inventory service directly and synchronously. When the inventory service slows down, the order-processing application also slows down and eventually times out, even though placing an order does not require an immediate inventory response. Which change improves resilience?",
+    "options": [
+      "Increase the EC2 instance size of the order-processing application to handle more concurrent connections.",
+      "Place an Amazon SQS queue between the two services so the order-processing application can enqueue work and continue, decoupling it from the inventory service's response time.",
+      "Reduce the timeout value on the order-processing application's HTTP client.",
+      "Move both services to the same Availability Zone to reduce network latency."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>An SQS queue decouples the two services</b>: the order-processing application enqueues a message and moves on immediately, so a slow or unavailable inventory service no longer blocks or times out order placement, and the queue naturally buffers load. Increasing instance size does not address the architectural coupling causing the slowdown. Reducing the timeout only fails faster; it does not remove the dependency. Moving both services to the same AZ reduces latency slightly but does not remove the synchronous coupling that causes cascading failure.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-how-it-works.html",
+    "id": "saac03-0023"
+  },
+  {
+    "domain": "Design Resilient Architectures",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A company needs a DynamoDB table that remains available for both reads and writes even if an entire AWS Region becomes unavailable, with data automatically replicated to a second Region and no application-managed replication logic. Which feature meets this requirement?",
+    "options": [
+      "DynamoDB on-demand capacity mode in a single Region.",
+      "DynamoDB Accelerator (DAX) in front of the table.",
+      "DynamoDB Global Tables, which replicate a table across multiple Regions and support reads and writes in each Region.",
+      "A nightly AWS Backup export of the table to Amazon S3 in a second Region."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>DynamoDB Global Tables</b> maintain a multi-Region, multi-active replica set so an application can read and write in whichever Region is available, with AWS handling the cross-Region replication automatically. On-demand capacity mode changes billing and scaling behavior within a single table, not cross-Region availability. DAX is an in-memory read cache within one Region and provides no cross-Region resilience. A nightly backup export only provides a point-in-time copy with hours of potential data loss and no live failover capability.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GlobalTables.html",
+    "id": "saac03-0024"
+  },
+  {
+    "domain": "Design Resilient Architectures",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A company must retain a continuously updated copy of its S3 bucket's objects in a second AWS Region for disaster recovery, with new and updated objects replicated automatically after being written to the primary bucket. Which S3 feature should the company configure?",
+    "options": [
+      "S3 Cross-Region Replication (CRR), configured with versioning enabled on both the source and destination buckets.",
+      "S3 Lifecycle rules to transition objects to S3 Glacier in the same Region.",
+      "S3 Transfer Acceleration to speed up uploads to the primary bucket.",
+      "S3 Select to query objects in place without moving them."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>S3 Cross-Region Replication, which requires versioning enabled on both buckets</b>, automatically copies new and updated objects from the source bucket to a destination bucket in another Region, providing a continuously updated DR copy. Lifecycle rules to Glacier change storage class within the same Region and do not copy data elsewhere. Transfer Acceleration speeds up uploads over long distances to a single bucket; it does not replicate data. S3 Select queries object contents in place and has nothing to do with replication.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/replication.html",
+    "id": "saac03-0025"
+  },
+  {
+    "domain": "Design Resilient Architectures",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A company's disaster recovery requirement allows up to 30 minutes of downtime (RTO) and up to 5 minutes of data loss (RPO) after a Regional outage. The company wants to minimize standing infrastructure cost in the DR Region while still meeting these targets. Which DR strategy is the BEST fit?",
+    "options": [
+      "Backup and restore, where infrastructure is provisioned from scratch and data is restored from backups after a disaster is declared.",
+      "Multi-site active-active, where full production capacity runs continuously in both Regions at all times.",
+      "No DR strategy, relying solely on the primary Region's Multi-AZ deployment.",
+      "Pilot light, where core data stores are continuously replicated and a minimal set of critical services runs in the DR Region, with the remaining infrastructure scaled up and started only during a disaster."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Pilot light</b> keeps data continuously replicated, supporting a low RPO, and a minimal core running in the DR Region, then scales the rest of the environment up on demand during a disaster, which can meet a 30-minute RTO while keeping standing cost far lower than a full active-active site. Backup and restore is the lowest-cost option but typically takes hours to restore and provision from scratch, missing a 30-minute RTO. Multi-site active-active meets the RTO and RPO easily but runs full duplicate capacity continuously, the highest-cost option, not the best fit when minimizing standing cost matters. Multi-AZ alone protects against an AZ failure, not a full Regional outage.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-workloads-on-aws/disaster-recovery-options-in-the-cloud.html",
+    "id": "saac03-0026"
+  },
+  {
+    "domain": "Design Resilient Architectures",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A workflow calls several Lambda functions in sequence. One function occasionally fails because of a transient downstream throttling error, and the company wants automatic retries with exponential backoff before the workflow is marked as failed, without writing custom retry logic in each function. Which service should orchestrate this?",
+    "options": [
+      "Amazon SQS standard queues, which retry message delivery automatically.",
+      "AWS Step Functions, using a state machine with a Retry field configured with exponential backoff for the failing state.",
+      "Amazon EventBridge Scheduler to re-invoke the entire workflow every hour.",
+      "AWS CloudTrail, configured to alert on Lambda invocation errors."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>AWS Step Functions state machines support a declarative Retry field</b> per state, including interval, backoff rate, and max attempts, so a transient error is retried with exponential backoff before the workflow fails, without custom code in the function. SQS retries message delivery, not function-level workflow retries with backoff. Re-running the entire workflow hourly is coarse, wastes work already completed, and is not a targeted retry. CloudTrail only records and can alert on API activity; it does not retry anything.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/step-functions/latest/dg/concepts-error-handling.html",
+    "id": "saac03-0027"
+  },
+  {
+    "domain": "Design Resilient Architectures",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A fleet of EC2 instances across three Availability Zones needs a shared file system that remains available even if one Availability Zone fails, without the company managing file server replication. Which storage option meets this requirement?",
+    "options": [
+      "An EBS volume attached to one instance and shared over NFS from that instance.",
+      "Instance store volumes on each EC2 instance, synced manually with rsync.",
+      "Amazon EFS with Standard storage class, which stores data redundantly across multiple Availability Zones by default.",
+      "A single EBS Provisioned IOPS volume attached to all instances simultaneously."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Amazon EFS Standard storage class stores file data and metadata redundantly across multiple Availability Zones</b> and can be mounted concurrently by instances in any AZ within the Region, so an AZ failure does not take down the shared file system. An EBS volume attached to and shared from a single instance creates a single point of failure at that instance. Instance store volumes are ephemeral, local to one instance, and manual rsync is operationally fragile and not truly shared or resilient. A standard EBS volume can only attach to one instance at a time (except io2 Multi-Attach within a single AZ), so it cannot be shared across AZs at all.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/efs/latest/ug/availability-durability.html",
+    "id": "saac03-0028"
+  },
+  {
+    "domain": "Design Resilient Architectures",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "An Auto Scaling group terminates and replaces unhealthy EC2 instances automatically. Users are being logged out whenever an instance that was holding their session in local memory is replaced. Which change makes the application resilient to instance replacement?",
+    "options": [
+      "Store session state in a shared, external store such as Amazon ElastiCache, so any instance can serve any user's request without relying on local session state.",
+      "Increase the Auto Scaling group's health check grace period so instances are replaced less often.",
+      "Disable Auto Scaling's replacement of unhealthy instances so sessions are never lost.",
+      "Pin each user to a specific instance using sticky sessions as the sole fix, with session data still stored only in that instance's memory."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Externalizing session state to a shared cache such as ElastiCache</b> makes the application stateless at the instance level, so any healthy instance can serve any user and terminating or replacing an instance no longer loses that user's session. Increasing the grace period delays detection but does not solve the underlying architecture problem. Disabling instance replacement removes the self-healing benefit of Auto Scaling and leaves unhealthy instances in service. Sticky sessions alone still keep session data in one instance's memory, so replacing that instance still loses the session.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/elasticache-use-cases.html",
+    "id": "saac03-0029"
+  },
+  {
+    "domain": "Design Resilient Architectures",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A company runs workloads on EC2, RDS, and EFS and wants a single, centralized way to define and enforce backup schedules and retention across all three services, without configuring each service's native backup feature separately. Which service should the company use?",
+    "options": [
+      "Manually script snapshot creation for each service using individual CLI commands run from a cron job.",
+      "Amazon S3 Cross-Region Replication configured on each service's underlying storage.",
+      "AWS Config, which can automatically create backups of any non-compliant resource.",
+      "AWS Backup, which provides a centralized backup policy (backup plan) applied across supported resource types such as EC2, RDS, and EFS."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>AWS Backup lets an organization define a single backup plan</b>, with schedule and retention rules, and apply it as a policy across EC2, RDS, EFS, and other supported resource types from one console, instead of configuring each service's native backup separately. A hand-rolled cron script duplicates work AWS Backup already provides and is harder to audit consistently. S3 CRR replicates S3 object data; it is not a general-purpose backup service for EC2 or RDS. AWS Config evaluates and reports on configuration compliance; it does not create backups.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html",
+    "id": "saac03-0030"
+  },
+  {
+    "domain": "Design Resilient Architectures",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A company's disaster recovery plan requires standing up an identical copy of its production environment - VPC, subnets, security groups, and EC2 Auto Scaling configuration - in a second Region within minutes of declaring a disaster, with no manual console configuration and no configuration drift between Regions. Which approach BEST supports this requirement?",
+    "options": [
+      "Maintain a written runbook that lists the console steps an engineer follows manually during a disaster.",
+      "Define the environment as AWS CloudFormation templates (or an equivalent infrastructure-as-code tool) and deploy the same templates as a stack in the DR Region when needed.",
+      "Take AMIs of the production instances only, with no template for networking or security group configuration.",
+      "Rely on an engineer's familiarity with the environment to recreate it from memory during the incident."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Infrastructure as code with CloudFormation templates</b> captures the full environment definition, including networking, security groups, and Auto Scaling configuration, so the identical stack can be deployed in the DR Region in minutes with no manual steps and no drift, since the same template is the single source of truth. A manual runbook is slow, error-prone under pressure, and drifts from reality over time. AMIs alone capture only the instance image, not networking or security group configuration, so the environment is incomplete. Relying on an engineer's memory during an incident is neither fast nor reliable.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/Welcome.html",
+    "id": "saac03-0031"
+  },
+  {
+    "domain": "Design Resilient Architectures",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A VPC has private subnets in three Availability Zones, all routing outbound internet traffic through a single NAT gateway in one Availability Zone. What is the resilience risk with this design, and how should it be fixed?",
+    "options": [
+      "There is no risk, because NAT gateways are automatically Multi-AZ.",
+      "The fix is to remove the NAT gateway entirely and assign public IP addresses to the private instances.",
+      "If the Availability Zone containing the NAT gateway fails, private subnets in the other zones lose outbound internet access too; deploy one NAT gateway per Availability Zone and route each zone's traffic to its own NAT gateway.",
+      "The fix is to replace the NAT gateway with an internet gateway shared across all three zones."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>A NAT gateway is a zonal resource</b>, so if its Availability Zone fails, every subnet routing through it loses outbound internet access, even subnets in otherwise-healthy zones; the standard fix is one NAT gateway per AZ with each AZ's route table pointing to its own local NAT gateway. NAT gateways are not automatically Multi-AZ; each one lives in a single AZ. Assigning public IPs to private instances would defeat the purpose of the private subnet and expose instances directly to the internet. An internet gateway is a different resource that provides direct bidirectional internet access, not the outbound-only NAT translation the private subnets need.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html",
+    "id": "saac03-0032"
+  },
+  {
+    "domain": "Design Resilient Architectures",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A company runs Amazon Aurora MySQL and needs the ability to promote a cross-Region replica to a fully writable primary in under a minute after a Regional outage, with typical replication lag under one second during normal operation. Which Aurora feature should the company use?",
+    "options": [
+      "Aurora Global Database, which uses dedicated replication infrastructure to replicate to a secondary Region with typical lag under one second and supports fast promotion of the secondary during a Regional outage.",
+      "A standard Aurora Read Replica in the same Region as the primary.",
+      "Manual mysqldump exports scheduled nightly to a second Region.",
+      "Amazon RDS Multi-AZ, which maintains a standby in a second Availability Zone within the same Region."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Aurora Global Database replicates a cluster to a secondary Region using dedicated, purpose-built replication infrastructure with typical lag under one second</b>, and the secondary Region's cluster can be promoted to a full read-write primary within about a minute during a Regional disaster. A standard Read Replica within the same Region protects against instance failure, not Regional outage. Nightly mysqldump exports lose up to a day of data and require a slow manual restore. RDS Multi-AZ replicates only within a Region across Availability Zones, so it does not protect against a full Regional outage.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-global-database.html",
+    "id": "saac03-0033"
+  },
+  {
+    "domain": "Design Resilient Architectures",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "An order event must be delivered to three independent downstream systems (billing, shipping, and analytics) so that a slowdown or outage in one system does not affect delivery to the others, and adding a fourth consumer later should require no changes to the producer. Which architecture meets this requirement?",
+    "options": [
+      "Have the producer call each of the three downstream systems' APIs directly and sequentially in a single function.",
+      "Write the event directly to each downstream system's database from the producer.",
+      "Use a single SQS queue and have all three systems poll and delete messages from it.",
+      "Publish the event to an Amazon SNS topic with an SQS queue subscribed for each downstream system."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Publishing to an SNS topic with a dedicated SQS queue per subscriber</b> fans the event out to all three systems independently and durably; each queue buffers messages for its own consumer, so one slow or unavailable system does not block delivery to the others, and adding a fourth subscriber only means subscribing a new queue with no producer changes. Calling each API directly and sequentially couples the producer to every consumer's availability and latency. Writing directly to each downstream database tightly couples the producer to the internal schemas of every system. A single shared queue where all three systems poll and delete messages means each message can only be processed once, not by all three consumers, so the other two systems would never see it.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/sns/latest/dg/sns-common-scenarios.html",
+    "id": "saac03-0034"
+  },
+  {
+    "domain": "Design Resilient Architectures",
+    "tag": "Domain 2",
+    "type": "multi",
+    "stem": "A team is designing a resilient Amazon RDS deployment for a production workload. Which TWO practices improve the deployment's resilience to failures? (Select TWO.)",
+    "options": [
+      "Enable Multi-AZ deployment so a synchronous standby in another Availability Zone is ready for automatic failover.",
+      "Disable automated backups to reduce storage cost.",
+      "Configure automated backups with a retention period long enough to meet the recovery point objective, and enable point-in-time recovery.",
+      "Run the database in a single Availability Zone to reduce cross-AZ data transfer charges.",
+      "Store the master password in the application's source code repository for simpler failover scripts."
+    ],
+    "correct": [
+      0,
+      2
+    ],
+    "explanation": "<b>Multi-AZ deployment</b> gives automatic failover to a synchronous standby in another zone, and <b>automated backups with point-in-time recovery</b> protect against data loss and logical errors by letting the database be restored to any point within the retention window, together covering both availability and recoverability. Disabling automated backups removes the ability to recover from data loss or corruption. Running in a single Availability Zone to save on cross-AZ transfer charges removes the resilience Multi-AZ would provide and trades reliability for a minor cost saving. Storing the master password in source control is a security anti-pattern, not a resilience practice, and belongs in Secrets Manager instead.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_WorkingWithAutomatedBackups.html",
+    "id": "saac03-0035"
+  },
+  {
+    "domain": "Design Resilient Architectures",
+    "tag": "Domain 2",
+    "type": "multi",
+    "stem": "A Lambda function that processes messages from an SQS queue occasionally fails because a downstream HTTP API is temporarily unavailable. Failed messages should not be silently lost, and repeated poison messages should not block the queue forever. Which TWO configurations address this? (Select TWO.)",
+    "options": [
+      "Set the SQS queue's maxReceiveCount to 1 so failed messages are deleted immediately instead of being retried.",
+      "Configure a dead-letter queue (DLQ) on the source SQS queue so messages that fail processing after the maximum receive count are moved to the DLQ for investigation instead of being lost.",
+      "Delete the SQS queue and have the Lambda function call the downstream API synchronously with no queue at all.",
+      "Set a finite maxReceiveCount with retries and a visibility timeout tuned to the function's processing time, combined with a DLQ, so a message gets a bounded number of attempts before being set aside.",
+      "Increase the Lambda function's memory allocation, which automatically retries failed downstream API calls."
+    ],
+    "correct": [
+      1,
+      3
+    ],
+    "explanation": "<b>A dead-letter queue</b> captures messages that repeatedly fail so they are preserved for investigation rather than lost, and <b>a bounded maxReceiveCount paired with an appropriately tuned visibility timeout</b> gives each message a limited number of retry attempts, matched to how long processing actually takes, before it is set aside to the DLQ, preventing a poison message from blocking the queue indefinitely. Setting maxReceiveCount to 1 deletes failed messages after a single attempt with no DLQ, which loses data rather than preserving it. Removing the queue entirely reintroduces the tight synchronous coupling that makes the consumer's failures affect the producer directly. Increasing Lambda memory has no effect on retry behavior for downstream API calls; retries are controlled by the queue and function configuration, not memory size.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-dead-letter-queues.html",
+    "id": "saac03-0036"
   }
 ]
