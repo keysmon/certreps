@@ -190,5 +190,235 @@
     "domain": "Fundamentals of AI and ML",
     "tag": "Domain 1",
     "id": "aifc01-0010"
+  },
+  {
+    "type": "single",
+    "stem": "Before a large language model can process a sentence, the input text is broken into smaller units that the model's vocabulary can represent, such as whole words, parts of words, or punctuation. What is this process called?",
+    "options": [
+      "Chunking, which splits a long document into passages for retrieval.",
+      "Fine-tuning, which further trains a model on a smaller labeled dataset.",
+      "Embedding, which converts tokens into numeric vectors.",
+      "Tokenization, the process of breaking text into tokens that the model's vocabulary can represent."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Tokenization</b> is the process of breaking raw text into tokens, the discrete units an LLM's vocabulary understands, before any further processing happens. <b>Chunking</b> operates at a coarser level, splitting whole documents into passages for retrieval, not splitting a sentence into vocabulary units. <b>Fine-tuning</b> is a later training step, unrelated to text splitting. <b>Embedding</b> happens after tokenization: it converts each token into a numeric vector, so it is a distinct downstream step, not the splitting step itself.",
+    "difficulty": "easy",
+    "docUrl": "https://aws.amazon.com/what-is/large-language-model/",
+    "domain": "Fundamentals of GenAI",
+    "tag": "Domain 2",
+    "id": "aifc01-0011"
+  },
+  {
+    "type": "single",
+    "stem": "A search application converts each product description into a list of numbers such that descriptions with similar meaning end up close together in that numeric space, even if they share few exact words. What is this numeric representation called?",
+    "options": [
+      "An embedding (vector), a numeric representation that places semantically similar items close together in vector space.",
+      "A token, the smallest unit of text a model processes.",
+      "A hyperparameter, a setting that controls how a model is trained.",
+      "A prompt template, a reusable structure for formatting instructions to a model."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "An <b>embedding</b> (vector) is a numeric representation of text (or other data) placed in a high-dimensional space so that semantically similar items land close together, which is exactly the behavior described. A <b>token</b> is a discrete unit of raw text before it is converted to numbers. A <b>hyperparameter</b> controls model training, not semantic representation. A <b>prompt template</b> structures instructions sent to a model and has nothing to do with numeric similarity.",
+    "difficulty": "easy",
+    "docUrl": "https://aws.amazon.com/what-is/embeddings-in-machine-learning/",
+    "domain": "Fundamentals of GenAI",
+    "tag": "Domain 2",
+    "id": "aifc01-0012"
+  },
+  {
+    "type": "single",
+    "stem": "Most modern large language models are built on the transformer architecture. Which mechanism is the KEY innovation that lets a transformer weigh the relevance of every other token in a sequence when processing a given token, enabling strong performance on long-range language dependencies?",
+    "options": [
+      "Convolution, which slides a fixed-size filter across local regions of an image.",
+      "Pooling, which reduces the dimensionality of a feature map.",
+      "Gradient descent, which is the general optimization algorithm used to update model weights during training.",
+      "Self-attention, which lets the model weigh the relevance of every token in the input relative to every other token."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Self-attention</b> is the mechanism unique to the transformer architecture that lets the model weigh how relevant every other token is to the one currently being processed, which is what enables transformers to capture long-range dependencies. <b>Convolution</b> and <b>pooling</b> are building blocks of convolutional neural networks used mainly in computer vision, not the defining transformer mechanism. <b>Gradient descent</b> is the general training optimization algorithm used across most neural networks, not something specific to transformers.",
+    "difficulty": "medium",
+    "docUrl": "https://aws.amazon.com/what-is/transformers-in-artificial-intelligence/",
+    "domain": "Fundamentals of GenAI",
+    "tag": "Domain 2",
+    "id": "aifc01-0013"
+  },
+  {
+    "type": "single",
+    "stem": "Which statement BEST defines a foundation model (FM)?",
+    "options": [
+      "A small model trained from scratch on a single narrow task, such as spam detection only.",
+      "A rule-based system that requires no training data at all.",
+      "A large model pre-trained on a broad range of unlabeled data that can be adapted to many different downstream tasks through prompting or fine-tuning.",
+      "A model that can only process images and cannot handle any text input."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "A <b>foundation model</b> is pre-trained on a broad, largely unlabeled corpus and can then be adapted, through prompting, fine-tuning, or other customization, to many different downstream tasks, which is its defining trait. A model built for a single narrow task is the opposite of the broad adaptability that defines an FM. Foundation models are trained on data, so 'no training data at all' is false. Many foundation models are multi-modal and handle text, images, or both, so being image-only is not a defining property.",
+    "difficulty": "easy",
+    "docUrl": "https://aws.amazon.com/what-is/foundation-models/",
+    "domain": "Fundamentals of GenAI",
+    "tag": "Domain 2",
+    "id": "aifc01-0014"
+  },
+  {
+    "type": "single",
+    "stem": "A marketing team wants to generate original product lifestyle images from a text description, such as 'a hiking backpack on a mountain trail at sunset.' Which category of foundation model is designed for this task?",
+    "options": [
+      "A text-embedding model, which converts text into numeric vectors for search and comparison.",
+      "A text-to-image generation model (for example, an image-generation foundation model such as Amazon Titan Image Generator), which produces novel images from a text prompt.",
+      "A speech-to-text model, which transcribes spoken audio into written text.",
+      "A tabular classification model, which predicts a category from structured rows of data."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "A <b>text-to-image generation model</b>, such as Amazon Titan Image Generator, is purpose-built to synthesize new images from a text description, which is exactly this use case. A text-embedding model produces vectors for similarity search, not pixels. A speech-to-text model transcribes audio, unrelated to image synthesis. A tabular classification model predicts categories from structured rows, not images from text.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/titan-image-models.html",
+    "domain": "Fundamentals of GenAI",
+    "tag": "Domain 2",
+    "id": "aifc01-0015"
+  },
+  {
+    "type": "single",
+    "stem": "A company starts from a publicly available foundation model and further trains it on its own labeled customer-support transcripts so it adopts the company's tone and terminology for a support chatbot. Which stage of the foundation model lifecycle does this describe?",
+    "options": [
+      "Fine-tuning, which further trains an existing pre-trained model on a smaller, often labeled, domain-specific dataset to adapt its behavior.",
+      "Pre-training, which builds the base model from a broad, largely unlabeled corpus.",
+      "Data selection, which is choosing the raw data that will be used before any training happens.",
+      "Model evaluation, which measures a model's performance against benchmarks after training."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Fine-tuning</b> starts from an already pre-trained foundation model and further trains it on a smaller, domain-specific (often labeled) dataset to adapt tone, terminology, or task behavior, matching the scenario exactly. <b>Pre-training</b> is the earlier, much larger-scale stage that built the base model in the first place and has already happened here. <b>Data selection</b> happens even earlier, before any training. <b>Model evaluation</b> happens after training to measure performance, not to adapt behavior.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html",
+    "domain": "Fundamentals of GenAI",
+    "tag": "Domain 2",
+    "id": "aifc01-0016"
+  },
+  {
+    "type": "single",
+    "stem": "A generative AI chatbot confidently states a fabricated statistic that sounds plausible but does not appear anywhere in its training data or any retrieved source. What is this behavior called, and why does it matter?",
+    "options": [
+      "Overfitting, because the model has memorized its training data too closely.",
+      "Latency, which refers to the time delay between a request and the model's response.",
+      "Hallucination, where the model generates plausible-sounding but factually incorrect or fabricated content, which is a known limitation of generative AI that requires verification of outputs.",
+      "Bias, which refers to a model systematically favoring certain outcomes based on patterns in training data."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Hallucination</b> describes exactly this behavior: the model produces fluent, plausible-sounding output that is factually wrong or invented, which is a well-known limitation of generative AI and is why outputs need verification, especially for factual claims. <b>Overfitting</b> is a training-time generalization problem, not a description of fabricated output at inference time. <b>Latency</b> is about response speed, unrelated to factual correctness. <b>Bias</b> describes systematic skew toward certain outcomes or groups, a different failure mode from fabricating a plausible-sounding fact.",
+    "difficulty": "medium",
+    "docUrl": "https://aws.amazon.com/what-is/generative-ai/",
+    "domain": "Fundamentals of GenAI",
+    "tag": "Domain 2",
+    "id": "aifc01-0017"
+  },
+  {
+    "type": "single",
+    "stem": "A team is choosing a foundation model for a chat feature that must respond within a strict low-latency budget and at a low per-request cost, and a smaller model already meets the feature's accuracy requirements. Which choice BEST reflects sound foundation model selection criteria?",
+    "options": [
+      "Always choose the largest available foundation model, because bigger models are always cheaper to run at scale.",
+      "Model size, cost, and latency are unrelated, so any model can be chosen without considering resource use.",
+      "Ignore latency entirely, because end users do not notice response time in chat applications.",
+      "Choose a smaller, more efficient foundation model that meets the accuracy bar, since larger models typically cost more per request and add latency without added business value here."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "When a smaller model already clears the accuracy bar, <b>choosing the smaller, more efficient model</b> is the sound choice, since larger models generally cost more per request and add latency without a corresponding business benefit in this case. Larger models are typically more expensive and slower, not cheaper, so the first option is backwards. Size, cost, and latency are directly related in practice, and response time is very noticeable in chat interfaces, so both middle options misstate real tradeoffs.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html",
+    "domain": "Fundamentals of GenAI",
+    "tag": "Domain 2",
+    "id": "aifc01-0018"
+  },
+  {
+    "type": "single",
+    "stem": "A high-school teacher with no coding background wants students to experiment with prompt engineering and build simple generative AI apps for a class project, without creating an AWS account or writing any code. Which AWS offering is designed for this?",
+    "options": [
+      "Amazon SageMaker Studio, a fully featured ML development environment for data scientists.",
+      "PartyRock, an Amazon Bedrock playground for building generative AI apps hands-on without writing code or needing an AWS account.",
+      "AWS Glue, a serverless data integration and ETL service.",
+      "Amazon Redshift, a cloud data warehouse for analytics."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>PartyRock</b> is an Amazon Bedrock playground built for exactly this scenario: anyone can experiment with prompt engineering and build simple generative AI apps hands-on, without writing code or creating an AWS account. <b>SageMaker Studio</b> is a full ML development environment aimed at data scientists writing code. <b>Glue</b> is a data integration and ETL service with no generative AI app-building UI. <b>Redshift</b> is a data warehouse for analytics queries, unrelated to building generative AI apps.",
+    "difficulty": "easy",
+    "docUrl": "https://aws.amazon.com/about-aws/whats-new/2023/11/partyrock-amazon-bedrock-playground/",
+    "domain": "Fundamentals of GenAI",
+    "tag": "Domain 2",
+    "id": "aifc01-0019"
+  },
+  {
+    "type": "single",
+    "stem": "Which AWS service gives developers serverless API access to a choice of foundation models from Amazon and third-party providers, along with capabilities for customization, Retrieval Augmented Generation, and building agents, without managing any infrastructure?",
+    "options": [
+      "Amazon EC2, which provides resizable virtual servers for general-purpose compute.",
+      "AWS Lambda, a serverless compute service for running short event-driven functions.",
+      "Amazon Bedrock, a fully managed service that provides API access to foundation models along with tools for customization, RAG, and building agents.",
+      "Amazon S3, an object storage service for storing and retrieving any amount of data."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Amazon Bedrock</b> is the fully managed, serverless service that exposes foundation models from Amazon and third-party providers through a single API, along with built-in support for customization, Retrieval Augmented Generation, and agents, with no infrastructure to manage. <b>EC2</b> provides general-purpose virtual servers that would need to be manually configured to host models. <b>Lambda</b> runs short event-driven functions and is not itself a foundation model access layer. <b>S3</b> is object storage, unrelated to serving foundation models.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-bedrock.html",
+    "domain": "Fundamentals of GenAI",
+    "tag": "Domain 2",
+    "id": "aifc01-0020"
+  },
+  {
+    "type": "single",
+    "stem": "A data science team wants to browse a hub of pretrained foundation and open-source models directly inside their SageMaker environment, then deploy or fine-tune a chosen model on infrastructure they control. Which AWS capability fits this need BEST?",
+    "options": [
+      "SageMaker JumpStart, a hub within SageMaker offering pretrained foundation and open-source models that teams can deploy or fine-tune with more infrastructure control.",
+      "Amazon Q Business, an assistant that answers questions grounded in a company's own content and data.",
+      "Amazon Bedrock, which provides serverless API access to foundation models without hosting infrastructure.",
+      "AWS Trainium, a purpose-built chip for training deep learning models."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>SageMaker JumpStart</b> is the model hub inside SageMaker where teams browse pretrained foundation and open-source models and then deploy or fine-tune them on infrastructure they manage directly, matching the described need for more infrastructure control. <b>Amazon Q Business</b> is an assistant grounded in company content, not a model hub for deploy-and-fine-tune workflows. <b>Amazon Bedrock</b> deliberately abstracts away hosting infrastructure, which is the opposite of what this team wants. <b>AWS Trainium</b> is training hardware, not a model catalog.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/studio-jumpstart.html",
+    "domain": "Fundamentals of GenAI",
+    "tag": "Domain 2",
+    "id": "aifc01-0021"
+  },
+  {
+    "type": "multi",
+    "stem": "A startup is deciding whether to build and host its own foundation models from scratch or use Amazon Bedrock's managed foundation models. Which TWO benefits does a managed AWS generative AI service like Bedrock provide compared to building and hosting models from scratch? (Select TWO.)",
+    "options": [
+      "A lower barrier to entry, since teams can access state-of-the-art foundation models through an API without collecting massive training datasets or managing GPU infrastructure themselves.",
+      "Guaranteed zero cost, since managed foundation model services are always free to use regardless of usage volume.",
+      "Built-in security and compliance capabilities, such as encryption and access controls integrated with the broader AWS security model, without the team building them from scratch.",
+      "Elimination of all model limitations, such as hallucination, which managed services fully prevent by design.",
+      "A requirement to directly manage the underlying GPU clusters, which increases operational burden compared to self-hosting."
+    ],
+    "correct": [
+      0,
+      2
+    ],
+    "explanation": "Using a managed service like Bedrock gives teams a <b>lower barrier to entry</b>, since they gain API access to state-of-the-art foundation models without amassing training data or managing GPU fleets, and <b>built-in security and compliance</b> features integrated with AWS's broader security model rather than building them from scratch. Managed foundation model usage is billed (typically pay-as-you-go), not free, so 'guaranteed zero cost' is false. No service eliminates hallucination entirely, so that option overstates the benefit. Managed services remove the need to manage GPU clusters directly, so the last option describes the opposite of the real benefit.",
+    "difficulty": "medium",
+    "docUrl": "https://aws.amazon.com/bedrock/",
+    "domain": "Fundamentals of GenAI",
+    "tag": "Domain 2",
+    "id": "aifc01-0022"
   }
 ]
