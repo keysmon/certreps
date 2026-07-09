@@ -4,6 +4,7 @@ import { gradeAttempt } from "@/lib/scoring";
 import { HEAVY_PAUSE_THRESHOLD, domainVerdict, type Verdict } from "@/lib/readiness";
 import { ScoreRing } from "@/components/ui/ScoreRing";
 import { DomainBars } from "@/components/ui/DomainBars";
+import { optionPermutation, viewIndex } from "@/lib/permute";
 import "./engine.css";
 
 const LETTERS = ["A", "B", "C", "D", "E"];
@@ -31,9 +32,14 @@ function formatTotal(sec: number): string {
 }
 
 // "L / text, L / text" for an index list (multi-select safe); empty picks read "Not answered".
-function answerLine(indices: number[], options: string[]): string {
+// `indices` are canonical; `perm` maps them to the order the user actually saw, so the letters match
+// the recap's displayed positions (and entries list top-to-bottom in that seen order).
+function answerLine(indices: number[], options: string[], perm: number[]): string {
   if (!indices.length) return "Not answered";
-  return indices.map((i) => `${LETTERS[i]} ${MIDDOT} ${options[i]}`).join(", ");
+  return [...indices]
+    .sort((a, b) => viewIndex(perm, a) - viewIndex(perm, b))
+    .map((ci) => `${LETTERS[viewIndex(perm, ci)]} ${MIDDOT} ${options[ci]}`)
+    .join(", ");
 }
 
 export function Results({ attempt, questions, meta }: { attempt: Attempt; questions: Question[]; meta: CertMeta }) {
@@ -132,6 +138,9 @@ export function Results({ attempt, questions, meta }: { attempt: Attempt; questi
           const r = attempt.results[q.id];
           const ok = r?.correct ?? false;
           const chosen = r?.chosen ?? [];
+          // Replay the exact per-attempt shuffle the engine showed (same seed: attemptId + q.id), so
+          // the recap - and the "Your answer / Correct" letters - match the order the user saw.
+          const perm = optionPermutation(attempt.attemptId, q.id, q.options.length);
           // Wrong answers open by default so a miss is never buried behind a click (additive `open`
           // attribute; correct answers stay collapsed).
           return (
@@ -146,24 +155,25 @@ export function Results({ attempt, questions, meta }: { attempt: Attempt; questi
                 {/* Derived textual summary (additive): the chosen answer, and - only when wrong -
                     the correct one. Multi-select safe (lists every index). */}
                 <p className="recap-answer">
-                  <span className="ra-label">Your answer:</span> {answerLine(chosen, q.options)}
+                  <span className="ra-label">Your answer:</span> {answerLine(chosen, q.options, perm)}
                   {!ok && (
                     <>
                       <br />
-                      <span className="ra-label ra-correct">Correct:</span> {answerLine(q.correct, q.options)}
+                      <span className="ra-label ra-correct">Correct:</span> {answerLine(q.correct, q.options, perm)}
                     </>
                   )}
                 </p>
                 {/* Read-only replay of the graded options (mirrors QuestionCard's graded state): the
                     key(s) carry .correct, a wrong pick carries .incorrect, everything else dims. */}
                 <div className="options">
-                  {q.options.map((text, oi) => {
-                    const isKey = q.correct.includes(oi);
-                    const wasChosen = chosen.includes(oi);
+                  {perm.map((ci, vi) => {
+                    const text = q.options[ci];
+                    const isKey = q.correct.includes(ci);
+                    const wasChosen = chosen.includes(ci);
                     const cls = isKey ? "option correct" : wasChosen ? "option incorrect" : "option dim";
                     return (
-                      <div key={oi} className={cls}>
-                        <span className="marker">{isKey ? CHECK : wasChosen ? CROSS : LETTERS[oi]}</span>
+                      <div key={ci} className={cls}>
+                        <span className="marker">{isKey ? CHECK : wasChosen ? CROSS : LETTERS[vi]}</span>
                         <span>{text}</span>
                       </div>
                     );

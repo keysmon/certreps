@@ -218,6 +218,11 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId }: { certId?:
   }
 
   const g = isMock ? null : graded[q.id] ?? null;
+  // Seeds QuestionCard's attempt-stable option shuffle. attemptRef.current is set by the init effect
+  // whenever questions were sampled, so it is non-null on every path that reaches this render (the
+  // questions-empty guard above returns otherwise); the ?? "" is a dead fallback kept only so the
+  // prop stays a plain string.
+  const attemptId = attemptRef.current?.attemptId ?? "";
   const last = index === questions.length - 1;
   const answeredThis = isMock && !!answers[q.id];
 
@@ -298,6 +303,7 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId }: { certId?:
               question={q}
               graded={g}
               onSubmit={submit}
+              attemptId={attemptId}
               index={index}
               total={questions.length}
             />
