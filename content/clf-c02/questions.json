@@ -671,5 +671,427 @@
     "difficulty": "medium",
     "docUrl": "https://docs.aws.amazon.com/acm/latest/userguide/acm-overview.html",
     "id": "clfc02-0035"
+  },
+  {
+    "domain": "Cloud Technology and Services",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A startup wants resizable virtual servers in the cloud where it can choose the CPU, memory, and storage configuration, launch instances in minutes, and pay only for the compute time used. Which AWS service provides this?",
+    "options": [
+      "Amazon RDS",
+      "Amazon S3",
+      "AWS Lambda",
+      "Amazon EC2 (Elastic Compute Cloud), which provides resizable virtual servers with a choice of CPU, memory, storage, and networking configurations"
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Amazon EC2</b> provides resizable virtual servers, called instances, where customers choose CPU, memory, storage, and networking configuration and pay for the compute time consumed. Amazon S3 is object storage, not virtual servers. AWS Lambda runs code without provisioning or managing servers at all, the opposite of choosing an instance configuration. Amazon RDS is a managed relational database service, not general-purpose compute.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/concepts.html",
+    "id": "clfc02-0036"
+  },
+  {
+    "domain": "Cloud Technology and Services",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A company runs a batch video-rendering job that can be interrupted and resumed later without losing significant progress, and wants to minimize compute cost for this flexible, fault-tolerant workload. Which EC2 purchasing option is BEST suited?",
+    "options": [
+      "On-Demand Instances, paying the standard hourly rate with no commitment",
+      "Spot Instances, which offer steep discounts on spare EC2 capacity but can be interrupted with short notice",
+      "A three-year All Upfront Reserved Instance",
+      "Dedicated Hosts, which reserve an entire physical server"
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Spot Instances</b> offer steep discounts on spare EC2 capacity and are ideal for fault-tolerant, flexible workloads like batch rendering that can tolerate an interruption, since AWS can reclaim the capacity with short notice. On-Demand costs more for a workload that does not need guaranteed continuous availability. A three-year Reserved Instance commits to steady, predictable usage, which does not fit an interruptible batch job and locks in cost for years. Dedicated Hosts reserve a whole physical server mainly for licensing or compliance needs, and cost far more than Spot for this use case.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-spot-instances.html",
+    "id": "clfc02-0037"
+  },
+  {
+    "domain": "Cloud Technology and Services",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A company runs a steady, predictable baseline of EC2 usage 24/7 for the next year and wants to commit to that usage level in exchange for a significant discount compared to On-Demand pricing, while retaining flexibility to change instance family or Region during the term. Which pricing option BEST fits, and why is it more flexible than a standard Reserved Instance?",
+    "options": [
+      "On-Demand Instances, because they require no commitment at all",
+      "Compute Savings Plans, which apply a discount to a committed amount of hourly spend regardless of instance family, size, OS, or Region, unlike a Reserved Instance tied to a specific configuration",
+      "Spot Instances, because they are the cheapest option regardless of workload pattern",
+      "A one-year All Upfront Standard Reserved Instance, because it offers more flexibility than any Savings Plan"
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Compute Savings Plans</b> apply a discount to a committed dollar amount of compute usage per hour, and that commitment applies automatically across instance families, sizes, operating systems, and Regions, which is more flexible than a Reserved Instance tied to a specific instance configuration and Region. On-Demand offers no discount for the commitment described. Spot Instances are cheap but not reliable for steady 24/7 usage since they can be interrupted. A Standard Reserved Instance is less flexible than a Savings Plan, since it is tied to a specific instance family and Region.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/savingsplans/latest/userguide/what-is-savings-plans.html",
+    "id": "clfc02-0038"
+  },
+  {
+    "domain": "Cloud Technology and Services",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A developer wants to run a small piece of code in response to file uploads to S3, without provisioning, patching, or managing any servers, and pay only for the compute time the code actually runs. Which service fits this need?",
+    "options": [
+      "Amazon EC2",
+      "Amazon Lightsail",
+      "AWS Fargate",
+      "AWS Lambda, which runs code in response to events without provisioning or managing servers, billed only for execution time"
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>AWS Lambda</b> runs code in response to triggers like an S3 upload, with AWS fully managing the underlying compute, and billing is based only on the time the code actually executes. EC2 requires provisioning and managing virtual servers directly. Lightsail is a simplified virtual private server offering, still server-based. AWS Fargate removes server management for containers specifically, but it is not the event-driven, pay-per-invocation model Lambda provides for small functions.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/lambda/latest/dg/welcome.html",
+    "id": "clfc02-0039"
+  },
+  {
+    "domain": "Cloud Technology and Services",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A web application's traffic varies significantly by time of day. The company wants the number of EC2 instances behind its load balancer to automatically increase during busy periods and decrease during quiet periods, based on metrics like CPU utilization. Which service provides this?",
+    "options": [
+      "Amazon EC2 Auto Scaling, which automatically adds or removes EC2 instances based on demand or defined metrics",
+      "AWS Direct Connect",
+      "Amazon Route 53",
+      "AWS Storage Gateway"
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Amazon EC2 Auto Scaling</b> automatically launches or terminates EC2 instances in a group based on demand or metrics like CPU utilization, keeping capacity aligned with traffic. AWS Direct Connect is a dedicated network link to AWS, unrelated to instance scaling. Amazon Route 53 is a DNS service. AWS Storage Gateway connects on-premises storage to AWS cloud storage, neither of which manages EC2 instance counts.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/autoscaling/ec2/userguide/what-is-amazon-ec2-auto-scaling.html",
+    "id": "clfc02-0040"
+  },
+  {
+    "domain": "Cloud Technology and Services",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A company runs its web application on multiple EC2 instances across two Availability Zones and wants incoming traffic distributed automatically across the healthy instances, with unhealthy instances taken out of rotation. Which AWS service provides this?",
+    "options": [
+      "Elastic Load Balancing, which distributes incoming traffic across multiple targets and routes around unhealthy ones",
+      "AWS Direct Connect",
+      "Amazon CloudFront",
+      "AWS Transit Gateway"
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Elastic Load Balancing</b> distributes incoming application traffic across multiple EC2 instances or other targets in one or more Availability Zones and performs health checks to route around unhealthy targets. Direct Connect is a dedicated network connection to AWS, not a traffic distributor among instances. CloudFront caches and delivers content from edge locations, a different function than balancing load across an application's own instances. Transit Gateway interconnects VPCs and on-premises networks, not application load balancing.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/what-is-load-balancing.html",
+    "id": "clfc02-0041"
+  },
+  {
+    "domain": "Cloud Technology and Services",
+    "tag": "Domain 3",
+    "type": "multi",
+    "stem": "Which TWO of the following are benefits of running an application on AWS Lambda instead of managing your own EC2 instances? (Select TWO.)",
+    "options": [
+      "You must manually patch the underlying operating system",
+      "You must provision a fixed number of servers in advance to handle peak load",
+      "AWS automatically manages and scales the underlying compute infrastructure for you",
+      "Lambda functions require a long-term capacity reservation before they can run",
+      "You are billed based on the number of requests and the compute time consumed, rather than for idle server time"
+    ],
+    "correct": [
+      2,
+      4
+    ],
+    "explanation": "With Lambda, <b>AWS automatically provisions and scales the compute infrastructure</b> needed to run your code, and you are <b>billed for requests and actual execution time</b> rather than paying for idle servers. Lambda removes the need to patch a guest operating system, since there is no server for the customer to manage. It also removes the need to provision fixed capacity for peak load in advance, since it scales automatically with incoming events. There is no long-term capacity reservation required to invoke a Lambda function.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/lambda/latest/dg/welcome.html",
+    "id": "clfc02-0042"
+  },
+  {
+    "domain": "Cloud Technology and Services",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A company must retain compliance records for seven years, accesses them only a few times a year at most, and wants the lowest possible storage cost, accepting a retrieval time of up to 12 hours. Which S3 storage class BEST fits?",
+    "options": [
+      "S3 Standard",
+      "S3 Standard-Infrequent Access",
+      "S3 Glacier Deep Archive, the lowest-cost storage class, designed for long-term retention with retrieval times measured in hours",
+      "S3 Intelligent-Tiering"
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>S3 Glacier Deep Archive</b> is the lowest-cost S3 storage class, built for data that is rarely accessed and can tolerate a retrieval time of hours, matching a seven-year compliance-retention need. S3 Standard is priced for frequently accessed, low-latency data and costs far more than needed here. S3 Standard-Infrequent Access still assumes millisecond retrieval and costs more than Glacier Deep Archive. S3 Intelligent-Tiering automatically moves data between access tiers based on usage patterns, which adds monitoring overhead not needed for data with a known, rarely-accessed pattern.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage-class-intro.html",
+    "id": "clfc02-0043"
+  },
+  {
+    "domain": "Cloud Technology and Services",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A media company stores user-uploaded files whose access patterns are unpredictable: some files are accessed frequently right after upload, then rarely touched again, while others stay popular indefinitely. The company wants S3 to automatically move objects between access tiers based on actual usage, without operational effort or retrieval delays. Which storage class fits BEST?",
+    "options": [
+      "S3 Glacier Flexible Retrieval",
+      "S3 One Zone-Infrequent Access",
+      "S3 Standard, manually reviewed and moved by an administrator every month",
+      "S3 Intelligent-Tiering, which automatically moves objects between access tiers based on changing access patterns with no retrieval fees or operational overhead"
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>S3 Intelligent-Tiering</b> monitors access patterns and automatically moves objects between frequent-access and infrequent-access tiers with no retrieval fees, which fits unpredictable or changing access patterns without manual management. S3 Glacier Flexible Retrieval is for archival data with retrieval delays measured in minutes to hours, not for data still actively served. S3 One Zone-Infrequent Access stores data in a single Availability Zone at lower resilience, mainly for easily recreatable, infrequently accessed data, not for automatic tiering. Manually reviewing and moving objects every month is exactly the operational overhead Intelligent-Tiering removes.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/intelligent-tiering.html",
+    "id": "clfc02-0044"
+  },
+  {
+    "domain": "Cloud Technology and Services",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A company needs persistent block storage for an EC2 instance's database files that must survive if the instance is stopped and started again. Which storage option meets this requirement?",
+    "options": [
+      "Amazon SQS queues",
+      "Instance store volumes, whose data is lost when the instance is stopped",
+      "Amazon CloudFront caching",
+      "Amazon EBS (Elastic Block Store), a persistent block storage volume that survives an instance stop and start"
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Amazon EBS</b> volumes are persistent network-attached block storage that remains intact when an instance is stopped and later started, making it the right choice for database files that must survive a stop and start cycle. Instance store volumes are physically attached to the host and lose their data on stop, which does not meet the durability requirement. CloudFront is a content delivery cache, not block storage. Amazon SQS is a message queuing service, unrelated to attached storage.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AmazonEBS.html",
+    "id": "clfc02-0045"
+  },
+  {
+    "domain": "Cloud Technology and Services",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "Several EC2 instances across multiple Availability Zones need to simultaneously read and write to the same shared file system, using standard file system semantics, without the company managing file servers. Which AWS service fits this need?",
+    "options": [
+      "Amazon EBS, attached to each instance independently",
+      "Amazon EFS (Elastic File System), a managed, scalable file system that can be mounted concurrently by many EC2 instances across Availability Zones",
+      "Amazon S3 Glacier",
+      "AWS Snowball"
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Amazon EFS</b> provides a managed, elastic file system using the NFS protocol that can be mounted concurrently by many EC2 instances across multiple Availability Zones, exactly fitting a shared-access requirement. Amazon EBS volumes attach to a single instance at a time in the general case, so they do not provide the same broad concurrent shared access. Amazon S3 Glacier is archival object storage, not a mountable file system. AWS Snowball is a physical device for bulk data transfer, unrelated to shared live file access.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/efs/latest/ug/whatisefs.html",
+    "id": "clfc02-0046"
+  },
+  {
+    "domain": "Cloud Technology and Services",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A company needs to migrate 200 terabytes of on-premises data to Amazon S3, but its internet connection is too slow to transfer that volume in a reasonable time. Which AWS service is designed for this scenario?",
+    "options": [
+      "AWS Direct Connect, which must be provisioned and can take weeks to establish",
+      "Amazon CloudFront",
+      "AWS Snowball, a physical storage device shipped to the customer to load data offline and ship back to AWS for import into S3",
+      "AWS Transit Gateway"
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>AWS Snowball</b> is a ruggedized physical storage device that AWS ships to a customer's site; the customer loads it with data offline and ships it back so AWS can import the data into S3, avoiding the bottleneck of a slow internet link for large one-time transfers. Direct Connect can eventually provide high-throughput connectivity, but establishing it takes time and is meant for ongoing connectivity, not a one-time bulk transfer. CloudFront is a content delivery network, not a data-transfer mechanism. AWS Transit Gateway interconnects networks and does not move bulk data into S3.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/snowball/latest/ug/whatissnowball.html",
+    "id": "clfc02-0047"
+  },
+  {
+    "domain": "Cloud Technology and Services",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A company wants a relational database where AWS handles routine tasks such as automated backups, software patching, and hardware provisioning, so the team can focus on schema design and queries instead of database administration. Which service fits this need?",
+    "options": [
+      "Amazon DynamoDB",
+      "Amazon RDS, a managed relational database service that automates backups, patching, and provisioning",
+      "Amazon S3",
+      "AWS Lambda"
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Amazon RDS</b> is a managed relational database service that automates routine administrative tasks such as backups, patching, and hardware provisioning across engines like MySQL and PostgreSQL. Amazon DynamoDB is a managed NoSQL key-value and document database, not a relational database. Amazon S3 is object storage. AWS Lambda runs code, and neither provides relational database administration.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html",
+    "id": "clfc02-0048"
+  },
+  {
+    "domain": "Cloud Technology and Services",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "An application needs a database that returns single-digit-millisecond responses at any scale for simple key-based lookups, and that AWS fully manages so there are no servers to provision or database engines to patch. Which service fits BEST?",
+    "options": [
+      "Amazon DynamoDB, a fully managed, serverless NoSQL key-value and document database with consistent single-digit-millisecond performance at scale",
+      "Amazon Redshift",
+      "Amazon RDS running on a single large EC2-backed instance",
+      "Amazon EFS"
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Amazon DynamoDB</b> is a fully managed, serverless NoSQL database built for consistent single-digit-millisecond performance on key-based access patterns at any scale, with no servers or database engine to manage. Amazon Redshift is a data warehouse optimized for complex analytical queries over large datasets, not low-latency key lookups. Amazon RDS still requires choosing and managing an instance class and engine, and is optimized for relational workloads rather than pure key-value access. Amazon EFS is a file system, not a database.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Introduction.html",
+    "id": "clfc02-0049"
+  },
+  {
+    "domain": "Cloud Technology and Services",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A company runs a MySQL-compatible workload and wants a managed relational database with higher throughput and availability than standard RDS for MySQL, including storage that automatically grows and replicates across multiple Availability Zones, while remaining wire-compatible with existing MySQL drivers and tools. Which service fits BEST?",
+    "options": [
+      "Amazon Redshift, which is fully MySQL wire-compatible",
+      "Amazon Aurora, a MySQL- and PostgreSQL-compatible managed database engine built for higher performance and availability with auto-scaling, multi-AZ storage",
+      "Amazon DynamoDB configured in a relational mode",
+      "A self-managed MySQL installation on a single EC2 instance"
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Amazon Aurora</b> is a MySQL- and PostgreSQL-compatible managed database engine designed by AWS for higher throughput and availability than standard RDS engines, with storage that auto-scales and replicates across multiple Availability Zones, while remaining compatible with existing MySQL or PostgreSQL drivers and tools. Amazon Redshift is a columnar data warehouse for analytics, not a MySQL-wire-compatible transactional database. DynamoDB is a NoSQL database and has no relational mode. A self-managed MySQL instance on EC2 requires the customer to handle patching, backups, and scaling manually, the opposite of what is being asked for.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html",
+    "id": "clfc02-0050"
+  },
+  {
+    "domain": "Cloud Technology and Services",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A company wants to run complex analytical queries and aggregations across billions of rows of historical sales data collected from multiple sources, for business intelligence reporting, rather than serving live transactional application requests. Which AWS service is purpose-built for this?",
+    "options": [
+      "Amazon DynamoDB",
+      "Amazon RDS for MySQL",
+      "Amazon Redshift, a managed data warehouse optimized for large-scale analytical queries",
+      "Amazon ElastiCache"
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Amazon Redshift</b> is a managed data warehouse using columnar storage and massively parallel query processing, purpose-built for running complex analytical queries over very large historical datasets. Amazon DynamoDB is optimized for fast key-based transactional access, not large analytical scans. Amazon RDS for MySQL is a general-purpose relational database better suited to transactional workloads than petabyte-scale analytics. Amazon ElastiCache is an in-memory caching service for low-latency data access, not a data warehouse for analytics.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/redshift/latest/mgmt/welcome.html",
+    "id": "clfc02-0051"
+  },
+  {
+    "domain": "Cloud Technology and Services",
+    "tag": "Domain 3",
+    "type": "multi",
+    "stem": "A team is choosing AWS database and caching services for different parts of a new application. Which TWO of the following statements correctly match an AWS service to its purpose-built use case? (Select TWO.)",
+    "options": [
+      "Amazon DynamoDB is a fully managed NoSQL database suited for key-value and document access patterns at massive scale.",
+      "Amazon Redshift is the right choice for millisecond-latency in-memory caching in front of a relational database.",
+      "Amazon RDS is a NoSQL, schema-less database service.",
+      "Amazon ElastiCache provides an in-memory data store used to cache frequently accessed data and reduce load on a backend database.",
+      "Amazon Aurora is exclusively a data warehousing service for offline analytics."
+    ],
+    "correct": [
+      0,
+      3
+    ],
+    "explanation": "<b>Amazon DynamoDB</b> is purpose-built as a managed NoSQL key-value and document database for massive scale with low latency, and <b>Amazon ElastiCache</b> is an in-memory data store used to cache frequently accessed data and take load off a backend database. Amazon Redshift is a data warehouse for analytical queries, not an in-memory cache. Amazon RDS runs relational database engines with schemas, the opposite of schema-less NoSQL. Amazon Aurora is a relational, transactional database engine, not exclusively a data warehouse.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Introduction.html",
+    "id": "clfc02-0052"
+  },
+  {
+    "domain": "Cloud Technology and Services",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A company wants a logically isolated section of the AWS cloud where it defines its own IP address range, subnets, route tables, and network gateways to closely resemble a traditional on-premises network. Which AWS service provides this?",
+    "options": [
+      "AWS Direct Connect",
+      "Amazon Route 53",
+      "AWS Transit Gateway",
+      "Amazon VPC (Virtual Private Cloud), a logically isolated virtual network where the customer defines IP ranges, subnets, and route tables"
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Amazon VPC</b> is a logically isolated virtual network within AWS where the customer controls the IP address range, creates subnets, configures route tables, and attaches gateways, closely resembling a traditional data center network. AWS Direct Connect provides a dedicated network link into an existing VPC, but it does not itself define the isolated network. Amazon Route 53 is a DNS service. AWS Transit Gateway interconnects multiple VPCs and on-premises networks, but a VPC must already exist for it to connect to.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html",
+    "id": "clfc02-0053"
+  },
+  {
+    "domain": "Cloud Technology and Services",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "Resources in a VPC subnet need to communicate directly with the public internet, for example to let a web server in that subnet receive requests from anywhere. Which VPC component enables this connectivity?",
+    "options": [
+      "An internet gateway attached to the VPC, providing a target for internet-bound traffic in the route table",
+      "A network ACL",
+      "A security group",
+      "An IAM role attached to the subnet"
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "An <b>internet gateway</b> attached to a VPC is the component that allows resources in a public subnet to communicate with the internet, and it must also be referenced as a target in the subnet's route table. A network ACL is a stateless firewall for the subnet, and a security group is a stateful firewall for instances, but neither one provides the actual path to the internet. IAM roles grant permissions to call AWS APIs and cannot be attached to a subnet or provide network connectivity.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Internet_Gateway.html",
+    "id": "clfc02-0054"
+  },
+  {
+    "domain": "Cloud Technology and Services",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A company wants to register a domain name and route end-user requests for that domain to the correct AWS resources, with support for routing policies like weighted or latency-based routing across multiple Regions. Which service provides this?",
+    "options": [
+      "Amazon Route 53, a scalable DNS and domain registration service supporting multiple routing policies",
+      "AWS Direct Connect",
+      "Amazon VPC",
+      "AWS Transit Gateway"
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Amazon Route 53</b> is AWS's DNS web service; it can register domain names and route end-user requests to the correct resources using policies such as weighted, latency-based, or geolocation routing. AWS Direct Connect is a dedicated private network link, unrelated to domain name resolution. Amazon VPC defines a private virtual network but does not perform DNS routing at the domain level. AWS Transit Gateway interconnects VPCs and on-premises networks, not domain routing.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/Welcome.html",
+    "id": "clfc02-0055"
+  },
+  {
+    "domain": "Cloud Technology and Services",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A company wants a dedicated, private network connection between its on-premises data center and AWS that bypasses the public internet, to get more consistent network performance and reduce bandwidth costs for a high, steady volume of data transfer. Which AWS service provides this?",
+    "options": [
+      "AWS Site-to-Site VPN, which always uses a dedicated physical line",
+      "Amazon Route 53",
+      "AWS Direct Connect, a dedicated network connection from an on-premises location to AWS that does not traverse the public internet",
+      "AWS Transit Gateway used alone, with no on-premises connection"
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>AWS Direct Connect</b> establishes a dedicated, private network connection between an on-premises location and AWS, bypassing the public internet and providing more consistent performance for large, steady data volumes. AWS Site-to-Site VPN creates an encrypted tunnel over the public internet, not a dedicated physical line. Amazon Route 53 is a DNS service, unrelated to establishing a private network path. AWS Transit Gateway interconnects VPCs and can extend to on-premises networks, but by itself it does not create a dedicated physical connection out of the AWS network.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/directconnect/latest/UserGuide/Welcome.html",
+    "id": "clfc02-0056"
+  },
+  {
+    "domain": "Cloud Technology and Services",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A company already has an encrypted AWS Site-to-Site VPN connection to a single VPC and is growing to dozens of VPCs across several Regions, all of which need to communicate with each other and with the same on-premises network, without configuring a separate VPN or peering connection between every pair of VPCs. Which approach BEST addresses this at scale?",
+    "options": [
+      "Configure a full mesh of individual VPC peering connections between every pair of VPCs, plus a separate VPN to each one",
+      "Replace the VPN with AWS Direct Connect alone, since Direct Connect automatically interconnects all VPCs with each other",
+      "Attach the VPCs and the on-premises VPN connection to an AWS Transit Gateway, which acts as a central hub so each VPC only needs one connection to the hub instead of a connection to every other VPC",
+      "Create a new AWS account for every VPC so they share networking automatically"
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>AWS Transit Gateway</b> acts as a central network hub that VPCs and a VPN (or Direct Connect) attachment connect to once, and the Transit Gateway then routes traffic between all of them, avoiding the need for a connection between every pair of VPCs. A full mesh of individual peering connections and VPNs grows quickly and becomes unmanageable as VPC count increases. Direct Connect alone provides a dedicated link to AWS, but it does not automatically interconnect separate VPCs with each other; some hub mechanism like Transit Gateway is still needed. Creating separate AWS accounts does not, by itself, provide any networking between VPCs; VPCs in different accounts still need explicit connectivity such as peering or Transit Gateway.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/whitepapers/latest/aws-vpc-connectivity-options/introduction.html",
+    "id": "clfc02-0057"
   }
 ]
