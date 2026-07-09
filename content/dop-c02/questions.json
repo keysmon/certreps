@@ -209,5 +209,178 @@
     "difficulty": "medium",
     "docUrl": "https://docs.aws.amazon.com/codebuild/latest/userguide/vpc-support.html",
     "id": "dopc02-0011"
+  },
+  {
+    "domain": "Configuration Management and IaC",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A team stores a handful of static application configuration values (feature flags, an external API endpoint) as plaintext, and separately stores an RDS database password that must rotate automatically every 30 days. Which combination of AWS services BEST fits both needs with the least operational overhead?",
+    "options": [
+      "Store the static configuration values as Systems Manager Parameter Store parameters, and store the RDS password in Secrets Manager with automatic rotation enabled.",
+      "Store both the configuration values and the RDS password as Parameter Store SecureString parameters, and write a custom Lambda function on a cron schedule to rotate the password.",
+      "Store both in Secrets Manager, and disable rotation for both since it adds unnecessary API calls.",
+      "Store both as environment variables baked directly into each application's CodeBuild buildspec.yml file."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Parameter Store</b> handles simple configuration values well and can add KMS encryption with SecureString when needed. <b>Secrets Manager</b>, for the RDS password, provides built-in automatic rotation with a native RDS rotation Lambda that AWS manages the wiring for, so the team never builds its own rotation logic. Doing rotation through Parameter Store means writing and maintaining a custom Lambda and schedule that Secrets Manager already provides out of the box. Disabling rotation defeats the stated 30-day rotation requirement. Baking secrets into a buildspec file hardcodes credentials in source-adjacent build configuration, which is a security anti-pattern regardless of complexity.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-parameter-store.html",
+    "id": "dopc02-0012"
+  },
+  {
+    "domain": "Configuration Management and IaC",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A platform team wants a baseline CloudFormation stack (a logging bucket, an IAM permissions boundary, and a CloudTrail trail) automatically deployed to every AWS account in a specific Organizations OU, including accounts that join the OU in the future, without manually creating CloudFormation administration and execution IAM roles in each account. Which StackSets configuration should they use?",
+    "options": [
+      "Create a StackSet with self-managed permissions and manually create the CloudFormation StackSet administration and execution roles in every current and future member account.",
+      "Create a StackSet with service-managed permissions, enable trusted access with AWS Organizations, and target the OU with automatic deployment enabled for new accounts.",
+      "Deploy the stack once in the management account and rely on Organizations SCPs to replicate the resources into member accounts.",
+      "Create a separate, independent CloudFormation stack in each account and update all of them by hand whenever the baseline template changes."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Service-managed permissions with trusted access to AWS Organizations enabled</b> let StackSets create and manage the required IAM roles automatically, and targeting an OU with automatic deployment ensures accounts that join later receive the stack instance with no manual step. Self-managed permissions would work but require creating and maintaining the administration and execution roles by hand in every account, exactly the manual overhead the team wants to avoid. SCPs only set permission guardrails; they cannot deploy or create resources. Independent per-account stacks updated manually do not scale and reintroduce the drift and effort StackSets exists to remove.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-associate-stackset-with-organization.html",
+    "id": "dopc02-0013"
+  },
+  {
+    "domain": "Configuration Management and IaC",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "An engineer suspects that manual console changes have caused configuration drift across dozens of stacks deployed by a StackSet into 40 member accounts. They need to identify every drifted stack instance without checking each account by hand. What should they do?",
+    "options": [
+      "Manually open the CloudFormation console in each of the 40 accounts and run per-stack drift detection one account at a time.",
+      "Enable AWS Config in one account and assume it automatically reports CloudFormation drift for stacks in all 40 accounts.",
+      "Run drift detection on the StackSet itself, which triggers drift detection on every stack instance across all target accounts and Regions and reports which instances have drifted.",
+      "Re-deploy the StackSet with a forced update, which automatically reverts any manual changes without needing to detect drift first."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "CloudFormation supports <b>drift detection at the StackSet level</b>, which fans out and runs drift detection on every stack instance across all target accounts and Regions, then aggregates each instance's drift status in one place. Doing this per-account manually works but does not scale to 40 accounts and is exactly what StackSet-level drift detection exists to avoid. AWS Config tracks resource configuration history per account and Region and does not aggregate CloudFormation stack drift status across accounts on its own. Forcing a StackSet update without first detecting drift risks silently overwriting intentional out-of-band changes and gives no visibility into where drift existed.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-stack-drift.html",
+    "id": "dopc02-0014"
+  },
+  {
+    "domain": "Configuration Management and IaC",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A CloudFormation template must look up the latest AMI ID published by a third-party vendor at deploy time and use it as an EC2 instance's ImageId, but CloudFormation has no native intrinsic function or resource type for this vendor's AMI catalog. What is the standard way to add this capability to the template?",
+    "options": [
+      "Hardcode the current AMI ID as a plain string parameter and update the template by hand every time a new AMI is published.",
+      "Use the Fn::ImportValue intrinsic function to import the AMI ID from an unrelated stack's output.",
+      "Add a CloudFormation macro that runs before every deployment across the entire account and rewrites every template's ImageId value.",
+      "Define a custom resource backed by a Lambda function that queries the vendor's AMI catalog and returns the AMI ID to CloudFormation, then reference that custom resource's return value elsewhere in the template."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "A <b>Lambda-backed custom resource</b> is exactly the extension point CloudFormation provides for capabilities it does not support natively: the Lambda function runs custom logic, here querying the vendor's catalog, and returns data that other resources in the template can reference. Hardcoding the AMI ID and updating it by hand reintroduces manual maintenance and quickly goes stale. Fn::ImportValue only imports another stack's already-known output value; it cannot invoke external logic to look up a fresh AMI ID. A macro transforms template text before deployment and is a much heavier, account-wide mechanism than a single dynamic lookup needs.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-custom-resources.html",
+    "id": "dopc02-0015"
+  },
+  {
+    "domain": "Configuration Management and IaC",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A shared networking stack exports its VPC ID and subnet IDs so several independent application teams' stacks can import them with Fn::ImportValue. Over time, the platform team can no longer update the networking stack's subnet configuration because CloudFormation blocks changes to any exported value that is still imported elsewhere, and tracking which teams import which values has become difficult. Which change reduces this coupling for FUTURE cross-stack values while keeping the sharing intact?",
+    "options": [
+      "Publish shared values to Systems Manager Parameter Store instead of stack exports, and have consuming stacks read them with a CloudFormation dynamic reference at deploy time rather than Fn::ImportValue.",
+      "Convert the networking stack into a nested stack of every consuming application's stack so all values live in a single combined template.",
+      "Stop exporting any values and have each application team hardcode the current VPC and subnet IDs as plain string parameters.",
+      "Add more stack exports for every possible future value so teams never need to ask the networking team for a new one."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Parameter Store values, read through a CloudFormation dynamic reference, resolve at deploy time and are not tracked as a hard CloudFormation dependency</b> the way Fn::ImportValue exports are, so the networking team can update or replace a parameter without CloudFormation blocking the change or needing to know every consumer up front. Making the networking stack a nested stack of every consumer creates a tight, one-to-one coupling that does not fit a shared resource used by many independent teams. Hardcoding IDs removes the CloudFormation-managed relationship entirely and reintroduces manual, error-prone updates whenever networking changes. Adding more exports does not solve the underlying problem, since any of those exports would still block future changes once imported.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/dynamic-references.html",
+    "id": "dopc02-0016"
+  },
+  {
+    "domain": "Configuration Management and IaC",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A DevOps team wants to continuously enforce that every EC2 instance in a fleet has a specific CloudWatch agent configuration applied, re-applying it automatically if an instance drifts from the baseline, on a recurring schedule, without an operator re-running a script by hand. Which Systems Manager capability fits this?",
+    "options": [
+      "Create a one-time Systems Manager Automation runbook execution and rely on operators to re-run it whenever they remember.",
+      "Create a State Manager association targeting the fleet by tag that applies the configuration document on a recurring schedule and reports compliance.",
+      "Use Systems Manager Session Manager to open a shell on each instance and apply the configuration by hand.",
+      "Use Systems Manager Inventory to passively collect the current CloudWatch agent configuration with no enforcement."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "A <b>State Manager association</b> is built for exactly this: it applies a specified configuration document to targeted instances on a recurring schedule and continuously reports and re-enforces compliance, self-healing drift without operator action. A one-time Automation runbook execution only remediates once and depends on someone remembering to re-run it, which does not meet the continuous, unattended goal. Session Manager gives interactive shell access but is a manual, one-instance-at-a-time action, not fleet-wide automation. Inventory only collects and reports current state; it does not apply or enforce any configuration.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-state-manager.html",
+    "id": "dopc02-0017"
+  },
+  {
+    "domain": "Configuration Management and IaC",
+    "tag": "Domain 2",
+    "type": "multi",
+    "stem": "A StackSet deploys a stack to 200 accounts across 4 Regions. The platform team wants the rollout to proceed in parallel across many accounts to finish quickly, but wants the StackSet to automatically stop launching new stack instances if more than 10 percent of the attempted instances fail, so a bad template does not roll out everywhere before anyone notices. Which TWO StackSet operation preferences together achieve this? (Select TWO.)",
+    "options": [
+      "Set MaxConcurrentPercentage (or MaxConcurrentCount) high enough to deploy to many accounts and Regions in parallel.",
+      "Set FailureTolerancePercentage (or FailureToleranceCount) to 10 percent so the operation stops launching new instances once that failure threshold is crossed.",
+      "Set the StackSet's capabilities field to CAPABILITY_NAMED_IAM so failed instances are automatically retried.",
+      "Disable stack instance drift detection so failed instances are not reported as drifted.",
+      "Set the deployment order to strictly sequential across Regions and rely on manual review between each Region with no automated stop condition."
+    ],
+    "correct": [
+      0,
+      1
+    ],
+    "explanation": "<b>MaxConcurrentPercentage/Count controls how many accounts and Regions StackSets works on simultaneously</b>, giving the parallelism the team wants for a fast rollout, and <b>FailureTolerancePercentage/Count sets the failure threshold that automatically halts the operation</b> before it continues to remaining targets, together delivering a fast but safe deployment. CAPABILITY_NAMED_IAM only acknowledges that a template creates named IAM resources; it has nothing to do with retries or failure thresholds. Disabling drift detection hides configuration drift after the fact and does not stop a failing rollout in progress. A purely sequential, manually reviewed rollout removes the parallelism the team wants and provides no automated stop condition of its own.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-options.html",
+    "id": "dopc02-0018"
+  },
+  {
+    "domain": "Configuration Management and IaC",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A team runs drift detection on a stack that contains a nested stack and a Lambda-backed custom resource, expecting a complete drift report for every resource. Which limitation should they be aware of?",
+    "options": [
+      "Drift detection reports drift for every resource type without exception, including all custom resources.",
+      "Drift detection only works on stacks deployed through StackSets, never on standalone stacks.",
+      "CloudFormation drift detection does not support custom resources; the check skips them, so a custom resource's real-world state must be verified through other means, such as the underlying service's own APIs.",
+      "Drift detection automatically remediates any drifted resource back to its template-defined state during the check."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "CloudFormation drift detection covers a defined set of supported resource types, and <b>custom resources are explicitly excluded</b>; the check skips them rather than reporting on them, so a custom resource's real-world state must be verified through the underlying service's own APIs or other means. It is false that drift detection covers every resource type without exception, since custom resources are a documented gap. Drift detection works on standalone stacks as well as StackSet-deployed stacks, not only the latter. Drift detection is strictly read-only reporting; it never modifies resources, so remediation still requires a separate stack update.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-stack-drift.html",
+    "id": "dopc02-0019"
+  },
+  {
+    "domain": "Configuration Management and IaC",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A platform team uses AWS CDK across dozens of stacks and wants to enforce, at synthesis time, that every taggable resource in every stack carries a CostCenter tag, failing the cdk synth step if any resource is missing it, rather than discovering the gap after deployment. Which CDK mechanism BEST fits this?",
+    "options": [
+      "Add the tag manually to each construct's props in every stack and rely on code review to catch omissions.",
+      "Run an AWS Config rule after deployment that flags untagged resources for the team to fix later.",
+      "Add the tag only to the top-level Stack construct and assume CDK propagates it to every child resource automatically in all cases.",
+      "Implement a CDK Aspect that visits every construct in the tree during synthesis, checks for the required tag, and reports an error through Annotations when the tag is missing."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "A <b>CDK Aspect</b> is built exactly for this: it visits every construct in the tree during synthesis, so a custom Aspect can check for the required tag on each taggable resource and raise an Annotations error to fail cdk synth before anything is ever deployed. Manual tagging with code review is not automated and does not fail the build outright when someone forgets. An AWS Config rule only detects the gap after deployment, which is exactly the after-the-fact discovery the team wants to avoid. CDK's tagging helper does propagate tags downward from a scope by default, but that only guarantees the tags it applies are propagated; it does not verify or enforce that every resource actually carries a required tag, so an Aspect is still needed to check and fail on omissions.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/cdk/v2/guide/aspects.html",
+    "id": "dopc02-0020"
   }
 ]
