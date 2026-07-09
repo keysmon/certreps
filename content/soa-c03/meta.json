@@ -1,0 +1,46 @@
+{
+  "certId": "soa-c03",
+  "idPrefix": "soac03",
+  "vendor": "AWS",
+  "title": "AWS Certified CloudOps Engineer - Associate",
+  "examCode": "SOA-C03",
+  "level": "Associate",
+  "mockQuestionCount": 65,
+  "mockMinutes": 130,
+  "passLinePct": 72,
+  "verified": "Q3 2026",
+  "seoTitle": "Free SOA-C03 Practice Exam - AWS Certified CloudOps Engineer Associate",
+  "seoDescription": "Free full-length SOA-C03 practice exam with {n} original scenario questions, instant explanations, and a per-domain readiness read. No signup.",
+  "domains": [
+    {
+      "name": "Monitoring, Logging, Analysis, Remediation, and Performance Optimization",
+      "tag": "Domain 1",
+      "weightPct": 22,
+      "mockCount": 14
+    },
+    {
+      "name": "Reliability and Business Continuity",
+      "tag": "Domain 2",
+      "weightPct": 22,
+      "mockCount": 14
+    },
+    {
+      "name": "Deployment, Provisioning, and Automation",
+      "tag": "Domain 3",
+      "weightPct": 22,
+      "mockCount": 14
+    },
+    {
+      "name": "Security and Compliance",
+      "tag": "Domain 4",
+      "weightPct": 16,
+      "mockCount": 11
+    },
+    {
+      "name": "Networking and Content Delivery",
+      "tag": "Domain 5",
+      "weightPct": 18,
+      "mockCount": 12
+    }
+  ]
+}
