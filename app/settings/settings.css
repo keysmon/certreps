@@ -32,8 +32,7 @@
 .st-switch:disabled:not(.on) { opacity: 0.5; }
 .st-switch:not(:disabled):hover { border-color: var(--gold-dim); }
 
-.st-danger { background: transparent; color: var(--rose); border: 1px solid var(--rose); }
-.st-danger:hover { background: var(--rose-soft); }
+/* The delete button uses the canonical .btn-danger (globals.css) - Task 10 reconciliation. */
 
 .st-foot { font-family: var(--font-mono); font-size: 11px; color: var(--faint); text-align: center; margin-top: 22px; }
 

@@ -2,9 +2,8 @@
    design/redesign/Landing.html's <style> block.
    - The page-scoped body glow lives here: Task 1 removed the global glow, and the
      design re-adds it on this page only (a wrapper element, not a global body change).
-   - The hero CTA buttons are a deliberate page-local treatment: larger than the DS
-     Button and with hover states, reproduced from the design's inline .btn. The
-     ui-kit Button stays the app's general button; Task 10 reconciles button systems.
+   - The hero CTAs use the canonical .btn family (globals.css), sized up for the hero via the
+     .btn.lp-hero-cta modifier below (Task 10 reconciled the button systems onto one source).
    - Global pieces (skip-link, sr-only, a{}, .muted) come from globals.css - not repeated.
    Class names are lp- prefixed to stay collision-free (globals.css owns .btn/.card/.eyebrow). */
 
@@ -34,12 +33,13 @@
 .lp-sub { font-size: 19px; color: var(--muted); max-width: 600px; margin: 22px auto 0; line-height: 1.6; }
 .lp-cta { display: flex; gap: 14px; justify-content: center; margin-top: 34px; flex-wrap: wrap; }
 
-/* hero CTAs - page-local (see file header) */
-.lp-btn { font-family: var(--font-sans); font-size: 15px; font-weight: 600; border: none; border-radius: 12px; padding: 14px 22px; cursor: pointer; display: inline-flex; align-items: center; gap: 9px; text-decoration: none; transition: 0.14s; }
-.lp-btn-primary { background: var(--gold); color: var(--on-gold); box-shadow: 0 10px 28px -12px rgba(233, 180, 76, 0.75); }
-.lp-btn-primary:hover { background: var(--gold-bright); }
-.lp-btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--line-strong); }
-.lp-btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+/* hero CTAs - size-up modifier over the canonical .btn family (see file header). Structural props
+   (font, weight, gap, inline-flex, transition), the gold fill, and the primary hover come from
+   globals.css .btn/.btn-primary/.btn-ghost; only the larger size/radius, the richer shadow, and the
+   ghost hover are local. Two-class (.btn.lp-hero-cta) so the size beats .btn regardless of chunk order. */
+.btn.lp-hero-cta { font-size: 15px; padding: 14px 22px; border-radius: 12px; }
+.lp-hero-cta.btn-primary { box-shadow: 0 10px 28px -12px rgba(233, 180, 76, 0.75); }
+.lp-hero-cta.btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
 
 /* trust chips */
 .lp-trust { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 40px auto 0; max-width: 760px; }

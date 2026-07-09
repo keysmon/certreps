@@ -38,8 +38,7 @@
 .li-divider { display: flex; align-items: center; gap: 12px; margin: 20px 0; color: var(--faint); font-family: var(--font-mono); font-size: 11px; }
 .li-divider::before, .li-divider::after { content: ""; flex: 1; height: 1px; background: var(--line); }
 .li-oauth { display: flex; flex-direction: column; gap: 10px; }
-.btn-oauth { background: var(--panel-2); color: var(--text); border: 1px solid var(--line-strong); width: 100%; justify-content: center; }
-.btn-oauth:hover { border-color: var(--gold-dim); }
+/* .btn-oauth now lives in globals.css (Task 10 reconciliation - canonical button family). */
 
 .li-fine { font-size: 11.5px; color: var(--faint); margin-top: 20px; line-height: 1.6; }
 .li-skip { text-align: center; margin-top: 18px; font-size: 13px; }

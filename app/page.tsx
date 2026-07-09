@@ -56,10 +56,10 @@ export default function Home() {
             readiness read that tells you exactly what to drill next.
           </p>
           <div className="lp-cta">
-            <Link className="lp-btn lp-btn-primary" href="/catalog">
+            <Link className="btn btn-primary lp-hero-cta" href="/catalog">
               Browse {certs.length} certifications {ARROW}
             </Link>
-            <a className="lp-btn lp-btn-ghost" href="#how">See how it works</a>
+            <a className="btn btn-ghost lp-hero-cta" href="#how">See how it works</a>
           </div>
           {/* Honesty deviation (plan Task 3): the design renders a chip per vendor in the
               VENDORS map, but only AWS has live content today - rendering 8 vendor chips
@@ -109,7 +109,7 @@ export default function Home() {
           <div className="lp-finalcta">
             <h2>Your next cert is one drill away.</h2>
             <p>No account needed to start. Pick a certification and take your first ten questions right now.</p>
-            <Link className="lp-btn lp-btn-primary" href="/catalog">Find your certification {ARROW}</Link>
+            <Link className="btn btn-primary lp-hero-cta" href="/catalog">Find your certification {ARROW}</Link>
           </div>
         </section>
       </main>

@@ -23,6 +23,9 @@ export interface ButtonProps {
   "aria-label"?: string;
 }
 
+// Thin wrapper over the canonical .btn family (globals.css) - Task 10 reconciliation collapsed the
+// old inline-style variants onto those classes so there is one button source. Disabled primary
+// styling comes from `.btn-primary:disabled`; `style` stays an ad-hoc override passthrough.
 export function Button({
   variant = "primary",
   size = "md",
@@ -30,7 +33,7 @@ export function Button({
   children,
   onClick,
   disabled = false,
-  style = {},
+  style,
   type = "button",
   className,
   title,
@@ -38,33 +41,13 @@ export function Button({
   rel,
   "aria-label": ariaLabel,
 }: ButtonProps) {
-  const base: CSSProperties = {
-    fontFamily: "var(--font-sans)",
-    fontWeight: 600,
-    border: "none",
-    borderRadius: size === "sm" ? "9px" : "11px",
-    padding: size === "sm" ? "8px 14px" : "12px 20px",
-    fontSize: size === "sm" ? "13px" : "14.5px",
-    cursor: disabled ? "not-allowed" : "pointer",
-    display: "inline-flex",
-    alignItems: "center",
-    gap: "9px",
-    textDecoration: "none",
-    transition: ".14s",
-    lineHeight: 1.2,
-  };
-  const variants: Record<ButtonVariant, CSSProperties> = {
-    primary: disabled
-      ? { background: "var(--panel-3)", color: "var(--faint)", boxShadow: "none" }
-      : { background: "var(--gold)", color: "var(--on-gold)", boxShadow: "var(--shadow-gold)" },
-    ghost: { background: "transparent", color: "var(--text)", border: "1px solid var(--line-strong)" },
-    danger: { background: "transparent", color: "var(--rose)", border: "1px solid var(--rose)" },
-  };
-  const mergedStyle: CSSProperties = { ...base, ...variants[variant], ...style };
+  const cls = ["btn", `btn-${variant}`, size === "sm" ? "btn-sm" : "", className]
+    .filter(Boolean)
+    .join(" ");
 
   if (href && !disabled) {
     return (
-      <a href={href} onClick={onClick} style={mergedStyle} className={className} title={title} target={target} rel={rel} aria-label={ariaLabel}>
+      <a href={href} onClick={onClick} className={cls} style={style} title={title} target={target} rel={rel} aria-label={ariaLabel}>
         {children}
       </a>
     );
@@ -74,8 +57,8 @@ export function Button({
       type={type}
       disabled={disabled}
       onClick={disabled ? undefined : onClick}
-      style={mergedStyle}
-      className={className}
+      className={cls}
+      style={style}
       title={title}
       aria-label={ariaLabel}
     >

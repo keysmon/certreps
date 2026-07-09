@@ -203,7 +203,7 @@ export function SettingsClient() {
             <div className="rl danger">Delete all my data</div>
             <div className="rs">Deletes your practice data and preferences on this device, removes your cloud data, then signs you out. Cannot be undone.</div>
           </div>
-          <button type="button" className="btn btn-sm st-danger" onClick={onDelete}>
+          <button type="button" className="btn btn-danger btn-sm" onClick={onDelete}>
             Delete
           </button>
         </div>

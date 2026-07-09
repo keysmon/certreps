@@ -26,19 +26,19 @@ const meta: Pick<CertMeta, "certId" | "vendor" | "examCode" | "title" | "level">
 };
 
 describe("Button", () => {
-  it("renders a <button> with the primary gold treatment by default", () => {
+  it("emits the canonical .btn .btn-primary classes by default", () => {
     render(<Button>Go</Button>);
     const btn = screen.getByRole("button", { name: "Go" });
-    expect(btn.getAttribute("style")).toContain("var(--gold)");
-    expect(btn.getAttribute("style")).toContain("var(--shadow-gold)");
+    // Task 10 reconciliation: the gold treatment lives in globals.css .btn-primary, not inline styles.
+    expect(btn).toHaveClass("btn", "btn-primary");
     expect(btn).toHaveAttribute("type", "button");
   });
 
-  it("renders the ghost and danger variants with their borders", () => {
+  it("emits the ghost and danger variant classes", () => {
     const { rerender } = render(<Button variant="ghost">G</Button>);
-    expect(screen.getByRole("button", { name: "G" }).getAttribute("style")).toContain("var(--line-strong)");
+    expect(screen.getByRole("button", { name: "G" })).toHaveClass("btn", "btn-ghost");
     rerender(<Button variant="danger">D</Button>);
-    expect(screen.getByRole("button", { name: "D" }).getAttribute("style")).toContain("var(--rose)");
+    expect(screen.getByRole("button", { name: "D" })).toHaveClass("btn", "btn-danger");
   });
 
   it("renders an anchor when href is set and not disabled", () => {
@@ -53,8 +53,8 @@ describe("Button", () => {
     expect(screen.queryByRole("link")).not.toBeInTheDocument();
     const btn = screen.getByRole("button", { name: "Browse" });
     expect(btn).toBeDisabled();
-    expect(btn.getAttribute("style")).toContain("var(--panel-3)");
-    expect(btn.getAttribute("style")).toContain("var(--faint)");
+    // Disabled styling now comes from .btn-primary:disabled (globals.css), asserted by the variant class.
+    expect(btn).toHaveClass("btn", "btn-primary");
   });
 
   it("fires onClick when enabled and stays inert when disabled", async () => {
