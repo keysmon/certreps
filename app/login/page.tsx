@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { LoginClient } from "./LoginClient";
+import "./login.css";
 
 export const metadata: Metadata = {
   title: "Sign in",
@@ -13,7 +14,7 @@ export default async function LoginPage({
 }) {
   const { error } = await searchParams;
   return (
-    <main className="container" style={{ paddingTop: 72, paddingBottom: 48 }}>
+    <main className="li-page">
       <LoginClient failed={error === "auth"} />
     </main>
   );
