@@ -1,0 +1,40 @@
+{
+  "certId": "saa-c03",
+  "idPrefix": "saac03",
+  "vendor": "AWS",
+  "title": "AWS Certified Solutions Architect - Associate",
+  "examCode": "SAA-C03",
+  "level": "Associate",
+  "mockQuestionCount": 65,
+  "mockMinutes": 130,
+  "passLinePct": 72,
+  "verified": "Q3 2026",
+  "seoTitle": "Free SAA-C03 Practice Exam - AWS Certified Solutions Architect Associate",
+  "seoDescription": "Free full-length SAA-C03 practice exam with {n} original scenario questions, instant explanations, and a per-domain readiness read. No signup.",
+  "domains": [
+    {
+      "name": "Design Secure Architectures",
+      "tag": "Domain 1",
+      "weightPct": 30,
+      "mockCount": 19
+    },
+    {
+      "name": "Design Resilient Architectures",
+      "tag": "Domain 2",
+      "weightPct": 26,
+      "mockCount": 17
+    },
+    {
+      "name": "Design High-Performing Architectures",
+      "tag": "Domain 3",
+      "weightPct": 24,
+      "mockCount": 16
+    },
+    {
+      "name": "Design Cost-Optimized Architectures",
+      "tag": "Domain 4",
+      "weightPct": 20,
+      "mockCount": 13
+    }
+  ]
+}
