@@ -5,12 +5,18 @@ export interface ScoreRingProps {
   total?: number;
   label?: string;
   stroke?: number;
+  /** Pass mark for the emerald band. Default 72 preserves every existing call site
+   *  (detail rail, progress cards) unchanged; Results threads meta.passLinePct so the ring
+   *  turns emerald at OUR pass line, not a hardcoded 72 - the pull-forward of the pinned
+   *  Task-10 item. The gold/rose split stays at 50 ("half correct"), a cert-independent
+   *  floor rather than a pass-line-derived band. */
+  passLine?: number;
 }
 
-export function ScoreRing({ pct = 0, size = 168, correct, total, label, stroke = 9 }: ScoreRingProps) {
+export function ScoreRing({ pct = 0, size = 168, correct, total, label, stroke = 9, passLine = 72 }: ScoreRingProps) {
   const r = size / 2 - stroke - 1;
   const circ = 2 * Math.PI * r;
-  const col = pct >= 72 ? "var(--emerald)" : pct >= 50 ? "var(--gold)" : "var(--rose)";
+  const col = pct >= passLine ? "var(--emerald)" : pct >= 50 ? "var(--gold)" : "var(--rose)";
   const dash = (pct / 100) * circ;
   const hasScore = correct != null && total != null;
 

@@ -133,13 +133,22 @@ describe("ScoreRing", () => {
     return container.querySelectorAll("circle")[1].getAttribute("stroke");
   }
 
-  it("colors the arc by the 72/50 bands", () => {
+  it("colors the arc by the default 72/50 bands", () => {
     const above = render(<ScoreRing pct={72} />);
     expect(progressStroke(above.container)).toBe("var(--emerald)");
     const mid = render(<ScoreRing pct={50} />);
     expect(progressStroke(mid.container)).toBe("var(--gold)");
     const below = render(<ScoreRing pct={49} />);
     expect(progressStroke(below.container)).toBe("var(--rose)");
+  });
+
+  it("moves the emerald (pass) boundary to an explicit passLine", () => {
+    // 72% is emerald at the default pass line but gold once the pass line is 75 (aip-c01);
+    // the gold/rose split stays at 50. Threaded from meta.passLinePct in Results.
+    const under = render(<ScoreRing pct={72} passLine={75} />);
+    expect(progressStroke(under.container)).toBe("var(--gold)");
+    const at = render(<ScoreRing pct={75} passLine={75} />);
+    expect(progressStroke(at.container)).toBe("var(--emerald)");
   });
 
   it("marks the SVG decorative and exposes an sr-only textual score", () => {

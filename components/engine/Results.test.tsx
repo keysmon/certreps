@@ -49,10 +49,11 @@ describe("Results", () => {
 });
 
 describe("Results recap explanations", () => {
-  it("renders recap rows collapsed - the explanation is not visible", () => {
+  it("collapses correct rows but auto-opens wrong ones so a miss is not buried", () => {
+    // q0 is correct -> stays collapsed; q1 is wrong -> opens by default (Task 7 additive `open`).
     render(<Results attempt={makeAttempt(0)} questions={qs} meta={getMeta()} />);
     expect(screen.getByText(/Explanation 0/)).not.toBeVisible();
-    expect(screen.getByText(/Explanation 1/)).not.toBeVisible();
+    expect(screen.getByText(/Explanation 1/)).toBeVisible();
   });
 
   it("expanding a recap row reveals its explanation and the AWS docs link", async () => {
