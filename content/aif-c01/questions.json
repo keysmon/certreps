@@ -825,5 +825,140 @@
     "domain": "Guidelines for Responsible AI",
     "tag": "Domain 4",
     "id": "aifc01-0043"
+  },
+  {
+    "type": "single",
+    "stem": "A company wants to ensure that only specific engineers can invoke a particular foundation model through Amazon Bedrock, while all other IAM principals are denied access to that model. Which AWS mechanism should the company use?",
+    "options": [
+      "Amazon CloudWatch alarms, which trigger notifications based on metric thresholds.",
+      "IAM policies that grant the bedrock:InvokeModel permission only to the specific engineers' roles or users, following the principle of least privilege.",
+      "Amazon S3 bucket versioning, which keeps historical versions of objects.",
+      "AWS Budgets, which tracks and alerts on account spending."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>IAM policies</b> that grant the specific invoke permission only to the intended engineers' roles or users is exactly how least-privilege access control is enforced for a Bedrock model. <b>CloudWatch alarms</b> trigger on metrics and do not control who can call an API. <b>S3 bucket versioning</b> preserves object history and has nothing to do with model invocation permissions. <b>AWS Budgets</b> tracks spending, not access control.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction.html",
+    "domain": "Security, Compliance, and Governance for AI Solutions",
+    "tag": "Domain 5",
+    "id": "aifc01-0044"
+  },
+  {
+    "type": "single",
+    "stem": "A company deploying a customer-facing generative AI chatbot on Amazon Bedrock needs to automatically block harmful content categories, redact PII from conversations, and restrict the chatbot from discussing certain topics such as competitor products. Which Bedrock capability provides this?",
+    "options": [
+      "Bedrock Agents, which orchestrate multi-step tasks by invoking APIs and tools.",
+      "Bedrock Knowledge Bases, which connect a foundation model to a RAG data source.",
+      "Bedrock model customization, which fine-tunes a model on a labeled dataset.",
+      "Guardrails for Amazon Bedrock, which let teams configure content filters, denied topics, and PII redaction policies applied to model inputs and outputs."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Guardrails for Amazon Bedrock</b> is purpose-built for exactly this: configurable content filters, denied topics, and PII redaction applied to both inputs and outputs of a foundation model application. <b>Agents</b> orchestrate multi-step tool-using tasks, a different capability. <b>Knowledge Bases</b> connect a model to a retrieval data source for RAG, not content safety controls. <b>Model customization</b> (fine-tuning) changes model behavior through training, not through configurable runtime content filters.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails.html",
+    "domain": "Security, Compliance, and Governance for AI Solutions",
+    "tag": "Domain 5",
+    "id": "aifc01-0045"
+  },
+  {
+    "type": "single",
+    "stem": "A financial-services company wants its application to call Amazon Bedrock APIs without any traffic traversing the public internet, keeping all communication within the AWS network. Which AWS capability BEST meets this requirement?",
+    "options": [
+      "Amazon CloudFront, a content delivery network for caching content at edge locations.",
+      "AWS Direct Connect used exclusively for public web traffic.",
+      "AWS PrivateLink, which provides private connectivity between a VPC and supported AWS services, including Bedrock, without traversing the public internet.",
+      "Amazon Route 53, a DNS service for routing internet traffic."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>AWS PrivateLink</b> creates private connectivity between a VPC and supported AWS services such as Bedrock, so traffic never traverses the public internet, exactly matching this requirement. <b>CloudFront</b> caches content at edge locations for delivery performance, not private connectivity to an API. <b>Direct Connect</b> provides a dedicated network connection to AWS, but the option as described (used for public web traffic) does not address keeping Bedrock calls off the public internet the way PrivateLink does. <b>Route 53</b> is a DNS service for routing internet traffic, not a mechanism for private service connectivity.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/vpc/latest/privatelink/what-is-privatelink.html",
+    "domain": "Security, Compliance, and Governance for AI Solutions",
+    "tag": "Domain 5",
+    "id": "aifc01-0046"
+  },
+  {
+    "type": "single",
+    "stem": "A company storing training data and model artifacts in Amazon S3 for a SageMaker project must ensure the data is encrypted both while stored and while moving between services, with only authorized keys able to decrypt it. Which AWS service centrally manages the encryption keys used for this?",
+    "options": [
+      "AWS Key Management Service (KMS), which creates and controls the cryptographic keys used to encrypt data at rest and in transit across AWS services.",
+      "Amazon CloudWatch, which collects logs and metrics for monitoring.",
+      "AWS Config, which tracks resource configuration changes over time.",
+      "Amazon SNS, a pub/sub messaging service for application notifications."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>AWS KMS</b> is the service that creates, manages, and controls access to the cryptographic keys used to encrypt data at rest and in transit across AWS services such as S3 and SageMaker. <b>CloudWatch</b> collects logs and metrics for monitoring, unrelated to key management. <b>AWS Config</b> tracks configuration changes over time, not encryption keys. <b>Amazon SNS</b> is a messaging service for notifications, unrelated to encryption.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/kms/latest/developerguide/overview.html",
+    "domain": "Security, Compliance, and Governance for AI Solutions",
+    "tag": "Domain 5",
+    "id": "aifc01-0047"
+  },
+  {
+    "type": "single",
+    "stem": "Before sending customer chat transcripts to a foundation model for summarization, a company wants to automatically detect and redact personally identifiable information (PII), such as names, phone numbers, and account numbers, from the text. Which AWS service is designed for this?",
+    "options": [
+      "Amazon Polly, which converts text into spoken audio.",
+      "Amazon Kendra, an intelligent enterprise search service.",
+      "Amazon Translate, which translates text between languages.",
+      "Amazon Comprehend, which can detect and redact PII entities such as names, phone numbers, and account numbers in text."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Amazon Comprehend</b> includes PII detection capabilities that identify and can redact entities such as names, phone numbers, and account numbers in text, directly addressing this need. <b>Polly</b> performs text-to-speech, unrelated to PII detection. <b>Kendra</b> is an enterprise search service, not a PII scanner. <b>Translate</b> converts text between languages and does not detect or redact sensitive entities.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/comprehend/latest/dg/what-is.html",
+    "domain": "Security, Compliance, and Governance for AI Solutions",
+    "tag": "Domain 5",
+    "id": "aifc01-0048"
+  },
+  {
+    "type": "single",
+    "stem": "A compliance team needs a record of every API call made to Amazon Bedrock and SageMaker across the company's AWS accounts, including who made each call and when, to support an upcoming audit. Which AWS service provides this?",
+    "options": [
+      "AWS CloudTrail, which records API calls made across AWS services, including who made the call, when, and from where, supporting governance and audit needs.",
+      "Amazon Macie, which discovers and classifies sensitive data in Amazon S3.",
+      "Amazon QuickSight, a business intelligence and dashboarding service.",
+      "AWS Glue, a serverless data integration and ETL service."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>AWS CloudTrail</b> records API activity across AWS services, capturing who made each call, when, and from where, which is exactly the audit trail this compliance team needs for Bedrock and SageMaker usage. <b>Macie</b> discovers and classifies sensitive data in S3, a different governance function from call-level auditing. <b>QuickSight</b> is a BI and dashboarding tool, not an API activity log. <b>Glue</b> is a data integration and ETL service, unrelated to auditing API calls.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-user-guide.html",
+    "domain": "Security, Compliance, and Governance for AI Solutions",
+    "tag": "Domain 5",
+    "id": "aifc01-0049"
+  },
+  {
+    "type": "multi",
+    "stem": "A healthcare company is deploying a generative AI application on AWS that processes patient records, and a European subsidiary will also process EU residents' personal data through the same application. Which TWO statements about compliance responsibility are correct? (Select TWO.)",
+    "options": [
+      "HIPAA governs the protection of protected health information (PHI) in the United States, so patient-record handling for this application must account for HIPAA requirements.",
+      "GDPR applies to the processing of personal data of EU residents, so the European subsidiary's use of the application must account for GDPR requirements.",
+      "AWS is solely responsible for ensuring the customer's application code and configuration meet HIPAA and GDPR requirements, under the shared responsibility model.",
+      "Once data is stored in the AWS Cloud, no customer-side compliance obligations remain, since AWS assumes full legal responsibility for the customer's data.",
+      "HIPAA and GDPR are the exact same regulation with identical scope, simply issued by different governments."
+    ],
+    "correct": [
+      0,
+      1
+    ],
+    "explanation": "<b>HIPAA</b> governs protected health information in the United States, and <b>GDPR</b> governs the processing of EU residents' personal data, so both are directly relevant given the healthcare data and the European subsidiary described. Under the AWS shared responsibility model, AWS secures the underlying cloud infrastructure ('security of the cloud'), but the customer remains responsible for configuring their own application, data handling, and access controls to meet applicable regulations ('security in the cloud'), so claiming AWS is solely responsible, or that no customer obligations remain, is false. HIPAA and GDPR are distinct regulations with different origins and scope (US health-data privacy versus broad EU personal-data protection), so treating them as identical is also false.",
+    "difficulty": "hard",
+    "docUrl": "https://aws.amazon.com/compliance/hipaa-compliance/",
+    "domain": "Security, Compliance, and Governance for AI Solutions",
+    "tag": "Domain 5",
+    "id": "aifc01-0050"
   }
 ]
