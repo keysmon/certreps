@@ -1,0 +1,194 @@
+[
+  {
+    "type": "single",
+    "stem": "Which statement correctly describes the relationship between artificial intelligence (AI), machine learning (ML), and deep learning?",
+    "options": [
+      "ML is the broadest field, and AI is a narrower subset of ML that specifically uses neural networks.",
+      "AI is the broadest field of building systems that mimic human intelligence, ML is a subset of AI that learns patterns from data, and deep learning is a subset of ML that uses multi-layer neural networks.",
+      "Deep learning and ML are unrelated fields that both happen to fall under AI, with no overlap between them.",
+      "AI, ML, and deep learning are interchangeable terms for the same technology."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>AI is the broadest field</b> covering any system built to mimic human intelligence. <b>ML is a subset of AI</b> in which systems learn patterns from data rather than following hardcoded rules. <b>Deep learning is a subset of ML</b> that uses multi-layer (deep) neural networks. The first option reverses the AI/ML hierarchy. The third option is wrong because deep learning is nested inside ML, not a separate unrelated field. The fourth option is wrong because the terms describe nested scopes, not synonyms.",
+    "difficulty": "easy",
+    "docUrl": "https://aws.amazon.com/what-is/artificial-intelligence/",
+    "domain": "Fundamentals of AI and ML",
+    "tag": "Domain 1",
+    "id": "aifc01-0001"
+  },
+  {
+    "type": "single",
+    "stem": "A retail company trains a demand-forecasting model offline using two years of historical sales records. It then deploys the trained model so it can generate a forecast in real time whenever a store manager requests one. What is the term for this real-time forecast-generation step?",
+    "options": [
+      "Training",
+      "Feature engineering",
+      "Inference",
+      "Data labeling"
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Inference</b> is the step where an already-trained model is given new input and produces an output (a prediction), which matches the real-time forecast request. <b>Training</b> is the earlier offline step that fits the model to historical data and has already happened here. <b>Feature engineering</b> transforms raw data into model inputs before training. <b>Data labeling</b> assigns ground-truth outcomes to training examples and also happens before training, not at request time.",
+    "difficulty": "easy",
+    "docUrl": "https://aws.amazon.com/what-is/machine-learning/",
+    "domain": "Fundamentals of AI and ML",
+    "tag": "Domain 1",
+    "id": "aifc01-0002"
+  },
+  {
+    "type": "single",
+    "stem": "A utility company wants to predict the exact number of kilowatt-hours a household will consume next month, a continuous numeric value, using historical usage, weather, and household size as inputs. Which ML technique is BEST suited to this problem?",
+    "options": [
+      "Regression, which predicts a continuous numeric value from input features.",
+      "Classification, which assigns input data to one of a fixed set of discrete categories.",
+      "Clustering, which groups similar data points without using labeled outcomes.",
+      "Reinforcement learning, which learns a decision policy through trial-and-error rewards."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Regression</b> is the supervised-learning technique for predicting a continuous numeric target, such as kilowatt-hours, which is exactly what is asked for here. <b>Classification</b> would apply if the target were a discrete label (for example, 'high usage' vs. 'low usage'), not a precise number. <b>Clustering</b> is unsupervised and groups similar records rather than predicting a value. <b>Reinforcement learning</b> optimizes sequential decisions through rewards and has no forecasting target here.",
+    "difficulty": "medium",
+    "docUrl": "https://aws.amazon.com/what-is/machine-learning/",
+    "domain": "Fundamentals of AI and ML",
+    "tag": "Domain 1",
+    "id": "aifc01-0003"
+  },
+  {
+    "type": "single",
+    "stem": "A marketing team wants to segment its customer base into groups with similar purchasing behavior. No predefined group labels exist, and the team wants the data itself to reveal natural groupings so it can design a targeted campaign per group. Which ML technique fits this task?",
+    "options": [
+      "Classification, because customers must be sorted into a known, predefined set of labeled categories.",
+      "Regression, because the marketing team needs a single continuous numeric prediction.",
+      "Supervised learning using historical labels that already mark each customer's segment.",
+      "Clustering, an unsupervised technique that groups similar data points without labeled outcomes."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Clustering</b> is the unsupervised technique that discovers natural groupings in unlabeled data, which is exactly the described scenario since no segment labels exist yet. <b>Classification</b> requires predefined labeled categories to sort into, which the team does not have. <b>Regression</b> predicts a continuous number, not a group assignment. <b>Supervised learning</b> is ruled out by the stem itself: there are no predefined segment labels to learn from.",
+    "difficulty": "medium",
+    "docUrl": "https://aws.amazon.com/what-is/machine-learning/",
+    "domain": "Fundamentals of AI and ML",
+    "tag": "Domain 1",
+    "id": "aifc01-0004"
+  },
+  {
+    "type": "single",
+    "stem": "During evaluation, a model scores 99% accuracy on its training data but only 62% accuracy on new, unseen validation data. Which term describes this problem, and what does it indicate?",
+    "options": [
+      "Underfitting: the model is too simple and has not learned enough from the training data.",
+      "Overfitting: the model has memorized noise and specific patterns in the training data that do not generalize to new data.",
+      "Data leakage: information from the test set was accidentally used to compute training accuracy.",
+      "Class imbalance: one class in the training data has far more examples than the others."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "A large gap between very high training accuracy and much lower validation accuracy is the signature of <b>overfitting</b>: the model has memorized training-specific noise rather than learning patterns that generalize. <b>Underfitting</b> would instead show poor accuracy on both the training and validation sets. <b>Data leakage</b> would tend to inflate validation performance, not lower it relative to training. <b>Class imbalance</b> is a property of the label distribution, not a description of a train-versus-validation performance gap.",
+    "difficulty": "medium",
+    "docUrl": "https://aws.amazon.com/what-is/overfitting/",
+    "domain": "Fundamentals of AI and ML",
+    "tag": "Domain 1",
+    "id": "aifc01-0005"
+  },
+  {
+    "type": "single",
+    "stem": "A small internal tool must flag any order whose total exceeds exactly $10,000 for manager approval, a rule that never changes and requires no learning from data. Which approach is MOST appropriate?",
+    "options": [
+      "Train a supervised classification model to predict whether an order needs approval.",
+      "Use a simple deterministic if-else rule that compares the order total to $10,000, since the logic is fixed and does not depend on patterns in data.",
+      "Use unsupervised clustering to discover which orders are unusual and need approval.",
+      "Use reinforcement learning so the system improves its approval decisions over time through rewards."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "When the decision logic is a fixed, known rule with no patterns to learn from data, a <b>plain deterministic rule</b> is simpler, cheaper, fully explainable, and exactly correct every time, so ML adds unnecessary cost and risk here. A classification model would need training data and could still make errors on a rule that is actually exact. Clustering finds groupings, not a fixed threshold decision. Reinforcement learning is built for sequential decision optimization, not a static comparison.",
+    "difficulty": "medium",
+    "docUrl": "https://aws.amazon.com/what-is/machine-learning/",
+    "domain": "Fundamentals of AI and ML",
+    "tag": "Domain 1",
+    "id": "aifc01-0006"
+  },
+  {
+    "type": "single",
+    "stem": "Early in an ML project, before any model is trained, a data scientist visualizes feature distributions, checks for missing values and outliers, and looks at correlations between variables. Which stage of the ML development lifecycle is this?",
+    "options": [
+      "Model deployment",
+      "Hyperparameter tuning",
+      "Exploratory data analysis (EDA)",
+      "Model monitoring"
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Exploratory data analysis (EDA)</b> is the lifecycle stage where a practitioner examines distributions, missing values, outliers, and correlations to understand the data before modeling. <b>Model deployment</b> happens much later, after training, when the model is hosted for use. <b>Hyperparameter tuning</b> adjusts model training settings, which requires a model already being trained, not raw-data inspection. <b>Model monitoring</b> happens after deployment to track live performance and drift.",
+    "difficulty": "easy",
+    "docUrl": "https://aws.amazon.com/what-is/machine-learning/",
+    "domain": "Fundamentals of AI and ML",
+    "tag": "Domain 1",
+    "id": "aifc01-0007"
+  },
+  {
+    "type": "single",
+    "stem": "An ML team wants Amazon SageMaker to automatically search across ranges of learning rate, batch size, and number of layers to find the combination that yields the best validation metric, running many training jobs on their behalf. Which SageMaker capability does this?",
+    "options": [
+      "SageMaker Automatic Model Tuning (hyperparameter tuning), which runs multiple training jobs across a defined search space to optimize a chosen metric.",
+      "SageMaker Model Monitor, which detects data and prediction drift after deployment.",
+      "SageMaker Feature Store, which centralizes and reuses engineered features.",
+      "SageMaker Clarify, which measures bias and explains model predictions."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>SageMaker Automatic Model Tuning</b> (also called hyperparameter tuning) launches many training jobs across a defined range of hyperparameters and searches for the combination that optimizes a target metric, exactly as described. <b>Model Monitor</b> runs after a model is deployed and watches for drift, not hyperparameter search. <b>Feature Store</b> manages and serves engineered features, unrelated to tuning. <b>Clarify</b> evaluates bias and explainability, not hyperparameters.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/automatic-model-tuning.html",
+    "domain": "Fundamentals of AI and ML",
+    "tag": "Domain 1",
+    "id": "aifc01-0008"
+  },
+  {
+    "type": "multi",
+    "stem": "A team is evaluating a fraud-detection model where only 1% of transactions are actually fraudulent. Which TWO statements about evaluating this model are correct? (Select TWO.)",
+    "options": [
+      "Overall accuracy is a reliable metric here, because a model that always predicts 'not fraud' would score close to 99% accuracy while catching zero fraud.",
+      "Precision and recall are more informative than accuracy here, since they separately capture false positives and false alarms versus missed fraud cases.",
+      "The F1 score, the harmonic mean of precision and recall, is a useful single metric for summarizing performance on this imbalanced problem.",
+      "Accuracy and F1 score will always be numerically identical for any classification model, regardless of class balance.",
+      "Because the classes are imbalanced, evaluation metrics do not matter and any model can be deployed without further review."
+    ],
+    "correct": [
+      1,
+      2
+    ],
+    "explanation": "On a highly imbalanced dataset, <b>precision and recall</b> reveal how well the model catches actual fraud versus how often it raises false alarms, and the <b>F1 score</b> combines both into one summary metric, which is why both are preferred over accuracy here. The first option is backwards: it describes exactly why accuracy is misleading (a naive always-negative model would score about 99% accuracy while catching zero fraud), not why it is reliable. Accuracy and F1 are different formulas and are not always equal. Imbalance makes metric choice more important, not irrelevant, so the last option is false.",
+    "difficulty": "hard",
+    "docUrl": "https://aws.amazon.com/what-is/machine-learning/",
+    "domain": "Fundamentals of AI and ML",
+    "tag": "Domain 1",
+    "id": "aifc01-0009"
+  },
+  {
+    "type": "single",
+    "stem": "An ML team reports that their new recommendation model improved offline validation accuracy by 3%. Leadership instead asks for the change in customer click-through rate and incremental revenue per user after the model went live. Which category of metric is leadership asking for?",
+    "options": [
+      "A model performance metric, since accuracy and business impact are the same measurement.",
+      "A business metric, which measures the real-world impact of the model on outcomes like revenue or customer behavior rather than the model's technical prediction quality.",
+      "A hyperparameter, which controls how the model is trained.",
+      "A data quality metric, which measures completeness and consistency of the training data."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Business metrics</b>, such as click-through rate, revenue per user, or customer retention, measure the model's real-world impact on the business rather than its technical prediction quality, which is what leadership is asking about. Accuracy is a model performance metric and is not the same measurement as revenue impact, so the first option is wrong. Hyperparameters are training-time settings, not outcome measurements. Data quality metrics assess the input data, not post-deployment business impact.",
+    "difficulty": "hard",
+    "docUrl": "https://aws.amazon.com/what-is/machine-learning/",
+    "domain": "Fundamentals of AI and ML",
+    "tag": "Domain 1",
+    "id": "aifc01-0010"
+  }
+]
