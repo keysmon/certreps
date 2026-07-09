@@ -749,5 +749,273 @@
     "difficulty": "hard",
     "docUrl": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-proxy.html",
     "id": "deac01-0039"
+  },
+  {
+    "domain": "Data Operations and Support",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A data pipeline invokes hundreds of thousands of short Step Functions executions per day, each completing in under a minute, and the team wants to minimize per-execution cost while still getting retries and basic error handling. Which Step Functions workflow type is the BEST fit?",
+    "options": [
+      "An Express Workflow, priced by execution duration and number of requests, designed for high-volume, short-duration workloads.",
+      "A Standard Workflow, priced per state transition and designed for long-running workflows with exactly-once execution semantics.",
+      "An AWS Glue workflow, which only orchestrates Glue-native jobs, crawlers, and triggers.",
+      "An Amazon EventBridge rule with no state machine at all."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Express Workflows</b> are priced by execution duration and number of requests and are built for high-volume, short-duration workloads exactly like hundreds of thousands of sub-minute executions per day, while still supporting Retry and Catch error handling. <b>Standard Workflows</b> price per state transition and add exactly-once semantics and long execution history, better suited to lower-volume, longer-running workflows, and would cost more at this volume. A Glue workflow only chains Glue-native objects, not arbitrary retryable state machine logic. An EventBridge rule with no state machine has no built-in retry/Catch semantics of its own.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/step-functions/latest/dg/concepts-standard-vs-express.html",
+    "id": "deac01-0040"
+  },
+  {
+    "domain": "Data Operations and Support",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A Glue ETL job must run automatically every day at 2 AM, and the team wants the trigger managed centrally alongside dozens of other unrelated scheduled tasks across various AWS services, not tied only to Glue's own trigger console. Which approach is the BEST fit?",
+    "options": [
+      "A Glue trigger of type SCHEDULED, configured with a cron expression, viewable only within the Glue console.",
+      "An Amazon EventBridge Scheduler schedule that invokes the Glue StartJobRun API at 2 AM daily, managed centrally alongside schedules for other services.",
+      "A Lambda function that sleeps until 2 AM and then calls StartJobRun.",
+      "A Step Functions Standard Workflow with no schedule, started manually every day."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>EventBridge Scheduler</b> centralizes cron- or rate-based schedules across many AWS service targets (Glue, Lambda, Step Functions, and more) in one place, which fits a team managing dozens of unrelated scheduled tasks. A Glue-native SCHEDULED trigger works but is visible only within Glue, not alongside other services' schedules. A Lambda function that sleeps wastes execution time and money and does not belong in a serverless scheduling design. A Standard Workflow started manually every day requires human intervention and defeats the purpose of an automatic daily schedule.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-what-is.html",
+    "id": "deac01-0041"
+  },
+  {
+    "domain": "Data Operations and Support",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "After a batch of Glue jobs fails overnight, an engineer must quickly search millions of log lines across many CloudWatch Logs log streams for a specific error pattern, without downloading logs manually. Which approach is the BEST fit?",
+    "options": [
+      "Open each job run's log stream individually in the console and read line by line.",
+      "Download every log file to a local machine and grep them one at a time.",
+      "Run a CloudWatch Logs Insights query across the relevant log group(s) to search and filter for the error pattern at scale.",
+      "Enable AWS CloudTrail data events for the Glue jobs' log group."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>CloudWatch Logs Insights</b> lets you run a purpose-built query language across one or many log groups to search, filter, and aggregate log lines at scale, far faster than manual inspection. Opening each stream individually or downloading files to grep locally does not scale to millions of lines across many runs. CloudTrail records API activity (who called which AWS API), not the application-level log content emitted by a Glue job, so it would not help search job log messages.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/AnalyzingLogData.html",
+    "id": "deac01-0042"
+  },
+  {
+    "domain": "Data Operations and Support",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A team wants the on-call data engineer to be paged automatically within minutes whenever a critical nightly Glue job fails, without anyone having to check a dashboard. Which combination of services BEST achieves this?",
+    "options": [
+      "Rely on the engineer to check the Glue console manually every morning.",
+      "Configure the Glue job to write a log entry on failure, with no further action.",
+      "Use AWS CloudTrail to record the job failure as a management event.",
+      "Configure a CloudWatch alarm on the job's failure metric (or an EventBridge rule matching the Glue job state-change event) that publishes to an SNS topic subscribed by the on-call engineer."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "A <b>CloudWatch alarm on the failure metric, or an EventBridge rule matching the Glue job's FAILED state-change event, that publishes to an SNS topic</b> notifies the on-call engineer within minutes automatically, with no manual dashboard checking. Manually checking a dashboard each morning introduces hours of delay. Writing only a log entry produces no active notification unless something reads and reacts to that log. CloudTrail records that the StartJobRun/GetJobRun API was called; it does not evaluate job success or failure as an alerting condition or notify anyone.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/AlarmThatSendsEmail.html",
+    "id": "deac01-0043"
+  },
+  {
+    "domain": "Data Operations and Support",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A Glue Spark ETL job repeatedly fails with out-of-memory errors only on the largest daily partitions, while smaller partitions process successfully with the same script. Which change is the MOST direct fix for this resource-constrained failure?",
+    "options": [
+      "Increase the worker type (for example to a larger G.2X/G.4X or memory-optimized worker) or the number of workers so each executor has more memory for the largest partitions.",
+      "Switch the job type from Spark ETL to Python shell, which has no distributed memory to allocate.",
+      "Add a Glue Data Quality ruleset to validate the partition before processing.",
+      "Disable job bookmarks so every run reprocesses all historical data."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Increasing worker type or worker count</b> gives each Spark executor more memory and parallelism, which is the direct fix for out-of-memory failures tied to the largest partitions. A Python shell job runs on a single non-distributed process and would make a large-partition Spark workload worse, not better, if it even fit. A Data Quality ruleset validates data values and has no effect on executor memory. Disabling job bookmarks would make the job reprocess more data on every run, increasing memory pressure rather than relieving it.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/glue/latest/dg/glue-troubleshooting-errors.html",
+    "id": "deac01-0044"
+  },
+  {
+    "domain": "Data Operations and Support",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "Several ad hoc analysts share one Athena workgroup, and an unbounded query recently scanned terabytes of data and produced an unexpectedly large bill. The team wants to cap how much data any single query in that workgroup can scan, rejecting queries that would exceed the limit. Which Athena feature does this?",
+    "options": [
+      "Increase the S3 bucket's default storage class to reduce per-GB storage cost.",
+      "A per-query data usage control configured on the Athena workgroup, which cancels any query that would scan more than the configured data limit.",
+      "AWS Glue job bookmarks, applied to the Athena workgroup.",
+      "Amazon Macie, scanning the workgroup's queries for sensitive data."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "Athena <b>workgroups support a per-query data usage control</b> that cancels a query once it is projected to scan more data than a configured threshold, directly capping the cost impact of any single runaway query. Changing S3 storage class affects storage price, not the bytes an Athena query scans and bills for. Job bookmarks are a Glue ETL concept and do not apply to Athena workgroups or queries. Macie discovers sensitive data in S3; it does not enforce a scan-size limit on SQL queries.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/athena/latest/ug/workgroups-manage-queries-control-costs-with-workgroups.html",
+    "id": "deac01-0045"
+  },
+  {
+    "domain": "Data Operations and Support",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A Glue Data Catalog table used by several production pipelines was unexpectedly deleted, and the team must determine which IAM principal called the delete API and when. Which AWS service provides this audit trail?",
+    "options": [
+      "Amazon CloudWatch Logs, which stores only the log lines the application chose to emit.",
+      "AWS Glue Data Quality, which evaluates data against DQDL rules.",
+      "AWS CloudTrail, which records management events such as DeleteTable calls, including the calling principal and timestamp.",
+      "Amazon S3 Inventory, which reports on object metadata within a bucket."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>AWS CloudTrail</b> logs management-plane API activity across AWS services, including a Glue DeleteTable call, recording which IAM principal made the call and when, exactly the audit trail needed here. CloudWatch Logs only captures whatever log lines an application explicitly writes, not a record of the DeleteTable API call itself. Glue Data Quality validates data values against rules and has nothing to do with auditing API calls. S3 Inventory reports on S3 object metadata and does not track Glue Data Catalog API activity.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-concepts.html",
+    "id": "deac01-0046"
+  },
+  {
+    "domain": "Data Operations and Support",
+    "tag": "Domain 3",
+    "type": "multi",
+    "stem": "A data platform team wants ongoing, automated detection of data quality problems in a pipeline, not just a one-time validation at ingestion, and wants quality scores visible in existing operational dashboards. Which TWO capabilities of AWS Glue Data Quality support this? (Select TWO.)",
+    "options": [
+      "Glue Data Quality can only run once, at table creation time, and never again afterward.",
+      "Glue Data Quality can recommend rules and detect anomalies automatically based on statistics learned from historical data, flagging unusual patterns without every rule being hand-written.",
+      "Glue Data Quality results can only be viewed inside the Athena query editor and nowhere else.",
+      "Glue Data Quality can publish data quality scores and rule outcomes as CloudWatch metrics, which existing operational dashboards and alarms can consume.",
+      "Glue Data Quality replaces the need for AWS CloudTrail to audit any AWS API call."
+    ],
+    "correct": [
+      1,
+      3
+    ],
+    "explanation": "Glue Data Quality can <b>recommend rulesets and detect statistical anomalies</b> from historical patterns, reducing the need to hand-write every rule, and it can <b>publish scores and outcomes to CloudWatch</b> so existing dashboards and alarms pick them up without a separate reporting system. It runs repeatedly, on every job or crawler run configured to use it, not only once at table creation. Results surface in the Glue console and CloudWatch, not solely the Athena query editor. Glue Data Quality checks data values and has nothing to do with CloudTrail's API-activity auditing.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/glue/latest/dg/glue-data-quality.html",
+    "id": "deac01-0047"
+  },
+  {
+    "domain": "Data Operations and Support",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A Step Functions state occasionally calls a downstream third-party API that returns a transient throttling error, and the team wants the workflow to automatically retry with an increasing wait between attempts before giving up, rather than failing immediately on the first throttling response. Which Step Functions feature configures this?",
+    "options": [
+      "A Wait state placed after the task with a single fixed 60-second pause and no further logic.",
+      "A Parallel state that calls the same API twice at once to increase the odds one succeeds.",
+      "A Map state that iterates over a static list of retry attempts defined in advance.",
+      "A Retry field on the task state specifying the error type, an interval, and a backoff rate, so Step Functions automatically retries with exponential backoff."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "A task state's <b>Retry field</b> lets you match specific error types (such as a throttling exception) and configure an interval and backoff rate, so Step Functions automatically retries with increasing wait times before failing, exactly the transient-error handling described. A single fixed Wait state does not retry the failed call at all; it just pauses. A Parallel state calling the API twice simultaneously adds load and does not implement backoff logic. A Map state iterates over a collection for per-item processing; it is not the mechanism for configuring automatic retries with backoff on a single task.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/step-functions/latest/dg/concepts-error-handling.html",
+    "id": "deac01-0048"
+  },
+  {
+    "domain": "Data Operations and Support",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A team runs data pipelines as Airflow DAGs on Amazon MWAA and wants visibility into task successes, failures, and durations without building a separate monitoring system. Where can the team find this operational telemetry?",
+    "options": [
+      "MWAA publishes Airflow task and scheduler logs and metrics to Amazon CloudWatch, which the team can view in Logs Insights and CloudWatch dashboards.",
+      "MWAA only stores telemetry locally on the underlying worker instances, inaccessible to the team.",
+      "MWAA requires a separate self-hosted Prometheus and Grafana stack before any task-level telemetry is available.",
+      "MWAA telemetry is available only by manually reading DAG source files."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>MWAA sends Airflow task logs, scheduler logs, and operational metrics to Amazon CloudWatch</b>, so the team can search them in Logs Insights or build CloudWatch dashboards and alarms without standing up separate infrastructure. MWAA does not lock telemetry away on inaccessible worker instances; CloudWatch is the intended integration point. No separate Prometheus/Grafana stack is required to get basic task-level telemetry, since CloudWatch already receives it. Reading DAG source files shows workflow definitions, not runtime execution telemetry.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/mwaa/latest/userguide/what-is-mwaa.html",
+    "id": "deac01-0049"
+  },
+  {
+    "domain": "Data Operations and Support",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A Redshift cluster occasionally runs a runaway analytical query that consumes most of the cluster's resources and slows every other query for several minutes before finishing. The team wants Redshift to automatically detect and stop (or downgrade) queries that exceed defined resource thresholds, without a human watching the console. Which capability BEST fits?",
+    "options": [
+      "Increase the cluster's node count permanently to absorb any future runaway query.",
+      "Query monitoring rules (QMR) within WLM, which can automatically log, hop to another queue, or abort a query once it crosses defined metrics thresholds such as CPU time or rows scanned.",
+      "Redshift Spectrum, to move the offending query's data outside the cluster.",
+      "S3 Lifecycle rules on the cluster's backup bucket."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Query monitoring rules inside WLM</b> continuously evaluate running queries against metrics such as CPU time, rows scanned, or execution time, and can automatically log, reprioritize (hop), or abort a query that crosses the defined thresholds, with no human intervention. Permanently adding nodes raises cost for a problem that only happens occasionally and does not stop a specific runaway query. Redshift Spectrum changes where external data is scanned from, not how internal queries are monitored or throttled. S3 Lifecycle rules manage object storage tiers and have no relationship to query-level resource control.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/redshift/latest/dg/c_workload_mgmt_classification.html",
+    "id": "deac01-0050"
+  },
+  {
+    "domain": "Data Operations and Support",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A pipeline currently uses a Lambda function that polls an S3 prefix every minute to detect new objects and start downstream processing, adding both cost and up-to-a-minute latency. The team wants processing to start immediately when an object lands, with no polling. Which change BEST achieves this?",
+    "options": [
+      "Increase the polling Lambda's memory allocation so each poll runs faster.",
+      "Reduce the polling interval to every 10 seconds instead of every minute.",
+      "Configure an S3 event notification (or an EventBridge rule for S3 object-created events) that invokes the downstream processing directly when an object is created, removing polling entirely.",
+      "Move the polling Lambda function to run on an EC2 instance instead of Lambda."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "An <b>S3 event notification (or an EventBridge rule matching S3 Object Created events)</b> invokes downstream processing the moment an object lands, which is truly event-driven, has no polling cost, and reacts far faster than any fixed polling interval. Increasing memory only speeds up each individual poll invocation, not the fact that it still waits up to a minute to notice new objects. Polling every 10 seconds still polls, and adds ten times the invocation cost for a smaller latency improvement. Moving the polling function to EC2 still leaves it as a poller and adds infrastructure to manage.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/EventNotifications.html",
+    "id": "deac01-0051"
+  },
+  {
+    "domain": "Data Operations and Support",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A DMS ongoing replication task feeding a downstream analytics pipeline appears healthy in the console, but the team suspects the target is falling behind the source and wants a specific metric to confirm and quantify replication lag. Which CloudWatch metric published by DMS should the team check?",
+    "options": [
+      "The task's FreeableMemory metric, which reports available memory on the replication instance.",
+      "The task's NetworkTransmitThroughput metric, which reports outbound network throughput.",
+      "The task's FullLoadThroughputRowsSource metric, which reports full-load throughput only.",
+      "The task's CDCLatencyTarget (and CDCLatencySource) metric, which reports how far behind the target is from the source during change data capture."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "DMS publishes <b>CDCLatencySource and CDCLatencyTarget</b> metrics that directly report replication lag during change data capture, in seconds, letting the team quantify exactly how far behind the target has fallen. FreeableMemory reports instance memory headroom, not replication lag. NetworkTransmitThroughput reports network bytes per second, a proxy at best, not a direct lag measurement. FullLoadThroughputRowsSource only applies during the initial full-load phase, not ongoing CDC replication.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Monitoring.html",
+    "id": "deac01-0052"
+  },
+  {
+    "domain": "Data Operations and Support",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A Step Functions pipeline occasionally fails at a specific ETL state due to a known, recoverable condition, and the team wants the workflow to automatically invoke a remediation Lambda function and resume the pipeline from that point, rather than requiring an engineer to manually re-run the entire pipeline from the start. Which Step Functions construct enables this automated recovery?",
+    "options": [
+      "A Catch field on the failing state that routes to a remediation branch (for example a Lambda function) which fixes the condition and then transitions back into the pipeline.",
+      "A Wait state with no Catch or Retry configuration, that pauses indefinitely on any failure.",
+      "Deleting the failed execution's history so the next scheduled run starts clean.",
+      "Increasing the Lambda function's timeout so the task can never fail."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "A <b>Catch field</b> on the state that can fail routes execution to a defined remediation branch (such as a Lambda function that fixes the recoverable condition), which can then transition the workflow back into the normal pipeline path, all without an engineer manually re-running anything. A bare Wait state with no Catch or Retry does not react to failure at all; it just pauses. Deleting execution history does not fix the underlying condition and only hides the record of what happened. Increasing a timeout does not address a logical failure condition and cannot guarantee a task 'never fails'.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/step-functions/latest/dg/concepts-error-handling.html",
+    "id": "deac01-0053"
   }
 ]
