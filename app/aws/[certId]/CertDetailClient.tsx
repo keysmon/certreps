@@ -170,7 +170,7 @@ export function ReadinessPanel({ certId, passLinePct }: { certId: string; passLi
       <h3 className="cd-panel-h">Your readiness</h3>
       <div className="cd-ready">
         <div className="cd-ready-ring">
-          <ScoreRing pct={pct} size={104} stroke={8} />
+          <ScoreRing pct={pct} size={104} stroke={8} passLine={passLinePct} />
         </div>
         <div>
           <div className="cd-ready-label">{label}</div>

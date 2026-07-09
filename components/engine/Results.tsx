@@ -127,7 +127,7 @@ export function Results({ attempt, questions, meta }: { attempt: Attempt; questi
       </div>
 
       <div className="recap">
-        <h3>Question recap</h3>
+        <h3>Review every question</h3>
         {questions.map((q, i) => {
           const r = attempt.results[q.id];
           const ok = r?.correct ?? false;

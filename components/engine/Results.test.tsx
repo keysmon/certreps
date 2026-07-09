@@ -34,7 +34,7 @@ describe("Results", () => {
     expect(screen.getByText("50%")).toBeInTheDocument();
     expect(screen.getByText(/2 \/ 4 correct/i)).toBeInTheDocument();
     expect(screen.getByText(/performance by domain/i)).toBeInTheDocument();
-    expect(screen.getByText(/question recap/i)).toBeInTheDocument();
+    expect(screen.getByText(/review every question/i)).toBeInTheDocument();
     expect(screen.queryByText(/paused/i)).not.toBeInTheDocument();
   });
   it("shows the honesty stamp when heavily paused", () => {
@@ -68,12 +68,11 @@ describe("Results recap explanations", () => {
     expect(doclink).toHaveAttribute("href", "https://docs.aws.amazon.com/x0");
   });
 
-  it("marks the correct option emerald and a wrongly-chosen option rose in an expanded row", async () => {
-    const user = userEvent.setup();
+  it("marks the correct option emerald and a wrongly-chosen option rose in an expanded row", () => {
     render(<Results attempt={makeAttempt(0)} questions={qs} meta={getMeta()} />);
     // q1: correct=[0] ("alpha opt"), user chose [1] ("beta opt") - a wrong pick.
+    // Wrong rows auto-open, so the row is already expanded - no click needed.
     const summary = screen.getByText(/Stem number 1/).closest("summary") as HTMLElement;
-    await user.click(summary);
     const details = summary.closest("details") as HTMLElement;
     const correctOpt = within(details).getByText("alpha opt").closest(".option") as HTMLElement;
     expect(correctOpt).toHaveClass("correct");
