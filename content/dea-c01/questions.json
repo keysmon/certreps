@@ -1,0 +1,426 @@
+[
+  {
+    "domain": "Data Ingestion and Transformation",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A company lands raw CSV files from several source systems into a single Amazon S3 bucket and wants the schema and Hive-style partitions in the keys detected automatically so the data becomes queryable in Amazon Athena without manual DDL. Which AWS Glue capability should the team use?",
+    "options": [
+      "A Glue crawler, which classifies the files, infers schema and partitions, and writes table definitions to the AWS Glue Data Catalog.",
+      "A Glue DataBrew recipe job, which applies a saved visual cleaning recipe to the data.",
+      "A Glue Data Quality ruleset, which evaluates DQDL rules against the data.",
+      "A Glue Studio visual ETL job with a fixed target schema defined by the developer."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>A Glue crawler</b> connects to the data store, infers schema and Hive-style partitions from the S3 key structure, and writes or updates table definitions in the <b>Data Catalog</b> so Athena can query them without hand-written DDL. DataBrew applies cleaning transforms but does not discover schema for the Data Catalog. A Data Quality ruleset validates data against rules and does not create tables. A Glue Studio ETL job transforms data according to a schema the developer already defines; it does not infer an unknown schema.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/glue/latest/dg/add-crawler.html",
+    "id": "deac01-0001"
+  },
+  {
+    "domain": "Data Ingestion and Transformation",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A retailer streams several thousand clickstream events per second and wants them buffered and delivered into Amazon S3 as Parquet files, with the least possible operational overhead and no servers to manage. Which service BEST meets this need?",
+    "options": [
+      "Amazon SQS standard queues polled continuously by a fleet of Amazon EC2 consumers.",
+      "Amazon Data Firehose, which buffers incoming records and delivers them to Amazon S3 with optional Parquet conversion, fully managed.",
+      "AWS Database Migration Service configured for full load and change data capture.",
+      "An Amazon EMR cluster running a custom Spark Structured Streaming job around the clock."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Amazon Data Firehose</b> is a fully managed delivery service: it buffers streaming records, can convert them to Parquet or ORC on the way, and writes to S3 with no servers or clusters to operate. SQS with a custom EC2 consumer fleet requires writing and operating the polling and conversion logic yourself. DMS replicates database changes; it is not a clickstream buffering service. A standing EMR cluster running a hand-written streaming job adds cluster management and code the team explicitly wants to avoid.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/firehose/latest/dev/what-is-this-service.html",
+    "id": "deac01-0002"
+  },
+  {
+    "domain": "Data Ingestion and Transformation",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A data engineering team already maintains a large body of custom PySpark code with specific cluster-level tuning (custom bootstrap actions, a particular Spark version, and direct HDFS access) for a nightly batch job. Which service lets them keep full control over the cluster software stack and configuration?",
+    "options": [
+      "AWS Glue Studio, using only the visual, no-code job authoring canvas.",
+      "AWS Lambda, invoking the transformation once per file.",
+      "Amazon EMR, which provisions clusters where the team chooses the Spark version, installs custom bootstrap actions, and manages the full software stack.",
+      "Amazon Athena, running the transformation as a single SQL statement."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Amazon EMR</b> gives full control over the cluster: choice of engine versions, bootstrap actions, instance types, and direct access to the underlying Hadoop/HDFS stack, which fits a team with existing tuned PySpark code and specific cluster requirements. Glue Studio's visual canvas targets no-code authoring, not custom cluster-level tuning. Lambda has a 15-minute run limit and no persistent cluster or HDFS, the wrong fit for a large Spark job. Athena runs serverless SQL over data in S3 and cannot run arbitrary PySpark cluster jobs.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-what-is-emr.html",
+    "id": "deac01-0003"
+  },
+  {
+    "domain": "Data Ingestion and Transformation",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "An existing analytics platform has dozens of consumer applications written against the native Apache Kafka producer and consumer APIs, including custom partition assignment logic. The team wants to move the Kafka brokers to a managed AWS service while keeping those Kafka client applications unchanged. Which service is the BEST fit?",
+    "options": [
+      "Amazon Kinesis Data Streams, using the Kinesis Client Library (KCL) to replace the Kafka clients.",
+      "Amazon Data Firehose, configured with a Kafka source connector.",
+      "Amazon Simple Queue Service (SQS), migrating consumers to the SQS API.",
+      "Amazon Managed Streaming for Apache Kafka (MSK), which runs Kafka brokers so unmodified Kafka client applications keep working against the managed cluster."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Amazon MSK</b> runs actual Apache Kafka brokers as a managed service, so existing Kafka producer and consumer applications, including custom partition-assignment logic, connect without code changes. Kinesis Data Streams uses a different API (PutRecord/KCL), so every Kafka client would need to be rewritten. Firehose is a one-way delivery service to destinations like S3, not a Kafka-compatible broker. SQS is a queue service with its own API, not a Kafka protocol endpoint.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/msk/latest/developerguide/what-is-msk.html",
+    "id": "deac01-0004"
+  },
+  {
+    "domain": "Data Ingestion and Transformation",
+    "tag": "Domain 1",
+    "type": "multi",
+    "stem": "A team is converting a large clickstream dataset from JSON to Apache Parquet in Amazon S3 before running it through nightly Glue ETL jobs and querying it in Athena. Which TWO characteristics of Parquet make this conversion worthwhile? (Select TWO.)",
+    "options": [
+      "Parquet stores records row-by-row, so a job reading every column scans less data than JSON.",
+      "Parquet is a columnar format, so jobs and queries that read a subset of columns scan far less data than row-oriented JSON.",
+      "Parquet requires a fixed, single schema version forever and cannot tolerate any column additions over time.",
+      "Parquet applies efficient per-column compression and encoding, which shrinks S3 storage size and I/O compared to JSON.",
+      "Parquet is a plain-text format, which makes it easier to open and read manually than JSON."
+    ],
+    "correct": [
+      1,
+      3
+    ],
+    "explanation": "Parquet is <b>columnar</b>, so Athena and Glue jobs that need only a few columns skip the rest entirely, and its <b>per-column compression and encoding</b> reduce storage size and the bytes scanned, both lowering cost and runtime. The row-by-row claim is backwards: Parquet is columnar, not row oriented. Parquet actually supports schema evolution such as adding columns, so 'cannot tolerate any column additions' is false. Parquet is a binary format, not human-readable plain text; JSON is the text format here.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/athena/latest/ug/columnar-storage.html",
+    "id": "deac01-0005"
+  },
+  {
+    "domain": "Data Ingestion and Transformation",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A business analyst with limited coding experience needs to profile a dataset, remove outliers, and apply many cleaning and standardization steps through a visual interface, then run that same recipe against new data on a recurring schedule. Which service is the BEST fit?",
+    "options": [
+      "AWS Glue DataBrew, using a visual recipe and a scheduled recipe job.",
+      "Amazon EMR running a hand-written PySpark script on a persistent cluster.",
+      "AWS Database Migration Service running continuous replication.",
+      "AWS Step Functions invoking a state machine once per row of the dataset."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>AWS Glue DataBrew</b> is the no-code visual data-preparation tool with 250-plus built-in transforms, profiling, and schedulable recipe jobs, which matches a low-code analyst directly. EMR with hand-written PySpark requires writing and maintaining Spark code. DMS replicates database changes and does not perform visual data cleaning. Step Functions orchestrates workflows and is not designed to run per-row, and it has no visual cleaning transforms.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/databrew/latest/dg/what-is.html",
+    "id": "deac01-0006"
+  },
+  {
+    "domain": "Data Ingestion and Transformation",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A nightly Glue Spark job reads new files that land in an S3 prefix and writes transformed output downstream. The team wants each run to process only the files that have not already been processed, without the job tracking state itself. Which Glue feature accomplishes this?",
+    "options": [
+      "Increase the job's DPU (data processing unit) count so it finishes faster.",
+      "Enable Glue job bookmarks, which track which S3 files (and, for JDBC sources, which rows) have already been processed across runs.",
+      "Switch the job type from Spark to Python shell.",
+      "Add a Glue Data Quality ruleset to the job."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Job bookmarks</b> persist state between runs, letting Glue skip files (or already-read database rows) that were processed in a previous run, so only new data goes through the job. Adding more DPUs speeds up processing but still reprocesses everything each run. Changing the job type does not add incremental tracking. A Data Quality ruleset validates rows against rules; it does not track which files were already processed.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/glue/latest/dg/monitor-continuations.html",
+    "id": "deac01-0007"
+  },
+  {
+    "domain": "Data Ingestion and Transformation",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A small daily job runs a single Python script that calls a few AWS APIs and does light row-level transformation on under 1 GB of data; it never needs a distributed Spark engine. The team wants the lowest-cost Glue job type for this workload. Which job type should they choose?",
+    "options": [
+      "A Glue Spark ETL job running on the default worker type with 10 DPUs.",
+      "A Glue streaming ETL job that stays running continuously.",
+      "A Glue Python shell job, which runs plain Python without a Spark cluster and bills at a lower minimum capacity.",
+      "A Glue Ray job configured with a large multi-node Ray cluster."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "A <b>Glue Python shell job</b> runs a Python script without provisioning a Spark cluster, and it can run at a fraction of a DPU, making it the cheapest option for small, non-distributed tasks like light API calls and row-level transforms. A Spark ETL job spins up executors for distributed processing, unnecessary overhead and cost for under 1 GB. A streaming ETL job stays running continuously and is meant for continuous data, not a small daily batch. A Ray job with a large multi-node cluster is built for large-scale parallel Python workloads, not a light single-script task.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/glue/latest/dg/aws-glue-api-jobs-job.html",
+    "id": "deac01-0008"
+  },
+  {
+    "domain": "Data Ingestion and Transformation",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A company must migrate an on-premises Oracle database to Amazon RDS, first copying all existing rows and then continuously replicating ongoing changes until cutover, with minimal downtime. Which AWS service is designed for this task?",
+    "options": [
+      "Amazon Kinesis Data Streams, capturing row-level Oracle changes natively.",
+      "AWS Glue crawlers, to infer the Oracle schema into the Data Catalog.",
+      "Amazon Data Firehose, delivering database rows to RDS as they change.",
+      "AWS Database Migration Service (DMS), which performs an initial full load and then ongoing change data capture (CDC) replication until cutover."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>AWS DMS</b> is purpose-built for this pattern: it performs a full load of existing data and then streams ongoing changes through change data capture, keeping source and target in sync until cutover, with minimal source downtime. Kinesis Data Streams has no native Oracle CDC capability; a CDC source has to write to it. Glue crawlers catalog schema; they do not migrate or replicate data. Firehose delivers streaming records to destinations like S3; it is not a database replication tool.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Introduction.CDC.html",
+    "id": "deac01-0009"
+  },
+  {
+    "domain": "Data Ingestion and Transformation",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A pipeline runs a Glue crawler, then a Glue ETL job, then an EMR step, in strict sequence, and must automatically retry a failed step a limited number of times before routing to a failure-notification branch. Which orchestration service is the BEST fit for coordinating this multi-step, cross-service workflow?",
+    "options": [
+      "AWS Step Functions, which models the workflow as a state machine with built-in retry, catch, and branching logic across AWS service calls.",
+      "Amazon EventBridge Scheduler, which only invokes a single target on a fixed schedule.",
+      "AWS Glue triggers configured to fire only on a calendar schedule.",
+      "Amazon CloudWatch Alarms, which only monitor metrics and do not invoke a sequence of job steps."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Step Functions</b> defines the sequence of Glue, EMR, and other AWS service calls as states in a state machine, with native retry policies, catch blocks for failure branches, and visual execution tracking, exactly this ordered, retry-aware workflow. EventBridge Scheduler only invokes one target on a schedule and has no branching or retry-across-services model. Glue triggers can chain Glue jobs and crawlers but do not orchestrate EMR steps or general retry/catch logic outside Glue. CloudWatch Alarms watch metrics and trigger actions; they do not sequence a multi-service pipeline.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/step-functions/latest/dg/concepts-error-handling.html",
+    "id": "deac01-0010"
+  },
+  {
+    "domain": "Data Ingestion and Transformation",
+    "tag": "Domain 1",
+    "type": "multi",
+    "stem": "A team compares Amazon Kinesis Data Streams to Amazon Data Firehose for a new ingestion pipeline. Which TWO statements correctly describe Kinesis Data Streams? (Select TWO.)",
+    "options": [
+      "Kinesis Data Streams retains records for a configurable period (default 24 hours, extendable), allowing multiple consumer applications to read and replay the same data independently.",
+      "Kinesis Data Streams automatically buffers and delivers records directly to Amazon S3 with zero consumer code required.",
+      "Kinesis Data Streams requires the producer/consumer application to manage shards (or use On-Demand mode) and process records with the Kinesis Client Library or a compatible consumer.",
+      "Kinesis Data Streams cannot be read by more than one consumer application at a time.",
+      "Kinesis Data Streams converts records to Apache Parquet automatically before storing them."
+    ],
+    "correct": [
+      0,
+      2
+    ],
+    "explanation": "Kinesis Data Streams <b>retains records</b> for a configurable window so multiple independent consumer applications can each read (and replay) the stream, and it is a <b>self-managed consumption model</b> where the application (via the KCL or a compatible library) handles shards or relies on On-Demand capacity mode. Automatic delivery straight to S3 with no consumer code describes Firehose, not Data Streams. Data Streams supports many concurrent consumer applications, so 'cannot be read by more than one' is false. Automatic Parquet conversion on delivery is a Firehose data-format-conversion feature; Data Streams itself does not convert formats.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/streams/latest/dev/introduction.html",
+    "id": "deac01-0011"
+  },
+  {
+    "domain": "Data Ingestion and Transformation",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A team lands billions of sales transaction records in Amazon S3 and most Athena queries filter on order_date. Which S3 layout choice BEST reduces the amount of data scanned per query, and therefore both cost and latency?",
+    "options": [
+      "Store every record in a single large file with no folder structure.",
+      "Partition the data into S3 prefixes by order_date (Hive-style, e.g. order_date=2026-06-01/), so Athena can prune to only the relevant partitions.",
+      "Randomly shuffle records across many small files regardless of date.",
+      "Store the data as an uncompressed CSV file per hour with no partition keys in the path."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Partitioning by order_date</b> using Hive-style S3 prefixes lets Athena use partition pruning to skip every prefix outside the query's date filter, scanning far less data. A single unpartitioned file forces a full scan on every query. Randomly shuffled files with no date grouping give Athena nothing to prune on. An uncompressed CSV-per-hour layout with no partition keys in the path also cannot be pruned by date and adds the extra cost of an uncompressed row format.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/athena/latest/ug/partitions.html",
+    "id": "deac01-0012"
+  },
+  {
+    "domain": "Data Ingestion and Transformation",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "An Athena table over an S3 prefix is backed by millions of tiny (a few KB each) Parquet files produced by a streaming job, and query performance is poor due to per-file overhead. Which change BEST addresses the root cause?",
+    "options": [
+      "Switch the table's file format from Parquet to CSV.",
+      "Add more Athena workgroups to spread the query load.",
+      "Compact the small files into fewer, larger Parquet files, for example with a scheduled Glue job or S3DistCp on Amazon EMR.",
+      "Enable S3 Transfer Acceleration on the source bucket."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "The small-files problem comes from per-object listing and read overhead multiplying across millions of tiny objects; <b>compacting them into fewer, larger Parquet files</b> removes that overhead and is the standard fix, whether done with a scheduled Glue job or S3DistCp on EMR. Switching to CSV would change the row format but lose columnar pruning and does not fix the file count. Adding Athena workgroups only manages cost allocation and query grouping, not the underlying file layout. S3 Transfer Acceleration speeds long-distance uploads over the internet, not per-object read overhead within a Region.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/emr/latest/ReleaseGuide/emr-s3distcp.html",
+    "id": "deac01-0013"
+  },
+  {
+    "domain": "Data Ingestion and Transformation",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A retail website emits a modest, sporadic volume of order-confirmation events (a few per minute, none overnight) that must be written as JSON objects into an S3 data lake as soon as each order completes. The team wants no servers or clusters to manage and wants to pay only when an event actually occurs. Which approach BEST fits?",
+    "options": [
+      "A persistent Amazon EMR cluster polling a queue every second.",
+      "A Kinesis Data Streams stream provisioned with a fixed number of shards sized for peak load.",
+      "A scheduled Glue Python shell job that runs every minute regardless of whether new orders exist.",
+      "An AWS Lambda function, invoked directly from the order-processing flow per event, that writes the object to the data lake."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "For a sporadic, low, event-driven volume, invoking <b>AWS Lambda directly per event</b> writes each record with no idle infrastructure, and cost accrues only per invocation. A persistent EMR cluster polling constantly burns cost overnight when there is nothing to process. A Kinesis stream provisioned with fixed shards charges for shard-hours whether or not events arrive, unnecessary for a few events per minute. A Glue Python shell job scheduled every minute still runs (and bills) on the schedule even when no order has completed.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/lambda/latest/dg/with-s3.html",
+    "id": "deac01-0014"
+  },
+  {
+    "domain": "Data Ingestion and Transformation",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A team must apply continuous, low-latency SQL-based transformations (filtering, aggregation, and windowed joins) directly on a Kinesis Data Streams stream as records arrive, without standing up and operating a Spark or Flink cluster themselves. Which service BEST fits?",
+    "options": [
+      "Amazon Managed Service for Apache Flink (Kinesis Data Analytics), which runs SQL or Flink applications against a streaming source without managing the underlying cluster.",
+      "AWS Glue crawlers, scheduled to run once per hour against the stream.",
+      "Amazon Athena, running a batch SQL query against the stream once a day.",
+      "AWS DataSync, to replicate the raw records into a second bucket."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Amazon Managed Service for Apache Flink</b> (formerly Kinesis Data Analytics) runs streaming SQL or Flink applications continuously against a Kinesis source, handling scaling and cluster operations for you, matching continuous low-latency transforms with no cluster to manage. Glue crawlers only discover schema and do not transform streaming records. Athena queries data at rest and is not built for continuous, low-latency stream processing. DataSync copies files or objects between storage systems and performs no stream transformation.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/kinesisanalytics/latest/java/what-is.html",
+    "id": "deac01-0015"
+  },
+  {
+    "domain": "Data Ingestion and Transformation",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A data engineering team is already fluent in Apache Airflow and needs a workflow with complex branching, backfills, and dozens of interdependent tasks defined as Python DAGs, some of which call non-AWS APIs. Which AWS orchestration service lets them reuse that Airflow knowledge directly?",
+    "options": [
+      "AWS Step Functions, using Amazon States Language JSON definitions.",
+      "Amazon Managed Workflows for Apache Airflow (MWAA), which runs Airflow and Python DAGs the team already knows how to write.",
+      "AWS Glue workflows, which only chain Glue jobs, crawlers, and triggers.",
+      "Amazon EventBridge Scheduler, which invokes a single target on a cron expression."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>MWAA</b> is a managed Apache Airflow environment: teams author the same Python DAGs, use existing Airflow operators (including for non-AWS APIs), and reuse their existing Airflow expertise directly. Step Functions models workflows in Amazon States Language, a different paradigm from Python DAGs and Airflow operators. Glue workflows only orchestrate Glue-native objects (jobs, crawlers, triggers), not arbitrary Python tasks or non-AWS API calls. EventBridge Scheduler triggers one target on a schedule and has no DAG or branching model of its own.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/mwaa/latest/userguide/what-is-mwaa.html",
+    "id": "deac01-0016"
+  },
+  {
+    "domain": "Data Ingestion and Transformation",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "An S3 prefix used by a Glue crawler contains both the data files to catalog and a subfolder of temporary staging files that should never appear as catalog tables. Which crawler feature lets the team catalog only the intended files?",
+    "options": [
+      "A Glue job bookmark configured on the crawler.",
+      "A Glue Data Quality ruleset attached to the crawler.",
+      "An exclude pattern (or a custom classifier) on the crawler that skips the staging subfolder.",
+      "A larger crawler worker count."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "Crawlers support <b>exclude patterns</b> (and custom classifiers for unusual formats) that skip specified paths, such as a staging subfolder, so only the intended files become catalog tables. Job bookmarks track processed rows/files for ETL jobs, not what a crawler catalogs. A Data Quality ruleset validates data values; it does not filter which paths a crawler scans. Worker count affects crawl speed, not which paths are included.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/glue/latest/dg/add-classifier.html",
+    "id": "deac01-0017"
+  },
+  {
+    "domain": "Data Ingestion and Transformation",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A nightly batch of several hundred compressed CSV files in Amazon S3 must be bulk-loaded into a Redshift table as fast as possible, loading in parallel across all cluster slices. Which approach is the BEST fit?",
+    "options": [
+      "Run individual INSERT statements for each row, submitted one at a time.",
+      "Use Redshift Spectrum to query the files in place without loading them.",
+      "Load the files one at a time with single-file COPY commands run sequentially.",
+      "Issue a single COPY command with a manifest file that lists all the S3 objects, letting Redshift load them in parallel across slices."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "The <b>COPY command with a manifest</b> lets Redshift read the list of S3 objects and distribute the load across all cluster slices in parallel, the fastest supported bulk-load path. Row-by-row INSERTs are drastically slower for bulk loads and are explicitly discouraged. Redshift Spectrum queries external files in place but is not a mechanism for loading data into a native Redshift table. Sequential single-file COPY commands do not use parallel slice loading and take far longer than one manifest-driven COPY.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/redshift/latest/dg/loading-data-files-using-manifest.html",
+    "id": "deac01-0018"
+  },
+  {
+    "domain": "Data Ingestion and Transformation",
+    "tag": "Domain 1",
+    "type": "multi",
+    "stem": "A team is choosing among AWS Glue job types for different workloads. Which TWO statements about Glue job types are correct? (Select TWO.)",
+    "options": [
+      "A Glue Spark ETL job cannot read or write data in Amazon S3.",
+      "A Glue Python shell job automatically distributes work across a Spark cluster.",
+      "A Glue Spark ETL job runs on a managed Apache Spark environment and is suited to large, distributed transformations.",
+      "A Glue streaming ETL job processes a single fixed batch of data and then terminates immediately.",
+      "A Glue Ray job runs Python workloads across a Ray cluster, suited to large-scale parallel Python processing that does not fit the Spark programming model."
+    ],
+    "correct": [
+      2,
+      4
+    ],
+    "explanation": "A <b>Glue Spark ETL job</b> runs on a managed Spark environment for large, distributed transformations, and a <b>Glue Ray job</b> runs Python code across a Ray cluster for large-scale parallel Python workloads that are not naturally expressed in Spark. Spark ETL jobs read and write S3 constantly, so the first option is false. A Python shell job runs plain Python without a Spark cluster and does not distribute work across Spark executors, the opposite of what the option claims. A streaming ETL job is designed to run continuously against an unbounded source, not process one batch and stop.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/glue/latest/dg/author-job-ray-jobs.html",
+    "id": "deac01-0019"
+  },
+  {
+    "domain": "Data Ingestion and Transformation",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A streaming pipeline delivers events through Amazon Data Firehose into Amazon S3, and downstream Athena queries filter heavily by event date and event type. The team wants Firehose itself to write objects into date/type-partitioned S3 prefixes without adding a separate Lambda transformation for partitioning. Which Firehose feature does this?",
+    "options": [
+      "Dynamic partitioning, which uses values from the record data (or metadata) to route each record to the matching S3 prefix automatically.",
+      "Increasing the Firehose buffer size to 128 MB.",
+      "Enabling server-side encryption on the delivery stream.",
+      "Switching the delivery stream's destination from S3 to Amazon Redshift."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Dynamic partitioning</b> lets Firehose parse specified keys out of each record (or use metadata) and route it to the corresponding S3 prefix, such as event_date=.../event_type=..., without a custom Lambda partitioning step. A larger buffer size changes how much data accumulates before delivery but does not create partitions. Server-side encryption protects data at rest and is unrelated to partition layout. Switching the destination to Redshift changes where data lands entirely and does not address S3 partitioning.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/firehose/latest/dev/dynamic-partitioning.html",
+    "id": "deac01-0020"
+  },
+  {
+    "domain": "Data Ingestion and Transformation",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "Five independent consumer applications must each read the full throughput of a busy Kinesis Data Streams stream in near real time, and the team observes that consumers are competing for the shared 2 MB/sec per-shard read throughput, causing throttling. Which feature resolves the contention while giving each consumer its own dedicated throughput?",
+    "options": [
+      "Reduce the stream to a single shard so all consumers read from the same place.",
+      "Enhanced fan-out, which gives each registered consumer a dedicated 2 MB/sec pipe per shard delivered over HTTP/2, removing contention with other consumers.",
+      "Switch the stream's retention period from 24 hours to 7 days.",
+      "Enable server-side encryption on the stream."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Enhanced fan-out</b> registers each consumer for a dedicated throughput pipe per shard (2 MB/sec each, pushed over HTTP/2), so multiple consumers no longer share and compete for the shard's aggregate read throughput. Reducing shard count would shrink total throughput and worsen contention. Extending the retention period affects how long records are stored, not how throughput is shared among consumers. Server-side encryption protects data at rest and in transit but does not change per-consumer throughput allocation.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/streams/latest/dev/introduction-to-enhanced-consumers.html",
+    "id": "deac01-0021"
+  },
+  {
+    "domain": "Data Ingestion and Transformation",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A company must migrate an on-premises SQL Server database to Amazon Aurora PostgreSQL, a different database engine, and the source schema uses SQL Server-specific data types and stored procedures that must be converted to PostgreSQL equivalents before any data movement begins. Which AWS capability should the team use FIRST?",
+    "options": [
+      "AWS DMS ongoing replication, started immediately against the existing SQL Server schema.",
+      "A Glue crawler pointed at the SQL Server database to infer a PostgreSQL-compatible schema.",
+      "The AWS Schema Conversion Tool (SCT), which analyzes the source schema and converts SQL Server-specific objects to PostgreSQL-compatible equivalents before migration.",
+      "Amazon DataZone, to publish the SQL Server schema as a data product."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "For a <b>heterogeneous</b> migration between different engines, the <b>AWS Schema Conversion Tool</b> analyzes the source schema, flags objects that cannot convert automatically, and generates the target-compatible schema (tables, procedures) before DMS moves any data. Starting DMS replication first, without a compatible target schema, has nothing correctly structured to load into. A Glue crawler only catalogs an existing schema for querying; it does not translate SQL Server T-SQL objects into PostgreSQL equivalents. Amazon DataZone catalogs and governs data assets for discovery; it does not perform schema conversion.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/SchemaConversionTool/latest/userguide/CHAP_Welcome.html",
+    "id": "deac01-0022"
+  }
+]
