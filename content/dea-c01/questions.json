@@ -1017,5 +1017,235 @@
     "difficulty": "hard",
     "docUrl": "https://docs.aws.amazon.com/step-functions/latest/dg/concepts-error-handling.html",
     "id": "deac01-0053"
+  },
+  {
+    "domain": "Data Security and Governance",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A Glue ETL job must read from and write to Amazon S3 buckets and call other AWS APIs. The security team requires that no long-term access keys be embedded in the job's script or configuration. Which approach meets this requirement?",
+    "options": [
+      "Attach an IAM role to the Glue job, granting only the permissions the job needs; Glue uses the role to obtain temporary credentials automatically.",
+      "Store an IAM user's access key and secret key as Glue job parameters.",
+      "Embed the AWS account root user's access key in the job script.",
+      "Hard-code an IAM user's credentials in a configuration file stored alongside the script in S3."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>An IAM role attached to the Glue job</b> lets Glue assume the role and obtain short-lived, automatically rotated credentials scoped to only the granted permissions, so no long-term keys exist anywhere in the job. Storing an IAM user's access key as a job parameter, embedding the root user's key, or hard-coding credentials in a config file all place long-term, hard-to-rotate secrets where they can leak, exactly what the requirement forbids.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction.html",
+    "id": "deac01-0054"
+  },
+  {
+    "domain": "Data Security and Governance",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A company's S3 data lake must encrypt every object at rest using a key that the security team fully controls, including the ability to disable the key and immediately cut off decryption access, with a full audit trail of every key usage. Which encryption approach BEST meets this?",
+    "options": [
+      "Rely on the default Amazon S3-managed encryption (SSE-S3), which uses keys fully managed internally by S3 with no customer control over key policy.",
+      "Server-side encryption with AWS KMS customer managed keys (SSE-KMS), where the security team owns the key policy, can disable the key, and every use is logged to CloudTrail.",
+      "Client-side encryption using a hard-coded key embedded in each application.",
+      "No encryption at rest, relying only on IAM policies to restrict access to the bucket."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>SSE-KMS with a customer managed key</b> gives the security team full control over the key policy and grants, the ability to disable or schedule deletion of the key to cut off decryption instantly, and an automatic CloudTrail record of every Encrypt/Decrypt/GenerateDataKey call. SSE-S3 encrypts data but uses AWS-managed keys with no customer key policy or standalone audit trail of key usage. A hard-coded client-side key has no centralized rotation, revocation, or usage logging. Relying only on IAM with no encryption at rest fails to meet an explicit encryption-at-rest requirement.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingKMSEncryption.html",
+    "id": "deac01-0055"
+  },
+  {
+    "domain": "Data Security and Governance",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A company's Lake Formation-governed data lake has hundreds of tables, and the security team must grant many different groups of analysts access to specific columns and tables based on business classification (for example, 'PII' or 'Finance') without editing permissions on every individual table whenever a new table is added. Which Lake Formation feature BEST supports this at scale?",
+    "options": [
+      "A separate IAM policy per table, manually updated every time a new table is created.",
+      "S3 bucket policies applied directly to the underlying data files, bypassing the Data Catalog entirely.",
+      "LF-Tags (tag-based access control), where tables and columns are tagged with business classifications and permissions are granted against the tags, automatically applying to any table or column carrying that tag.",
+      "Disabling Lake Formation and granting direct IAM access to the S3 data lake bucket for each analyst."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>LF-Tags</b> let the team classify tables and columns with business labels such as PII or Finance and grant permissions against the tag rather than each individual object, so any new table tagged the same way automatically inherits the same access rules, scaling far better than per-table edits. A separate IAM policy per table requires manual updates for every new table, the opposite of scalable. Bucket policies on the underlying files bypass Lake Formation's governance model and its column-level controls entirely. Disabling Lake Formation and granting direct IAM access to the bucket removes fine-grained, catalog-aware access control altogether.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/lake-formation/latest/dg/tag-based-access-control.html",
+    "id": "deac01-0056"
+  },
+  {
+    "domain": "Data Security and Governance",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A Glue job runs inside a VPC with no route to the internet and must call AWS Secrets Manager to retrieve a database credential, without adding a NAT gateway or an internet gateway to the subnet. Which approach meets this requirement?",
+    "options": [
+      "Attach an internet gateway directly to the private subnet the Glue job runs in.",
+      "Deploy a NAT gateway in the subnet solely to reach Secrets Manager.",
+      "Store the credential in plaintext inside the Glue job script instead of using Secrets Manager.",
+      "Create an interface VPC endpoint (AWS PrivateLink) for Secrets Manager in the VPC, so the private call reaches the service over the AWS network with no internet path."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "An <b>interface VPC endpoint for Secrets Manager</b>, backed by AWS PrivateLink, lets resources in the VPC reach the service privately over the AWS network, with no NAT gateway or internet gateway required. Attaching an internet gateway to a private subnet defeats its purpose and still requires public routing. A NAT gateway would work but adds cost and is unnecessary when a direct interface endpoint exists for the specific service. Storing the credential in plaintext in the script abandons Secrets Manager and its rotation and access-control benefits entirely.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/vpc/latest/privatelink/what-is-privatelink.html",
+    "id": "deac01-0057"
+  },
+  {
+    "domain": "Data Security and Governance",
+    "tag": "Domain 4",
+    "type": "multi",
+    "stem": "Before granting broad analyst access to a newly ingested S3 data lake, a security team wants to automatically discover whether the data contains personally identifiable information (PII) such as names, emails, or national ID numbers. Which TWO statements about Amazon Macie support this goal? (Select TWO.)",
+    "options": [
+      "Amazon Macie uses machine learning and pattern matching to discover and classify sensitive data, including PII, across S3 buckets.",
+      "Amazon Macie encrypts S3 objects at rest using a customer managed KMS key.",
+      "Amazon Macie can generate findings that flag specific S3 objects or buckets containing sensitive data, which the security team can review before changing access policies.",
+      "Amazon Macie replaces IAM entirely as the mechanism for controlling who can access S3 objects.",
+      "Amazon Macie can only scan data stored in Amazon RDS, not Amazon S3."
+    ],
+    "correct": [
+      0,
+      2
+    ],
+    "explanation": "<b>Amazon Macie</b> uses machine learning and pattern matching to discover and classify sensitive data such as PII across S3, and it <b>generates findings</b> identifying specific buckets or objects containing that data, which the team can review before deciding how to open up access. Macie discovers sensitive data; it does not perform encryption, that is KMS/S3's job. Macie does not replace IAM, access control still runs through IAM and bucket policies; Macie only informs those decisions. Macie is built specifically to scan Amazon S3 data, not Amazon RDS.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/macie/latest/user/what-is-macie.html",
+    "id": "deac01-0058"
+  },
+  {
+    "domain": "Data Security and Governance",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A Redshift table stores customer credit card numbers, and most analysts should see only a masked version (for example, the last four digits) while a small fraud-investigation role must see the full value. Which Redshift feature meets this with the least operational overhead?",
+    "options": [
+      "Dynamic data masking, which applies a masking policy to the column so most users see masked output while an authorized role sees the unmasked value, all from the same underlying table.",
+      "Two fully separate physical copies of the table, one masked and one unmasked, kept in sync manually.",
+      "Client-side masking implemented independently by every BI tool that queries the table.",
+      "S3 Object Lock applied to the Redshift cluster's snapshot bucket."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Dynamic data masking</b> attaches a masking policy directly to the column so Redshift itself returns masked or unmasked output depending on the querying role's grants, from a single source table with no data duplication. Maintaining two synchronized physical copies adds ongoing operational burden and risk of drift. Client-side masking in every BI tool is fragile and must be reimplemented and trusted in each tool. S3 Object Lock protects objects in S3 from deletion or overwrite; it has nothing to do with masking column values in Redshift query results.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/redshift/latest/dg/t_dynamic_data_masking.html",
+    "id": "deac01-0059"
+  },
+  {
+    "domain": "Data Security and Governance",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A regulation requires that audit log objects in an S3 bucket cannot be deleted or overwritten by anyone, including the account's root user, for a fixed retention period. Which S3 feature enforces this?",
+    "options": [
+      "A standard S3 bucket policy that denies DeleteObject to all principals except one administrator.",
+      "S3 Object Lock in compliance mode with a defined retention period, which prevents deletion or overwrite of a locked object version by any user, including the root user, until the retention period expires.",
+      "S3 Versioning alone, with no Object Lock configuration.",
+      "S3 Cross-Region Replication to a second bucket as the only safeguard."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>S3 Object Lock in compliance mode</b> prevents a locked object version from being deleted or overwritten by any principal, including the root user, until the configured retention period elapses, which is exactly the WORM guarantee the regulation demands. A bucket policy denying DeleteObject can still be changed by an administrator or the root user, so it does not provide the same tamper-proof guarantee. Versioning alone keeps prior versions but does not prevent a user with delete permissions from deleting them. Cross-Region Replication creates a second copy but does not, by itself, prevent deletion of either copy.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lock.html",
+    "id": "deac01-0060"
+  },
+  {
+    "domain": "Data Security and Governance",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A security team must determine exactly which IAM principal called GetObject on a specific sensitive S3 object last month, information that does not appear in the S3 access logging the team currently has enabled. Which change would have captured this activity going forward?",
+    "options": [
+      "Rely on CloudTrail's default trail, which records only account-level management events and does not include individual S3 object-level API calls by default.",
+      "Enable S3 Server Access Logging only, with no CloudTrail changes.",
+      "Enable CloudTrail data events for the S3 bucket (or specific objects), which log object-level API activity such as GetObject, including the calling principal and timestamp.",
+      "Enable GuardDuty finding types related to EC2 instance behavior."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>CloudTrail data events</b> for S3 must be explicitly enabled and log object-level API calls such as GetObject, PutObject, and DeleteObject, including the calling principal and timestamp, exactly the missing telemetry here. The default trail only records account-level management events (such as CreateBucket or PutBucketPolicy), not individual object reads. S3 Server Access Logging records requests in a different log format and does not by itself substitute for enabling CloudTrail data events. GuardDuty focuses on threat-detection findings such as anomalous EC2 or IAM behavior, not a direct per-call audit trail of a specific object's access history.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html",
+    "id": "deac01-0061"
+  },
+  {
+    "domain": "Data Security and Governance",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A large organization has dozens of independent data-producing teams and hundreds of internal consumers who need to discover, understand, and request access to datasets across the company, with a governed approval workflow rather than ad hoc access grants over email or chat. Which AWS service is purpose-built for this business-wide data catalog and access-request workflow?",
+    "options": [
+      "AWS Glue Data Catalog alone, which stores technical table metadata but has no built-in business glossary or access-request workflow.",
+      "Amazon Macie, which discovers sensitive data but does not catalog or broker access to datasets.",
+      "AWS CloudTrail, which records API calls but provides no data discovery or access-request interface.",
+      "Amazon DataZone, which provides a business data catalog, data portal for discovery, and governed publish/subscribe access-request workflows across producers and consumers."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Amazon DataZone</b> is built for exactly this: a business-friendly catalog with descriptions and glossaries, a self-service portal where consumers discover data, and a governed workflow where consumers request access and producers or data stewards approve it. The Glue Data Catalog stores technical metadata (schemas, locations) that DataZone and other services build on, but it has no business glossary or access-request workflow of its own. Macie only discovers sensitive data; it is not a catalog or an access broker. CloudTrail is an audit log of API activity, not a discovery or governance interface.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/datazone/latest/userguide/what-is-datazone.html",
+    "id": "deac01-0062"
+  },
+  {
+    "domain": "Data Security and Governance",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "Team A's AWS account owns a Glue Data Catalog with tables backed by S3 data that Team B, in a separate AWS account, must query directly via Athena, without Team B copying any data or tables into their own account. Which approach enables this cross-account access to the shared catalog?",
+    "options": [
+      "Configure AWS Lake Formation (or a Glue Data Catalog resource policy) to grant Team B's account cross-account access to the specific databases and tables in Team A's catalog.",
+      "Export Team A's Glue Data Catalog as a file and email it to Team B for manual import.",
+      "Have Team B run its own Glue crawler directly against Team A's private S3 bucket without any permissions granted.",
+      "Make Team A's S3 bucket public so Team B's Athena queries can read the objects."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Lake Formation cross-account grants (or a Glue Data Catalog resource policy)</b> let Team A's account share specific databases and tables in its catalog with Team B's account, so Team B queries the same tables through Athena with no data copy and fine-grained control over what is shared. Exporting and emailing a catalog file is not a supported or secure sharing mechanism and would quickly go stale. Team B cannot successfully crawl a bucket it has no permissions on; the crawler would simply fail with access denied. Making the bucket public exposes the data to the entire internet, far broader than sharing with one named account.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/glue/latest/dg/glue-data-catalog-resource-policies.html",
+    "id": "deac01-0063"
+  },
+  {
+    "domain": "Data Security and Governance",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A Redshift table contains a salary column that only the HR analytics group should be able to read, while every other column in the same table must remain visible to the broader analytics team. Which approach enforces this with the LEAST duplication of data?",
+    "options": [
+      "Export the entire table to a second, HR-only Redshift table that duplicates every column.",
+      "Grant column-level SELECT privileges so only the HR analytics group's role has access to the salary column, while other roles retain access to the remaining columns on the same table.",
+      "Revoke all SELECT access to the table for every group, including HR.",
+      "Move the entire table out of Redshift and into an S3 bucket with a single shared bucket policy."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Column-level GRANT/REVOKE privileges</b> in Redshift let the team expose the salary column only to the HR analytics role while every other role continues to query the remaining columns of the very same table, with no duplication. Duplicating the whole table into an HR-only copy wastes storage and creates a second copy to keep in sync. Revoking all access for everyone, including HR, fails the requirement that HR must be able to read the column. Moving the table to S3 with one shared bucket policy cannot express column-level distinctions and would need to either expose or hide the entire object for every reader.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/redshift/latest/dg/c_columnlevelsecurity.html",
+    "id": "deac01-0064"
+  },
+  {
+    "domain": "Data Security and Governance",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A Glue job's IAM role currently has the AmazonS3FullAccess managed policy attached so it can read one input prefix and write one output prefix, both within the same bucket. A security review flags this as overly broad. Which change BEST follows least privilege while keeping the job working?",
+    "options": [
+      "Replace AmazonS3FullAccess with AdministratorAccess so the job never again hits a permissions error.",
+      "Leave AmazonS3FullAccess in place, since Glue jobs are trusted internal workloads.",
+      "Replace the broad managed policy with a custom policy that grants only the specific S3 actions (such as GetObject, PutObject, ListBucket) scoped to the exact input and output prefixes the job uses.",
+      "Remove the IAM role from the job entirely and rely on the job failing safely if it lacks permissions."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "A <b>custom least-privilege policy scoped to only the needed actions and the exact input/output prefixes</b> gives the job everything it requires and nothing more, which is the direct fix for an overly broad managed policy. Switching to AdministratorAccess makes the problem drastically worse, granting account-wide control. Leaving AmazonS3FullAccess in place ignores the review's finding; internal workloads still warrant least privilege since a compromised or buggy job could otherwise touch every bucket in the account. Removing the role entirely would break the job outright rather than scoping its permissions correctly.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html",
+    "id": "deac01-0065"
   }
 ]
