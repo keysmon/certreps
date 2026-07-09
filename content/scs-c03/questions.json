@@ -409,5 +409,176 @@
     "difficulty": "medium",
     "docUrl": "https://docs.aws.amazon.com/vpc/latest/userguide/vpc-security-groups.html",
     "id": "scsc03-0024"
+  },
+  {
+    "domain": "Identity and Access Management",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "An IAM user has an identity-based policy that allows s3:GetObject on a bucket, the bucket's resource-based policy also allows the same principal to perform s3:GetObject, but a separate identity-based policy attached to the same user explicitly denies s3:GetObject on that same bucket. Assuming no service control policy is involved, what is the net effect for that user's GetObject call?",
+    "options": [
+      "The call is allowed, because two independent Allow statements (the identity policy and the resource policy) outweigh a single Deny statement.",
+      "The call is denied, because an explicit Deny in any applicable policy always overrides any Allow, regardless of how many Allow statements exist or where they are attached.",
+      "The call is allowed, because resource-based policies always take precedence over identity-based policies when they conflict.",
+      "The behavior is undefined and depends on which policy AWS evaluates first."
+    ],
+    "correct": [1],
+    "explanation": "IAM policy evaluation follows a strict, deterministic order: within a single account, with no SCP involved here, AWS checks for any <b>explicit Deny</b> across all applicable identity-based, resource-based, and other policies, and if one exists, the request is denied, full stop, no matter how many Allow statements also apply. Counting Allow statements has no bearing once an explicit Deny is present, so 'two Allows outweigh one Deny' is not how evaluation works. Resource-based policies do not categorically override identity-based policies; both are evaluated together, and either can grant access, but neither one wins over the other except through the deny-overrides-allow rule. The evaluation order is a documented, deterministic algorithm, not undefined behavior.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic.html",
+    "id": "scsc03-0025"
+  },
+  {
+    "domain": "Identity and Access Management",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "An AWS Organizations service control policy (SCP) attached to an OU allows only the ec2:*, s3:*, and iam:* actions and denies everything else for every account in that OU. A developer in one of those accounts has an identity-based policy that grants dynamodb:GetItem. Can the developer successfully call dynamodb:GetItem?",
+    "options": [
+      "Yes, because an identity-based Allow always overrides an SCP's restrictions.",
+      "Yes, because SCPs only apply to the root user, not to IAM users or roles within the account.",
+      "No, because an SCP defines the maximum available permissions for the account and never grants any permission by itself, so any action not included in the SCP's allow list, dynamodb:GetItem here, cannot be performed no matter what the identity-based policy grants.",
+      "No, but only because SCPs are evaluated after identity-based policies and can retroactively revoke an already-approved call."
+    ],
+    "correct": [2],
+    "explanation": "An <b>SCP acts purely as a filter on the maximum permissions available</b> to every principal in the affected accounts; it never grants permissions by itself. Because this SCP's allow list covers only EC2, S3, and IAM actions, DynamoDB actions fall outside that boundary and are blocked for every principal in the account, regardless of what the identity-based policy grants, so the developer's dynamodb:GetItem call fails even though their identity policy allows it. Identity-based Allows cannot override an SCP boundary, since the SCP sets the outer limit that identity policies can only narrow, never expand. SCPs apply to all principals in affected accounts, including the root user, IAM users, and roles, not only the root user. SCPs are evaluated alongside other policy types to determine whether an action is in scope at all; describing this as a 'retroactive revocation after evaluation' mischaracterizes the mechanism, even though its stated conclusion of denial happens to match the correct outcome for the wrong reason.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps.html",
+    "id": "scsc03-0026"
+  },
+  {
+    "domain": "Identity and Access Management",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A developer's IAM identity has an identity-based policy granting full access to Amazon S3 (s3:*) on all resources. The developer's permission boundary, however, only allows s3:GetObject and s3:ListBucket. According to how permission boundaries work, which actions can the developer actually perform on S3?",
+    "options": [
+      "Any S3 action, because the identity-based policy is the source of truth and the permission boundary only applies to resource-based policies.",
+      "No S3 actions at all, because attaching a permission boundary revokes all previously granted identity-based permissions.",
+      "Only the actions listed in the identity-based policy that are NOT also listed in the permission boundary, since permission boundaries subtract from the identity policy rather than intersect with it.",
+      "Only s3:GetObject and s3:ListBucket, because a permission boundary sets the maximum permissions an identity-based policy can grant, and the effective permissions are the intersection of the identity-based policy and the permission boundary."
+    ],
+    "correct": [3],
+    "explanation": "A <b>permission boundary</b> is a managed policy that sets the maximum permissions an identity can have; the identity's effective permissions are the <b>intersection</b> of what its identity-based policies grant and what the permission boundary allows. Here the identity policy grants all S3 actions, but the boundary allows only s3:GetObject and s3:ListBucket, so only those two intersect and remain usable. The identity-based policy is not the sole source of truth once a boundary is attached; the boundary constrains it. A boundary does not revoke everything outright, it narrows the identity policy down to the overlap, so the developer is not left with zero permissions. A boundary does not work by subtraction, removing overlapping actions; it works by intersection, keeping only what both the identity policy and the boundary allow, which is the opposite of the 'subtract the overlap' framing.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html",
+    "id": "scsc03-0027"
+  },
+  {
+    "domain": "Identity and Access Management",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "Company A grants Company B's AWS account the ability to assume a role in Company A's account to perform periodic maintenance. Company A is concerned about the confused deputy problem, where a third party could trick Company B's systems into assuming the role on the third party's behalf using a role ARN that Company B might reuse across many customers. Which control BEST mitigates this risk?",
+    "options": [
+      "Require Company B to pass a unique, secret ExternalId value in the sts:AssumeRole call, and add a condition to the role's trust policy that only allows the assume-role call to succeed when sts:ExternalId matches the value Company A assigned specifically to Company B.",
+      "Remove the trust policy entirely so any AWS account can assume the role without restriction.",
+      "Require Company B to use an IAM user access key instead of assuming a role, since long-term credentials are not subject to the confused deputy problem.",
+      "Grant Company A's role AdministratorAccess so that any assumption of the role is guaranteed to succeed regardless of the calling account."
+    ],
+    "correct": [0],
+    "explanation": "The <b>ExternalId</b> condition on a cross-account role's trust policy is the documented mitigation for the confused deputy problem: Company A assigns Company B a unique ExternalId value, the trust policy requires sts:ExternalId to match it on every AssumeRole call, and a third party who only knows the role ARN, but not the specific ExternalId Company A gave Company B, cannot successfully assume the role even if tricked into trying. Removing the trust policy entirely would let any account assume the role, which is the opposite of a mitigation. Using a long-term IAM user access key does not address the confused deputy problem at all and trades a scoped, temporary credential for a more sensitive long-lived one. Granting the role broad administrative permissions has nothing to do with restricting who can assume it and would make a successful confused-deputy exploitation far worse, not better.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_common-scenarios_third-party.html",
+    "id": "scsc03-0028"
+  },
+  {
+    "domain": "Identity and Access Management",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A security team wants to continuously discover which resources in their account, such as S3 buckets, KMS keys, IAM roles, and SQS queues, are accessible from outside the account's zone of trust, for example from another AWS account, an anonymous public principal, or an untrusted external entity, due to their resource-based policies, without manually reading every policy by hand. Which capability BEST provides this?",
+    "options": [
+      "AWS Config, which evaluates resource configuration against user-defined or managed rules but does not analyze resource-based policies for external accessibility.",
+      "IAM Access Analyzer external access findings, which analyzes resource-based policies, such as those on S3 buckets, KMS keys, IAM roles, SQS queues, and other supported resource types, and generates a finding whenever a resource is accessible from outside the account or the defined zone of trust.",
+      "Amazon Macie, which discovers and classifies sensitive data within S3 objects.",
+      "AWS Trusted Advisor's cost optimization checks, which flag underutilized resources."
+    ],
+    "correct": [1],
+    "explanation": "<b>IAM Access Analyzer</b> continuously analyzes the resource-based policies of supported resource types, including S3 buckets, KMS keys, IAM roles, SQS queues, Lambda functions, and others, and generates an <b>external access finding</b> whenever a policy grants access to a principal outside the account or the configured zone of trust, such as an AWS Organization, which is exactly the automated discovery the team wants. AWS Config evaluates configuration against rules but does not perform this kind of resource-based policy reachability analysis on its own. Macie is focused on discovering and classifying sensitive data inside S3 objects, not analyzing access policies. Trusted Advisor's cost checks are unrelated to access exposure entirely.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-findings.html",
+    "id": "scsc03-0029"
+  },
+  {
+    "domain": "Identity and Access Management",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "Beyond finding externally shared resources, a security team also wants to identify IAM roles and users within their organization that have gone 90 days without using certain granted permissions, unused IAM access keys, and unused passwords, so they can right-size overly broad permissions toward least privilege. Which IAM Access Analyzer capability provides this?",
+    "options": [
+      "External access analyzer findings, which only report resources reachable from outside the account, not internal permission usage.",
+      "AWS Config aggregator, which reports resource configuration compliance across accounts.",
+      "An unused access analyzer, a distinct IAM Access Analyzer analyzer type that continuously reviews IAM roles and users across the account or organization and generates findings for unused permissions, unused access keys, and unused passwords over a specified tracking period.",
+      "Amazon Inspector's software vulnerability findings, applied to IAM policy documents."
+    ],
+    "correct": [2],
+    "explanation": "IAM Access Analyzer supports a separate <b>unused access analyzer</b> type, distinct from the external access analyzer, that continuously monitors IAM roles and users and generates findings for <b>unused permissions</b>, <b>unused access keys</b>, and <b>unused passwords</b> over a configurable tracking period, which is exactly what supports a least-privilege cleanup effort. External access analyzer findings answer a different question, whether resources are reachable from outside the account, and say nothing about internal, unused permissions. A Config aggregator reports on resource configuration compliance, not IAM permission usage history. Amazon Inspector scans workloads and container images for software vulnerabilities and has no capability to analyze IAM policy usage.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-create-unused.html",
+    "id": "scsc03-0030"
+  },
+  {
+    "domain": "Identity and Access Management",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A company wants an S3 bucket policy that allows access only to IAM principals that belong to its own AWS Organization, regardless of which specific member account or IAM principal within the organization makes the request, without maintaining an explicit list of every account ID. Which IAM policy condition key BEST achieves this?",
+    "options": [
+      "aws:SourceIp, which restricts access based on the requester's IP address range.",
+      "aws:CurrentTime, which restricts access based on the time of the request.",
+      "aws:MultiFactorAuthPresent, which requires the principal to have authenticated with MFA.",
+      "aws:PrincipalOrgID, which restricts access to principals whose AWS account belongs to the specified AWS Organization ID, without needing to list individual account IDs."
+    ],
+    "correct": [3],
+    "explanation": "The <b>aws:PrincipalOrgID</b> global condition key lets a resource policy restrict access to any principal whose account is a member of the specified AWS Organization, matching by organization ID rather than requiring an explicit, maintained list of every member account ID, which directly satisfies the requirement. aws:SourceIp restricts by network location, not organizational membership. aws:CurrentTime restricts by time window, unrelated to which organization a principal belongs to. aws:MultiFactorAuthPresent requires MFA on the request but says nothing about which organization or account the principal belongs to.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_condition-keys.html",
+    "id": "scsc03-0031"
+  },
+  {
+    "domain": "Identity and Access Management",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A security team wants to require that IAM users can perform sensitive actions, such as deleting an S3 bucket, only when they have authenticated with multi-factor authentication in their current session. Which IAM policy condition key enforces this?",
+    "options": [
+      "aws:MultiFactorAuthPresent, set to true in a Condition block, which evaluates whether the requester's session was established with MFA and denies the action if it was not.",
+      "aws:SecureTransport, which only requires the request to use HTTPS.",
+      "aws:RequestedRegion, which restricts which AWS Region the action can target.",
+      "aws:PrincipalTag, which checks a tag attached to the calling principal."
+    ],
+    "correct": [0],
+    "explanation": "The <b>aws:MultiFactorAuthPresent</b> condition key evaluates to true only when the requester's current session was established using multi-factor authentication, so a policy with a Condition requiring aws:MultiFactorAuthPresent to equal true, often paired with a Deny when it is false or absent, enforces MFA for the specific action. aws:SecureTransport only checks that the connection used HTTPS/TLS, saying nothing about MFA. aws:RequestedRegion restricts the target Region of an API call and is unrelated to authentication strength. aws:PrincipalTag checks a tag value on the calling principal and does not verify whether MFA was used.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_mfa_configure-api-require.html",
+    "id": "scsc03-0032"
+  },
+  {
+    "domain": "Identity and Access Management",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A company's employees already authenticate to a corporate identity provider that supports SAML 2.0, and the company wants those employees to sign in once and receive temporary AWS credentials scoped to an IAM role, without creating a separate IAM user for each employee. Which AWS capability BEST supports this federated single sign-on pattern?",
+    "options": [
+      "Create an IAM user for every employee and synchronize passwords from the corporate directory nightly.",
+      "Configure the corporate identity provider as a SAML 2.0 identity provider in IAM, and have employees federate in via AssumeRoleWithSAML (or SAML-based console sign-in) to receive temporary credentials for an IAM role, with no per-employee IAM user required.",
+      "Attach the same IAM role's permissions directly to each employee's corporate directory group with no AWS-side configuration.",
+      "Enable AWS Shield Advanced, which includes built-in single sign-on for enterprise identity providers."
+    ],
+    "correct": [1],
+    "explanation": "Registering the corporate identity provider as a <b>SAML 2.0 identity provider</b> in IAM lets employees authenticate once against their existing corporate credentials and then federate into AWS through <b>AssumeRoleWithSAML</b>, or SAML-based console federation, to receive short-lived, role-scoped temporary credentials, entirely avoiding the need to create and manage an individual IAM user per employee. Creating and synchronizing an IAM user per employee is exactly the per-user management overhead federation is meant to eliminate. Attaching AWS permissions directly to a corporate directory group has no effect without an AWS-side trust configuration, the SAML identity provider and an assumable role, connecting the two systems. Shield Advanced is a DDoS protection service and has no role in identity federation.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_saml.html",
+    "id": "scsc03-0033"
+  },
+  {
+    "domain": "Identity and Access Management",
+    "tag": "Domain 4",
+    "type": "multi",
+    "stem": "A security architect is documenting how AWS evaluates authorization across identity-based policies, resource-based policies, permission boundaries, and service control policies for a given API call. Which TWO statements correctly describe this evaluation model? (Select TWO.)",
+    "options": [
+      "An explicit Deny in any applicable policy type, identity-based, resource-based, permission boundary, or SCP, always overrides any Allow, regardless of how many policies grant access.",
+      "If no identity-based policy exists for a principal, a resource-based policy alone can never grant that principal access, even for resources like S3 buckets or KMS keys that support resource-based policies.",
+      "Service control policies never grant permissions by themselves; they only define the maximum permissions available, so an identity-based or resource-based Allow is still required for access to be granted.",
+      "Permission boundaries and service control policies are functionally identical, since both restrict IAM users and roles account-wide.",
+      "A permission boundary can grant a principal additional permissions beyond what its identity-based policies allow, expanding the effective permission set."
+    ],
+    "correct": [0, 2],
+    "explanation": "An <b>explicit Deny anywhere always wins</b> over any Allow, no matter how many Allow statements also apply, and <b>SCPs act only as permission ceilings</b>: they never grant access by themselves, so an identity-based or resource-based Allow is still required underneath them for a call to succeed. Saying a resource-based policy alone can never grant access is false for supported resource types: certain resources, including S3 bucket policies and KMS key policies, can grant access purely through a resource-based policy even for a principal with no relevant identity-based policy at all, which is exactly how many cross-account access patterns work. Permission boundaries and SCPs both cap maximum permissions but are not functionally identical: a permission boundary attaches to one IAM user or role, while an SCP attaches to the Organizations root, an OU, or an account and affects every principal there. A permission boundary can only narrow effective permissions to the intersection with the identity-based policy; it can never grant additional permissions beyond what the identity-based policy already allows, so 'expanding the effective permission set' is backwards.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic.html",
+    "id": "scsc03-0034"
   }
 ]
