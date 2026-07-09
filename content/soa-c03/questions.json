@@ -1017,5 +1017,235 @@
     "difficulty": "easy",
     "docUrl": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-control-block-public-access.html",
     "id": "soac03-0053"
+  },
+  {
+    "domain": "Networking and Content Delivery",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "An application team reports that their EC2 instance in a private subnet cannot reach an RDS database in the same VPC, and they want to determine at the network layer whether traffic is being rejected by a security group or network ACL, or whether it never leaves the source instance. Which AWS capability BEST provides this visibility without installing any software on the instance?",
+    "options": [
+      "VPC Flow Logs, capturing IP traffic metadata for the relevant network interfaces, showing ACCEPT or REJECT records that reveal whether traffic reached the destination or was blocked at the network layer.",
+      "AWS X-Ray, tracing the application code's function calls within the EC2 instance.",
+      "CloudWatch Logs Insights queries against the RDS database's general query log only.",
+      "AWS Trusted Advisor's service limits check for the VPC."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>VPC Flow Logs</b> capture IP traffic metadata at the elastic network interface level and record whether each flow was ACCEPTed or REJECTed, directly showing whether the traffic reached its destination or was dropped at the network layer, with no agent needed. X-Ray traces application code execution, not network-layer connectivity. The RDS general query log only shows queries that actually reached the database engine; it says nothing about traffic blocked before arrival. Trusted Advisor's service limits check tracks quota usage, not a specific connectivity failure between two resources.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs.html",
+    "id": "soac03-0054"
+  },
+  {
+    "domain": "Networking and Content Delivery",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "An engineer added an inbound rule to a security group allowing traffic on port 443 from a specific IP range, but connections from that range are still failing. The subnet's network ACL has an explicit DENY rule for the same port that was added earlier and forgotten. Which statement correctly explains why traffic is still blocked?",
+    "options": [
+      "Security groups are evaluated after network ACLs and always override any NACL deny rule, so the security group's ALLOW should already let the traffic through.",
+      "Network ACLs are stateless and evaluated at the subnet boundary in both directions; an explicit DENY there blocks the traffic regardless of what the security group, a stateful instance-level allow list, permits, so both layers must be checked.",
+      "Only security groups can deny traffic; network ACLs can only allow traffic and never contain deny rules.",
+      "Since the security group already allows the traffic, the network ACL setting is irrelevant to this connection."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Network ACLs are stateless</b> and act as a subnet-level checkpoint independent of security groups; an explicit DENY rule there blocks matching traffic regardless of what a stateful, instance-level security group allows, so a request must pass both layers. Neither layer overrides the other; both are evaluated, and either can block traffic the other allows. Network ACLs explicitly support both ALLOW and DENY rules, unlike security groups, which only support allow rules. The security group permitting the traffic does not make the network ACL's rule irrelevant, since both are independently enforced.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/vpc/latest/userguide/vpc-network-acls.html",
+    "id": "soac03-0055"
+  },
+  {
+    "domain": "Networking and Content Delivery",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "Instances in a private subnet need outbound internet access to download OS updates, but must never be reachable by unsolicited inbound connections from the internet, and the team wants a managed option with no instances to patch or scale manually. Which approach BEST meets this need?",
+    "options": [
+      "Assign a public IP address directly to each private-subnet instance and add a route to an internet gateway.",
+      "Launch a NAT instance on a fixed-size EC2 instance type that the team patches and scales manually as traffic grows.",
+      "Create a NAT gateway in a public subnet and route the private subnet's outbound internet traffic to it; a NAT gateway is a managed service that scales automatically and accepts no unsolicited inbound connections.",
+      "Configure a VPC peering connection to a subnet in another VPC that has internet access."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "A <b>NAT gateway</b> is a fully managed AWS service that scales automatically with traffic and, by design, only allows outbound-initiated connections to return, never accepting unsolicited inbound connections from the internet. Assigning public IPs directly to private-subnet instances defeats the point of keeping them unreachable from the internet. A NAT instance is a self-managed EC2 instance that the team must patch and manually resize as traffic grows, which the requirement explicitly wants to avoid. VPC peering only connects two VPCs to each other directly; peering does not, by itself, provide internet access unless the peered VPC's own internet path is also routed through, which adds unnecessary complexity here.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html",
+    "id": "soac03-0056"
+  },
+  {
+    "domain": "Networking and Content Delivery",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "An application running on EC2 in a private subnet with no internet gateway or NAT needs to read and write objects in Amazon S3 and also call the Amazon DynamoDB API, without any traffic ever traversing the public internet. Which VPC networking feature BEST meets this need for both services at low cost?",
+    "options": [
+      "A Direct Connect connection to the nearest AWS Region, since Direct Connect is required for any private access to AWS service APIs.",
+      "An Interface VPC endpoint (AWS PrivateLink) for every AWS service, since Gateway endpoints do not exist for any AWS service.",
+      "A NAT gateway in a public subnet, since NAT gateways are the only way to reach S3 and DynamoDB privately.",
+      "A Gateway VPC endpoint, the endpoint type supported for both Amazon S3 and DynamoDB, providing private access to these services with no additional hourly charge and no traversal of the internet."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "A <b>Gateway VPC endpoint</b> is specifically supported for Amazon S3 and DynamoDB, routes traffic to those services privately within the AWS network with no per-hour endpoint charge, and requires no internet gateway or NAT. Direct Connect provides a dedicated network link to AWS but is not a requirement for private API access to S3 or DynamoDB inside a VPC. Interface endpoints (PrivateLink) exist for many services, but S3 and DynamoDB specifically also offer the simpler, no-additional-charge Gateway endpoint type, and claiming Gateway endpoints don't exist is false. A NAT gateway routes traffic out to the public internet (even if AWS-owned IP ranges are involved for some services), which is not the private, non-internet path a Gateway endpoint provides.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/vpc/latest/privatelink/gateway-endpoints.html",
+    "id": "soac03-0057"
+  },
+  {
+    "domain": "Networking and Content Delivery",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A company has grown to 30 VPCs across multiple accounts, plus an on-premises data center connected by Direct Connect, and every VPC needs to communicate with every other VPC and with on-premises. Maintaining a full mesh of individual VPC peering connections has become unmanageable as new VPCs are added. Which approach BEST simplifies this connectivity going forward?",
+    "options": [
+      "AWS Transit Gateway, acting as a central hub that each VPC and the Direct Connect connection attaches to once, replacing the need for a full mesh of individual peering connections.",
+      "Continue adding a new VPC peering connection between every pair of VPCs as the company grows, since peering connections support transitive routing through a third VPC.",
+      "Migrate every VPC's resources into a single VPC to eliminate the need for any inter-VPC connectivity.",
+      "Replace all VPC peering connections with individual Site-to-Site VPN connections between every pair of VPCs."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>AWS Transit Gateway</b> acts as a central hub that each VPC and the Direct Connect gateway attaches to just once, replacing an unmanageable full mesh of point-to-point connections with a single set of attachments and centralized route tables. VPC peering does NOT support transitive routing; traffic cannot pass through an intermediate VPC over peering, so continuing to add pairwise peering connections is the exact scaling problem described, not a fix. Consolidating every VPC's resources into one VPC is a disruptive, high-risk migration that ignores account and workload isolation needs. Replacing peering with a full mesh of individual VPN connections keeps the same one-per-pair scaling problem, just over a different connection type.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/vpc/latest/tgw/what-is-transit-gateway.html",
+    "id": "soac03-0058"
+  },
+  {
+    "domain": "Networking and Content Delivery",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A company relies on AWS Direct Connect for consistent, low-latency connectivity between its data center and its VPC, but wants an automatic backup path that takes over within seconds if the Direct Connect connection fails, without manual intervention. Which approach BEST provides this resilience?",
+    "options": [
+      "Provision a second, identical Direct Connect connection through the exact same physical link and network provider as the first.",
+      "Configure a Site-to-Site VPN connection as a backup path alongside Direct Connect, using BGP so traffic automatically fails over to the VPN if the Direct Connect connection becomes unavailable.",
+      "Rely on the on-premises firewall to detect a Direct Connect outage and manually notify an engineer to reconfigure routing.",
+      "Increase the Direct Connect connection's port speed, since a faster connection cannot fail."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "A <b>Site-to-Site VPN configured as a backup path</b> alongside Direct Connect, with BGP route propagation, lets traffic automatically shift to the VPN within seconds of a Direct Connect failure, with no manual step. A second Direct Connect connection over the identical physical link and provider shares the same failure domain, so it does not protect against the most likely causes of an outage, such as a fiber cut or provider issue. Depending on a human to notice an outage and manually reconfigure routing is far slower than automatic BGP failover and directly contradicts the requirement for a failover within seconds and no manual intervention. A faster port speed has no bearing on whether the connection can fail.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/directconnect/latest/UserGuide/high-resiliency-set-up.html",
+    "id": "soac03-0059"
+  },
+  {
+    "domain": "Networking and Content Delivery",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A company runs its website in a primary AWS Region and wants DNS to automatically stop returning the primary Region's IP address and instead return a backup Region's IP address if the primary Region's endpoint stops responding to HTTP health checks, with no manual DNS change during the incident. Which Route 53 capability BEST meets this need?",
+    "options": [
+      "A weighted routing policy, splitting traffic evenly between both Regions at all times regardless of health.",
+      "A geolocation routing policy, which routes based on the requester's location rather than target health.",
+      "A failover routing policy combined with a Route 53 health check on the primary endpoint, so Route 53 automatically stops returning the primary record and returns the secondary record when the health check fails.",
+      "A simple routing policy with a single record pointing only at the primary Region's IP address."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "A <b>failover routing policy paired with a health check</b> on the primary endpoint makes Route 53 automatically withdraw the primary record and return the secondary record the moment the health check reports failure, with no manual DNS update needed. Weighted routing always splits traffic by weight regardless of endpoint health, so it would keep sending some traffic to a failed primary. Geolocation routing selects a record based on where the request originates, not target health. A simple routing policy with a single record has no secondary target to fail over to at all.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-failover.html",
+    "id": "soac03-0060"
+  },
+  {
+    "domain": "Networking and Content Delivery",
+    "tag": "Domain 5",
+    "type": "multi",
+    "stem": "A global company wants to route users to the AWS Region that gives them the lowest network latency, and separately wants to send 90% of traffic to a stable production stack and 10% to a canary stack for testing, both configured in Amazon Route 53. Which TWO statements about Route 53 routing policies are correct? (Select TWO.)",
+    "options": [
+      "A latency-based routing policy routes each request to the Region with the lowest measured latency for that user, based on latency measurements between users and AWS Regions.",
+      "A geolocation routing policy always produces the same result as a latency-based routing policy, because a user's physical location and their lowest-latency Region are always identical.",
+      "Weighted routing policies can only split traffic into exactly two equal 50/50 shares and cannot express a 90/10 split.",
+      "A weighted routing policy assigns a relative weight to each record, so setting weights of 90 and 10 sends approximately 90% of traffic to the production stack and 10% to the canary stack.",
+      "Route 53 routing policies are evaluated only when a health check is attached; a hosted zone with no health checks configured cannot use latency-based or weighted routing at all."
+    ],
+    "correct": [
+      0,
+      3
+    ],
+    "explanation": "A <b>latency-based routing policy</b> selects the Region with the lowest measured latency for the requesting user, directly matching the first goal, and a <b>weighted routing policy</b> assigns each record a relative weight, so 90 and 10 sends approximately a 90/10 traffic split, matching the canary testing goal. Geolocation routing is based on the user's physical or network location, which does not always match the Region with the lowest measured latency for that user. Weighted routing supports any relative weight distribution across any number of records, not just a fixed 50/50 split between two records. Health checks are optional additions to most routing policies to exclude unhealthy endpoints; latency-based and weighted routing both work perfectly well with no health check attached at all.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-policy.html",
+    "id": "soac03-0061"
+  },
+  {
+    "domain": "Networking and Content Delivery",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "An engineer needs to determine why a specific EC2 instance cannot reach a specific RDS instance across several route tables, security groups, and network ACLs, without manually tracing every hop's configuration by hand. Which AWS capability BEST automates this analysis and reports the specific blocking component?",
+    "options": [
+      "AWS Config, which reports configuration compliance but does not trace a path between two specific resources.",
+      "VPC Flow Logs alone, which record traffic metadata for a resource in isolation but do not simulate or trace a full path across route tables, security groups, and NACLs.",
+      "AWS Trusted Advisor's network reachability check, which only reports whether specific known common misconfigurations exist, not a targeted path between two chosen resources.",
+      "VPC Reachability Analyzer, which performs a configuration-based analysis of the path between a specified source and destination and reports the specific hop, such as a security group rule or route table entry, that blocks connectivity."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>VPC Reachability Analyzer</b> is purpose-built to analyze the configured path between two specified resources and pinpoint the exact hop, such as a missing route or a blocking security group rule, that prevents connectivity, without generating any live traffic. AWS Config evaluates resource configuration against rules; it has no path-tracing capability between two chosen endpoints. VPC Flow Logs show what traffic actually happened for one resource, not a simulated end-to-end path across every hop. Trusted Advisor only flags a fixed set of generic best-practice issues, not a targeted analysis between a specific source and destination pair.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/vpc/latest/reachability/what-is-reachability-analyzer.html",
+    "id": "soac03-0062"
+  },
+  {
+    "domain": "Networking and Content Delivery",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "An Application Load Balancer is returning HTTP 503 errors to clients intermittently, and the team wants to determine which target group and which specific targets are failing health checks, along with the exact reason each target is considered unhealthy. Which approach BEST provides this detail?",
+    "options": [
+      "Check the target group's health check settings and target health status in the console or API, which reports the specific reason, such as Target.FailedHealthChecks or Target.Timeout, that each unhealthy target is failing.",
+      "Increase the Application Load Balancer's idle timeout setting, which always resolves 503 errors regardless of their cause.",
+      "Enable AWS Shield Advanced, which is designed to mitigate DDoS attacks rather than report target health status.",
+      "Restart every instance behind the load balancer simultaneously and observe whether the 503 errors stop."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "The <b>target group's health status detail</b>, available in the console or through DescribeTargetHealth, reports a specific reason code for each unhealthy target, giving the team the exact cause instead of guessing. Increasing idle timeout addresses a different problem (long-lived connections being closed early) and has no guaranteed relationship to why targets are failing health checks. Shield Advanced defends against DDoS traffic; it has no target-health reporting function. Restarting every instance simultaneously is disruptive, does not diagnose the root cause, and could itself cause an outage if it removes all targets from service at once.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/elasticloadbalancing/latest/application/target-group-health-checks.html",
+    "id": "soac03-0063"
+  },
+  {
+    "domain": "Networking and Content Delivery",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A company serves its web application through Amazon CloudFront and wants to block common web exploits like SQL injection and cross-site scripting, plus rate-limit clients making excessive requests to a specific path, all at the edge before requests reach the origin. Which AWS capability BEST meets this need?",
+    "options": [
+      "A CloudFront cache behavior with a longer TTL, which only affects how long content is cached, not what traffic is blocked.",
+      "AWS WAF, with a web ACL that includes managed rule groups for common exploits and a rate-based rule for the specific path, associated with the CloudFront distribution to inspect and block malicious requests at the edge.",
+      "AWS Shield Standard alone, which defends against network and transport layer DDoS attacks but does not inspect HTTP request content for exploits like SQL injection.",
+      "An Amazon Route 53 health check on the origin, which only monitors origin availability and does not inspect or block request content."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>AWS WAF</b>, attached to the CloudFront distribution as a web ACL, inspects HTTP requests at the edge and can apply managed rule groups for common exploits like SQL injection and cross-site scripting, alongside a rate-based rule scoped to a specific path, blocking malicious or excessive requests before they reach the origin. A longer cache TTL changes only caching behavior and inspects no request content. Shield Standard protects against network and transport-layer DDoS attacks but does not perform Layer 7 content inspection for exploits. A Route 53 health check only monitors whether the origin is reachable; it has no request-inspection or blocking capability.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/waf/latest/developerguide/cloudfront-features.html",
+    "id": "soac03-0064"
+  },
+  {
+    "domain": "Networking and Content Delivery",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A team updates a CSS file at the same object key in the S3 origin behind a CloudFront distribution, but users continue to see the old, stale version of the file for hours because CloudFront is still serving cached edge copies with time remaining on their TTL. The team wants CloudFront to immediately stop serving the stale cached copies for this file. Which approach BEST achieves this?",
+    "options": [
+      "Delete and recreate the entire CloudFront distribution so all caches are cleared everywhere.",
+      "Wait for the object's TTL to expire naturally, since CloudFront provides no way to force an early cache refresh.",
+      "Create a CloudFront invalidation request for the specific object path, which removes the cached copy from edge locations so the next request is served fresh from the origin.",
+      "Change the S3 bucket's Region, which forces every CloudFront edge location to treat all objects as new."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "A <b>CloudFront invalidation request</b> for the specific object path removes that object's cached copies from edge locations immediately, so the next request for it is served fresh from the origin, without touching the rest of the distribution. Deleting and recreating the whole distribution is a drastic, disruptive step for what is a single stale object. CloudFront does support forcing an early refresh through invalidation, so waiting out the TTL is unnecessary. Changing the S3 bucket's Region does not interact with CloudFront's edge cache state at all and would likely break the origin configuration.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Invalidation.html",
+    "id": "soac03-0065"
   }
 ]
