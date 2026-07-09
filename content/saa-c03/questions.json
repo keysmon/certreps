@@ -657,13 +657,13 @@
     "options": [
       "Enable Multi-AZ deployment so a synchronous standby in another Availability Zone is ready for automatic failover.",
       "Disable automated backups to reduce storage cost.",
-      "Configure automated backups with a retention period long enough to meet the recovery point objective, and enable point-in-time recovery.",
+      "Store the master password in the application's source code repository for simpler failover scripts.",
       "Run the database in a single Availability Zone to reduce cross-AZ data transfer charges.",
-      "Store the master password in the application's source code repository for simpler failover scripts."
+      "Configure automated backups with a retention period long enough to meet the recovery point objective, and enable point-in-time recovery."
     ],
     "correct": [
       0,
-      2
+      4
     ],
     "explanation": "<b>Multi-AZ deployment</b> gives automatic failover to a synchronous standby in another zone, and <b>automated backups with point-in-time recovery</b> protect against data loss and logical errors by letting the database be restored to any point within the retention window, together covering both availability and recoverability. Disabling automated backups removes the ability to recover from data loss or corruption. Running in a single Availability Zone to save on cross-AZ transfer charges removes the resilience Multi-AZ would provide and trades reliability for a minor cost saving. Storing the master password in source control is a security anti-pattern, not a resilience practice, and belongs in Secrets Manager instead.",
     "difficulty": "medium",
@@ -828,17 +828,17 @@
     "domain": "Design High-Performing Architectures",
     "tag": "Domain 3",
     "type": "single",
-    "stem": "A genomics workload runs thousands of parallel EC2 instances that all read and write to a shared Amazon EFS file system simultaneously, generating far more total throughput and operations than a single-instance workload would. Which EFS configuration is designed for this highly parallelized access pattern?",
+    "stem": "A shared Amazon EFS file system serves a workload with spiky, unpredictable traffic: occasional large throughput bursts separated by long idle periods, with a peak the team cannot forecast in advance. The team wants throughput to scale automatically to match demand without provisioning a fixed level or managing burst credits. Which Amazon EFS throughput mode BEST fits this workload?",
     "options": [
-      "General Purpose performance mode, which is optimized for the lowest per-operation latency with a single client at a time.",
-      "Bursting Throughput mode only, with General Purpose performance mode, and no changes to performance mode.",
-      "Max I/O performance mode, which scales to higher levels of aggregate throughput and operations per second across a large number of clients accessing the file system concurrently.",
-      "A single EBS Provisioned IOPS volume shared across all instances using Multi-Attach."
+      "Provisioned throughput, set to a fixed throughput level sized for the largest possible burst and left in place at all times.",
+      "Bursting throughput, whose available throughput is tied to the amount of data stored in the file system and depends on accumulated burst credits to exceed its baseline.",
+      "Elastic throughput, which automatically scales throughput up and down to match the workload's activity and is the mode AWS recommends for spiky or unpredictable workloads that are hard to forecast.",
+      "General Purpose performance mode on its own, since a file system's performance mode determines the throughput available to it."
     ],
     "correct": [
       2
     ],
-    "explanation": "<b>EFS Max I/O performance mode is built to scale to higher levels of aggregate throughput and operations per second when many clients access the file system in parallel</b>, trading a small amount of per-operation latency for much higher parallel scalability, which fits thousands of concurrent instances. General Purpose mode is optimized for the lowest latency per operation and is the right default for latency-sensitive, moderately parallel workloads, but it is not the mode built for this scale of concurrent access. Leaving performance mode as General Purpose and only adjusting throughput mode does not address the concurrency scaling need Max I/O is designed for. EBS Multi-Attach works only within a single Availability Zone with a limited number of instances and is not a shared file system solution for thousands of clients.",
+    "explanation": "<b>EFS Elastic throughput automatically scales throughput up and down to match the workload's activity</b>, so it absorbs spiky, hard-to-forecast bursts without provisioning a fixed level or managing burst credits, which is why AWS recommends it for spiky or unpredictable workloads (those driving throughput at roughly a 5 percent or lower average-to-peak ratio). Provisioned throughput makes the team pick and pay for a fixed level sized for the peak, wasting capacity during the long idle periods. Bursting throughput ties available throughput to how much data is stored and relies on accumulated burst credits, so a workload with unpredictable large bursts can exhaust its credits and get throttled. Performance mode (General Purpose or Max I/O) is a separate setting from throughput mode and does not by itself set the throughput available to the file system.",
     "difficulty": "medium",
     "docUrl": "https://docs.aws.amazon.com/efs/latest/ug/performance.html",
     "id": "saac03-0044"
@@ -987,12 +987,12 @@
       "Reduce the number of targets registered in the target group.",
       "Switch the target group's routing algorithm from round robin to least outstanding requests, which sends new requests to the target with the fewest requests currently in flight.",
       "Disable target group health checks so unhealthy targets keep receiving traffic.",
-      "Enable cross-zone load balancing so requests are distributed evenly across all registered targets in every Availability Zone rather than only within each zone.",
-      "Switch every target's instance type to the smallest available size."
+      "Switch every target's instance type to the smallest available size.",
+      "Enable cross-zone load balancing so requests are distributed evenly across all registered targets in every Availability Zone rather than only within each zone."
     ],
     "correct": [
       1,
-      3
+      4
     ],
     "explanation": "<b>Least outstanding requests routing sends each new request to the target with the fewest requests currently in flight</b>, which handles uneven, long-running requests far better than round robin, since round robin ignores how long each in-flight request is taking, and <b>cross-zone load balancing spreads requests evenly across all registered targets in every Availability Zone</b> instead of only balancing within each zone first, correcting for zones that happen to have fewer targets. Reducing the number of targets does not fix distribution and lowers overall capacity. Disabling health checks risks routing to unhealthy targets and does not address load distribution among healthy ones. Shrinking every target's instance type reduces each target's capacity without changing how requests are distributed among them.",
     "difficulty": "hard",
@@ -1235,7 +1235,7 @@
     "options": [
       "Release Elastic IP addresses that are not associated with a running instance, since AWS charges for idle Elastic IPs.",
       "Leave unattached EBS volumes in place indefinitely in case an old instance needs to be recreated.",
-      "Use AWS Compute Optimizer's recommendations to right-size or delete the underutilized instances and unattached volumes identified in the review.",
+      "Use AWS Compute Optimizer's recommendations to right-size the underutilized EC2 instances, and delete or snapshot the unattached EBS volumes the review already identified.",
       "Increase the provisioned IOPS on every unattached EBS volume to improve its performance.",
       "Convert all Elastic IP addresses to additional NAT gateways regardless of whether they are in use."
     ],
@@ -1243,7 +1243,7 @@
       0,
       2
     ],
-    "explanation": "<b>Releasing unassociated Elastic IP addresses stops the ongoing idle-IP charge</b>, and <b>using Compute Optimizer's recommendations to right-size underutilized instances and to identify and delete unattached volumes that are no longer needed</b> both directly cut ongoing cost from the findings in the review. Leaving unattached volumes in place indefinitely continues to accrue storage charges for data that may never be needed again; a snapshot can preserve the data at far lower cost if it might be needed later. Increasing provisioned IOPS on volumes nobody is using adds cost with no benefit. Converting Elastic IPs into additional NAT gateways adds new hourly and data-processing charges rather than removing the idle-IP cost the review flagged.",
+    "explanation": "<b>Releasing unassociated Elastic IP addresses stops the ongoing idle-IP charge</b>, and <b>using Compute Optimizer's recommendations to right-size the underutilized instances, together with deleting or snapshotting the unattached volumes the review already flagged</b>, both directly cut ongoing cost from the findings in the review. Leaving unattached volumes in place indefinitely continues to accrue storage charges for data that may never be needed again; a snapshot can preserve the data at far lower cost if it might be needed later. Increasing provisioned IOPS on volumes nobody is using adds cost with no benefit. Converting Elastic IPs into additional NAT gateways adds new hourly and data-processing charges rather than removing the idle-IP cost the review flagged.",
     "difficulty": "medium",
     "docUrl": "https://docs.aws.amazon.com/compute-optimizer/latest/ug/what-is-compute-optimizer.html",
     "id": "saac03-0065"
