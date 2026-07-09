@@ -806,5 +806,216 @@
     "difficulty": "medium",
     "docUrl": "https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-inventory.html",
     "id": "soac03-0042"
+  },
+  {
+    "domain": "Security and Compliance",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A developer's IAM user can list objects in an S3 bucket but receives Access Denied when trying to download a specific object, even though the user's own IAM policy grants s3:GetObject across the bucket's entire object path. Which is the MOST likely explanation, and how should the team confirm it?",
+    "options": [
+      "The bucket's own bucket policy or the object's ACL contains an explicit deny or fails to grant the required permission for this principal; use the IAM Policy Simulator or inspect the bucket policy and object ACL directly to confirm.",
+      "IAM user policies are always the final word on S3 access, so no other policy could possibly block a request that an attached IAM policy allows.",
+      "The object must have been deleted, since Access Denied always means the object no longer exists.",
+      "S3 requires MFA for every GetObject call by default, and no configuration can change this."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "Amazon S3 access is the combined result of the <b>identity-based policy AND any resource-based bucket policy or ACL</b>; an explicit deny anywhere, or a bucket policy that fails to also grant the permission, produces Access Denied even when the IAM policy allows the action. Checking the bucket policy and ACL, or running the request through the IAM Policy Simulator, is the standard way to find the blocking statement. IAM policies are only one input to the overall evaluation; a bucket policy or ACL can still restrict access. Access Denied is the standard response for a permissions problem, not a signal that the object was deleted (that would be a 404 Not Found). S3 does not require MFA for every GetObject call by default; that would require an explicit MFA condition in a policy.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic.html",
+    "id": "soac03-0043"
+  },
+  {
+    "domain": "Security and Compliance",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A CloudOps team wants to continuously check every new and existing S3 bucket for whether server-side encryption is enabled, and automatically enable default encryption on any bucket found without it, with no engineer manually reviewing each finding. Which combination of AWS Config capabilities BEST meets this need?",
+    "options": [
+      "An AWS Config aggregator, which only combines compliance data from multiple accounts into a single read-only view.",
+      "An AWS Config managed rule that evaluates S3 bucket encryption, paired with an automatic remediation action using an SSM Automation document that enables default encryption on any NON_COMPLIANT bucket.",
+      "AWS Config resource inventory alone, which lists bucket configuration history but takes no corrective action.",
+      "A manually triggered AWS Config rule evaluation, run by an engineer once a quarter."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "An <b>AWS Config managed rule</b> continuously evaluates bucket encryption, and attaching an <b>automatic remediation action</b> lets Config invoke an SSM Automation document to fix any NON_COMPLIANT bucket with no engineer involved. An aggregator only centralizes visibility across accounts; it does not evaluate or fix anything itself. Resource inventory tracks configuration history for reference; it has no remediation capability. A manual quarterly review is exactly the manual, delayed process the team wants to eliminate.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/config/latest/developerguide/remediation.html",
+    "id": "soac03-0044"
+  },
+  {
+    "domain": "Security and Compliance",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A company wants to package a standard set of 15 related AWS Config rules and their remediation actions, covering a specific compliance framework, into a single deployable unit that can be applied consistently across many accounts in an AWS Organizations organization, rather than creating each of the 15 rules by hand in every account. Which AWS Config capability BEST meets this need?",
+    "options": [
+      "AWS Config recorder settings, which control which resource types are tracked but do not bundle multiple rules together.",
+      "An AWS Config aggregator, which centralizes compliance visibility across accounts but does not deploy rules to them.",
+      "A conformance pack, deployed as a single template containing many Config rules and remediation actions, which can be deployed organization-wide through AWS Organizations.",
+      "AWS Config's resource relationship diagram, which only visualizes dependencies between existing resources."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "A <b>conformance pack</b> bundles many Config rules and their remediation actions into one deployable template, and it can be deployed across an entire AWS Organizations organization in a single operation, avoiding rule-by-rule setup in every account. Recorder settings only control which resource types Config tracks, not which rules run. An aggregator is read-only visibility across accounts; it cannot push rules or remediations out to them. The resource relationship diagram is a visualization feature for existing resource dependencies, unrelated to packaging or deploying rules.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/config/latest/developerguide/conformance-packs.html",
+    "id": "soac03-0045"
+  },
+  {
+    "domain": "Security and Compliance",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A company wants to guarantee that no IAM principal in any member account of an Organizational Unit can ever disable AWS CloudTrail or delete its S3 log bucket, even if a member account's own administrator explicitly grants that permission through an IAM policy. Which AWS capability BEST enforces this account-wide, override-proof guardrail?",
+    "options": [
+      "An IAM permissions boundary attached to every individual IAM role and user across every member account.",
+      "An AWS Config rule that only reports the CloudTrail configuration as noncompliant after the fact.",
+      "A resource-based bucket policy on the log bucket, which member account administrators are still able to modify or remove.",
+      "A Service Control Policy (SCP) attached to the Organizational Unit that explicitly denies the CloudTrail-stopping and bucket-deletion actions; SCPs set the maximum available permissions and cannot be overridden by any IAM policy within the account."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "A <b>Service Control Policy</b> attached at the Organizational Unit level sets the ceiling of what any IAM principal in every member account can do, and an explicit deny in an SCP cannot be overridden by even a permissive IAM policy or an account administrator inside that account. A permissions boundary must be attached to each individual role or user and can be changed or removed by an administrator with sufficient IAM permissions in that account, so it is not an unbypassable, account-wide guardrail. An AWS Config rule only detects and reports a problem after it happens; it does not prevent the action. A bucket policy is also just a resource-based IAM policy that an account administrator with sufficient permissions can still modify or delete.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps.html",
+    "id": "soac03-0046"
+  },
+  {
+    "domain": "Security and Compliance",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A security team wants to ensure a KMS customer managed key used to encrypt sensitive data automatically generates new cryptographic material every year with no application changes or manual key swap, while ciphertext created under earlier key material remains decryptable. Which KMS capability BEST meets this need?",
+    "options": [
+      "Automatic key rotation on the KMS customer managed key, which rotates the underlying key material yearly while keeping the same key ID and ARN, so existing ciphertext and applications continue to work unchanged.",
+      "Manually creating a brand-new KMS key every year and updating every application's configuration to reference the new key ARN.",
+      "Enabling S3 default encryption with SSE-S3, which uses Amazon-managed keys that the security team cannot configure a custom rotation schedule for.",
+      "Deleting and recreating the KMS key's alias annually, which generates entirely new key material under the same alias name."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Automatic key rotation</b> on a KMS customer managed key rotates the backing key material on a yearly cadence while the key ID and ARN stay the same, so applications and existing ciphertext keep working with no code change or manual swap. Manually creating a new key every year requires updating every application's key reference and re-encrypting or managing multiple key versions by hand. SSE-S3 uses AWS-owned/managed keys with no customer-configurable rotation control, which does not meet a requirement for managing rotation on a customer managed key. Recreating an alias does not rotate key material; an alias is just a friendly pointer to a key, and deleting the underlying key would make old ciphertext unrecoverable.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/kms/latest/developerguide/rotate-keys.html",
+    "id": "soac03-0047"
+  },
+  {
+    "domain": "Security and Compliance",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "An RDS database credential is stored as a plaintext value in application configuration today, and the security team wants it rotated automatically on a schedule, with the new credential value pushed to the secret store and the database updated in the same operation, without the application ever handling the old credential directly in code. Which AWS service BEST fits this requirement?",
+    "options": [
+      "AWS Systems Manager Parameter Store SecureString parameters, which do not include a built-in automatic rotation workflow for database credentials.",
+      "AWS Secrets Manager, which supports scheduled automatic rotation using a Lambda rotation function that updates both the secret value and the database credential together.",
+      "AWS KMS, which only encrypts and decrypts data and does not store or rotate credential values itself.",
+      "Hardcoding the credential in the application's environment variables and redeploying manually every 90 days."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>AWS Secrets Manager</b> supports scheduled automatic rotation through a Lambda rotation function that changes the database credential and updates the stored secret value together, with no manual step. Parameter Store SecureString parameters store an encrypted value but have no built-in rotation workflow for database credentials the way Secrets Manager does. KMS only performs encryption and decryption operations; it does not store secrets or manage their rotation. Hardcoding the credential and redeploying manually every 90 days is a manual process that also briefly exposes the credential in code and deployment artifacts.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/secretsmanager/latest/userguide/rotating-secrets.html#rotate-secrets_how",
+    "id": "soac03-0048"
+  },
+  {
+    "domain": "Security and Compliance",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A security team wants continuous, managed threat detection that analyzes VPC Flow Logs, DNS query logs, and CloudTrail events to identify things like a compromised EC2 instance communicating with a known malicious IP address, without deploying any agents on EC2 instances. Which AWS service BEST meets this requirement?",
+    "options": [
+      "AWS Config, evaluating resource configuration for compliance drift.",
+      "Amazon Inspector, scanning EC2 instances and container images for software vulnerabilities.",
+      "Amazon GuardDuty, which continuously analyzes VPC Flow Logs, DNS logs, and CloudTrail events using threat intelligence to generate findings, with no agent required.",
+      "AWS Trusted Advisor, reviewing weekly security checks in the console."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Amazon GuardDuty</b> is a managed, agentless threat detection service that continuously analyzes VPC Flow Logs, DNS logs, and CloudTrail events against threat intelligence to surface findings like communication with a known malicious IP. AWS Config evaluates resource configuration for compliance, not network or API threat behavior. Amazon Inspector scans for software and container vulnerabilities, a different problem from detecting active threat behavior. Trusted Advisor's security checks are a periodic best-practice review, not continuous threat detection.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/guardduty/latest/ug/what-is-guardduty.html",
+    "id": "soac03-0049"
+  },
+  {
+    "domain": "Security and Compliance",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A company runs GuardDuty, Inspector, and Config across a dozen accounts and wants a single, aggregated dashboard that shows security findings from all three services together, checks resources against standards like the AWS Foundational Security Best Practices, and produces an overall security score, instead of an engineer checking each service's console separately in every account. Which AWS service BEST meets this need?",
+    "options": [
+      "Amazon Macie, which only classifies and discovers sensitive data in S3.",
+      "AWS Config aggregators, which centralize only Config rule compliance data, not findings from GuardDuty or Inspector.",
+      "AWS Organizations, which manages account structure and billing but has no built-in security-findings dashboard.",
+      "AWS Security Hub, which aggregates and normalizes findings from GuardDuty, Inspector, Config, and other services into one dashboard, evaluates resources against security standards, and produces an overall security score."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>AWS Security Hub</b> is purpose-built to aggregate and normalize findings from GuardDuty, Inspector, Config, and other integrated services into a single view, run standards checks such as the AWS Foundational Security Best Practices, and compute a security score. Macie only covers sensitive-data discovery in S3; it does not aggregate findings from other security services. A Config aggregator only centralizes Config rule compliance, leaving GuardDuty and Inspector findings out of the picture. AWS Organizations manages account and billing structure, not security findings.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/securityhub/latest/userguide/what-is-securityhub.html",
+    "id": "soac03-0050"
+  },
+  {
+    "domain": "Security and Compliance",
+    "tag": "Domain 4",
+    "type": "multi",
+    "stem": "A company operates 25 AWS accounts under AWS Organizations and needs a tamper-evident audit record of every API call made in every account and Region, centrally stored, with a way to cryptographically prove after the fact that none of the stored log files have been altered or deleted. Which TWO statements about meeting this requirement with AWS CloudTrail are correct? (Select TWO.)",
+    "options": [
+      "A single-Region CloudTrail trail in each account automatically captures API activity from every Region without any additional configuration.",
+      "An AWS Organizations trail, created once in the management account and applied to all member accounts, delivers every member account's events to a single centralized S3 bucket.",
+      "CloudTrail log file integrity validation is enabled by default on every trail and cannot be turned off or configured.",
+      "CloudTrail retains every logged event indefinitely inside the CloudTrail console itself, so no S3 bucket or lifecycle policy is ever needed for long-term retention.",
+      "Enabling log file integrity validation on a trail produces periodic digest files that can be used to cryptographically verify that delivered log files have not been modified or deleted since delivery."
+    ],
+    "correct": [
+      1,
+      4
+    ],
+    "explanation": "An <b>AWS Organizations trail</b> created once in the management account automatically applies to every member account and centralizes delivery to a single S3 bucket, meeting the 25-account requirement without configuring a trail in each account separately. <b>Log file integrity validation</b>, once enabled, produces signed digest files that let the team cryptographically verify that no delivered log file has been altered or deleted since it was written. A single-Region trail only captures activity in its own Region unless it is explicitly configured as multi-Region; it does not automatically cover every Region. Log file integrity validation is opt-in and configurable per trail, not enabled by default and locked on. CloudTrail Event history in the console retains a limited rolling window of management events; long-term retention still requires the S3 delivery destination and a lifecycle policy.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-log-file-validation-intro.html",
+    "id": "soac03-0051"
+  },
+  {
+    "domain": "Security and Compliance",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A security team wants to proactively find any S3 bucket, IAM role, or KMS key whose resource policy unintentionally grants access to an external AWS account or the public, before an attacker discovers it, rather than waiting for a manual quarterly access review. Which AWS service BEST meets this need?",
+    "options": [
+      "IAM Access Analyzer, which continuously analyzes resource policies, including S3, IAM roles, and KMS, and generates findings for any access granted to an entity outside the defined zone of trust.",
+      "AWS Config, which only reports whether a resource's configuration matches a defined rule, not whether its policy grants external access.",
+      "Amazon Macie, which discovers and classifies sensitive data inside S3 objects, not resource-policy access grants.",
+      "AWS Trusted Advisor's service limits check, which tracks account service quotas, not resource-sharing configuration."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>IAM Access Analyzer</b> continuously evaluates resource-based policies across supported services and generates a finding whenever access is granted to a principal outside the analyzer's defined zone of trust, catching unintended external or public access proactively. AWS Config rules check whether a configuration matches a defined rule; a generic rule does not automatically evaluate every resource-policy access grant the way Access Analyzer does. Amazon Macie's job is sensitive-data classification within S3 objects, a different problem from policy-grant analysis. Trusted Advisor's service limits check tracks quota usage and has no relationship to resource-sharing findings.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/what-is-access-analyzer.html",
+    "id": "soac03-0052"
+  },
+  {
+    "domain": "Security and Compliance",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "After a previous incident where a developer accidentally applied a public-read bucket policy to a bucket containing sensitive data, the security team wants an account-wide setting that prevents any bucket in the account from ever becoming publicly accessible through a bucket policy or ACL, even if someone tries to apply one, without checking each bucket individually. Which AWS S3 capability BEST meets this need?",
+    "options": [
+      "S3 Versioning, enabled at the account level, which prevents any object from ever being made public.",
+      "S3 Block Public Access, enabled at the account level, which overrides and blocks public bucket policies and ACLs across every bucket in the account, regardless of what is applied to an individual bucket.",
+      "S3 Object Lock, which only prevents object deletion or overwrite for a retention period and has no relation to public access.",
+      "S3 Transfer Acceleration, which only affects upload and download speed over long distances."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>S3 Block Public Access</b>, enabled at the account level, overrides any bucket policy or ACL that would otherwise grant public access, providing exactly the account-wide, override-proof control the team wants, with no per-bucket checking needed. Versioning preserves prior object versions; it has no effect on whether a bucket is publicly accessible. Object Lock enforces WORM retention against deletion or overwrite, an unrelated concern to public access. Transfer Acceleration only speeds up transfers using CloudFront edge locations and has no security function.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-control-block-public-access.html",
+    "id": "soac03-0053"
   }
 ]
