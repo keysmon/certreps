@@ -482,7 +482,7 @@
     "domain": "Security",
     "tag": "Domain 2",
     "type": "single",
-    "stem": "A developer attaches an IAM policy to a Lambda execution role granting kms:Decrypt on a specific KMS key's ARN. The function still receives an AccessDeniedException when calling Decrypt. The KMS key's key policy only contains the default statement granting the account root full access, and does not mention this role. What is the MOST likely cause and fix?",
+    "stem": "A developer attaches an IAM policy to a Lambda execution role granting kms:Decrypt on a specific KMS key's ARN. The function still receives an AccessDeniedException when calling Decrypt. The KMS key has a custom key policy that names only a key administrator role; it does NOT include the statement that gives the AWS account (root) principal access and enables IAM policies to grant access to the key, and it does not name this execution role. What is the MOST likely cause and fix?",
     "options": [
       "kms:Decrypt permissions cannot be granted through IAM policies at all and must always be requested through AWS Support.",
       "For KMS, both the caller's identity-based policy AND the key's own key policy must allow the action; the key policy must also grant the role's account (or the specific role) permission, typically through a statement that enables IAM policies to grant access to the key.",
@@ -492,7 +492,7 @@
     "correct": [
       1
     ],
-    "explanation": "KMS is unusual among AWS services in that <b>both</b> the caller's identity-based policy and the key's own <b>key policy</b> must allow the action; a key policy that only trusts the account root, without a statement that enables IAM policies to grant access (or without naming the role directly), will block the call even though the IAM policy allows it. An S3 bucket policy controls S3 access, not the KMS key itself, so it cannot substitute for a missing key policy grant. KMS actions absolutely can be granted through IAM policies, provided the key policy permits it, so no AWS Support ticket is needed for a routine permissions fix like this.",
+    "explanation": "KMS is unusual among AWS services in that <b>both</b> the caller's identity-based policy and the key's own <b>key policy</b> must allow the action. An IAM policy granting kms:Decrypt has no effect unless the key policy also permits access, either by naming the role directly or by including the default statement that gives the account (root) principal access, which is precisely what enables IAM policies to delegate permissions on the key. This key's policy includes neither, so the call is denied; the fix is to update the key policy to enable IAM policies (or to grant the role) rather than to change the IAM policy again. An S3 bucket policy controls S3 access, not the KMS key itself, so it cannot substitute for a missing key policy grant. KMS actions absolutely can be granted through IAM policies, provided the key policy permits it, so no AWS Support ticket is needed for a routine permissions fix like this.",
     "difficulty": "hard",
     "docUrl": "https://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html",
     "id": "dvac02-0026"
@@ -963,19 +963,19 @@
     "domain": "Deployment",
     "tag": "Domain 3",
     "type": "single",
-    "stem": "A CodeBuild project's buildspec.yml declares an artifacts section listing the compiled files to output. When this project runs as a Build action inside a CodePipeline pipeline, where do those declared artifacts actually end up so the next pipeline stage can use them?",
+    "stem": "A production DynamoDB table is provisioned as a resource in a CloudFormation stack. The team must be able to delete the stack, or remove the table from the template, without losing the table or its data. Which setting on the table resource BEST ensures CloudFormation preserves it?",
     "options": [
-      "CodeBuild emails the artifacts directly to the next stage's owner.",
-      "The artifacts are written only to CloudWatch Logs as base64-encoded text.",
-      "CodePipeline uploads the CodeBuild project's declared output artifacts into the pipeline's own S3 artifact bucket, from which the next stage's action retrieves them as its input artifact.",
-      "The artifacts remain only on the CodeBuild compute instance's local disk and are discarded when the build finishes."
+      "Move the table into the stack's Outputs section, because CloudFormation never deletes a resource that is exported as an output.",
+      "Rely on the default behavior, since CloudFormation retains stateful resources such as DynamoDB tables automatically when a stack is deleted.",
+      "Enable termination protection on the stack, which by itself guarantees the table can never be deleted even if the table is removed from the template.",
+      "Set DeletionPolicy to Retain on the table resource, so CloudFormation keeps the table and its data instead of deleting it when the stack is deleted or the resource is removed from the template."
     ],
     "correct": [
-      2
+      3
     ],
-    "explanation": "When CodeBuild runs as a pipeline action, CodePipeline takes the artifacts the buildspec declares and stores them in the pipeline's <b>S3 artifact bucket</b>, and the next stage's action lists that output as its input artifact to retrieve it automatically. Ephemeral CodeBuild compute is torn down after the build, so anything not captured as a declared artifact is lost rather than deliberately kept on local disk for later stages. CodeBuild has no artifact-by-email mechanism. CloudWatch Logs capture build output logs, not the actual build artifact files.",
+    "explanation": "<b>DeletionPolicy: Retain</b> tells CloudFormation to keep the resource and its contents instead of deleting it, both when the stack is deleted and when the resource is removed from the template during an update, which is exactly how to preserve a production table's data. By default CloudFormation deletes resources (DeletionPolicy defaults to Delete for a DynamoDB table), so relying on the default would delete the table along with the stack. Termination protection only blocks deletion of the whole stack and can be turned off; it does not stop a resource from being deleted when that resource is removed from the template. The Outputs section exports values for cross-stack references and does not protect any resource from deletion.",
     "difficulty": "medium",
-    "docUrl": "https://docs.aws.amazon.com/codebuild/latest/userguide/build-spec-ref.html",
+    "docUrl": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-deletionpolicy.html",
     "id": "dvac02-0051"
   },
   {
