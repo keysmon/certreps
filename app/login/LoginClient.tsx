@@ -1,7 +1,9 @@
 "use client";
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { getSupabase, supabaseAvailable } from "@/lib/supabase/client";
+import "./login.css";
 
 /**
  * Google/GitHub OAuth is deferred by user decision 2026-07-07 - email+password ships
@@ -20,23 +22,18 @@ function signInWithOAuth(provider: Provider) {
 
 type Mode = "signin" | "signup";
 
-const inputStyle: React.CSSProperties = {
-  width: "100%",
-  padding: "11px 13px",
-  fontSize: 15,
-  fontFamily: "var(--font-sans)",
-  color: "var(--text)",
-  background: "var(--panel-2)",
-  border: "1px solid var(--line-strong)",
-  borderRadius: "var(--radius-sm)",
-};
+// Glyphs via fromCharCode (craft convention) so the source stays ASCII-clean.
+const ARROW = String.fromCharCode(8594);
+const MIDDOT = String.fromCharCode(183);
+const CYCLE = String.fromCharCode(10227); // rotate
+const CHECK = String.fromCharCode(10003); // check
+const DIAMOND = String.fromCharCode(9670); // filled diamond
 
-const labelStyle: React.CSSProperties = {
-  display: "block",
-  fontSize: 13,
-  color: "var(--muted)",
-  margin: "0 0 6px",
-};
+const FEATURES = [
+  { ic: CYCLE, t: "Progress syncs everywhere", d: "Readiness, streaks, and weak areas on phone, laptop, tablet." },
+  { ic: CHECK, t: "Pick up mid-drill", d: "Start on the train, finish at your desk - same spot." },
+  { ic: DIAMOND, t: `Free forever ${MIDDOT} no spam`, d: "We store your scores. That's it. Export or delete anytime." },
+];
 
 export function LoginClient({ failed }: { failed: boolean }) {
   const router = useRouter();
@@ -88,117 +85,106 @@ export function LoginClient({ failed }: { failed: boolean }) {
   const submitLabel = isSignin ? "Sign in" : "Create account";
 
   return (
-    <div className="card" style={{ maxWidth: 400, margin: "0 auto" }}>
-      <p className="eyebrow">Optional account</p>
-      <h1 style={{ fontSize: 22, margin: "6px 0 6px" }}>
-        {isSignin ? "Sign in to sync your history" : "Create an account to sync your history"}
-      </h1>
-      <p className="small-copy" style={{ margin: "0 0 18px" }}>
-        Accounts are optional - your attempts already save on this device. Sign in to sync them
-        across devices.
-      </p>
-      {failed && (
-        <p style={{ color: "var(--rose)", fontSize: 13.5, margin: "0 0 14px" }}>
-          Sign-in didn&apos;t complete. Please try again.
+    <div className="li-wrap">
+      <aside className="li-pitch">
+        <div className="li-logo">
+          <span className="li-loop" aria-hidden="true">
+            <svg viewBox="0 0 32 32" width="22" height="22">
+              <circle cx="16" cy="16" r="8.5" fill="none" stroke="var(--gold)" strokeWidth="3.5" strokeLinecap="round" strokeDasharray="42 11.4" transform="rotate(-35 16 16)" />
+            </svg>
+          </span>
+          CertReps
+        </div>
+        <h2 className="li-pitch-h">Keep your reps across every device.</h2>
+        <p className="li-pitch-p">
+          Practicing is always free and needs no account. Sign in only if you want your progress to follow you.
         </p>
-      )}
+        {FEATURES.map((f) => (
+          <div className="li-feat" key={f.t}>
+            <span className="ic" aria-hidden="true">{f.ic}</span>
+            <div>
+              <div className="ft">{f.t}</div>
+              <div className="fd">{f.d}</div>
+            </div>
+          </div>
+        ))}
+      </aside>
 
-      <form onSubmit={onSubmit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-        <div>
-          <label htmlFor="email" style={labelStyle}>
-            Email
-          </label>
-          <input
-            id="email"
-            type="email"
-            required
-            autoComplete="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            style={inputStyle}
-          />
-        </div>
-        <div>
-          <label htmlFor="password" style={labelStyle}>
-            Password
-          </label>
-          <input
-            id="password"
-            type="password"
-            required
-            // Client-side guardrail on account creation only; never strength-validate a
-            // sign-in (the password already exists). Supabase enforces the real policy.
-            minLength={isSignin ? undefined : 8}
-            autoComplete={isSignin ? "current-password" : "new-password"}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            style={inputStyle}
-          />
-          {!isSignin && (
-            <p className="small-copy" style={{ margin: "6px 0 0", fontSize: 12.5 }}>
-              At least 8 characters.
-            </p>
-          )}
-        </div>
+      <div className="li-form">
+        <p className="li-eyebrow">Optional account</p>
+        <h1 className="li-h1">
+          {isSignin ? "Sign in to sync your progress" : "Create an account to sync your progress"}
+        </h1>
+        <p className="li-lede">
+          Accounts are optional - your attempts already save on this device. Sign in to sync them across devices.
+        </p>
+        {failed && <p className="li-error">Sign-in didn&apos;t complete. Please try again.</p>}
 
-        {/* aria-live: these two insert AFTER submit, so screen readers need the announcement. */}
-        <div aria-live="polite">
-          {error && (
-            <p style={{ color: "var(--rose)", fontSize: 13.5, margin: 0 }}>{error}</p>
-          )}
-          {notice && (
-            <p className="small-copy" style={{ margin: 0 }}>
-              {notice}
-            </p>
-          )}
-        </div>
+        <form onSubmit={onSubmit}>
+          <div className="li-field">
+            <label htmlFor="email">Email</label>
+            <input
+              id="email"
+              type="email"
+              required
+              autoComplete="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+          <div className="li-field">
+            <label htmlFor="password">Password</label>
+            <input
+              id="password"
+              type="password"
+              required
+              // Client-side guardrail on account creation only; never strength-validate a
+              // sign-in (the password already exists). Supabase enforces the real policy.
+              minLength={isSignin ? undefined : 8}
+              autoComplete={isSignin ? "current-password" : "new-password"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            {!isSignin && <p className="li-hint">At least 8 characters.</p>}
+          </div>
 
-        <button
-          type="submit"
-          className="btn btn-primary"
-          disabled={pending}
-          style={{ width: "100%", justifyContent: "center" }}
-        >
-          {pending ? "Working..." : submitLabel}
+          {/* aria-live: these two insert AFTER submit, so screen readers need the announcement. */}
+          <div aria-live="polite">
+            {error && <p className="li-error" style={{ margin: "0 0 8px" }}>{error}</p>}
+            {notice && <p className="li-hint" style={{ margin: "0 0 8px" }}>{notice}</p>}
+          </div>
+
+          <button type="submit" className="btn btn-primary li-submit" disabled={pending}>
+            {pending ? "Working..." : submitLabel}
+          </button>
+        </form>
+
+        <button type="button" onClick={toggleMode} className="li-toggle">
+          {isSignin ? "New here? Create an account" : "Already have an account? Sign in"}
         </button>
-      </form>
 
-      {/* Dormant while OAUTH_DEFERRED - the provider buttons re-appear when the flag flips. */}
-      {!OAUTH_DEFERRED && (
-        <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 14 }}>
-          <button
-            className="btn btn-primary"
-            style={{ width: "100%", justifyContent: "center" }}
-            onClick={() => signInWithOAuth("google")}
-          >
-            Continue with Google
-          </button>
-          <button
-            className="btn btn-ghost"
-            style={{ width: "100%", justifyContent: "center" }}
-            onClick={() => signInWithOAuth("github")}
-          >
-            Continue with GitHub
-          </button>
+        {/* Dormant while OAUTH_DEFERRED - the provider buttons re-appear (styled) when the flag flips. */}
+        {!OAUTH_DEFERRED && (
+          <>
+            <div className="li-divider">or continue with</div>
+            <div className="li-oauth">
+              <button type="button" className="btn btn-oauth" onClick={() => signInWithOAuth("google")}>
+                Continue with Google
+              </button>
+              <button type="button" className="btn btn-oauth" onClick={() => signInWithOAuth("github")}>
+                Continue with GitHub
+              </button>
+            </div>
+          </>
+        )}
+
+        <p className="li-fine">
+          Your practice data stays yours - export or delete it anytime in Settings.
+        </p>
+        <div className="li-skip">
+          <Link href="/catalog">Continue without an account {ARROW}</Link>
         </div>
-      )}
-
-      <button
-        type="button"
-        onClick={toggleMode}
-        style={{
-          background: "none",
-          border: "none",
-          color: "var(--muted)",
-          fontSize: 13,
-          cursor: "pointer",
-          padding: 0,
-          marginTop: 16,
-          textDecoration: "underline",
-        }}
-      >
-        {isSignin ? "New here? Create an account" : "Already have an account? Sign in"}
-      </button>
+      </div>
     </div>
   );
 }

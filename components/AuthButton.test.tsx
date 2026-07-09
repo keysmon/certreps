@@ -4,6 +4,14 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { Session } from "@supabase/supabase-js";
 import { AuthButton } from "./AuthButton";
 import { getSupabase, supabaseAvailable } from "@/lib/supabase/client";
+import { usePathname } from "next/navigation";
+
+// Pathname-suppression guards are load-bearing (TopNav owns the auth surface on /,
+// the login page IS the sign-in CTA) - mock usePathname so both can be locked.
+vi.mock("next/navigation", () => ({
+  usePathname: vi.fn(() => null),
+}));
+const mockedPathname = vi.mocked(usePathname);
 
 // The component talks to Supabase only through these two helpers; mock the module
 // so no browser client is ever constructed and no auth network happens in tests.
@@ -58,5 +66,69 @@ describe("AuthButton", () => {
     expect(await screen.findByText("ada@example.com")).toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: /sign out/i }));
     expect(signOut).toHaveBeenCalledTimes(1);
+  });
+
+  it("suppresses itself on / (TopNav owns the landing auth surface)", () => {
+    mockedAvailable.mockReturnValue(true);
+    mockedGetSupabase.mockReturnValue(fakeClient(sessionWith("ada@example.com")));
+    mockedPathname.mockReturnValue("/");
+    const { container } = render(<AuthButton />);
+    expect(container).toBeEmptyDOMElement();
+  });
+
+  it("suppresses the signed-out strip on /login (the page is the CTA)", () => {
+    mockedAvailable.mockReturnValue(true);
+    mockedGetSupabase.mockReturnValue(fakeClient(null));
+    mockedPathname.mockReturnValue("/login");
+    const { container } = render(<AuthButton />);
+    expect(container).toBeEmptyDOMElement();
+  });
+
+  it("suppresses itself on /catalog (TopNav owns the catalog auth surface)", () => {
+    mockedAvailable.mockReturnValue(true);
+    mockedGetSupabase.mockReturnValue(fakeClient(sessionWith("ada@example.com")));
+    mockedPathname.mockReturnValue("/catalog");
+    const { container } = render(<AuthButton />);
+    expect(container).toBeEmptyDOMElement();
+  });
+
+  it("suppresses itself on the cert detail route /aws/<certId> (TopNav owns it)", () => {
+    mockedAvailable.mockReturnValue(true);
+    mockedGetSupabase.mockReturnValue(fakeClient(sessionWith("ada@example.com")));
+    mockedPathname.mockReturnValue("/aws/aip-c01");
+    const { container } = render(<AuthButton />);
+    expect(container).toBeEmptyDOMElement();
+  });
+
+  it("suppresses itself on the My progress dashboard /account (TopNav owns it)", () => {
+    mockedAvailable.mockReturnValue(true);
+    mockedGetSupabase.mockReturnValue(fakeClient(sessionWith("ada@example.com")));
+    mockedPathname.mockReturnValue("/account");
+    const { container } = render(<AuthButton />);
+    expect(container).toBeEmptyDOMElement();
+  });
+
+  it("suppresses itself on Settings /settings (TopNav owns it)", () => {
+    mockedAvailable.mockReturnValue(true);
+    mockedGetSupabase.mockReturnValue(fakeClient(sessionWith("ada@example.com")));
+    mockedPathname.mockReturnValue("/settings");
+    const { container } = render(<AuthButton />);
+    expect(container).toBeEmptyDOMElement();
+  });
+
+  it("still renders on the review-past route /account/attempts/<id> (no TopNav there)", async () => {
+    mockedAvailable.mockReturnValue(true);
+    mockedGetSupabase.mockReturnValue(fakeClient(sessionWith("ada@example.com")));
+    mockedPathname.mockReturnValue("/account/attempts/abc-123");
+    render(<AuthButton />);
+    expect(await screen.findByText("ada@example.com")).toBeInTheDocument();
+  });
+
+  it("suppresses itself in the exam room /aws/<certId>/practice (distraction-free chrome)", () => {
+    mockedAvailable.mockReturnValue(true);
+    mockedGetSupabase.mockReturnValue(fakeClient(sessionWith("ada@example.com")));
+    mockedPathname.mockReturnValue("/aws/aip-c01/practice");
+    const { container } = render(<AuthButton />);
+    expect(container).toBeEmptyDOMElement();
   });
 });

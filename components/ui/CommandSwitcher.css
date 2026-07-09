@@ -1,0 +1,203 @@
+/* Global Cmd+K certification switcher (components/ui/CommandSwitcher.tsx), ported from the
+   design's topnav switcher pill (.switcher) and command overlay (.overlay / .cmd / .drow).
+   Class names are sw- prefixed to stay collision-free; the trigger's kbd/link colors override
+   the global a{color:var(--gold)} where needed. Self-contained so TopNav inherits it everywhere. */
+
+/* Trigger pill (design .switcher) - lives in TopNav between the logo and the nav links. */
+.sw-trigger {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  background: var(--panel);
+  border: 1px solid var(--line-strong);
+  border-radius: 11px;
+  padding: 8px 13px;
+  cursor: pointer;
+  min-width: 290px;
+  max-width: 340px;
+  color: var(--text);
+  text-align: left;
+  transition: 0.14s;
+}
+.sw-trigger:hover {
+  border-color: var(--gold-dim);
+}
+.sw-trigger .sw-vd {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.sw-trigger-text {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.sw-tname {
+  font-size: 13.5px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sw-tsub {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--faint);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sw-kbd {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--faint);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 2px 7px;
+  flex-shrink: 0;
+}
+
+/* Visually-hidden label so the trigger's accessible name names the action, not just the cert. */
+.sw-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Overlay + command palette (design .overlay / .cmd). Rendered only while open, so no .open class. */
+.sw-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 8, 13, 0.6);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+  z-index: 80;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 12vh;
+}
+.sw-cmd {
+  width: 640px;
+  max-width: 92vw;
+  background: var(--panel);
+  border: 1px solid var(--line-strong);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 40px 100px -40px #000;
+}
+.sw-top {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  border-bottom: 1px solid var(--line);
+  padding: 16px 20px;
+}
+.sw-input {
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--text);
+  font-size: 16px;
+  font-family: inherit;
+  flex: 1;
+  min-width: 0;
+}
+.sw-input::placeholder {
+  color: var(--faint);
+}
+.sw-mono {
+  font-family: var(--font-mono);
+}
+.sw-faint {
+  color: var(--faint);
+}
+.sw-esc {
+  font-size: 11px;
+}
+.sw-sec {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  color: var(--faint);
+  padding: 12px 20px 6px;
+}
+.sw-body {
+  max-height: 52vh;
+  overflow: auto;
+  padding: 0 10px 12px;
+}
+.sw-row {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 11px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.sw-row:hover,
+.sw-row.k {
+  background: var(--panel-2);
+}
+.sw-row .sw-vd {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.sw-dn {
+  font-size: 14px;
+  font-weight: 600;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sw-dcode {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--faint);
+}
+.sw-gold {
+  color: var(--gold);
+}
+.sw-empty {
+  padding: 14px 12px;
+  color: var(--faint);
+  font-size: 13.5px;
+}
+.sw-foot {
+  display: flex;
+  gap: 16px;
+  border-top: 1px solid var(--line);
+  padding: 11px 20px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--faint);
+}
+.sw-foot b {
+  color: var(--muted);
+  font-weight: 500;
+}
+.sw-foot-esc {
+  margin-left: auto;
+}
+
+@media (max-width: 760px) {
+  .sw-trigger {
+    min-width: 0;
+  }
+  .sw-tsub {
+    display: none;
+  }
+}

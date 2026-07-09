@@ -3,21 +3,27 @@
 .qmeta { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
 .qtag { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); background: var(--gold-soft); border: 1px solid var(--gold-dim); border-radius: 20px; padding: 4px 11px; }
 .qnum { font-family: var(--font-mono); font-size: 12px; color: var(--faint); margin-left: auto; }
-.qstem { font-size: 18px; line-height: 1.5; margin: 0 0 6px; }
+.qstem { font-size: 20px; line-height: 1.5; font-weight: 500; margin: 6px 0 4px; }
 .qhint { font-family: var(--font-mono); font-size: 11.5px; text-transform: uppercase; color: var(--gold); margin: 0 0 20px; }
-.options { display: flex; flex-direction: column; gap: 10px; margin: 18px 0 24px; }
-.option { display: flex; align-items: flex-start; gap: 13px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 15px 16px; cursor: pointer; text-align: left; width: 100%; font-size: 15px; color: var(--text); font-family: var(--font-sans); }
-.option:hover { border-color: var(--line-strong); background: var(--panel-2); }
+.options { display: flex; flex-direction: column; gap: 11px; margin: 22px 0; }
+.option { display: flex; align-items: flex-start; gap: 13px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 15px 16px; cursor: pointer; text-align: left; width: 100%; font-size: 15px; color: var(--text); font-family: var(--font-sans); transition: 0.12s; }
+.option:hover { border-color: var(--line-strong); }
 .option.selected { border-color: var(--gold); background: var(--gold-soft); }
 .option.correct { border-color: var(--emerald); background: var(--emerald-soft); }
 .option.incorrect { border-color: var(--rose); background: var(--rose-soft); }
 .option.dim { opacity: 0.5; }
 .option:disabled { cursor: default; }
-.marker { flex-shrink: 0; width: 22px; height: 22px; border: 1.5px solid var(--line-strong); border-radius: 50%; display: grid; place-items: center; font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+.marker { flex-shrink: 0; width: 24px; height: 24px; border: 1.5px solid var(--line-strong); border-radius: 50%; display: grid; place-items: center; font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+/* Design-system EXTENSION (v1d): multi-select options carry a squared marker (6px radius)
+   vs the single-select circle, so a two-answer question reads as multi at a glance. The
+   design prototype only had single-select; this is the documented multi variant. */
+.option.multi .marker { border-radius: 6px; }
 .option.selected .marker { border-color: var(--gold); background: var(--gold); color: var(--on-gold); font-weight: 700; }
 .option.correct .marker { border-color: var(--emerald); background: var(--emerald); color: var(--on-emerald); }
 .option.incorrect .marker { border-color: var(--rose); background: var(--rose); color: var(--on-rose); }
-.explain { border-radius: var(--radius-sm); padding: 18px 18px 18px 20px; margin-bottom: 24px; background: var(--panel); border: 1px solid var(--line); border-left-width: 3px; }
+/* Padding + margins align to the design's .explain (17px 18px / 6px 0 4px). The old 24px bottom
+   margin stacked with the footbar's 22px top for a ~46px gap where the design shows ~26px. */
+.explain { border-radius: var(--radius-sm); padding: 17px 18px; margin: 6px 0 4px; background: var(--panel); border: 1px solid var(--line); border-left-width: 3px; animation: rise 0.25s ease; }
 .explain.right { border-left-color: var(--emerald); }
 .explain.wrong { border-left-color: var(--rose); }
 .explain .verdict { font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; margin: 0 0 9px; font-weight: 600; }
@@ -25,6 +31,38 @@
 .explain.wrong .verdict { color: var(--rose); }
 .explain p { margin: 0 0 10px; font-size: 14.5px; line-height: 1.6; color: var(--text); }
 .doclink { font-size: 13px; }
+
+/* ---- v1d practice chrome: slim exam bar + centered stage + footbar ---- */
+.exambar { position: sticky; top: 0; z-index: 40; display: flex; align-items: center; gap: 16px; padding: 13px 26px; border-bottom: 1px solid var(--line); background: var(--ink-glass); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+/* Visual placeholder only (no dropdown yet) - so no pointer/hover affordance that would imply a menu. */
+.switcher { display: flex; align-items: center; gap: 10px; background: var(--panel); border: 1px solid var(--line-strong); border-radius: 11px; padding: 7px 12px; min-width: 200px; }
+.switcher .sc-name { font-size: 13px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pbar-wrap { flex: 1; display: flex; align-items: center; gap: 12px; max-width: 520px; margin: 0 auto; }
+.pcount { font-family: var(--font-mono); font-size: 12px; color: var(--faint); white-space: nowrap; }
+.pbar { flex: 1; height: 6px; background: var(--panel-3); border-radius: 3px; overflow: hidden; }
+.pbar span { display: block; height: 100%; background: var(--gold); border-radius: 3px; transition: width 0.35s; }
+.timer { font-family: var(--font-mono); font-size: 16px; font-variant-numeric: tabular-nums; }
+/* .btn-sm now lives in globals.css (Task 10 reconciliation) so every route gets it, not just practice. */
+.exit { font-family: var(--font-mono); font-size: 12px; color: var(--faint); text-decoration: none; white-space: nowrap; }
+.exit:hover { color: var(--rose); }
+.stage { max-width: 860px; margin: 0 auto; padding: 34px 30px 90px; }
+.mode-note { font-family: var(--font-mono); font-size: 11.5px; color: var(--faint); margin: 0 0 2px; }
+.footbar { display: flex; align-items: center; gap: 12px; border-top: 1px solid var(--line); padding-top: 18px; margin-top: 22px; }
+.streak { font-family: var(--font-mono); font-size: 12px; color: var(--faint); }
+.streak b { color: var(--emerald); }
+.recorded { font-family: var(--font-mono); font-size: 12px; color: var(--emerald); }
+/* Mock nav sits directly under the QuestionCard submit footbar; no extra top divider. */
+.mocknav { display: flex; align-items: center; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+.review-head { font-family: var(--font-display); font-size: 22px; letter-spacing: -0.01em; }
+.review-panel { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; }
+/* Narrow phones: the exam bar switcher + progress + exit crowd; let them wrap and shrink the switcher. */
+@media (max-width: 760px) {
+  .exambar { flex-wrap: wrap; gap: 10px 14px; padding: 11px 18px; }
+  .switcher { min-width: 0; flex: 1 1 auto; }
+  .pbar-wrap { order: 3; flex-basis: 100%; max-width: none; }
+  .stage { padding: 24px 18px 72px; }
+}
+
 .reviewmap { margin: 20px 0; }
 .reviewmap .summary { font-family: var(--font-mono); font-size: 12px; color: var(--muted); margin-bottom: 10px; }
 .mapgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 6px; }
@@ -32,42 +70,58 @@
 .mapcell.answered { border-color: var(--emerald); color: var(--emerald); background: var(--emerald-soft); }
 .mapcell.flagged { border-color: var(--gold); color: var(--gold); background: var(--gold-soft); }
 .mapcell.current { outline: 2px solid var(--gold); outline-offset: -3px; font-weight: 700; }
-.results { text-align: center; }
-.score-ring { width: 168px; height: 168px; margin: 8px auto 20px; position: relative; display: grid; place-items: center; }
-.score-ring svg { transform: rotate(-90deg); position: absolute; inset: 0; }
-.score-num { font-size: 46px; font-weight: 680; font-variant-numeric: tabular-nums; }
-.score-den { font-family: var(--font-mono); font-size: 13px; color: var(--muted); }
-.pausestamp { display: inline-block; font-family: var(--font-mono); font-size: 12px; color: var(--gold); background: var(--gold-soft); border: 1px solid var(--gold-dim); border-radius: 20px; padding: 6px 14px; margin: 6px 0 14px; }
-.breakdown { text-align: left; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; margin: 20px 0; }
-.breakdown h3, .recap h3 { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); font-weight: 500; margin: 0 0 14px; }
-.brow { display: flex; align-items: center; gap: 12px; padding: 8px 0; }
-.brow .bn { font-size: 13px; width: 50%; text-align: left; }
-.brow .bbar { flex: 1; height: 7px; background: var(--line); border-radius: 4px; overflow: hidden; }
-.brow .bbar span { display: block; height: 100%; border-radius: 4px; }
-.brow .bsc { font-family: var(--font-mono); font-size: 12.5px; color: var(--muted); width: 42px; text-align: right; }
-.recap { text-align: left; margin-bottom: 24px; }
+/* ---- v1d results readiness report (Task 7) ---- */
+/* The results phase early-returns before the exam bar, so its wrapper stays the shared .stage
+   (860px). Widen ONLY that stage to the design's 940px by matching the one holding a .results
+   child - a pure-CSS re-width that keeps ExamEngine markup untouched (task gate). */
+.stage:has(> .results) { max-width: 940px; }
+.results { text-align: left; }
+.r-head { display: grid; grid-template-columns: auto 1fr; gap: 34px; align-items: center; margin-bottom: 26px; }
+.r-ringcol { text-align: center; }
+.r-verdict { font-family: var(--font-display); font-size: 29px; font-weight: 800; letter-spacing: -0.01em; margin: 10px 0 6px; }
+.r-sub { color: var(--muted); font-size: 14.5px; line-height: 1.55; margin: 0 0 16px; max-width: 560px; }
+.r-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; max-width: 520px; }
+.results .stat { background: var(--panel); border: 1px solid var(--line); border-radius: 13px; padding: 14px 16px; }
+.results .stat .sv { font-family: var(--font-display); font-size: 24px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.results .stat .sl { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); margin-top: 3px; }
+.pausestamp { display: inline-block; font-family: var(--font-mono); font-size: 12px; color: var(--gold); background: var(--gold-soft); border: 1px solid var(--gold-dim); border-radius: 20px; padding: 6px 14px; margin: 0 0 14px; }
+.r-cols { display: grid; grid-template-columns: 1fr 320px; gap: 22px; margin-bottom: 26px; }
+.results .panel { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; }
+.results .panel h4 { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); font-weight: 500; margin: 0 0 12px; }
+/* Gold "Do this next" rail - defined after .results .panel so it wins the border/background. */
+.results .r-next { background: var(--gold-soft); border-color: var(--gold-dim); }
+.r-next-h { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; }
+.r-next-list { display: flex; flex-direction: column; gap: 10px; }
+.r-next-list .btn { justify-content: flex-start; width: 100%; }
+.recap { text-align: left; }
+.recap h3 { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); font-weight: 500; margin: 0 0 6px; }
 .recap-item { border-bottom: 1px solid var(--line); }
-.recap-summary { display: flex; align-items: center; gap: 11px; padding: 9px 0; font-size: 13px; cursor: pointer; list-style: none; }
+.recap-summary { display: flex; align-items: center; gap: 11px; padding: 11px 2px; font-size: 13.5px; cursor: pointer; list-style: none; }
 .recap-summary::-webkit-details-marker { display: none; }
-.recap-item .ri { flex-shrink: 0; font-family: var(--font-mono); width: 20px; }
+.recap-item .ri { flex-shrink: 0; font-family: var(--font-mono); width: 18px; }
 .recap-item .ri.ok { color: var(--emerald); }
 .recap-item .ri.no { color: var(--rose); }
 /* min-width: 0 lets the flex item shrink so text-overflow: ellipsis actually fires. */
 .recap-summary .rq { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .recap-item[open] .recap-summary .rq { overflow: visible; white-space: normal; }
-.recap-item .rd { flex-shrink: 0; color: var(--muted); font-size: 11.5px; margin-left: auto; font-family: var(--font-mono); white-space: nowrap; }
+.recap-item .rd { flex-shrink: 0; color: var(--faint); font-size: 11px; margin-left: auto; font-family: var(--font-mono); white-space: nowrap; }
 .recap-chevron { flex-shrink: 0; color: var(--faint); font-family: var(--font-mono); font-size: 13px; transition: transform 0.15s ease; }
 .recap-item[open] .recap-chevron { transform: rotate(90deg); }
 /* Graded options here are a read-only replay, so kill the button-style hover/pointer affordance. */
-.recap-body { padding: 4px 0 18px; }
+.recap-body { padding: 2px 0 16px 29px; }
 .recap-body .options { margin: 6px 0 14px; }
 .recap-body .option { pointer-events: none; }
+.recap-answer { font-size: 13.5px; line-height: 1.6; margin: 0 0 10px; }
+.recap-answer .ra-label { font-family: var(--font-mono); color: var(--faint); }
+.recap-answer .ra-correct { color: var(--emerald); }
 .recap-explain { margin: 0 0 10px; font-size: 14.5px; line-height: 1.6; color: var(--text); }
-.brow .bverdict { font-family: var(--font-mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); width: 84px; text-align: right; }
-/* R2 (Task 15): narrow phones (<=380px) - the fixed columns (~240px) crush the bar, so wrap
-   the domain name onto its own row and let the bar + counts + verdict share the second row. */
-@media (max-width: 380px) {
-  .brow { flex-wrap: wrap; row-gap: 4px; }
-  .brow .bn { width: 100%; }
-  .brow .bbar { flex: 1 1 auto; min-width: 80px; }
+/* Collapse the header + two-column grids before the fixed 320px rail crushes the content. */
+@media (max-width: 720px) {
+  .r-head { grid-template-columns: 1fr; gap: 18px; justify-items: start; }
+  .r-ringcol { justify-self: center; }
+  .r-cols { grid-template-columns: 1fr; }
+}
+@media (max-width: 460px) {
+  .r-stats { grid-template-columns: 1fr 1fr; }
+  .recap-body { padding-left: 4px; }
 }

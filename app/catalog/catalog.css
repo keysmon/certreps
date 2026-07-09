@@ -1,0 +1,87 @@
+/* Certification catalog (app/catalog/CatalogClient.tsx), ported from design/redesign/Catalog.html.
+   Class names are ct- prefixed to stay collision-free with globals + other page styles.
+   Deviations from the prototype:
+   - .ct-wrap max-width is 1200px (aligned to the shared TopNav from Task 3) rather than the
+     prototype's standalone 1500px; Task 10 reconciles page-shell widths branch-wide.
+   - the sub-960px filter drawer is driven by React state (.ct-facets-open / .ct-backdrop-open)
+     instead of the prototype's document.body.filters-open class mutation.
+   - facet chips, tags, sort buttons, and the per-group clear are real <button>s (native
+     Enter/Space + aria-pressed) rather than the prototype's <div role="button"> + manual keydown. */
+
+/* Page-scoped background glow (Task 1 removed the global glow; each page re-adds its own on
+   a wrapper, never on body). Values are the catalog design's - subtler than the landing's. */
+.ct-glow {
+  background:
+    radial-gradient(1200px 560px at 12% -8%, rgba(233, 180, 76, 0.05), transparent 60%),
+    radial-gradient(1000px 560px at 100% -4%, rgba(90, 169, 240, 0.055), transparent 55%),
+    var(--ink);
+  min-height: 100vh;
+}
+
+/* ===== LAYOUT ===== */
+.ct-wrap { display: flex; gap: 34px; max-width: 1200px; margin: 0 auto; padding: 30px 40px 80px; align-items: flex-start; }
+.ct-facets { width: 250px; flex-shrink: 0; position: sticky; top: 92px; }
+.ct-main { flex: 1; min-width: 0; }
+
+/* ===== SEARCH ===== */
+.ct-searchbar { display: flex; align-items: center; gap: 11px; background: var(--panel); border: 1px solid var(--line-strong); border-radius: 13px; padding: 12px 15px; transition: 0.14s; margin-bottom: 24px; }
+.ct-searchbar:focus-within { border-color: var(--gold-dim); }
+.ct-searchbar .ct-faint { color: var(--faint); font-size: 16px; display: inline-flex; }
+.ct-searchbar input { appearance: none; background: none; border: none; outline: none; color: var(--text); font-family: var(--font-sans); font-size: 15px; flex: 1; min-width: 0; }
+.ct-searchbar input::placeholder { color: var(--faint); }
+.ct-searchbar input::-webkit-search-cancel-button { appearance: none; }
+.ct-clr { background: none; border: none; padding: 0; cursor: pointer; color: var(--faint); font-size: 15px; display: inline-flex; }
+.ct-clr:hover { color: var(--text); }
+
+/* ===== FACETS ===== */
+.ct-facet { margin-bottom: 24px; }
+.ct-facet-h { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); font-weight: 500; margin: 0 0 11px; display: flex; align-items: center; }
+.ct-rc { margin-left: auto; background: none; border: none; padding: 0; color: var(--gold); cursor: pointer; letter-spacing: 0; text-transform: none; font-size: 11px; font-family: inherit; }
+.ct-rc:hover { color: var(--gold-bright); }
+.ct-chips { display: flex; flex-wrap: wrap; gap: 7px; }
+.ct-chip { display: inline-flex; align-items: center; gap: 7px; font-family: inherit; font-size: 12.5px; color: var(--muted); border: 1px solid var(--line); border-radius: 9px; padding: 7px 11px; cursor: pointer; transition: 0.13s; background: transparent; user-select: none; }
+.ct-chip:hover { border-color: var(--line-strong); color: var(--text); }
+.ct-chip-on { background: var(--gold-soft); border-color: var(--gold-dim); color: var(--gold); }
+.ct-vd { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; display: inline-block; }
+.ct-cnt { font-family: var(--font-mono); font-size: 10.5px; color: var(--faint); }
+.ct-chip-on .ct-cnt { color: var(--gold-dim); }
+
+/* ===== MAIN HEADER ===== */
+.ct-mhead { display: flex; align-items: flex-end; gap: 16px; margin-bottom: 16px; }
+.ct-eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); font-weight: 500; }
+.ct-title { font-family: var(--font-display); font-size: 26px; font-weight: 800; line-height: 1.12; letter-spacing: -0.01em; margin: 9px 0 0; }
+.ct-seg { display: inline-flex; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 3px; margin-left: auto; }
+.ct-seg button { background: none; border: none; color: var(--muted); font-family: var(--font-sans); font-size: 12.5px; font-weight: 600; padding: 7px 14px; border-radius: 7px; cursor: pointer; transition: 0.12s; }
+.ct-seg button.ct-seg-on { background: var(--panel-3); color: var(--text); }
+.ct-filter-btn { display: none; }
+
+/* ===== ACTIVE FILTER BAR ===== */
+.ct-activebar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 18px; min-height: 2px; }
+.ct-tag { display: inline-flex; align-items: center; gap: 7px; font-family: var(--font-mono); font-size: 11.5px; color: var(--text); background: var(--panel-2); border: 1px solid var(--line-strong); border-radius: 8px; padding: 5px 10px; cursor: pointer; }
+.ct-tag-x { color: var(--faint); }
+.ct-tag:hover .ct-tag-x { color: var(--rose); }
+.ct-clearall { background: none; border: none; font-family: var(--font-mono); font-size: 11.5px; color: var(--gold); cursor: pointer; margin-left: 2px; padding: 0; }
+.ct-clearall:hover { color: var(--gold-bright); }
+
+/* ===== GRID ===== */
+.ct-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+
+/* ===== EMPTY STATE ===== */
+.ct-empty { text-align: center; padding: 80px 20px; color: var(--muted); }
+.ct-empty-glyph { font-family: var(--font-mono); color: var(--faint); font-size: 34px; }
+.ct-empty-big { font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--text); margin: 14px 0 6px; }
+.ct-empty-btn { margin-top: 18px; }
+
+/* ===== RESPONSIVE: sub-960px filter drawer ===== */
+.ct-facet-close { display: none; }
+.ct-backdrop { display: none; }
+@media (max-width: 960px) {
+  .ct-filter-btn { display: inline-flex; margin-left: auto; }
+  .ct-mhead .ct-seg { margin-left: 12px; }
+  .ct-facets { position: fixed; top: 0; left: 0; bottom: 0; width: 300px; max-width: 86vw; background: var(--ink-2); border-right: 1px solid var(--line-strong); padding: 20px 20px 40px; z-index: 90; transform: translateX(-100%); transition: transform 0.25s; overflow: auto; }
+  .ct-facets.ct-facets-open { transform: none; box-shadow: 30px 0 90px -20px rgba(0, 0, 0, 0.7); }
+  .ct-backdrop { display: block; position: fixed; inset: 0; background: rgba(5, 8, 13, 0.55); z-index: 85; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+  .ct-backdrop.ct-backdrop-open { opacity: 1; pointer-events: auto; }
+  .ct-facet-close { display: block; width: 100%; text-align: right; background: none; border: none; font-family: var(--font-mono); font-size: 12px; color: var(--gold); cursor: pointer; margin-bottom: 10px; padding: 0; }
+  .ct-wrap { padding: 22px 18px 60px; }
+}

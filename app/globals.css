@@ -1,56 +1,124 @@
+/* ============================================================
+   CertReps design tokens + base (v1d)
+   Token source of truth: design/styles.css (claude.ai design handoff).
+   --font-display / --font-mono resolve to the next/font variables
+   wired in app/layout.tsx (self-hosted; no runtime Google Fonts CDN).
+   ============================================================ */
 :root {
   color-scheme: dark;
-  --ink: #0d1520;
-  --panel: #14202e;
-  --panel-2: #1b2a3b;
-  --panel-3: #223448;
-  --line: rgba(130, 168, 205, 0.16);
-  --line-strong: rgba(130, 168, 205, 0.3);
+
+  /* ground + surfaces */
+  --ink: #0a0e15;
+  --ink-2: #0c121b;
+  --panel: #111c29;
+  --panel-2: #18273a;
+  --panel-3: #20344b;
+  --ink-glass: rgba(10, 14, 21, 0.85); /* translucent ink for sticky bars over content (backdrop-blur) */
+
+  /* lines */
+  --line: rgba(132, 170, 208, 0.14);
+  --line-strong: rgba(132, 170, 208, 0.3);
+
+  /* text */
   --text: #eaf1f8;
-  --muted: #8fa3b8;
-  --faint: #6d8099;
+  --muted: #93a6ba;
+  --faint: #68809a;
+
+  /* gold - the single action accent */
   --gold: #e9b44c;
+  --gold-bright: #f4c667;
   --gold-dim: #b98c34;
-  --gold-soft: rgba(233, 180, 76, 0.12);
-  --gold-bright: #f2c05f;
+  --gold-soft: rgba(233, 180, 76, 0.13);
   --on-gold: #23180a;
+
+  /* semantic */
   --emerald: #3fcf8e;
   --emerald-soft: rgba(63, 207, 142, 0.12);
   --on-emerald: #06210f;
   --rose: #f26d6d;
   --rose-soft: rgba(242, 109, 109, 0.12);
   --on-rose: #2a0808;
-  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, Roboto, sans-serif;
-  --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
-  --radius: 14px;
-  --radius-sm: 10px;
+  --sky: #5aa9f0;
+
+  /* vendor accents - muted for the dark ground, used for at-a-glance scanning */
+  --v-aws: #ff9d4d;
+  --v-azure: #4da3ff;
+  --v-ms: #66c1e0;
+  --v-gcp: #57c98a;
+  --v-comptia: #f3776f;
+  --v-k8s: #8a9bff;
+  --v-hashi: #c58bec;
+  --v-cisco: #4fc6d4;
+
+  /* type - --font-display / --font-mono resolve to the next/font variables */
+  --font-display: var(--font-bricolage), -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, Roboto, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, Menlo, Consolas, monospace;
+
+  /* radii */
+  --radius: 16px;
+  --radius-sm: 11px;
+  --radius-lg: 22px;
+
+  /* elevation */
+  --shadow-card: 0 22px 50px -30px rgba(0, 0, 0, 0.8);
+  --shadow-gold: 0 8px 24px -10px rgba(233, 180, 76, 0.7);
 }
+
+/* base */
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
 body {
-  background: radial-gradient(1200px 600px at 50% -10%, rgba(233, 180, 76, 0.06), transparent 60%), var(--ink);
+  background: var(--ink);
   color: var(--text);
   font-family: var(--font-sans);
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
 }
 a { color: var(--gold); }
-:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+a:hover { color: var(--gold-bright); }
+
+/* accessibility & motion polish */
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; border-radius: 8px; }
+:focus:not(:focus-visible) { outline: none; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+.skip-link { position: absolute; left: 12px; top: -64px; z-index: 200; background: var(--gold); color: var(--on-gold); padding: 10px 16px; border-radius: 10px; font-weight: 600; text-decoration: none; transition: top 0.15s; }
+.skip-link:focus { top: 12px; outline: none; }
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes ds-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  @keyframes ds-fade { from { opacity: 0; } to { opacity: 1; } }
+  .ds-rise { animation: ds-rise 0.42s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+  .ds-fade { animation: ds-fade 0.3s ease both; }
+}
+/* Retained from v1a: the design gates its own utilities on `no-preference`, but
+   engine.css animates unconditionally and relies on this blanket disable. Task 1
+   does not touch engine.css, so this stays to preserve reduced-motion behavior. */
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+/* ---- compatibility layer: existing app utility classes (per-page restyles land in later tasks) ---- */
 .container { max-width: 760px; margin: 0 auto; padding: 0 24px; }
 .eyebrow { font-family: var(--font-mono); font-size: 11.5px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); }
-.btn { font-family: var(--font-sans); font-size: 15px; font-weight: 600; border: none; border-radius: var(--radius-sm); padding: 13px 24px; cursor: pointer; display: inline-flex; align-items: center; gap: 9px; text-decoration: none; }
-.btn-primary { background: var(--gold); color: var(--on-gold); box-shadow: 0 6px 20px -8px rgba(233, 180, 76, 0.6); }
+/* Canonical button family (Task 10 reconciliation) - the single source for .btn across the app,
+   sized to the design (14.5/600, radius 11, 12x20). ui/Button.tsx is a thin wrapper that emits these
+   classes; the landing hero sizes up via the .btn.lp-hero-cta modifier; .btn-sm / .btn-danger /
+   .btn-oauth are the small / destructive / oauth variants (moved here from engine.css / settings.css /
+   login.css so every route gets them, not just the one that imported the owning stylesheet). */
+.btn { font-family: var(--font-sans); font-size: 14.5px; font-weight: 600; border: none; border-radius: var(--radius-sm); padding: 12px 20px; cursor: pointer; display: inline-flex; align-items: center; gap: 9px; text-decoration: none; transition: 0.14s; line-height: 1.2; }
+.btn-primary { background: var(--gold); color: var(--on-gold); box-shadow: var(--shadow-gold); }
 .btn-primary:hover { background: var(--gold-bright); }
 .btn-primary:disabled { background: var(--panel-3); color: var(--faint); cursor: not-allowed; box-shadow: none; }
 .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--line-strong); }
+.btn-danger { background: transparent; color: var(--rose); border: 1px solid var(--rose); }
+.btn-danger:hover { background: var(--rose-soft); }
+.btn-sm { padding: 8px 14px; font-size: 13px; border-radius: 9px; }
+.btn-oauth { background: var(--panel-2); color: var(--text); border: 1px solid var(--line-strong); width: 100%; justify-content: center; }
+.btn-oauth:hover { border-color: var(--gold-dim); }
 .card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; }
-footer.site { border-top: 1px solid var(--line); margin-top: 64px; padding: 24px 0 40px; color: var(--faint); font-size: 12.5px; }
-@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
-.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.card h3 { margin-top: 0; }
 .muted { color: var(--muted); }
 .small-copy { color: var(--muted); font-size: 13.5px; }
-.card h3 { margin-top: 0; }
 .guide { font-size: 15.5px; line-height: 1.65; }
 .guide h1 { font-size: 26px; line-height: 1.2; margin: 0 0 8px; }
 .guide h2 { font-size: 19px; margin: 30px 0 10px; }
 .guide code { font-family: var(--font-mono); font-size: 0.9em; background: var(--panel-2); padding: 2px 6px; border-radius: 6px; }
+footer.site { border-top: 1px solid var(--line); margin-top: 64px; padding: 24px 0 40px; color: var(--faint); font-size: 12.5px; }

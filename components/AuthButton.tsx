@@ -1,32 +1,36 @@
 "use client";
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { Session } from "@supabase/supabase-js";
-import { getSupabase, supabaseAvailable } from "@/lib/supabase/client";
+import { getSupabase } from "@/lib/supabase/client";
+import { useSession } from "@/lib/supabase/useSession";
 
 /**
- * Header session control. Renders NOTHING when Supabase is unavailable, so an
- * env-less deploy is visually identical to v1a. When available it subscribes to
- * auth state: a quiet "Sign in" link when signed out, the user's identity plus a
+ * Header session control for interior pages. Renders NOTHING when Supabase is
+ * unavailable, so an env-less deploy is visually identical to v1a. When available it
+ * shows a quiet "Sign in" link when signed out and the user's identity plus a
  * "Sign out" button when signed in. The right-aligned strip lives inside the
  * non-null branch so the layout adds zero height when this returns null.
+ * The landing page carries its own auth affordance in TopNav, so this suppresses
+ * itself there; later tasks migrate interior pages to TopNav too.
  */
 export function AuthButton() {
-  const available = supabaseAvailable();
+  const { session, available } = useSession();
   const pathname = usePathname();
-  const [session, setSession] = useState<Session | null>(null);
-
-  useEffect(() => {
-    if (!available) return;
-    const supabase = getSupabase();
-    if (!supabase) return;
-    supabase.auth.getSession().then(({ data }) => setSession(data.session));
-    const { data } = supabase.auth.onAuthStateChange((_event, next) => setSession(next));
-    return () => data.subscription.unsubscribe();
-  }, [available]);
 
   if (!available) return null;
+  // TopNav owns the auth surface on pages that mount it (landing, catalog) - a second bare
+  // strip above it is noise. As later tasks migrate interior pages to TopNav, they join this list.
+  if (pathname === "/" || pathname === "/catalog") return null;
+  // Cert detail (/aws/<certId>) mounts TopNav too (Task 5).
+  if (pathname && /^\/aws\/[^/]+$/.test(pathname)) return null;
+  // The My progress dashboard mounts TopNav (Task 8) - it owns the auth surface there.
+  // Scoped to the exact page: /account/attempts/<id> (review-past) has no TopNav and keeps this strip.
+  if (pathname === "/account") return null;
+  // Settings mounts TopNav too (Task 8) - it owns the auth surface there.
+  if (pathname === "/settings") return null;
+  // The exam room is distraction-free chrome by design (Task 6): the practice surface has
+  // its own slim bar and no auth affordance - signing in mid-exam is not a real flow.
+  if (pathname && /^\/aws\/[^/]+\/practice$/.test(pathname)) return null;
   // The login page IS the sign-in call to action - a second "Sign in" strip above it is noise.
   if (pathname === "/login" && !session) return null;
 

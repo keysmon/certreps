@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CertReps — Practice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+<style>
+/* tokens: see ../styles.css */
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:
+   radial-gradient(1200px 560px at 12% -8%, rgba(233,180,76,.05), transparent 60%),
+   radial-gradient(1000px 560px at 100% -4%, rgba(90,169,240,.055), transparent 55%),
+   var(--ink);
+  color:var(--text);font-family:var(--font-sans);line-height:1.55;-webkit-font-smoothing:antialiased;min-height:100%}
+h1,h2,h3,h4{font-family:var(--font-display);margin:0;line-height:1.12;letter-spacing:-.01em}
+.mono{font-family:var(--font-mono)}.muted{color:var(--muted)}.faint{color:var(--faint)}
+a{color:var(--gold);text-decoration:none}a:hover{color:var(--gold-bright)}
+.btn{font-family:var(--font-sans);font-size:14.5px;font-weight:600;border:none;border-radius:11px;padding:12px 20px;cursor:pointer;display:inline-flex;align-items:center;gap:9px;text-decoration:none;transition:.14s}
+.btn-primary{background:var(--gold);color:var(--on-gold);box-shadow:0 8px 24px -10px rgba(233,180,76,.7)}
+.btn-primary:hover{background:var(--gold-bright)}
+.btn-primary:disabled{background:var(--panel-3);color:var(--faint);box-shadow:none;cursor:not-allowed}
+.btn-ghost{background:transparent;color:var(--text);border:1px solid var(--line-strong)}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold)}
+.btn-sm{padding:8px 14px;font-size:13px;border-radius:9px}
+.pill{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;border-radius:20px;padding:4px 10px;border:1px solid var(--line-strong);color:var(--muted);white-space:nowrap}
+code{font-family:var(--font-mono);color:var(--gold);font-size:.92em}
+
+/* nav */
+.topnav{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:16px;padding:13px 26px;border-bottom:1px solid var(--line);background:rgba(10,14,21,.85);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.switcher{display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--line-strong);border-radius:11px;padding:7px 12px;cursor:pointer;min-width:220px;transition:.14s}
+.switcher:hover{border-color:var(--gold-dim)}
+.switcher .vd{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.switcher .sc-name{font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pbar-wrap{flex:1;display:flex;align-items:center;gap:12px;max-width:520px;margin:0 auto}
+.pbar{flex:1;height:6px;background:var(--panel-3);border-radius:3px;overflow:hidden}
+.pbar span{display:block;height:100%;background:var(--gold);border-radius:3px;transition:width .35s}
+.timer{font-family:var(--font-mono);font-size:16px;font-variant-numeric:tabular-nums}
+.qtag{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);background:var(--gold-soft);border:1px solid var(--gold-dim);border-radius:20px;padding:4px 11px}
+.exit{font-family:var(--font-mono);font-size:12px;color:var(--faint);cursor:pointer}.exit:hover{color:var(--rose)}
+
+.stage{max-width:860px;margin:0 auto;padding:34px 30px 90px}
+.qstem{font-size:20px;line-height:1.5;font-weight:500;margin:14px 0 4px}
+.options{display:flex;flex-direction:column;gap:11px;margin:22px 0}
+.option{display:flex;align-items:flex-start;gap:13px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-sm);padding:15px 16px;text-align:left;width:100%;font-size:15px;color:var(--text);cursor:pointer;transition:.12s;font-family:var(--font-sans)}
+.option:hover{border-color:var(--line-strong)}
+.option.selected{border-color:var(--gold);background:var(--gold-soft)}
+.option.correct{border-color:var(--emerald);background:var(--emerald-soft)}
+.option.incorrect{border-color:var(--rose);background:var(--rose-soft)}
+.option.dim{opacity:.5}
+.option:disabled{cursor:default}
+.marker{flex-shrink:0;width:24px;height:24px;border:1.5px solid var(--line-strong);border-radius:50%;display:grid;place-items:center;font-family:var(--font-mono);font-size:12px;color:var(--muted)}
+.option.selected .marker{border-color:var(--gold);background:var(--gold);color:var(--on-gold);font-weight:700}
+.option.correct .marker{border-color:var(--emerald);background:var(--emerald);color:var(--on-emerald)}
+.option.incorrect .marker{border-color:var(--rose);background:var(--rose);color:var(--on-rose)}
+.explain{border-radius:var(--radius-sm);padding:17px 18px;margin:6px 0 4px;background:var(--panel);border:1px solid var(--line);border-left-width:3px;animation:rise .25s ease}
+.explain.right{border-left-color:var(--emerald)}.explain.wrong{border-left-color:var(--rose)}
+.verdict{font-family:var(--font-mono);font-size:12px;text-transform:uppercase;margin:0 0 9px;font-weight:600}
+.explain.right .verdict{color:var(--emerald)}.explain.wrong .verdict{color:var(--rose)}
+.explain p{margin:0 0 10px;font-size:14.5px;line-height:1.6}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.footbar{display:flex;align-items:center;gap:12px;border-top:1px solid var(--line);padding-top:18px;margin-top:22px}
+.streak{font-family:var(--font-mono);font-size:12px;color:var(--faint)}
+.streak b{color:var(--emerald)}
+
+/* results */
+.ring{width:184px;height:184px;position:relative;display:grid;place-items:center;text-align:center;flex-shrink:0}
+.ring svg{transform:rotate(-90deg);position:absolute;inset:0}
+.ring .num{font-family:var(--font-display);font-size:52px;font-weight:700;font-variant-numeric:tabular-nums}
+.ring .den{font-family:var(--font-mono);font-size:12.5px;color:var(--muted)}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:14px 16px}
+.stat .sv{font-family:var(--font-display);font-size:24px;font-weight:700}
+.stat .sl{font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-top:3px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px}
+.panel h4{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 12px}
+.brow{display:flex;align-items:center;gap:12px;padding:8px 0}
+.brow .bn{font-size:13.5px;width:46%}
+.brow .bbar{flex:1;height:7px;background:var(--panel-3);border-radius:4px;overflow:hidden}
+.brow .bbar span{display:block;height:100%;border-radius:4px}
+.brow .bsc{font-family:var(--font-mono);font-size:12px;color:var(--muted);width:44px;text-align:right}
+.recap{border-bottom:1px solid var(--line)}
+.recap summary{display:flex;align-items:center;gap:11px;padding:11px 2px;font-size:13.5px;cursor:pointer;list-style:none}
+.recap summary::-webkit-details-marker{display:none}
+.recap .ri{font-family:var(--font-mono);width:18px;flex-shrink:0}
+.recap .ri.ok{color:var(--emerald)}.recap .ri.no{color:var(--rose)}
+.recap .rq{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+details[open] .rq{white-space:normal}
+.recap .rd{font-family:var(--font-mono);font-size:11px;color:var(--faint);flex-shrink:0}
+.recap .chev{color:var(--faint);font-family:var(--font-mono);transition:transform .15s}
+details[open] .chev{transform:rotate(90deg)}
+.recap .body{padding:2px 0 16px 29px}
+.hide{display:none!important}
+</style>
+</head>
+<body>
+
+<div class="topnav">
+  <div class="switcher" id="switcher"><span class="vd"></span><div><div class="sc-name">—</div></div></div>
+  <div class="pbar-wrap" id="pbar-wrap"><span class="mono" id="pcount" style="font-size:12px;color:var(--faint)">1/10</span><div class="pbar"><span id="pfill" style="width:0"></span></div></div>
+  <span class="timer hide" id="timer">0:00</span>
+  <span class="exit" id="exit">Exit ✕</span>
+</div>
+
+<!-- RUNNING -->
+<div class="stage" id="stage-run">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:2px">
+    <span class="qtag" id="q-domain">Domain</span>
+    <span class="mono" id="q-mode" style="font-size:11.5px;color:var(--faint);margin-left:auto"></span>
+  </div>
+  <p class="qstem" id="q-stem"></p>
+  <div class="options" id="q-options" role="radiogroup" aria-label="Answer options"></div>
+  <div class="explain hide" id="q-explain" role="status" aria-live="polite"></div>
+  <div class="footbar">
+    <span class="streak" id="streak"></span>
+    <button class="btn btn-primary" id="primary" style="margin-left:auto" disabled>Check answer</button>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div class="stage hide" id="stage-results" style="max-width:940px">
+  <div style="display:grid;grid-template-columns:auto 1fr;gap:34px;align-items:center;margin-bottom:26px">
+    <div style="text-align:center">
+      <div id="r-ring"></div>
+    </div>
+    <div>
+      <span class="mono" style="font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold)">Readiness read</span>
+      <h1 id="r-head" style="font-size:29px;font-weight:800;margin:10px 0 6px"></h1>
+      <p id="r-sub" class="muted" style="font-size:14.5px;margin:0 0 18px;max-width:560px"></p>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:520px">
+        <div class="stat"><div class="sv" id="r-avg">0s</div><div class="sl">Avg / question</div></div>
+        <div class="stat"><div class="sv" id="r-streak">0</div><div class="sl">Best streak</div></div>
+        <div class="stat"><div class="sv" id="r-time">0m</div><div class="sl">Total time</div></div>
+      </div>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 320px;gap:22px;margin-bottom:26px">
+    <div class="panel"><h4>Performance by domain</h4><div id="r-bars"></div></div>
+    <div class="panel" style="background:var(--gold-soft);border-color:var(--gold-dim)">
+      <div class="mono" style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:12px">Do this next</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <button class="btn btn-primary btn-sm" id="do-weak" style="justify-content:flex-start">Drill weakest domain</button>
+        <button class="btn btn-ghost btn-sm" id="do-retry" style="justify-content:flex-start">Retry this drill</button>
+        <button class="btn btn-ghost btn-sm" id="do-cert" style="justify-content:flex-start">Back to certification</button>
+      </div>
+    </div>
+  </div>
+  <h4 style="font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin:0 0 6px">Review every question</h4>
+  <div id="r-recap"></div>
+</div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="../_ds_bundle.js"></script>
+<script src="certs.js"></script>
+<script src="progress.js"></script>
+<script>
+const {V,certByCode,questionsForRole}=window;
+const DS=window.CertRepsDesignSystem_48aca3;
+const _e=React.createElement;
+const params=new URLSearchParams(location.search);
+const c=certByCode(params.get('c'));
+const mode=params.get('mode')==='mock'?'mock':'drill';
+const N = mode==='mock' ? Math.min(20,window.QBANK.length) : Math.min(10,window.QBANK.length);
+const m=V[c.v];
+const domainFocus=params.get('domain');
+
+/* build question set (shuffle options, keep track of correct) */
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+/* mock: bias the question mix toward the official domain blueprint weights */
+function weightedPool(role,n){
+  const domains=(window.DOMAINS_BY_ROLE[role]||[]).filter(d=>window.QBANK.some(q=>q.domain===d));
+  if(!domains.length) return questionsForRole(role,n);
+  const weights=domains.map(d=>window.DOMAIN_WEIGHTS&&window.DOMAIN_WEIGHTS[d]||10);
+  const total=weights.reduce((a,b)=>a+b,0);
+  const counts=weights.map(w=>Math.round(w/total*n));
+  const out=[],used=new Set();
+  domains.forEach((d,di)=>{
+    const qs=window.QBANK.filter(q=>q.domain===d);
+    for(let k=0;k<Math.min(counts[di],qs.length);k++){out.push(qs[k]);used.add(qs[k]);}
+  });
+  const rest=[...window.QBANK.filter(q=>q.role===role&&!used.has(q)),...window.QBANK.filter(q=>!used.has(q))];
+  let ri=0;while(out.length<n&&ri<rest.length){out.push(rest[ri++]);}
+  return shuffle(out).slice(0,n);
+}
+let pool = mode==='mock' ? weightedPool(c.role, N) : questionsForRole(c.role, N);
+if(domainFocus){const f=window.QBANK.filter(q=>q.domain===domainFocus);if(f.length)pool=[...f,...pool].slice(0,N);}
+const QS = pool.map(q=>{
+  const order=shuffle(q.opts.map((t,i)=>({t,i})));
+  return {domain:q.domain,stem:q.stem,why:q.why,doc:q.doc,
+    opts:order.map(o=>o.t), correct:order.findIndex(o=>o.i===q.correct)};
+});
+
+/* state */
+let idx=0, sel=null, graded=false, streak=0, bestStreak=0;
+const answers=QS.map(()=>({picked:null,correct:false,secs:0}));
+let qStart=Date.now(), started=Date.now();
+
+/* nav bar */
+const sw=document.getElementById('switcher');
+sw.querySelector('.vd').style.background=m.c;
+sw.querySelector('.sc-name').textContent=`${m.n} — ${c.name}`;
+document.getElementById('exit').onclick=()=>location.href='Cert Detail.html?c='+encodeURIComponent(c.code);
+document.title=`CertReps — ${mode==='mock'?'Mock':'Drill'} · ${c.code}`;
+
+/* timer for mock */
+let timerInt=null;
+if(mode==='mock'){
+  const tEl=document.getElementById('timer');tEl.classList.remove('hide');
+  let secs=0;
+  timerInt=setInterval(()=>{secs++;const mm=Math.floor(secs/60),ss=String(secs%60).padStart(2,'0');tEl.textContent=`${mm}:${ss}`;},1000);
+}
+
+const primary=document.getElementById('primary');
+function renderQ(){
+  const q=QS[idx];sel=answers[idx].picked;graded=(mode==='drill'&&answers[idx].picked!==null&&answers[idx].done);
+  document.getElementById('q-domain').textContent=q.domain;
+  document.getElementById('q-mode').textContent = mode==='mock'?'Mock exam · mix follows the exam blueprint · explanations at the end':'Quick drill · instant feedback';
+  document.getElementById('q-stem').innerHTML=q.stem;
+  document.getElementById('pcount').textContent=`${idx+1}/${QS.length}`;
+  document.getElementById('pfill').style.width=`${(idx)/QS.length*100}%`;
+  const ex=document.getElementById('q-explain');ex.classList.add('hide');
+  paintOptions();
+  updateStreak();
+  qStart=Date.now();
+  primary.disabled = sel===null;
+  primary.textContent = mode==='drill' ? 'Check answer' : (idx===QS.length-1?'Finish →':'Next →');
+}
+function updateStreak(){document.getElementById('streak').innerHTML = streak>0?`Streak: <b>${streak} correct</b>`:'';}
+
+const optRoot = ReactDOM.createRoot(document.getElementById('q-options'));
+const LETTERS=['A','B','C','D','E'];
+function select(i){ if(graded)return; sel=i; answers[idx].picked=i; primary.disabled=false; paintOptions(); }
+function paintOptions(){
+  const q=QS[idx];
+  optRoot.render(q.opts.map((t,i)=>{
+    let state='idle';
+    if(graded){ state = i===q.correct?'correct' : (i===sel?'incorrect':'dim'); }
+    else if(i===sel){ state='selected'; }
+    return _e(DS.OptionRow,{key:i,letter:LETTERS[i],state:state,onClick:graded?undefined:()=>select(i)},t);
+  }));
+}
+
+function showGraded(){
+  const q=QS[idx];graded=true;
+  paintOptions();
+  const ok=sel===q.correct;
+  const ex=document.getElementById('q-explain');
+  ex.className='explain '+(ok?'right':'wrong');
+  ex.innerHTML=`<p class="verdict">${ok?'✓ Correct — nicely done':'✗ Not quite'}</p><p>${q.why}</p><a href="#">Read the ${q.doc} →</a>`;
+  ex.classList.remove('hide');
+  primary.textContent = idx===QS.length-1?'See results →':'Next question →';
+}
+
+primary.addEventListener('click',()=>{
+  if(sel===null)return;
+  answers[idx].secs=(Date.now()-qStart)/1000;
+  const q=QS[idx];const ok=sel===q.correct;answers[idx].correct=ok;answers[idx].done=true;
+  if(mode==='drill' && !graded){
+    // grade + show explanation, stay on question
+    if(ok){streak++;bestStreak=Math.max(bestStreak,streak);}else{streak=0;}
+    updateStreak();
+    showGraded();
+    return;
+  }
+  // advance (mock always; drill after graded)
+  if(mode==='mock'){ if(ok){streak++;bestStreak=Math.max(bestStreak,streak);}else{streak=0;} }
+  if(idx<QS.length-1){idx++;sel=null;graded=false;renderQ();window.scrollTo(0,0);}
+  else finish();
+});
+
+function finish(){
+  if(timerInt)clearInterval(timerInt);
+  document.getElementById('stage-run').classList.add('hide');
+  document.getElementById('pbar-wrap').classList.add('hide');
+  document.getElementById('timer').classList.add('hide');
+  document.getElementById('stage-results').classList.remove('hide');
+  const correct=answers.filter(a=>a.correct).length;
+  const pct=Math.round(correct/QS.length*100);
+  ReactDOM.createRoot(document.getElementById('r-ring')).render(_e(DS.ScoreRing,{pct:pct,size:184,correct:correct,total:QS.length}));
+  const totS=answers.reduce((s,a)=>s+a.secs,0);
+  document.getElementById('r-avg').textContent=Math.round(totS/QS.length)+'s';
+  document.getElementById('r-streak').textContent=bestStreak;
+  document.getElementById('r-time').textContent=Math.max(1,Math.round(totS/60))+'m';
+  document.getElementById('r-head').textContent = pct>=72?"Above the pass line — keep it up.":pct>=50?"Getting there — a couple of soft spots.":"Early days — this is exactly what practice is for.";
+  document.getElementById('r-sub').textContent = pct>=72?"Pass line is ~72%. Two clean runs above this and you're ready to book.":"Pass line is ~72%. Drill your weakest domain below, then run it again.";
+  // domain bars
+  const byDom={};
+  QS.forEach((q,i)=>{(byDom[q.domain]=byDom[q.domain]||{c:0,t:0});byDom[q.domain].t++;if(answers[i].correct)byDom[q.domain].c++;});
+  const doms=Object.entries(byDom);
+  // persist this session
+  const domainMap={};doms.forEach(([n,v])=>{domainMap[n]={c:v.c,t:v.t};});
+  try{window.Progress&&window.Progress.record(c.code,{mode,correct,total:QS.length,domains:domainMap});}catch(e){}
+  let weakest=doms[0];doms.forEach(d=>{if(d[1].c/d[1].t < weakest[1].c/weakest[1].t)weakest=d;});
+  ReactDOM.createRoot(document.getElementById('r-bars')).render(_e(DS.DomainBars,{title:'',rows:doms.map(([n,v])=>({name:n,correct:v.c,total:v.t}))}));
+  // recap
+  const letters=['A','B','C','D','E'];
+  document.getElementById('r-recap').innerHTML=QS.map((q,i)=>{
+    const a=answers[i];const ok=a.correct;
+    return `<details class="recap"${ok?'':' open'}>
+      <summary><span class="ri ${ok?'ok':'no'}">${ok?'✓':'✗'}</span><span class="rq">Q${i+1} · ${q.stem.replace(/<[^>]+>/g,'').slice(0,90)}…</span><span class="rd">${q.domain}</span><span class="chev">›</span></summary>
+      <div class="body">
+        <div style="font-size:13.5px;margin-bottom:8px"><span class="mono faint">Your answer:</span> ${a.picked!=null?letters[a.picked]+' · '+q.opts[a.picked]:'—'} ${ok?'':`<br><span class="mono" style="color:var(--emerald)">Correct:</span> ${letters[q.correct]} · ${q.opts[q.correct]}`}</div>
+        <p style="font-size:14px;line-height:1.6;margin:0 0 8px">${q.why}</p><a href="#">Read the ${q.doc} →</a>
+      </div></details>`;
+  }).join('');
+  // do-next wiring
+  document.getElementById('do-weak').textContent=`Drill ${weakest[0].split(' ').slice(0,2).join(' ')} · 10 Q`;
+  document.getElementById('do-weak').onclick=()=>location.href=`Practice.html?c=${encodeURIComponent(c.code)}&mode=drill&domain=${encodeURIComponent(weakest[0])}`;
+  document.getElementById('do-retry').onclick=()=>location.reload();
+  document.getElementById('do-cert').onclick=()=>location.href='Cert Detail.html?c='+encodeURIComponent(c.code);
+  window.scrollTo(0,0);
+}
+
+/* keyboard: 1-4 select, Enter = primary */
+document.addEventListener('keydown',e=>{
+  if(document.getElementById('stage-run').classList.contains('hide'))return;
+  if(['1','2','3','4','5'].includes(e.key)){const i=+e.key-1;if(!graded&&i<QS[idx].opts.length)select(i);}
+  if(e.key==='Enter'&&!primary.disabled)primary.click();
+});
+
+renderQ();
+</script>
+</body>
+</html>

@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CertReps — Certification</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+<style>
+/* tokens: see ../styles.css */
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:
+   radial-gradient(1200px 560px at 12% -8%, rgba(233,180,76,.05), transparent 60%),
+   radial-gradient(1000px 560px at 100% -4%, rgba(90,169,240,.055), transparent 55%),
+   var(--ink);
+  color:var(--text);font-family:var(--font-sans);line-height:1.55;-webkit-font-smoothing:antialiased;min-height:100%}
+h1,h2,h3,h4{font-family:var(--font-display);margin:0;line-height:1.12;letter-spacing:-.01em}
+.eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);font-weight:500}
+.mono{font-family:var(--font-mono)}.muted{color:var(--muted)}.faint{color:var(--faint)}
+a{color:var(--gold);text-decoration:none}a:hover{color:var(--gold-bright)}
+.btn{font-family:var(--font-sans);font-size:14.5px;font-weight:600;border:none;border-radius:11px;padding:12px 20px;cursor:pointer;display:inline-flex;align-items:center;gap:9px;text-decoration:none;transition:.14s}
+.btn-primary{background:var(--gold);color:var(--on-gold);box-shadow:0 8px 24px -10px rgba(233,180,76,.7)}
+.btn-primary:hover{background:var(--gold-bright)}
+.btn-ghost{background:transparent;color:var(--text);border:1px solid var(--line-strong)}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold)}
+.btn-sm{padding:8px 14px;font-size:13px;border-radius:9px}
+.pill{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;border-radius:20px;padding:4px 10px;border:1px solid var(--line-strong);color:var(--muted);white-space:nowrap}
+.pill.lvl{color:var(--gold);border-color:var(--gold-dim);background:var(--gold-soft)}
+
+/* nav */
+.topnav{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:18px;padding:14px 32px;border-bottom:1px solid var(--line);background:rgba(10,14,21,.82);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:800;font-size:18px;letter-spacing:-.02em;cursor:pointer}
+.logo .loop{width:32px;height:32px;border-radius:9px;background:#0a0e15;border:1px solid var(--line-strong);display:grid;place-items:center}
+.switcher{display:flex;align-items:center;gap:11px;background:var(--panel);border:1px solid var(--line-strong);border-radius:11px;padding:8px 13px;cursor:pointer;min-width:290px;transition:.14s}
+.switcher:hover{border-color:var(--gold-dim)}
+.switcher .vd{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.switcher .sc-name{font-size:13.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.switcher .sc-sub{font-family:var(--font-mono);font-size:11px;color:var(--faint)}
+.switcher .kbd{margin-left:auto;font-family:var(--font-mono);font-size:10.5px;color:var(--faint);border:1px solid var(--line);border-radius:6px;padding:2px 7px}
+.navspacer{flex:1}
+.navlink{font-size:13.5px;color:var(--muted);cursor:pointer}.navlink:hover{color:var(--text)}
+.avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--panel-3),var(--panel-2));border:1px solid var(--line-strong);display:grid;place-items:center;font-family:var(--font-mono);font-size:12px;color:var(--gold);cursor:pointer}
+
+.wrap{max-width:1180px;margin:0 auto;padding:0 34px 80px}
+.crumb{font-family:var(--font-mono);font-size:12px;color:var(--faint);padding:16px 0 4px}
+.hero{position:relative;overflow:hidden;border-radius:20px;border:1px solid var(--line);background:var(--panel);padding:34px 36px;margin-bottom:24px}
+.hero .accent{position:absolute;left:0;top:0;bottom:0;width:5px}
+.hero .wash{position:absolute;inset:0;pointer-events:none;opacity:.10}
+.metarow{display:flex;align-items:center;gap:11px;flex-wrap:wrap;margin-bottom:14px}
+.vd{width:11px;height:11px;border-radius:50%}
+.grid{display:grid;grid-template-columns:1fr 356px;gap:26px;align-items:start}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px}
+.panel h4{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin:0 0 14px}
+.domain{display:flex;align-items:center;gap:14px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:.14s}
+.domain:hover{border-color:var(--line-strong);transform:translateX(2px)}
+.domain .idx{font-family:var(--font-mono);font-size:11px;color:var(--faint);width:16px}
+.domain .dname{font-size:14.5px;font-weight:600}
+.domain .track{height:5px;background:var(--panel-3);border-radius:3px;overflow:hidden;margin-top:8px;max-width:280px}
+.domain .track span{display:block;height:100%;border-radius:3px}
+.domain .verd{font-family:var(--font-mono);font-size:11px;white-space:nowrap}
+.domain .drill{font-family:var(--font-mono);font-size:12px;color:var(--gold);white-space:nowrap}
+.ring{width:104px;height:104px;position:relative;display:grid;place-items:center;text-align:center;flex-shrink:0}
+.ring svg{transform:rotate(-90deg);position:absolute;inset:0}
+.ring .num{font-family:var(--font-display);font-size:28px;font-weight:700}
+.kv{display:flex;justify-content:space-between;font-size:13.5px;padding:2px 0}
+.kv+.kv{margin-top:9px}
+.list{display:flex;flex-direction:column;gap:11px}
+
+/* overlay (⌘K) */
+.overlay{position:fixed;inset:0;background:rgba(5,8,13,.6);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);z-index:80;display:none;align-items:flex-start;justify-content:center;padding-top:12vh}
+.overlay.open{display:flex}
+.cmd{width:640px;max-width:92vw;background:var(--panel);border:1px solid var(--line-strong);border-radius:16px;overflow:hidden;box-shadow:0 40px 100px -40px #000}
+.cmd .top{display:flex;align-items:center;gap:11px;border-bottom:1px solid var(--line);padding:16px 20px}
+.cmd .top input{background:none;border:none;outline:none;color:var(--text);font-size:16px;flex:1;font-family:var(--font-sans)}
+.cmd .sec{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.14em;color:var(--faint);padding:12px 20px 6px}
+.cmd .body{max-height:52vh;overflow:auto;padding:0 10px 12px}
+.drow{display:flex;align-items:center;gap:13px;padding:11px 12px;border-radius:10px;cursor:pointer}
+.drow:hover,.drow.k{background:var(--panel-2)}
+.drow .vd2{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.drow .dn{font-size:14px;font-weight:600;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.drow .dcode{font-family:var(--font-mono);font-size:11px;color:var(--faint)}
+.cmd .foot{display:flex;gap:16px;border-top:1px solid var(--line);padding:11px 20px;font-family:var(--font-mono);font-size:11px;color:var(--faint)}
+.cmd .foot b{color:var(--muted);font-weight:500}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="topnav">
+  <div class="logo" onclick="location.href='CertReps Catalog.html'"><span class="loop"><svg viewBox="0 0 32 32" width="20" height="20"><circle cx="16" cy="16" r="8.5" fill="none" stroke="#e9b44c" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="42 11.4" transform="rotate(-35 16 16)"/></svg></span>CertReps</div>
+  <div class="switcher" id="switcher"><span class="vd"></span><div><div class="sc-name">—</div><div class="sc-sub">—</div></div><span class="kbd">⌘K</span></div>
+  <div class="navspacer"></div>
+  <span class="navlink" onclick="location.href='CertReps Catalog.html'">Catalog</span><span class="navlink" onclick="location.href='My Progress.html'">My progress</span>
+  <div class="avatar" id="avatar" onclick="location.href='Settings.html'">JD</div>
+</div>
+
+<div class="wrap">
+  <div class="crumb"><a href="CertReps Catalog.html">Catalog</a> › <a href="#" id="crumb-vendor">Vendor</a> › <span id="crumb-role">Role</span></div>
+
+  <div class="hero" id="hero">
+    <span class="accent" id="hero-accent"></span>
+    <div class="metarow">
+      <span class="vd" id="hero-dot"></span>
+      <span class="mono" id="hero-vendor" style="font-size:12px;color:var(--muted)"></span>
+      <span class="pill lvl" id="hero-lvl"></span>
+      <span class="pill" id="hero-code"></span>
+      <span class="mono" id="hero-rating" style="font-size:11px;color:var(--faint)"></span>
+    </div>
+    <h1 id="hero-name" style="font-size:34px;font-weight:800"></h1>
+    <p id="hero-desc" style="font-size:16px;color:var(--muted);max-width:640px;margin:14px 0 0;line-height:1.6"></p>
+    <div style="display:flex;gap:12px;margin-top:24px;flex-wrap:wrap">
+      <button class="btn btn-primary" id="cta-practice">Start practicing →</button>
+      <button class="btn btn-ghost" id="cta-mock">Take full mock</button>
+      <button class="btn btn-ghost" id="cta-drill">Quick 10-Q drill</button>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div>
+      <h4 style="font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin:6px 0 14px">Domains — practice any</h4>
+      <div id="domains"></div>
+      <div class="panel" style="margin-top:8px">
+        <h4>How CertReps works</h4>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+          <div><div class="mono" style="color:var(--gold);font-size:13px;margin-bottom:6px">01 · Practice</div><p class="muted" style="font-size:13px;margin:0">Original scenario questions per domain. Miss one, see why immediately.</p></div>
+          <div><div class="mono" style="color:var(--gold);font-size:13px;margin-bottom:6px">02 · Simulate</div><p class="muted" style="font-size:13px;margin:0">Full-length mock under real exam timing and question count.</p></div>
+          <div><div class="mono" style="color:var(--gold);font-size:13px;margin-bottom:6px">03 · Read your gaps</div><p class="muted" style="font-size:13px;margin:0">An honest readiness report that tells you exactly what to drill next.</p></div>
+        </div>
+      </div>
+    </div>
+    <aside class="list">
+      <div class="panel" id="readiness-panel">
+        <h4>Your readiness</h4>
+        <div style="display:flex;align-items:center;gap:16px">
+          <div id="ready-ring"></div>
+          <div><div id="ready-label" style="font-size:14px;font-weight:600"></div><div class="mono" id="ready-note" style="font-size:11.5px;color:var(--muted);margin-top:4px"></div></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h4>What's inside</h4>
+        <div class="kv"><span class="muted">Practice questions</span><span class="mono" id="in-q"></span></div>
+        <div class="kv"><span class="muted">Full mock exams</span><span class="mono">4</span></div>
+        <div class="kv"><span class="muted">Explanations w/ docs</span><span class="mono">Every Q</span></div>
+        <div class="kv"><span class="muted">Mock length</span><span class="mono" id="in-mock"></span></div>
+        <div class="kv"><span class="muted">Last verified</span><span class="mono">Q3 2026</span></div>
+      </div>
+      <div class="panel" style="background:var(--gold-soft);border-color:var(--gold-dim)">
+        <div class="mono" style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:6px">No signup to practice</div>
+        <p class="muted" style="font-size:13px;margin:0">Create a free account only if you want progress saved across devices.</p>
+      </div>
+    </aside>
+  </div>
+
+  <!-- related -->
+  <h4 style="font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin:36px 0 14px">More in this track</h4>
+  <div id="related" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px"></div>
+</div>
+
+<!-- SWITCHER OVERLAY -->
+<div class="overlay" id="overlay">
+  <div class="cmd" role="dialog" aria-label="Switch certification">
+    <div class="top"><span class="mono faint">⌘K</span><input id="cmdinput" placeholder="Jump to a certification…"><span class="mono faint" style="font-size:11px">esc</span></div>
+    <div class="sec" id="cmd-sec">CONTINUE</div>
+    <div class="body" id="cmdbody"></div>
+    <div class="foot"><span><b>↑↓</b> navigate</span><span><b>↵</b> open</span><span style="margin-left:auto"><b>esc</b> close</span></div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="../_ds_bundle.js"></script>
+<script src="certs.js"></script>
+<script src="progress.js"></script>
+<script>
+const {V,CERTS,DOMAINS_BY_ROLE,stars,learners,certByCode}=window;
+const CMAP={emerald:"var(--emerald)",gold:"var(--gold)",rose:"var(--rose)"};
+const params=new URLSearchParams(location.search);
+const c=certByCode(params.get('c'));
+const m=V[c.v];
+
+/* hero */
+document.getElementById('hero-accent').style.background=m.c;
+document.getElementById('hero-dot').style.background=m.c;
+document.getElementById('hero-vendor').textContent=m.n;
+document.getElementById('hero-lvl').textContent=c.lvl;
+document.getElementById('hero-code').textContent=c.code;
+document.getElementById('hero-rating').textContent=`★ ${(3.9+ (c.pop/100)*1).toFixed(1)} · ${learners(c.pop)} practiced`;
+document.getElementById('hero-name').textContent=`${m.n} ${c.name}`;
+document.getElementById('hero-desc').textContent=`Original ${c.role.toLowerCase()} scenario questions with real explanations, mapped to the official ${c.code} exam guide. Practice one domain at a time, or sit the full mock under exam timing.`;
+document.title=`CertReps — ${c.name}`;
+document.getElementById('crumb-vendor').textContent=m.n;
+document.getElementById('crumb-vendor').href='CertReps Catalog.html';
+document.getElementById('crumb-role').textContent=c.role;
+
+/* switcher bar */
+const prog=(window.Progress&&window.Progress.progOf(c.code))||0;
+(function(){const a=window.Progress&&window.Progress.account();if(a)document.getElementById('avatar').textContent=window.Progress.initials();})();
+const pdata=window.Progress&&window.Progress.get(c.code);
+const sw=document.getElementById('switcher');
+sw.querySelector('.vd').style.background=m.c;
+sw.querySelector('.sc-name').textContent=`${m.n} — ${c.name}`;
+sw.querySelector('.sc-sub').textContent=`${c.code} · ${prog>0?prog+'% ready':'not started'}`;
+
+/* domains — prefer stored accuracy, else narrative fallback, else generic */
+function verdOf(v){return v===0?"Not started":v>=80?"Above":v>=65?"Fair":v>=50?"Borderline":"Weak";}
+function colOf(v){return v===0?"gold":v>=80?"emerald":v>=65?"gold":"rose";}
+let doms;
+if(pdata&&pdata.domains&&Object.keys(pdata.domains).length){
+  doms=Object.entries(pdata.domains).map(([n,v])=>{const p=Math.round(v.c/v.t*100);return [n,p,colOf(p),verdOf(p)];});
+}else if(c.domains){
+  doms=c.domains;
+}else{
+  doms=DOMAINS_BY_ROLE[c.role].map(n=>[n,0,"gold","Not started"]);
+}
+document.getElementById('domains').innerHTML=doms.map((d,i)=>`
+  <div class="domain" role="button" tabindex="0" aria-label="Drill ${d[0]}">
+    <span class="idx">${i+1}</span>
+    <div style="flex:1"><div class="dname">${d[0]}<span class="mono" style="color:var(--faint);font-weight:400;font-size:11px">${window.DOMAIN_WEIGHTS&&window.DOMAIN_WEIGHTS[d[0]]?'  ·  '+window.DOMAIN_WEIGHTS[d[0]]+'% of exam':''}</span></div>
+      <div class="track"><span style="width:${d[1]||3}%;background:${CMAP[d[2]]}"></span></div></div>
+    <span class="verd" style="color:${CMAP[d[2]]}">${d[3]}</span>
+    <span class="btn btn-ghost btn-sm drill">Drill →</span>
+  </div>`).join('');
+document.getElementById('domains').addEventListener('keydown',e=>{
+  if(e.key!=='Enter'&&e.key!==' ')return;const row=e.target.closest('.domain');if(!row)return;e.preventDefault();row.click();
+});
+document.getElementById('domains').addEventListener('click',e=>{
+  const row=e.target.closest('.domain');if(!row)return;
+  const name=doms[[...document.getElementById('domains').children].indexOf(row)][0];
+  location.href='Practice.html?c='+encodeURIComponent(c.code)+'&mode=drill&domain='+encodeURIComponent(name);
+});
+
+/* readiness */
+const pct=prog;
+ReactDOM.createRoot(document.getElementById('ready-ring')).render(React.createElement(window.CertRepsDesignSystem_48aca3.ScoreRing,{pct:pct,size:104,stroke:8}));
+const weakest=doms.slice().sort((a,b)=>a[1]-b[1])[0];
+document.getElementById('ready-label').textContent = pct===0?"Not started yet":pct>=72?"Ready to book":"Getting there";
+document.getElementById('ready-note').innerHTML = pct===0
+  ? "Do a quick drill to<br>get your first read."
+  : `Pass line ~72%.<br>Weakest: ${weakest[0].split(' ').slice(0,2).join(' ')}.`;
+
+/* inside */
+document.getElementById('in-q').textContent=c.q;
+document.getElementById('in-mock').textContent=c.mock;
+
+/* CTAs → practice session */
+document.getElementById('cta-practice').textContent = pct>0? 'Resume practicing →':'Start practicing →';
+document.getElementById('cta-practice').onclick=()=>location.href='Practice.html?c='+encodeURIComponent(c.code)+'&mode=drill';
+document.getElementById('cta-drill').onclick=()=>location.href='Practice.html?c='+encodeURIComponent(c.code)+'&mode=drill';
+document.getElementById('cta-mock').onclick=()=>location.href='Practice.html?c='+encodeURIComponent(c.code)+'&mode=mock';
+document.getElementById('cta-mock').textContent=`Take full mock · ${c.mock}`;
+
+/* related */
+const rel=CERTS.filter(x=>x.role===c.role && x.code!==c.code).slice(0,4);
+document.getElementById('related').innerHTML=rel.map(x=>{const mm=V[x.v];return `
+  <div class="domain" role="link" tabindex="0" aria-label="${x.name}" style="margin:0;cursor:pointer" onclick="location.href='Cert Detail.html?c=${encodeURIComponent(x.code)}'" onkeydown="if(event.key==='Enter')location.href='Cert Detail.html?c=${encodeURIComponent(x.code)}'">
+    <span class="vd" style="background:${mm.c};width:9px;height:9px"></span>
+    <div style="flex:1"><div class="dname" style="font-size:13.5px">${x.name}</div><div class="mono" style="font-size:10.5px;color:var(--faint);margin-top:2px">${mm.n} · ${x.code}</div></div>
+    <span class="pill lvl">${x.lvl}</span>
+  </div>`;}).join('');
+
+/* ⌘K switcher */
+const overlay=document.getElementById('overlay'),cmdinput=document.getElementById('cmdinput'),cmdbody=document.getElementById('cmdbody');
+let kidx=0,cmdList=[];
+function openCmd(){overlay.classList.add('open');cmdinput.value='';renderCmd('');setTimeout(()=>cmdinput.focus(),30);}
+function closeCmd(){overlay.classList.remove('open');}
+function renderCmd(q){
+  q=q.toLowerCase().trim();
+  const cont=CERTS.filter(x=>x.prog>0);
+  const matches=CERTS.filter(x=>!q||((x.name+" "+V[x.v].n+" "+x.code).toLowerCase().includes(q)));
+  cmdList=q?matches:[...cont,...CERTS.filter(x=>x.prog===0)];
+  document.getElementById('cmd-sec').textContent=q?`${matches.length} MATCHES`:'CONTINUE';
+  kidx=0;
+  cmdbody.innerHTML=cmdList.slice(0,q?40:8).map((x,i)=>{const mm=V[x.v];return `
+    <div class="drow${i===0?' k':''}" data-i="${i}"><span class="vd2" style="background:${mm.c}"></span><span class="dn">${x.name}</span>${x.prog>0?`<span class="dcode" style="color:var(--gold)">${x.prog}% · resume</span>`:`<span class="dcode">${x.code}</span>`}</div>`;}).join('');
+}
+function pick(i){const x=cmdList[i];if(!x)return;location.href='Cert Detail.html?c='+encodeURIComponent(x.code);}
+sw.addEventListener('click',openCmd);
+overlay.addEventListener('click',e=>{if(e.target===overlay)closeCmd();});
+cmdbody.addEventListener('click',e=>{const r=e.target.closest('.drow');if(r)pick(+r.dataset.i);});
+cmdinput.addEventListener('input',()=>renderCmd(cmdinput.value));
+document.addEventListener('keydown',e=>{
+  if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();overlay.classList.contains('open')?closeCmd():openCmd();return;}
+  if(!overlay.classList.contains('open'))return;
+  const rows=[...cmdbody.querySelectorAll('.drow')];
+  if(e.key==='Escape')closeCmd();
+  if(e.key==='ArrowDown'){e.preventDefault();kidx=Math.min(kidx+1,rows.length-1);}
+  if(e.key==='ArrowUp'){e.preventDefault();kidx=Math.max(kidx-1,0);}
+  if(e.key==='Enter'){e.preventDefault();pick(kidx);return;}
+  rows.forEach((r,i)=>r.classList.toggle('k',i===kidx));
+  rows[kidx]&&rows[kidx].scrollIntoView({block:'nearest'});
+});
+</script>
+</body>
+</html>

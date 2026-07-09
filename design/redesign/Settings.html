@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CertReps — Settings</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+<style>
+h1,h2,h3,h4{font-family:var(--font-display);margin:0;letter-spacing:-.01em;line-height:1.12}
+.mono{font-family:var(--font-mono)}.muted{color:var(--muted)}.faint{color:var(--faint)}
+a{color:var(--gold);text-decoration:none}a:hover{color:var(--gold-bright)}
+body{background:
+   radial-gradient(1200px 560px at 12% -8%, rgba(233,180,76,.05), transparent 60%),
+   radial-gradient(1000px 560px at 100% -4%, rgba(90,169,240,.055), transparent 55%),
+   var(--ink);min-height:100vh}
+.btn{font-family:var(--font-sans);font-size:14px;font-weight:600;border:none;border-radius:11px;padding:11px 18px;cursor:pointer;display:inline-flex;align-items:center;gap:9px;transition:.14s}
+.btn-primary{background:var(--gold);color:var(--on-gold);box-shadow:0 8px 24px -10px rgba(233,180,76,.7)}
+.btn-primary:hover{background:var(--gold-bright)}
+.btn-ghost{background:transparent;color:var(--text);border:1px solid var(--line-strong)}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold)}
+.btn-danger{background:transparent;color:var(--rose);border:1px solid var(--rose)}
+.btn-danger:hover{background:var(--rose-soft)}
+.btn-sm{padding:8px 14px;font-size:13px;border-radius:9px}
+.topnav{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:18px;padding:14px 32px;border-bottom:1px solid var(--line);background:rgba(10,14,21,.82);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:800;font-size:18px;letter-spacing:-.02em;cursor:pointer}
+.logo .loop{width:32px;height:32px;border-radius:9px;background:#0a0e15;border:1px solid var(--line-strong);display:grid;place-items:center}
+.navlink{font-size:13.5px;color:var(--muted);cursor:pointer}.navlink:hover{color:var(--text)}.navlink.on{color:var(--text);font-weight:600}
+.avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--panel-3),var(--panel-2));border:1px solid var(--line-strong);display:grid;place-items:center;font-family:var(--font-mono);font-size:12px;color:var(--gold)}
+.wrap{max-width:720px;margin:0 auto;padding:30px 34px 90px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px 24px;margin-bottom:16px}
+.card h3{font-size:16px;font-weight:700;margin-bottom:3px}
+.card .cd{font-size:13px;color:var(--muted);margin:0 0 4px}
+.eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin-bottom:14px}
+.row{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:none}
+.row .rt{flex:1}
+.row .rt .rl{font-size:14px;font-weight:600}
+.row .rt .rs{font-size:12.5px;color:var(--muted)}
+.switch{width:44px;height:26px;border-radius:20px;background:var(--panel-3);border:1px solid var(--line-strong);position:relative;cursor:pointer;flex-shrink:0;transition:.16s}
+.switch::after{content:"";position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:var(--faint);transition:.16s}
+.switch.on{background:var(--gold-soft);border-color:var(--gold-dim)}
+.switch.on::after{left:20px;background:var(--gold)}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--panel-2);border:1px solid var(--line-strong);border-radius:11px;padding:12px 18px;font-size:13.5px;opacity:0;pointer-events:none;transition:.25s;z-index:90}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(max-width:560px){.topnav .navlink{display:none}.wrap{padding:24px 18px 70px}}
+</style>
+</head>
+<body>
+<div class="topnav">
+  <div class="logo" onclick="location.href='CertReps Catalog.html'"><span class="loop"><svg viewBox="0 0 32 32" width="20" height="20"><circle cx="16" cy="16" r="8.5" fill="none" stroke="#e9b44c" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="42 11.4" transform="rotate(-35 16 16)"/></svg></span>CertReps</div>
+  <div style="flex:1"></div>
+  <span class="navlink" onclick="location.href='CertReps Catalog.html'">Catalog</span>
+  <span class="navlink" onclick="location.href='My Progress.html'">My progress</span>
+  <div class="avatar" id="avatar">JD</div>
+</div>
+
+<div class="wrap">
+  <div class="eyebrow">Settings</div>
+  <h1 style="font-size:30px;font-weight:800;margin-bottom:24px">Account & preferences</h1>
+
+  <!-- ACCOUNT -->
+  <div class="card" id="acctCard"></div>
+
+  <!-- SYNC + NOTIFICATIONS -->
+  <div class="card">
+    <h3>Sync & notifications</h3>
+    <p class="cd">Control what CertReps saves and when it nudges you.</p>
+    <div class="row"><div class="rt"><div class="rl">Sync progress across devices</div><div class="rs" id="syncSub">Requires an account.</div></div><div class="switch" data-pref="sync"></div></div>
+    <div class="row"><div class="rt"><div class="rl">Study reminders</div><div class="rs">A gentle nudge if you haven't practiced in a few days.</div></div><div class="switch" data-pref="reminders"></div></div>
+    <div class="row"><div class="rt"><div class="rl">New certification alerts</div><div class="rs">When a cert in a role you follow is added.</div></div><div class="switch" data-pref="newCerts"></div></div>
+    <div class="row"><div class="rt"><div class="rl">Weekly readiness email</div><div class="rs">A Monday summary of your readiness and weak areas.</div></div><div class="switch" data-pref="weekly"></div></div>
+  </div>
+
+  <!-- DATA -->
+  <div class="card">
+    <h3>Your data</h3>
+    <p class="cd">Your practice data is yours. Take it or wipe it anytime.</p>
+    <div class="row"><div class="rt"><div class="rl">Export my data</div><div class="rs">Download everything as a JSON file.</div></div><button class="btn btn-ghost btn-sm" id="export">Export</button></div>
+    <div class="row"><div class="rt"><div class="rl">Reset demo progress</div><div class="rs">Restore the sample data on this device.</div></div><button class="btn btn-ghost btn-sm" id="reset">Reset</button></div>
+    <div class="row"><div class="rt"><div class="rl" style="color:var(--rose)">Delete all my data</div><div class="rs">Wipes progress, preferences, and account on this device. Can't be undone.</div></div><button class="btn btn-danger btn-sm" id="delete">Delete</button></div>
+  </div>
+
+  <p class="mono faint" style="font-size:11px;text-align:center;margin-top:22px">CertReps · free forever · no signup to practice</p>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="certs.js"></script>
+<script src="progress.js"></script>
+<script>
+const P=window.Progress;
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2200);}
+
+/* account card */
+function renderAccount(){
+  const a=P.account();
+  const el=document.getElementById('acctCard');
+  document.getElementById('avatar').textContent=a?P.initials():'JD';
+  if(a){
+    el.innerHTML=`<h3>Account</h3><p class="cd">Signed in — progress syncs automatically.</p>
+      <div class="row"><div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--panel-3),var(--panel-2));border:1px solid var(--line-strong);display:grid;place-items:center;font-family:var(--font-mono);color:var(--gold)">${P.initials()}</div>
+        <div class="rt"><div class="rl">${a.email}</div><div class="rs">Signed in via ${a.provider} · synced</div></div>
+        <button class="btn btn-ghost btn-sm" id="signout">Sign out</button></div>`;
+    document.getElementById('signout').onclick=()=>{P.signOut();renderAccount();renderSwitches();toast('Signed out');};
+  }else{
+    el.innerHTML=`<h3>Account</h3><p class="cd">You're practicing without an account. Progress is saved on this device only.</p>
+      <div class="row"><div class="rt"><div class="rl">Not signed in</div><div class="rs">Sign in to sync across devices and back up your reps.</div></div>
+        <button class="btn btn-primary btn-sm" onclick="location.href='Sign In.html'">Sign in to sync</button></div>`;
+  }
+}
+
+/* switches */
+function renderSwitches(){
+  const prefs=P.prefs();const signedIn=!!P.account();
+  document.querySelectorAll('.switch').forEach(sw=>{
+    const k=sw.dataset.pref;
+    let on=prefs[k];
+    if(k==='sync'){ if(!signedIn){on=false;sw.style.opacity=.5;sw.style.pointerEvents='none';document.getElementById('syncSub').textContent='Requires an account.';}
+      else{sw.style.opacity=1;sw.style.pointerEvents='auto';document.getElementById('syncSub').textContent='On — scores back up automatically.';} }
+    sw.classList.toggle('on',!!on);
+    sw.setAttribute('role','switch');
+    sw.setAttribute('tabindex', sw.style.pointerEvents==='none'?'-1':'0');
+    sw.setAttribute('aria-checked', on?'true':'false');
+    sw.setAttribute('aria-label', (sw.closest('.row')?.querySelector('.rl')?.textContent)||k);
+  });
+}
+document.querySelectorAll('.switch').forEach(sw=>{
+  const toggle=()=>{const k=sw.dataset.pref;const now=!sw.classList.contains('on');P.setPref(k,now);renderSwitches();toast(now?'Turned on':'Turned off');};
+  sw.addEventListener('click',toggle);
+  sw.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle();}});
+});
+
+/* data actions */
+document.getElementById('export').onclick=()=>{
+  const blob=new Blob([P.exportData()],{type:'application/json'});
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');
+  a.href=url;a.download='certreps-data.json';document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);toast('Exported certreps-data.json');
+};
+document.getElementById('reset').onclick=()=>{if(confirm('Restore the sample demo progress on this device?')){P.resetDemo();toast('Demo progress restored');}};
+document.getElementById('delete').onclick=()=>{if(confirm('Delete ALL your data on this device? This cannot be undone.')){P.deleteData();P.signOut();renderAccount();renderSwitches();toast('All data deleted');}};
+
+renderAccount();renderSwitches();
+</script>
+</body>
+</html>
