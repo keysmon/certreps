@@ -374,5 +374,142 @@
     "difficulty": "hard",
     "docUrl": "https://docs.aws.amazon.com/directconnect/latest/UserGuide/direct-connect-gateways-intro.html",
     "id": "ansc01-0022"
+  },
+  {
+    "domain": "Network Management and Operation",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "Before sending any live traffic, a network engineer wants to verify whether a planned path between an EC2 instance and an RDS instance in another subnet will succeed, and if not, learn exactly which component (such as a security group or route table) is blocking it. Which tool BEST fits this need?",
+    "options": [
+      "VPC Reachability Analyzer, which performs a static configuration analysis and reports hop-by-hop path details or identifies the specific blocking component.",
+      "VPC Flow Logs, which record only after live traffic has already been sent.",
+      "AWS X-Ray, which traces application-level requests inside already-running services.",
+      "Amazon CloudWatch Synthetics canaries, which run scripted browser or API requests against public endpoints."
+    ],
+    "correct": [0],
+    "explanation": "<b>Reachability Analyzer performs a configuration-only analysis</b> (it does not send live packets) between a source and destination, and it returns either a successful hop-by-hop path or identifies the specific blocking security group, network ACL, route table, or load balancer configuration, exactly matching the before-sending-traffic requirement. Flow Logs only reveal what already happened to real traffic that was sent, the opposite of a pre-traffic check. X-Ray traces application-level requests inside running services, not network path configuration. CloudWatch Synthetics tests public endpoint availability with real requests, not a static configuration analysis of internal network paths.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/vpc/latest/reachability/what-is-reachability-analyzer.html",
+    "id": "ansc01-0023"
+  },
+  {
+    "domain": "Network Management and Operation",
+    "tag": "Domain 3",
+    "type": "multi",
+    "stem": "A security engineer sees REJECT entries in VPC Flow Logs for traffic between two EC2 instances in the same VPC and wants to identify the exact rule that is blocking the traffic. Which TWO statements about diagnosing this are correct? (Select TWO.)",
+    "options": [
+      "VPC Flow Logs records show whether traffic was ACCEPTED or REJECTED, but do not identify which specific security group or network ACL rule caused a REJECT.",
+      "VPC Reachability Analyzer performs a static configuration analysis and can identify the specific security group, network ACL, or route table entry that is blocking the path between the two instances.",
+      "Flow Logs can only be published to Amazon CloudWatch Logs, so Amazon Athena cannot be used to query them.",
+      "A REJECT entry in Flow Logs always means a network ACL rule is blocking the traffic, never a security group.",
+      "Enabling VPC Flow Logs requires installing a monitoring agent on every EC2 instance in the VPC."
+    ],
+    "correct": [0, 1],
+    "explanation": "<b>Flow Logs record only ACCEPT or REJECT for each flow and do not identify which specific rule caused a REJECT</b>, whereas <b>Reachability Analyzer performs a static configuration analysis and can pinpoint the exact security group, network ACL, or route table entry</b> responsible, making the two tools complementary for this diagnosis. Flow Logs can be published to Amazon S3 and Amazon Data Firehose as well as CloudWatch Logs, and Athena is a documented way to query S3-based flow log data, so the CloudWatch-only claim is false. A REJECT can come from either a security group or a network ACL, so it never being a security group is false. Flow Logs are collected at the network interface level using the underlying infrastructure; no agent installation on instances is required.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/vpc/latest/reachability/what-is-reachability-analyzer.html",
+    "id": "ansc01-0024"
+  },
+  {
+    "domain": "Network Management and Operation",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A company operates transit gateways in many Regions, several Direct Connect connections, Site-to-Site VPN connections, and on-premises sites, and wants one central, visual topology and event-monitoring view across all of them. Which AWS capability BEST fits this need?",
+    "options": [
+      "AWS Trusted Advisor, which provides cost and best-practice checks account by account.",
+      "AWS Network Manager (global networks), which centrally visualizes topology and monitors transit gateways, Direct Connect, VPN, and on-premises sites and devices across accounts and Regions.",
+      "Amazon CloudWatch Application Insights, which monitors application-layer health for a single application stack.",
+      "AWS Config, which records configuration changes on individual resources over time."
+    ],
+    "correct": [1],
+    "explanation": "<b>AWS Network Manager (global networks)</b> is purpose-built to register transit gateways, Direct Connect connections, VPN connections, and on-premises devices and sites into a single global network with a central topology view and CloudWatch-based event monitoring across Regions and accounts. Trusted Advisor gives account-level cost and best-practice checks, not a network topology view. CloudWatch Application Insights targets application health, not the underlying hybrid network topology. AWS Config tracks configuration history for individual resources rather than providing a unified network map.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/network-manager/latest/tgwnm/what-are-global-networks.html",
+    "id": "ansc01-0025"
+  },
+  {
+    "domain": "Network Management and Operation",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A network engineer wants to verify whether a transit gateway's route tables would successfully route traffic between two attachments in a global network before any traffic is sent, but a security group misconfiguration elsewhere is a separate concern the engineer will check with a different tool. Which statement correctly distinguishes the Network Manager Route Analyzer from VPC Reachability Analyzer for this task?",
+    "options": [
+      "Route Analyzer inspects security group and network ACL rules in addition to transit gateway route tables, making Reachability Analyzer unnecessary.",
+      "Reachability Analyzer only works with transit gateway route tables registered in a global network, while Route Analyzer works with any VPC resource.",
+      "Route Analyzer analyzes only the routes in transit gateway route tables registered in a global network, and explicitly does not evaluate security group or network ACL rules, so a separate tool such as Reachability Analyzer is needed for those layers.",
+      "Both tools send live test packets between the source and destination to confirm connectivity in real time."
+    ],
+    "correct": [2],
+    "explanation": "<b>Route Analyzer analyzes routes in transit gateway route tables only</b>, for transit gateways registered in a global network, <b>and explicitly does not evaluate security group or network ACL rules</b>, so a network-ACL or security-group check is a genuinely separate concern handled by Reachability Analyzer or VPC Flow Logs. Route Analyzer does not inspect security group or NACL rules, so the first option is backwards. The second option has the tools' scopes reversed: Reachability Analyzer works with VPC-level resources such as instances and load balancers, while Route Analyzer is the transit-gateway-focused tool. Neither tool sends live packets; both perform a static, configuration-based analysis.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/network-manager/latest/tgwnm/route-analyzer.html",
+    "id": "ansc01-0026"
+  },
+  {
+    "domain": "Network Management and Operation",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A network operations team wants to proactively detect when a Direct Connect connection's utilization is approaching its provisioned capacity, so they can order additional capacity (such as a LAG or another connection) before congestion occurs. Which approach is BEST?",
+    "options": [
+      "Wait for on-premises application teams to report slow performance, then investigate the Direct Connect connection manually.",
+      "Rely solely on the Direct Connect console's connection State column, checked manually once a week.",
+      "Enable AWS Config rules on the Direct Connect connection resource to detect high bandwidth usage.",
+      "Create CloudWatch alarms on Direct Connect connection metrics such as ConnectionBpsEgress and ConnectionBpsIngress, with thresholds set below the provisioned capacity."
+    ],
+    "correct": [3],
+    "explanation": "Direct Connect publishes <b>CloudWatch metrics</b> such as <b>ConnectionBpsEgress and ConnectionBpsIngress</b> for bandwidth utilization, alongside connection and BGP peer state; setting <b>alarms with thresholds below provisioned capacity</b> gives proactive notice to add capacity before congestion hits. Waiting for user complaints is reactive, not proactive. Manually checking the console's State column shows connection up/down status, not bandwidth trend, and is not automated. AWS Config tracks configuration changes to resources, not real-time bandwidth utilization metrics, so it is not the tool for this.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/directconnect/latest/UserGuide/monitoring-overview.html",
+    "id": "ansc01-0027"
+  },
+  {
+    "domain": "Network Management and Operation",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A team wants an automated alert the moment either tunnel of a Site-to-Site VPN connection goes down, rather than discovering it from a user complaint. Which CloudWatch configuration achieves this?",
+    "options": [
+      "Create a CloudWatch alarm on the VPN connection's TunnelState metric that triggers when the value drops below the UP threshold.",
+      "Create an AWS Config rule that checks the VPN connection's tags once per day.",
+      "Enable VPC Flow Logs on the customer gateway's network interface.",
+      "Rely on the Direct Connect Resiliency Toolkit's failover test to detect VPN tunnel outages."
+    ],
+    "correct": [0],
+    "explanation": "Site-to-Site VPN publishes a <b>TunnelState</b> CloudWatch metric (1 for UP, 0 for DOWN) per tunnel; an <b>alarm that fires when TunnelState drops below the UP threshold</b> gives near-real-time, automated notification of an outage. An AWS Config rule checking tags has nothing to do with tunnel operational state. VPC Flow Logs capture ENI-level IP traffic inside a VPC, not the health state of a VPN tunnel, and a customer gateway is an on-premises device, not a monitorable AWS ENI. The Direct Connect Resiliency Toolkit's failover test is a DX-specific, manually triggered verification, not a VPN monitoring capability.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/vpn/latest/s2svpn/monitoring-cloudwatch-vpn.html",
+    "id": "ansc01-0028"
+  },
+  {
+    "domain": "Network Management and Operation",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A security team wants to run a third-party intrusion detection appliance that inspects a copy of production traffic for a fleet of EC2 instances, without adding any component into the actual production traffic path and without installing an agent on each instance. Which capability BEST fits this need?",
+    "options": [
+      "AWS Network Firewall, inserted inline in every application subnet's route table.",
+      "VPC Traffic Mirroring, which copies traffic from each instance's elastic network interface to a mirror target such as another ENI or a Network Load Balancer fronting the IDS fleet.",
+      "VPC Flow Logs delivered to Amazon S3 for offline batch analysis.",
+      "A software agent installed on each EC2 instance that forwards a copy of its traffic to the IDS appliance."
+    ],
+    "correct": [1],
+    "explanation": "<b>Traffic Mirroring copies traffic directly from a source elastic network interface to a mirror target</b>, such as another ENI or a fleet behind a Network Load Balancer or Gateway Load Balancer, giving the IDS appliance an out-of-band copy of traffic with no agent required and with production traffic continuing on its original path unmodified. Network Firewall sits inline in the traffic path by design, the opposite of adding no component into the production path. Flow Logs record IP metadata, not full packet copies, and are unsuitable for deep packet inspection by an IDS appliance. Installing an agent directly contradicts the without-installing-an-agent requirement.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/vpc/latest/mirroring/what-is-traffic-mirroring.html",
+    "id": "ansc01-0029"
+  },
+  {
+    "domain": "Network Management and Operation",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A private virtual interface's BGP session repeatedly establishes and then drops (flaps) shortly after. The on-premises router configuration was recently changed to add MD5 authentication, but the corresponding key was not updated on the AWS side of the virtual interface. Which outcome BEST matches this situation, and how should the team confirm it?",
+    "options": [
+      "The virtual interface's data-plane traffic continues normally because BGP authentication failures never affect an already-established virtual interface.",
+      "The mismatch only affects public virtual interfaces, never private virtual interfaces, so this is not the root cause.",
+      "A BGP MD5 key mismatch commonly causes the BGP peering session to fail to establish or to flap; the team should check the virtual interface's BGP peer state and update the matching authentication key on the virtual interface configuration.",
+      "MD5 authentication key mismatches only cause a one-time failure and then automatically resolve themselves without any configuration change."
+    ],
+    "correct": [2],
+    "explanation": "A <b>BGP MD5 authentication key mismatch</b> between the on-premises router and the AWS side of a virtual interface is a common cause of a BGP session that fails to establish or that flaps; the fix is to check the <b>virtual interface's BGP peer state</b> through the console or CloudWatch and ensure the <b>authentication key matches on both sides</b>. Without an established BGP session routes are not exchanged, so the data plane is affected, not immune. MD5 authentication applies to private and transit virtual interfaces just as it can to public ones; it is not restricted to a single VIF type. A persistent configuration mismatch does not resolve itself without a corresponding configuration change.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/directconnect/latest/UserGuide/monitoring-overview.html",
+    "id": "ansc01-0030"
   }
 ]
