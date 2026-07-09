@@ -422,5 +422,332 @@
     "difficulty": "medium",
     "docUrl": "https://docs.aws.amazon.com/SchemaConversionTool/latest/userguide/CHAP_Welcome.html",
     "id": "deac01-0022"
+  },
+  {
+    "domain": "Data Store Management",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "An application needs a fully managed relational database for an OLTP web application with ACID transactions, complex multi-table joins, and up to a few TB of data. Which AWS service is the BEST fit?",
+    "options": [
+      "Amazon Aurora (or Amazon RDS), a managed relational database supporting ACID transactions and multi-table joins.",
+      "Amazon Redshift, a columnar data warehouse optimized for large-scale analytical aggregations.",
+      "Amazon S3, an object store with no native table joins or transactions.",
+      "Amazon DynamoDB, a key-value and document store best suited to single-item access patterns."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Amazon Aurora/RDS</b> is a managed relational engine built for OLTP: ACID transactions, foreign keys, and complex joins across normalized tables. Redshift is a columnar warehouse tuned for large analytical scans and aggregations, not transactional row-level updates. S3 stores objects with no query engine, joins, or transactions of its own. DynamoDB excels at single-item, key-based access patterns but is not designed for ad hoc multi-table relational joins.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html",
+    "id": "deac01-0023"
+  },
+  {
+    "domain": "Data Store Management",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A Redshift fact table with billions of rows is frequently joined to a much smaller dimension table on customer_id, and query plans show heavy network redistribution during the join. Which distribution style change BEST reduces this redistribution cost?",
+    "options": [
+      "EVEN distribution on the fact table, spreading rows round-robin regardless of join key.",
+      "KEY distribution on customer_id for the fact table, matched to ALL (or KEY on customer_id) distribution on the small dimension table, so matching rows co-locate on the same slice.",
+      "ALL distribution on the multi-billion-row fact table, copying it to every node.",
+      "No distribution style at all, leaving Redshift to choose automatically without regard to the join column."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>KEY distribution on the join column</b> (customer_id) co-locates matching rows from the fact and dimension tables on the same slice, eliminating the network shuffle the join would otherwise need; a small dimension table can also use <b>ALL</b> distribution so a full copy sits on every node. EVEN distribution ignores the join key and forces redistribution at query time. Using ALL distribution on a multi-billion-row fact table would copy that huge table to every node, wasting storage and load time. Leaving the style unset does not target the specific join pattern the team is optimizing for.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/redshift/latest/dg/c_choosing_dist_sort.html",
+    "id": "deac01-0024"
+  },
+  {
+    "domain": "Data Store Management",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A Redshift table storing years of sensor readings is queried almost exclusively with a WHERE clause filtering a narrow reading_date range. Which table design choice BEST lets Redshift skip blocks outside the requested range?",
+    "options": [
+      "Define reading_date as the distribution key instead of a sort key.",
+      "Leave the table completely unsorted so all blocks must be scanned.",
+      "Define reading_date as a (compound) sort key, so Redshift's zone maps let it skip blocks whose date range falls outside the filter.",
+      "Add a secondary index on reading_date, similar to a relational database B-tree index."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "A <b>sort key on reading_date</b> physically orders the data on disk, so Redshift's per-block zone maps record each block's min/max date and the query can skip blocks entirely outside the filtered range. A distribution key controls which slice a row lands on, not the on-disk ordering used for range pruning. An unsorted table forces a full scan since no block can be safely skipped. Redshift does not use traditional B-tree secondary indexes; sort keys and zone maps are the mechanism for range-based pruning.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/redshift/latest/dg/t_Sorting_data.html",
+    "id": "deac01-0025"
+  },
+  {
+    "domain": "Data Store Management",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A Redshift cluster normally runs steady reporting workloads, but every Monday morning a burst of extra concurrent queries causes queuing and slower response times. The team does not want to keep the cluster permanently oversized for a burst that happens one morning a week. Which Redshift feature BEST addresses this?",
+    "options": [
+      "Increase the cluster's WLM query timeout so slow queries are allowed to run longer.",
+      "Switch every table's distribution style to EVEN.",
+      "Enable Redshift Spectrum on every table in the cluster.",
+      "Enable concurrency scaling, which automatically adds transient extra cluster capacity during bursts of concurrent queries and removes it when the burst ends."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Concurrency scaling</b> automatically provisions additional transient clusters when concurrent query volume spikes, routes eligible queued queries to them, and removes that capacity once the burst subsides, all without permanently resizing the main cluster. Increasing the WLM timeout lets slow queries run longer but does not add capacity to handle more concurrent queries. Changing distribution style affects join and scan efficiency, not concurrency handling. Redshift Spectrum offloads scans to S3 but does not add compute capacity for a burst of concurrent internal queries.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/redshift/latest/dg/c_intro_concurrency_scaling.html",
+    "id": "deac01-0026"
+  },
+  {
+    "domain": "Data Store Management",
+    "tag": "Domain 2",
+    "type": "multi",
+    "stem": "A team is deciding between Amazon Redshift Serverless and a traditional provisioned Redshift cluster for a new, intermittently used analytics workload. Which TWO statements are correct? (Select TWO.)",
+    "options": [
+      "Redshift Serverless automatically provisions and scales compute capacity based on workload demand, and you pay for the compute used, which suits variable or intermittent workloads.",
+      "A provisioned Redshift cluster automatically pauses and resumes with no configuration whenever a query is not running.",
+      "Redshift Serverless requires the team to manually choose and manage node types and node counts.",
+      "A provisioned Redshift cluster requires the team to choose node type and node count up front, and capacity runs (and is billed) continuously unless the cluster is manually paused.",
+      "Redshift Serverless cannot query external data in Amazon S3 through Redshift Spectrum."
+    ],
+    "correct": [
+      0,
+      3
+    ],
+    "explanation": "<b>Redshift Serverless</b> scales compute automatically to match demand and bills for what is used, which fits variable or intermittent workloads well, while a <b>provisioned cluster</b> requires choosing node type and count up front and runs (and bills) continuously unless someone manually pauses it. A provisioned cluster does not auto-pause and resume on its own without configuration; Serverless is the option built around automatic capacity management. Serverless removes node-type/node-count management from the team, the opposite of what the option claims. Serverless still supports querying external S3 data through Spectrum, so that limitation is false.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/redshift/latest/mgmt/serverless-whatis.html",
+    "id": "deac01-0027"
+  },
+  {
+    "domain": "Data Store Management",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A team wants to run SQL queries directly against Parquet files in Amazon S3 from within Redshift, joining them with native Redshift tables, without first loading the S3 data into the cluster. Which Redshift capability supports this?",
+    "options": [
+      "Redshift Spectrum, which defines external tables over data in S3 and queries them directly, joinable with native Redshift tables.",
+      "The COPY command, which must first load all S3 data into local cluster storage before any query can run.",
+      "Redshift Serverless, which is a billing and scaling model rather than a way to query external S3 data.",
+      "AWS Glue crawlers, which only catalog schema and cannot execute SQL joins."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Redshift Spectrum</b> registers S3 data as external tables in the cluster's catalog and lets Redshift SQL query and join them with native tables directly, without a load step. COPY is the mechanism for loading external data into native tables, exactly what the team wants to avoid. Redshift Serverless is a capacity model, not a way to query external files; either serverless or provisioned Redshift can use Spectrum. Glue crawlers only populate table metadata; they cannot execute SQL joins themselves.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/redshift/latest/dg/c_redshift-spectrum.html",
+    "id": "deac01-0028"
+  },
+  {
+    "domain": "Data Store Management",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A DynamoDB table using a low-cardinality partition key such as status (with only three possible values) suffers from a small number of 'hot' partitions receiving most of the read and write traffic. Which change BEST spreads the load evenly?",
+    "options": [
+      "Add a global secondary index using the same status attribute as its partition key.",
+      "Redesign the partition key to a higher-cardinality attribute (or a composite key that adds a random or sharded suffix) so traffic distributes across many more partitions.",
+      "Switch the table's capacity mode from On-Demand to Provisioned with a fixed low throughput.",
+      "Enable DynamoDB Streams on the table."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "A <b>higher-cardinality partition key</b>, or adding a random/sharded suffix to a low-cardinality key, spreads items (and the traffic to them) across many more physical partitions instead of concentrating on a handful of 'hot' status values. A GSI reusing the same low-cardinality attribute as its own partition key would recreate the identical hot-partition problem in the index. Switching capacity modes changes how throughput is billed and provisioned, not how keys distribute traffic across partitions. DynamoDB Streams captures a change log for downstream consumers and does not affect partition-key distribution.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-partition-key-design.html",
+    "id": "deac01-0029"
+  },
+  {
+    "domain": "Data Store Management",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A DynamoDB table's primary key is (order_id partition key, item_id sort key), but a common access pattern must look up all orders for a given customer_id, an attribute that is not part of the primary key. Which approach avoids scanning the entire table for this access pattern?",
+    "options": [
+      "Run a Scan operation with a FilterExpression on customer_id across the whole table for every request.",
+      "Change the table's primary key to use item_id as the partition key instead of order_id.",
+      "Create a global secondary index (GSI) with customer_id as its partition key, and query the GSI directly.",
+      "Enable point-in-time recovery on the table."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "A <b>global secondary index with customer_id as its partition key</b> lets the application Query directly by customer_id with the same efficiency as querying the base table's primary key, avoiding a full-table scan. A Scan with a filter still reads every item in the table before filtering, which does not scale. Changing the base table's partition key to item_id does not add a customer_id access path and would break the existing order_id-based lookups. Point-in-time recovery is a backup and restore feature and has no effect on query access patterns.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GSI.html",
+    "id": "deac01-0030"
+  },
+  {
+    "domain": "Data Store Management",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A new DynamoDB table will support a mobile app with highly unpredictable traffic, including occasional viral spikes that are hard to forecast, and the team wants to avoid manually managing throughput or being throttled during a spike. Which capacity mode BEST fits?",
+    "options": [
+      "Provisioned capacity mode with a fixed read/write throughput sized for average traffic.",
+      "Provisioned capacity mode with auto scaling configured to react only after a scaling alarm breaches for several consecutive minutes.",
+      "Reserved capacity purchased a year in advance for a fixed throughput level.",
+      "On-Demand capacity mode, which scales instantly to accommodate traffic and bills per request with no capacity planning required."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>On-Demand capacity mode</b> scales instantly to match incoming traffic, including sudden unpredictable spikes, and bills per request rather than requiring pre-planned throughput. Fixed Provisioned throughput sized for average traffic throttles once a spike exceeds it. Provisioned auto scaling reacts to CloudWatch alarms with a delay of a few minutes, which can still throttle a sudden viral spike before capacity catches up. Reserved capacity is a one- or three-year commitment for predictable baseline throughput, the opposite of an unpredictable spiky workload.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/ProvisionedThroughput.html",
+    "id": "deac01-0031"
+  },
+  {
+    "domain": "Data Store Management",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A team wants to automatically trigger a Lambda function to update a search index every time an item is inserted, modified, or deleted in a DynamoDB table, without polling the table on a schedule. Which DynamoDB feature enables this?",
+    "options": [
+      "DynamoDB Streams, an ordered, near-real-time change log of item-level modifications that can invoke a Lambda function as a trigger.",
+      "A global secondary index, which only supports alternate query patterns on current data.",
+      "DynamoDB Accelerator (DAX), an in-memory cache for read requests.",
+      "Point-in-time recovery, which restores the table to a prior state."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>DynamoDB Streams</b> captures an ordered, near-real-time log of item-level insert, update, and delete events, and can be configured as a Lambda event source so changes trigger downstream processing automatically, no polling required. A GSI supports alternate query access patterns but does not capture or push a change history. DAX caches read requests for lower latency and has no relationship to reacting to write events. Point-in-time recovery restores past table states for disaster recovery and does not trigger anything on individual writes.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Streams.html",
+    "id": "deac01-0032"
+  },
+  {
+    "domain": "Data Store Management",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A company has log data whose future access pattern is unknown: some log files might be queried again within days, others might never be touched again. The team wants S3 to automatically move each object to the most cost-effective storage tier based on its actual access pattern, without writing custom lifecycle rules per object. Which S3 feature BEST fits?",
+    "options": [
+      "S3 Standard storage class only, since it has the lowest per-GB storage price.",
+      "S3 Intelligent-Tiering, which monitors access patterns and automatically moves objects between access tiers without operational overhead or retrieval fees for the frequent/infrequent tiers.",
+      "S3 Glacier Deep Archive, moving every object there immediately regardless of access pattern.",
+      "A single manually managed lifecycle rule that transitions all objects to Glacier after exactly 30 days regardless of access."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>S3 Intelligent-Tiering</b> watches each object's access pattern and automatically moves it between frequent-access and infrequent-access tiers (and optionally archive tiers) with no retrieval fees on those tiers, exactly suited to data whose access pattern is unpredictable. S3 Standard alone has the highest storage cost and does not adapt to infrequent access. Moving everything straight to Glacier Deep Archive adds retrieval delay and cost for objects that turn out to be accessed again soon. A single fixed 30-day rule to Glacier does not adapt per object and can incur early-deletion or retrieval charges for objects accessed sooner than expected.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/intelligent-tiering.html",
+    "id": "deac01-0033"
+  },
+  {
+    "domain": "Data Store Management",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A compliance policy requires that raw ingestion objects in an S3 bucket move to a cheaper storage class after 30 days and be permanently deleted after 365 days, without any custom code running on a schedule. Which S3 feature should the team configure?",
+    "options": [
+      "An AWS Lambda function invoked manually once a month to check object ages and move or delete them.",
+      "S3 Object Lock in compliance mode, which prevents any object from ever being deleted.",
+      "An S3 Lifecycle configuration with a transition rule at 30 days and an expiration rule at 365 days.",
+      "S3 Cross-Region Replication to a second bucket in a different Region."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "An <b>S3 Lifecycle configuration</b> lets you declare transition rules (for example, to a cheaper class at 30 days) and expiration rules (permanent deletion at 365 days) that S3 applies automatically with no custom scheduling code. A manually invoked Lambda function reintroduces the operational burden the team wants to avoid. Object Lock in compliance mode is designed to prevent deletion, the opposite of what is required here. Cross-Region Replication copies objects to another bucket/Region for durability or latency reasons and does not transition or expire objects on a schedule.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/lifecycle-transition-general-considerations.html",
+    "id": "deac01-0034"
+  },
+  {
+    "domain": "Data Store Management",
+    "tag": "Domain 2",
+    "type": "multi",
+    "stem": "A company wants Amazon Athena, Redshift Spectrum, and Amazon EMR to all share one consistent view of table definitions for data in Amazon S3, with fine-grained permissions layered on top. Which TWO statements about the AWS Glue Data Catalog and AWS Lake Formation are correct? (Select TWO.)",
+    "options": [
+      "Each of Athena, Redshift Spectrum, and EMR requires its own separate, independently maintained copy of the table metadata.",
+      "The AWS Glue Data Catalog is a central metadata repository that Athena, Redshift Spectrum, and EMR (via Spark/Hive) can all reference for the same table definitions.",
+      "AWS Lake Formation replaces the Glue Data Catalog entirely and stores metadata in a completely separate system.",
+      "Fine-grained (row-level, column-level, or tag-based) access control on Data Catalog tables cannot be layered on top of the Data Catalog by any AWS service.",
+      "AWS Lake Formation builds on top of the Glue Data Catalog to add fine-grained permissions, such as table, column, row, and LF-Tag-based access control, enforced across integrated query engines."
+    ],
+    "correct": [
+      1,
+      4
+    ],
+    "explanation": "The <b>Glue Data Catalog</b> is the shared metadata store that Athena, Redshift Spectrum, and EMR can all query against, avoiding duplicated table definitions, and <b>Lake Formation</b> layers fine-grained permissions, including LF-Tags and column/row-level access control, on top of that same catalog and enforces them across integrated engines. Requiring each engine to keep its own separate copy defeats the purpose of a shared catalog and is not how these services work. Lake Formation does not replace the Data Catalog or store metadata elsewhere; it governs access to the existing catalog. Fine-grained access control absolutely can be layered on top of the Data Catalog, that is Lake Formation's core purpose.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/lake-formation/latest/dg/how-it-works.html",
+    "id": "deac01-0035"
+  },
+  {
+    "domain": "Data Store Management",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "Multiple producer applications write Avro-encoded events to an MSK topic, and a schema change in one producer silently breaks a downstream consumer that assumed the old field layout. The team wants schema compatibility enforced and violations rejected before they reach the topic. Which AWS capability addresses this?",
+    "options": [
+      "Increase the MSK topic's partition count to isolate the incompatible producer.",
+      "Enable S3 Object Lock on the destination bucket that eventually stores the events.",
+      "Add a Glue crawler that re-infers the schema after every producer deployment.",
+      "AWS Glue Schema Registry, which stores schema versions and enforces compatibility rules (for example backward compatibility) so incompatible schema changes are rejected at write time."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "The <b>Glue Schema Registry</b> centrally stores schema versions for streaming data and enforces a configured compatibility mode (such as backward or forward compatibility), rejecting producer writes that would break that contract before consumers ever see the incompatible data. Adding partitions changes throughput distribution, not schema enforcement. Object Lock on a downstream bucket protects objects from deletion and has nothing to do with schema validation at write time. A Glue crawler only infers schema after the fact for cataloging; it does not gate producer writes against a compatibility contract.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/glue/latest/dg/what-is-glue-schema-registry.html",
+    "id": "deac01-0036"
+  },
+  {
+    "domain": "Data Store Management",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A retailer's central data team maintains a live, frequently updated Redshift dataset that three other business units, each running their own separate Redshift cluster, need to query with up-to-date results, without any team copying or re-loading the data with COPY jobs. Which Redshift capability BEST meets this need?",
+    "options": [
+      "Redshift data sharing, which grants live, read-only access to a dataset from another cluster (or account) without copying or moving the data.",
+      "A nightly UNLOAD to S3 followed by a COPY into each business unit's cluster.",
+      "Redshift Spectrum, pointed at a manual daily export of the dataset in S3.",
+      "Cross-Region snapshot copy of the producer cluster to each consumer cluster's Region."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Redshift data sharing</b> lets a producer cluster grant live, read-only access to specific databases, schemas, or tables to other clusters or accounts, so consumers always see current data with no copy or reload step. A nightly UNLOAD/COPY cycle duplicates data and introduces staleness between refreshes. Spectrum over a manual daily export still depends on someone re-running that export and is not live. Cross-Region snapshot copies duplicate an entire cluster's data for disaster recovery, not a live shared read-only view.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/redshift/latest/dg/c-redshift-data-sharing.html",
+    "id": "deac01-0037"
+  },
+  {
+    "domain": "Data Store Management",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A reporting dashboard runs heavy read-only analytical queries against the same Amazon Aurora instance that serves a production application's live transactions, and the reporting queries are starting to slow down the application. Which change offloads the reporting load with the LEAST disruption to the application?",
+    "options": [
+      "Add more application-side retry logic around slow queries.",
+      "Create an Aurora read replica and point the reporting dashboard at the replica instead of the primary writer instance.",
+      "Increase the primary instance's storage size.",
+      "Enable Multi-AZ standby only, without changing which instance serves reads."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "An <b>Aurora read replica</b> serves read-only queries from a separate replicated instance, so pointing the reporting dashboard at the replica moves that load off the primary writer with no changes needed to the application's write path. Adding retry logic only masks slow queries and does not reduce contention on the primary. Increasing storage size does not address compute or I/O contention from concurrent reporting queries. A Multi-AZ standby exists for failover and, unless explicitly used as a reader, does not offload read traffic from the primary.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReadRepl.html",
+    "id": "deac01-0038"
+  },
+  {
+    "domain": "Data Store Management",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A fleet of Lambda functions handling a traffic spike opens a large number of short-lived connections to an RDS database, and the database begins rejecting new connections because its maximum connection limit is exhausted. Which change addresses this without redesigning the Lambda functions' connection code?",
+    "options": [
+      "Increase the Lambda functions' reserved concurrency limit.",
+      "Switch the RDS instance from Multi-AZ to Single-AZ.",
+      "Place Amazon RDS Proxy in front of the database to pool and share a smaller number of physical database connections across the many Lambda invocations.",
+      "Enable DynamoDB Streams on an unrelated DynamoDB table."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>RDS Proxy</b> sits between the application and the database, pooling and multiplexing a large number of client connections (such as many concurrent Lambda invocations) over a much smaller number of actual database connections, which prevents connection exhaustion without changing application connection code. Raising Lambda's reserved concurrency would only increase the number of simultaneous invocations trying to connect, worsening the problem. Switching Multi-AZ to Single-AZ affects availability and failover, not the connection limit. DynamoDB Streams is unrelated to a relational database's connection handling.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-proxy.html",
+    "id": "deac01-0039"
   }
 ]
