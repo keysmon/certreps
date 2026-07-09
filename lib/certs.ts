@@ -15,6 +15,10 @@ import deac01Bank from "@/content/dea-c01/questions.json";
 import deac01Meta from "@/content/dea-c01/meta.json";
 import soac03Bank from "@/content/soa-c03/questions.json";
 import soac03Meta from "@/content/soa-c03/meta.json";
+import dopc02Bank from "@/content/dop-c02/questions.json";
+import dopc02Meta from "@/content/dop-c02/meta.json";
+import scsc03Bank from "@/content/scs-c03/questions.json";
+import scsc03Meta from "@/content/scs-c03/meta.json";
 
 export interface CertEntry {
   meta: CertMeta;
@@ -36,6 +40,8 @@ const REGISTRY: Record<string, CertEntry> = {
   "sap-c02": { meta: sapc02Meta satisfies CertMeta, bank: sapc02Bank as Question[] },
   "dea-c01": { meta: deac01Meta satisfies CertMeta, bank: deac01Bank as Question[] },
   "soa-c03": { meta: soac03Meta satisfies CertMeta, bank: soac03Bank as Question[] },
+  "dop-c02": { meta: dopc02Meta satisfies CertMeta, bank: dopc02Bank as Question[] },
+  "scs-c03": { meta: scsc03Meta satisfies CertMeta, bank: scsc03Bank as Question[] },
 };
 
 export function listCerts(): CertMeta[] {
