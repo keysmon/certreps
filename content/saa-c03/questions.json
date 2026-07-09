@@ -998,5 +998,254 @@
     "difficulty": "hard",
     "docUrl": "https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-target-groups.html",
     "id": "saac03-0052"
+  },
+  {
+    "domain": "Design Cost-Optimized Architectures",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A company runs a fleet of EC2 instances at a steady, predictable baseline utilization 24/7 for the next three years and wants to reduce compute cost compared to On-Demand pricing while keeping the flexibility to change instance family and Region over time. Which purchasing option BEST fits?",
+    "options": [
+      "A 3-year Compute Savings Plan, which offers a lower price than On-Demand in exchange for a commitment to a consistent amount of compute usage measured in dollars per hour, while allowing changes to instance family, size, OS, tenancy, and Region.",
+      "On-Demand Instances only, to preserve maximum flexibility with no commitment discount.",
+      "A Standard Reserved Instance tied to one specific instance family and Region for 3 years, with no ability to change family or Region.",
+      "Spot Instances, since the steady baseline workload can tolerate interruption at any time."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>A Compute Savings Plan commits to a consistent hourly spend rather than a specific instance configuration</b>, earning a lower rate than On-Demand while still letting the company change instance family, size, OS, tenancy, or Region as needs evolve, which fits both the cost goal and the flexibility requirement. Staying On-Demand forgoes the significant discount available for predictable, long-term usage. A Standard Reserved Instance can offer a similarly deep discount but locks in a specific instance family and Region for the term, which does not meet the stated need for flexibility to change either one. Spot Instances offer the deepest discount but can be interrupted with short notice, which is not appropriate for a steady baseline workload that must always be available.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/savingsplans/latest/userguide/what-is-savings-plans.html",
+    "id": "saac03-0053"
+  },
+  {
+    "domain": "Design Cost-Optimized Architectures",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A company runs a nightly batch data-processing job that can checkpoint progress and resume from the last checkpoint if interrupted, and the job is not time-critical to the minute. Which EC2 purchasing option minimizes cost for this workload?",
+    "options": [
+      "On-Demand Instances, to guarantee the job is never interrupted mid-run.",
+      "A 1-year Reserved Instance sized for the peak of the batch job, running 24/7 whether or not the job is active.",
+      "Spot Instances, which offer the largest discount off On-Demand pricing for interruptible, fault-tolerant workloads like a checkpointed batch job.",
+      "Dedicated Hosts, to guarantee physical isolation for the batch job."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Spot Instances offer the deepest discount off On-Demand pricing</b> and are the recommended fit for fault-tolerant, flexible workloads such as a batch job that checkpoints and can resume after an interruption. On-Demand guarantees no interruption but costs far more for a workload that can already tolerate one. A Reserved Instance running 24/7 to cover an occasional nightly job wastes money on idle time outside the job window. Dedicated Hosts provide physical server isolation for licensing or compliance reasons and cost more than On-Demand; they solve a different problem and are not a cost-optimization choice here.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-spot-instances.html",
+    "id": "saac03-0054"
+  },
+  {
+    "domain": "Design Cost-Optimized Architectures",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A company stores compliance logs in S3 that are accessed frequently for the first 30 days, rarely accessed for the next 60 days, and then must be retained for 7 years but almost never read after that. Which S3 configuration minimizes storage cost while meeting the retention requirement?",
+    "options": [
+      "Keep every object in S3 Standard for the full 7 years to guarantee millisecond retrieval at all times.",
+      "Configure an S3 Lifecycle policy that transitions objects to S3 Standard-IA after 30 days and to S3 Glacier Deep Archive after 90 days, retaining them there for the remainder of the 7-year requirement.",
+      "Delete the objects after 30 days to avoid any further storage cost.",
+      "Store the objects only in S3 One Zone-IA for the entire 7-year period for the lowest possible cost."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>A lifecycle policy that transitions objects to Standard-IA after the 30-day frequent-access window and then to Glacier Deep Archive after the 90-day infrequent-access window</b> matches storage cost to actual access pattern, using the cheapest tier appropriate at each stage while still meeting the 7-year retention need. Keeping everything in S3 Standard for 7 years pays for millisecond retrieval that the compliance logs do not need after the first 30 days, wasting money. Deleting the objects after 30 days violates the 7-year retention requirement. One Zone-IA is cheaper than Standard-IA but stores data in only one Availability Zone, which is a poor fit for compliance data that must be retained reliably for 7 years, and it still costs more than Glacier Deep Archive for data this rarely accessed.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lifecycle-mgmt.html",
+    "id": "saac03-0055"
+  },
+  {
+    "domain": "Design Cost-Optimized Architectures",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A company suspects that many of its EC2 instances are over-provisioned relative to actual CPU, memory, and network utilization, but has no easy way to identify which instances to downsize across hundreds of instances. Which service should the company use to get data-driven right-sizing recommendations?",
+    "options": [
+      "AWS Budgets, configured with a cost threshold alert for the EC2 service.",
+      "AWS Trusted Advisor's service quota checks.",
+      "Amazon CloudWatch billing alarms set on estimated charges.",
+      "AWS Compute Optimizer, which analyzes historical utilization metrics and recommends optimal instance types and sizes for existing resources."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>AWS Compute Optimizer analyzes CloudWatch utilization history for CPU, memory (with the CloudWatch agent installed), network, and other metrics</b> and generates specific right-sizing recommendations for EC2 instances, Auto Scaling groups, and other resources, exactly the data-driven guidance needed here. AWS Budgets alerts on spend thresholds but does not analyze utilization or recommend instance sizes. Trusted Advisor's service quota checks report on how close an account is to a service limit, unrelated to right-sizing. CloudWatch billing alarms only notify on estimated charges crossing a threshold; they provide no per-instance utilization analysis or sizing recommendation.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/compute-optimizer/latest/ug/what-is-compute-optimizer.html",
+    "id": "saac03-0056"
+  },
+  {
+    "domain": "Design Cost-Optimized Architectures",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A finance team wants to be notified automatically both when monthly AWS spend is forecasted to exceed a set amount and when spending patterns suddenly deviate from historical norms in an unexpected way, without building custom cost-monitoring scripts. Which combination of services meets this requirement?",
+    "options": [
+      "AWS Budgets for forecasted-spend threshold alerts, combined with AWS Cost Anomaly Detection for machine-learning-based alerts on unusual spending patterns.",
+      "AWS Trusted Advisor's fault tolerance checks alone.",
+      "Amazon GuardDuty, configured to monitor billing events for anomalies.",
+      "AWS Config rules that evaluate whether resources are tagged with a cost center."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>AWS Budgets can alert on actual or forecasted spend crossing a threshold, and AWS Cost Anomaly Detection uses machine learning to automatically flag spending patterns that deviate from historical norms</b>, together covering both threshold-based and anomaly-based cost alerting with no custom scripting. Trusted Advisor's fault tolerance checks assess resilience configuration, not cost. GuardDuty is a threat detection service for security findings; it does not monitor billing. AWS Config rules evaluate resource configuration compliance, such as whether a required tag is present, but do not alert on spend thresholds or anomalous spending patterns.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/cost-management/latest/userguide/what-is-costmanagement.html",
+    "id": "saac03-0057"
+  },
+  {
+    "domain": "Design Cost-Optimized Architectures",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A development and testing database is used sporadically throughout the day with long idle periods, and the team does not want to pay for a fixed-capacity instance that sits idle most of the time, while still wanting a fully managed, MySQL-compatible relational database that scales capacity automatically with actual demand. Which option BEST fits?",
+    "options": [
+      "A single large provisioned Aurora instance sized for peak load, running continuously.",
+      "An RDS Multi-AZ instance sized for peak load, running continuously in two Availability Zones.",
+      "Aurora Serverless v2, which scales database capacity up and down automatically based on load and bills for the capacity actually used.",
+      "A self-managed MySQL database on an EC2 instance that the team manually stops and starts every day."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Aurora Serverless v2 automatically scales compute capacity up and down in fine-grained increments based on actual load</b> and bills for capacity consumed, which fits a sporadically used dev/test database far better than paying for fixed peak capacity around the clock. A single large provisioned instance sized for peak load pays for that peak capacity even during long idle periods. An RDS Multi-AZ instance sized for peak load doubles that waste across two Availability Zones and adds cost that a dev/test workload does not need. A self-managed EC2 database that the team manually stops and starts removes the managed-service benefits of Aurora and adds operational burden and risk of forgetting to stop it.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2.html",
+    "id": "saac03-0058"
+  },
+  {
+    "domain": "Design Cost-Optimized Architectures",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A company processes an image-resizing task that runs for a few seconds whenever a file is uploaded to S3, with uploads happening a few dozen times per day at unpredictable times. Which compute option minimizes cost for this workload compared to running a dedicated EC2 instance 24/7?",
+    "options": [
+      "A single t3.micro EC2 instance running continuously, waiting to process uploads as they arrive.",
+      "An AWS Lambda function triggered directly by the S3 upload event, billed only for the milliseconds of execution time actually used.",
+      "An Auto Scaling group with a minimum and desired capacity of one instance running at all times.",
+      "A Reserved Instance sized for the busiest single day of uploads, running year-round."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>A Lambda function triggered directly by the S3 event</b> runs only when an upload actually occurs and bills only for the execution time used, which is far cheaper than paying for any EC2 instance to sit idle waiting for a few dozen short events per day. A continuously running t3.micro instance, even a small one, still incurs 24/7 charges for a workload that is active for only a few seconds at a time. An Auto Scaling group with a minimum of one running instance has the same always-on cost problem. A Reserved Instance sized for the busiest day and run year-round pays for peak capacity every hour of every day regardless of actual, sporadic usage.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/lambda/latest/dg/welcome.html",
+    "id": "saac03-0059"
+  },
+  {
+    "domain": "Design Cost-Optimized Architectures",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A general-purpose application volume needs 6,000 IOPS and 250 MiB/s throughput, which is within gp3's configurable baseline performance range. The team is currently provisioning io2 volumes for this workload. Which change reduces cost without reducing the performance the workload actually needs?",
+    "options": [
+      "Switch to sc1 Cold HDD volumes, which are cheaper per GB than either gp3 or io2.",
+      "Increase the io2 volume's provisioned IOPS well beyond 6,000 to build in headroom for future growth.",
+      "Switch to instance store volumes, which are included in the EC2 instance price at no additional charge.",
+      "Switch to gp3 volumes and provision the required 6,000 IOPS and 250 MiB/s directly, since gp3 supports independently configurable IOPS and throughput at a lower price than io2 for workloads within its range."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>gp3 lets IOPS and throughput be provisioned independently of volume size</b>, and for a workload whose needs fit within gp3's configurable range, gp3 costs less than io2 for the same performance, since io2 is priced at a premium for its higher maximum performance ceiling and additional durability options. sc1 Cold HDD is even cheaper but is designed for large, infrequently accessed sequential workloads and cannot deliver the random I/O performance a general-purpose application volume needs. Increasing io2 provisioned IOPS beyond what is needed raises cost without a current performance benefit and does not address the fact that gp3 already meets the requirement for less money. Instance store volumes are ephemeral and lose their data when the instance stops or is terminated, making them unsuitable for persistent application data regardless of cost.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/ebs/latest/userguide/ebs-volume-types.html",
+    "id": "saac03-0060"
+  },
+  {
+    "domain": "Design Cost-Optimized Architectures",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A company routes all of its private-subnet EC2 traffic to Amazon S3 through a NAT gateway, and the NAT gateway's per-GB data processing charge has become one of the largest line items on the monthly AWS bill. Which change reduces this cost with no loss of functionality?",
+    "options": [
+      "Add a gateway VPC endpoint for S3 and update the route table so S3 traffic goes over the endpoint instead of through the NAT gateway, avoiding the NAT gateway's per-GB data processing charge entirely for that traffic.",
+      "Upgrade to a larger NAT gateway instance size to increase throughput.",
+      "Add a second NAT gateway in the same Availability Zone to load-balance traffic between them.",
+      "Move all EC2 instances to public subnets so traffic no longer needs a NAT gateway."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>A gateway VPC endpoint for S3 routes S3 traffic over the AWS private network directly</b>, bypassing the NAT gateway entirely for that traffic and its per-GB data processing charge, at no hourly or per-GB cost for the gateway endpoint itself. NAT gateways do not have a selectable instance size or throughput tier the way EC2 does, so there is no such upgrade option. Adding a second NAT gateway in the same zone does not reduce the per-GB charge; it only adds another NAT gateway's hourly charge on top. Moving instances to public subnets removes the NAT gateway cost but exposes the instances directly to the internet, which trades away security for a cost saving the endpoint achieves without that tradeoff.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/vpc/latest/privatelink/vpc-endpoints-s3.html",
+    "id": "saac03-0061"
+  },
+  {
+    "domain": "Design Cost-Optimized Architectures",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A company runs workloads for five internal business units in a single AWS account and wants to break down the monthly bill by business unit in Cost Explorer, so each unit can be charged back for its own usage. Which practice enables this breakdown?",
+    "options": [
+      "Create a separate AWS Organizations management account for each business unit.",
+      "Enable AWS Shield Advanced, which includes per-team cost reporting.",
+      "Apply a consistent cost allocation tag, such as BusinessUnit, to every resource, and activate that tag in the Billing and Cost Management console so Cost Explorer can filter and group costs by it.",
+      "Ask each business unit to submit a monthly spreadsheet estimating their own usage."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Applying a consistent cost allocation tag to every resource and activating it in the Billing and Cost Management console</b> lets Cost Explorer filter and group cost and usage data by that tag, giving an accurate, automated per-business-unit breakdown. Creating a separate management account per business unit is a much larger organizational restructuring, not a straightforward tagging solution, and management accounts are not typically created per business unit. Shield Advanced is a DDoS protection service and has no cost-reporting feature. Manual spreadsheet estimates are error-prone and not based on actual metered usage, unlike tag-based cost allocation.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/cur/latest/userguide/cost-alloc-tags.html",
+    "id": "saac03-0062"
+  },
+  {
+    "domain": "Design Cost-Optimized Architectures",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A company stores objects with unpredictable and changing access patterns; some objects are accessed daily for months and then suddenly go untouched for a long period, and the company cannot predict in advance which objects will follow which pattern. Which S3 storage class automatically moves objects between access tiers based on observed usage, without the company writing lifecycle rules based on a fixed number of days?",
+    "options": [
+      "S3 Standard, since predicting access patterns is unnecessary if data always stays in the same tier.",
+      "S3 Intelligent-Tiering, which monitors access patterns and automatically moves objects between frequent-access and infrequent-access tiers, and optional archive tiers, with no retrieval fee for the standard tiers.",
+      "S3 One Zone-IA, which is optimized for predictable, infrequently accessed data in a single Availability Zone.",
+      "S3 Glacier Flexible Retrieval, which is optimized for archival data accessed a few times per year."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>S3 Intelligent-Tiering monitors each object's access pattern and automatically moves it between the frequent-access and infrequent-access tiers</b>, and into optional archive tiers for long periods of no access, with no retrieval fee for the standard access tiers, which fits data whose access pattern cannot be predicted in advance. S3 Standard alone never moves data to a cheaper tier regardless of how infrequently it is accessed, which wastes money on data that goes cold. S3 One Zone-IA is priced for infrequent access but assumes the company already knows the object is infrequently accessed and does not automatically retier if access patterns change, and it also carries single-AZ durability risk. S3 Glacier Flexible Retrieval is built for archival data with retrieval delays measured in minutes to hours, not for data that might suddenly become frequently accessed again.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/intelligent-tiering.html",
+    "id": "saac03-0063"
+  },
+  {
+    "domain": "Design Cost-Optimized Architectures",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A company has committed to a 1-year Standard Reserved Instance for a specific EC2 instance family in a specific Region, but six months into the term the team needs to move that workload to a different instance family in a different Region to take advantage of a new processor generation. Which statement about this situation is correct?",
+    "options": [
+      "The Standard Reserved Instance can be freely reassigned to any instance family or Region at any time with no restriction.",
+      "AWS automatically converts every Standard Reserved Instance into a Compute Savings Plan the moment the underlying instance stops running.",
+      "The workload cannot be moved under any circumstance until the Reserved Instance term expires.",
+      "The Standard Reserved Instance's discount is tied to the specific instance family, Region, and other attributes it was purchased for, so moving to a different family and Region means the remaining commitment no longer matches actual usage; a Compute Savings Plan would have allowed that flexibility instead, since it applies its discount to any instance family, size, OS, tenancy, or Region."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>A Standard Reserved Instance's discount attributes are fixed to the instance family, Region, tenancy, and platform it was purchased for</b>, with only limited size flexibility within the same family in some cases, so moving the workload to a different family and Region leaves the remaining RI commitment unmatched to actual usage. A Compute Savings Plan, by contrast, applies its discount to usage regardless of instance family, size, OS, tenancy, or Region, which is exactly the flexibility this scenario needed from the start. Standard Reserved Instances are not automatically converted into Savings Plans; those are separate purchase types. The workload can technically still run on different infrastructure at any time, it simply would not benefit from the original RI's discount, so the extreme claim that it cannot be moved at all is false, as is the claim that a Standard RI has no restriction on family or Region.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ri-modifying.html",
+    "id": "saac03-0064"
+  },
+  {
+    "domain": "Design Cost-Optimized Architectures",
+    "tag": "Domain 4",
+    "type": "multi",
+    "stem": "A cost review of an AWS account finds several unattached EBS volumes left over from terminated instances, multiple Elastic IP addresses not associated with any running instance, and EC2 instances running well below their provisioned CPU capacity. Which TWO actions reduce ongoing cost from these findings? (Select TWO.)",
+    "options": [
+      "Release Elastic IP addresses that are not associated with a running instance, since AWS charges for idle Elastic IPs.",
+      "Leave unattached EBS volumes in place indefinitely in case an old instance needs to be recreated.",
+      "Use AWS Compute Optimizer's recommendations to right-size or delete the underutilized instances and unattached volumes identified in the review.",
+      "Increase the provisioned IOPS on every unattached EBS volume to improve its performance.",
+      "Convert all Elastic IP addresses to additional NAT gateways regardless of whether they are in use."
+    ],
+    "correct": [
+      0,
+      2
+    ],
+    "explanation": "<b>Releasing unassociated Elastic IP addresses stops the ongoing idle-IP charge</b>, and <b>using Compute Optimizer's recommendations to right-size underutilized instances and to identify and delete unattached volumes that are no longer needed</b> both directly cut ongoing cost from the findings in the review. Leaving unattached volumes in place indefinitely continues to accrue storage charges for data that may never be needed again; a snapshot can preserve the data at far lower cost if it might be needed later. Increasing provisioned IOPS on volumes nobody is using adds cost with no benefit. Converting Elastic IPs into additional NAT gateways adds new hourly and data-processing charges rather than removing the idle-IP cost the review flagged.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/compute-optimizer/latest/ug/what-is-compute-optimizer.html",
+    "id": "saac03-0065"
   }
 ]
