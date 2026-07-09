@@ -53,42 +53,44 @@ Converse directly and does not use Agents, screen both directions with one guard
 **ApplyGuardrail** API on the raw user input before retrieval, and pass the same guardrail in
 guardrailConfig so the model output is evaluated too.
 
-## Bedrock Agents
+## Amazon Bedrock AgentCore
 
-An **action group** is how an agent takes an action, and you pick its definition by complexity. For a
-few simple operations with scalar parameters, use **function definitions** (a function schema listing
-each function's name, description, and parameters) - least authoring overhead, no REST spec to
-maintain. For a deeply nested request body (line items, addresses, payment details, required vs
-optional fields), use an **OpenAPI schema** that models the structure, data types, and validation
-rules, which a flat function schema cannot express.
+The original Amazon Bedrock Agents is now **Bedrock Agents Classic** and is closed to new customers as
+of July 30, 2026; **Amazon Bedrock AgentCore** is the current path for building and running agents. It
+is a set of modular services that work with any framework (Strands, LangGraph, CrewAI) and any model,
+so the exam frames agent scenarios in AgentCore terms.
 
-An action group needs an executor. Normally a **Lambda** runs the action, but when the target system
-is reachable only from an on-prem network that Lambda cannot reach, configure the action group to
-**return control** to the caller: the agent hands back the chosen function name and parameters and the
-existing client application performs the call, with no new connectivity and the least re-architecture.
-To make a retryable action safe (for example a payment Lambda), have it accept an **idempotency key**
-and use a conditional write so a repeated key is processed only once.
+**AgentCore Runtime** is a secure, serverless host for agents and tools. Each user conversation runs as
+a separate **runtime session in its own isolated microVM** (isolated CPU, memory, and filesystem), which
+is the fix for a multi-tenant assistant whose context bleeds across users - give every user or
+conversation a distinct session rather than sharing one. Runtime is framework- and model-agnostic,
+supports runs up to 8 hours, and lets agents talk to other agents and tools over **Model Context
+Protocol (MCP)** or **agent-to-agent (A2A)**; a multi-agent design (an orchestrator routing to billing,
+returns, and shipping specialists) is built on Runtime plus A2A, not a single named feature.
 
-To answer questions grounded in company documents and cite passages, **associate a Knowledge Base**
-with the agent; it adds managed retrieval and citations with no custom retrieval service and is the
-least-effort way to add Q&A to an agent that already has action groups. An agent that must both act
-and answer needs both an action group (Lambda or return of control) and an associated Knowledge Base.
-For ad hoc numeric analysis or charts from uploaded files, enable **code interpretation** so the agent
-writes and runs code in a secure managed sandbox instead of doing arithmetic in text.
+**AgentCore Gateway** turns your existing REST APIs, Lambda functions, and services into **MCP tools**
+for agents with little code, and can front other agents and MCP servers behind one secure, authenticated
+endpoint. Expose only the tools an agent actually needs: least functionality means not wrapping
+high-impact operations (delete, refund) as tools at all. **Policy in AgentCore** enforces this
+deterministically - it intercepts every tool call at the Gateway boundary and evaluates it against rules
+written in **Cedar** (or natural language), so only the required read-only tools are allowed regardless
+of how the agent is prompted.
 
-Session state controls what data crosses turns. A **session attribute** is passed to the action-group
-Lambda across turns but is **not inserted into the model prompt** - use it for a value like an
-authenticated account ID that the Lambda needs to scope queries but that must not influence
-generation. A **promptSessionAttribute**, by contrast, is appended to the prompt and would expose the
-value to the model, so it is the wrong choice for that requirement.
+**AgentCore Memory** removes the need to hand-manage conversation state. **Short-term memory** keeps
+turn-by-turn context within a session, so a user need not repeat the device model or symptoms already
+given; **long-term memory** extracts and persists key facts and preferences across separate sessions for
+personalization days later. A larger context window does not carry data between sessions.
 
-**Agent memory** provides recall the developer does not have to hand-manage. Within a session, memory
-and session state let a multi-turn assistant remember details the user already gave (device model,
-symptoms) without re-sending history. Across separate conversations days apart, enabling memory stores
-a summary of each session under a memory identifier so a later session builds on prior ones; a larger
-context window does not carry data between sessions. To coordinate several specialists, use
-**multi-agent collaboration**: a supervisor agent routes each request to collaborator agents (billing,
-returns, shipping) and combines their results.
+**AgentCore Identity** gives each agent its own identity and integrates with your existing IdP (Amazon
+Cognito, Okta, Microsoft Entra ID), so end users reach only the agents they are authorized for and
+agents authenticate outbound to third-party services (Slack, GitHub) on a user's behalf or autonomously.
+The built-in **Code Interpreter** and **Browser** tools give agents a sandbox to run code or drive a
+real browser.
+
+**AgentCore Observability** is how you debug a misbehaving agent: it emits **OpenTelemetry** traces to
+Amazon CloudWatch and visualizes each step of the execution path - the model's reasoning, the tools it
+invoked, and each step's inputs and outputs - so you can pinpoint where orchestration went wrong.
+CloudTrail records API management activity, not this intermediate detail.
 
 ## Streaming responses to clients
 

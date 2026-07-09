@@ -562,20 +562,20 @@
     "domain": "Implementation & Integration",
     "tag": "Domain 2",
     "type": "single",
-    "stem": "A Bedrock Agent powers a multi-turn troubleshooting assistant. Across turns in the same conversation it must remember details the user already gave (device model, symptoms) without the developer manually re-sending that history on every request. Which native Bedrock Agents capability supports this?",
+    "stem": "A troubleshooting assistant is built on Amazon Bedrock AgentCore and runs multi-turn conversations. Across turns in the same conversation it must remember details the user already gave (device model, symptoms) without the developer re-sending that history on every request. Which AgentCore capability supports this?",
     "options": [
       "Provisioned Throughput for the underlying foundation model",
-      "Agent memory and session state, which retain context across turns within a session",
-      "A Bedrock Guardrail attached to the agent",
-      "Model invocation logging to Amazon CloudWatch"
+      "AgentCore Memory short-term memory, which retains turn-by-turn context within a session",
+      "An Amazon Bedrock Guardrail attached to the agent",
+      "AgentCore Observability tracing to Amazon CloudWatch"
     ],
     "correct": [
       1
     ],
-    "explanation": "<b>Agent memory and session state</b> let the agent carry forward earlier turn details automatically within a session. Provisioned Throughput reserves capacity but stores no conversation context. Guardrails enforce content policy. CloudWatch invocation logging records requests for observability, not for feeding context back into the conversation.",
+    "explanation": "<b>AgentCore Memory short-term memory</b> captures turn-by-turn interactions within a single session, so the agent carries forward earlier details automatically without the developer re-sending history. <b>Provisioned Throughput</b> reserves model capacity but stores no conversation context. A <b>Guardrail</b> enforces content policy, not recall. <b>AgentCore Observability</b> traces steps for debugging and monitoring; it records activity rather than feeding prior context back into the conversation.",
     "id": "aipc01-0030",
     "difficulty": "easy",
-    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/agents-memory.html"
+    "docUrl": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/memory.html"
   },
   {
     "domain": "Implementation & Integration",
@@ -1736,19 +1736,19 @@
     "domain": "Implementation & Integration",
     "tag": "Domain 2",
     "type": "single",
-    "stem": "An enterprise wants one Bedrock Agent to coordinate several specialized agents (a billing agent, a returns agent, and a shipping agent), routing each user request to the right specialist and combining their results. Which Amazon Bedrock Agents capability supports this design?",
+    "stem": "An enterprise wants several specialized agents (a billing agent, a returns agent, and a shipping agent) to work together, with an orchestrator agent routing each user request to the right specialist and combining their results. Which Amazon Bedrock AgentCore approach supports this multi-agent design?",
     "options": [
-      "Multi-agent collaboration with a supervisor agent that delegates to collaborator agents.",
-      "A single agent with three separate knowledge bases attached.",
-      "Provisioned Throughput assigned to each action group.",
-      "Three unrelated agents invoked by the client with no coordination."
+      "Host the agents on AgentCore Runtime and have them coordinate through the agent-to-agent (A2A) protocol, with an orchestrator agent routing requests to the specialists",
+      "Give a single agent three separate memory stores",
+      "Assign Provisioned Throughput to each specialist agent",
+      "Deploy three unrelated agents that the client calls independently with no coordination protocol"
     ],
     "correct": [
       0
     ],
-    "explanation": "<b>Multi-agent collaboration</b> lets a supervisor agent route each request to specialized collaborator agents and combine their results. Multiple knowledge bases, Provisioned Throughput, and uncoordinated agents do not provide this orchestration.",
+    "explanation": "<b>AgentCore Runtime</b> hosts multi-agent workloads and lets agents communicate through the <b>agent-to-agent (A2A) protocol</b> (or MCP), so an orchestrator agent can route each request to the right specialist and combine their results. <b>Three memory stores</b> add recall to one agent but no inter-agent coordination. <b>Provisioned Throughput</b> is a Bedrock model-serving mode, not an orchestration mechanism. <b>Uncoordinated agents</b> with no shared protocol cannot route or combine work, which is exactly the gap A2A closes.",
     "difficulty": "easy",
-    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/agents-multi-agent-collaboration.html",
+    "docUrl": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-a2a.html",
     "id": "aipc01-0090"
   },
   {
@@ -2117,18 +2117,18 @@
     "tag": "Domain 3",
     "type": "single",
     "difficulty": "medium",
-    "stem": "A multi-tenant chatbot built on Amazon Bedrock Agents serves thousands of end users. During testing, one user's conversation context occasionally appears in another user's replies. Which change BEST prevents this cross-user leakage?",
+    "stem": "A multi-tenant assistant built on Amazon Bedrock AgentCore serves thousands of end users. During testing, one user's conversation context occasionally appears in another user's replies. Which change BEST prevents this cross-user leakage?",
     "options": [
-      "Increase the agent's idle session timeout so sessions persist longer.",
-      "Invoke the agent with a unique sessionId per end user (or per conversation) so each user's session state is isolated.",
-      "Lower the model temperature to make responses more deterministic.",
-      "Share a single sessionId across all users to simplify session management."
+      "Increase the runtime session idle timeout so sessions persist longer",
+      "Run each end user's conversation as its own AgentCore Runtime session with a distinct session identifier, so each session executes in a dedicated, isolated microVM",
+      "Lower the model temperature to make responses more deterministic",
+      "Reuse one shared runtime session across all users to simplify session management"
     ],
     "correct": [
       1
     ],
-    "explanation": "Bedrock Agents key conversational state to the <b>sessionId</b> passed to InvokeAgent; using a <b>unique sessionId per user or conversation</b> keeps each user's context isolated. A <b>longer session timeout</b> makes bleed-over worse. <b>Temperature</b> affects randomness, not session boundaries. <b>Sharing one sessionId</b> across users is the root cause of the leakage, not a fix.",
-    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/agents.html",
+    "explanation": "AgentCore Runtime gives <b>each session a dedicated microVM with isolated CPU, memory, and filesystem</b>, so invoking the agent with a <b>distinct session identifier per user or conversation</b> keeps each user's state fully separated and prevents cross-session contamination. A <b>longer idle timeout</b> makes bleed-over more likely, not less. <b>Temperature</b> controls randomness, not session boundaries. <b>Sharing one session</b> across users is the root cause of the leakage, not a fix.",
+    "docUrl": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-sessions.html",
     "id": "aipc01-0110"
   },
   {
@@ -2155,18 +2155,18 @@
     "tag": "Domain 3",
     "type": "single",
     "difficulty": "hard",
-    "stem": "A Bedrock agent's action group currently exposes every operation of an internal administration API, including delete and refund functions, even though the assistant only needs two read-only lookups. Applying the principle of least functionality to reduce excessive-agency risk, what is the BEST remediation?",
+    "stem": "An Amazon Bedrock AgentCore agent reaches an internal administration API through an AgentCore Gateway that currently exposes every operation as a tool, including delete and refund, even though the assistant only needs two read-only lookups. Applying the principle of least functionality to reduce excessive-agency risk, what is the BEST remediation?",
     "options": [
-      "Keep all operations available but add a system-prompt instruction telling the agent to use only the two lookups.",
-      "Keep all operations available but rely on CloudTrail to detect any misuse afterward.",
-      "Redefine the action group so it exposes only the two required read-only functions, removing the delete, refund, and other unneeded operations from what the agent can call.",
-      "Keep all operations available but require user confirmation before every single call."
+      "Keep every operation exposed as a tool but add a system-prompt instruction telling the agent to use only the two lookups",
+      "Keep every operation exposed but rely on AgentCore Observability to detect misuse afterward",
+      "Configure the Gateway to expose only the two required read-only tools, enforced with an AgentCore Policy that denies the rest, so the delete and refund operations are never available for the agent to call",
+      "Keep every operation exposed but require human confirmation before every single tool call"
     ],
     "correct": [
       2
     ],
-    "explanation": "The root cause is <b>excessive functionality</b>: the agent can call high-impact operations it never needs. <b>Removing those functions from the action group</b> so only the two required read-only calls are exposed eliminates the risk at its source. A <b>system-prompt instruction</b> is not an enforced control and can be overridden by injection. <b>CloudTrail</b> is detective, not preventive. <b>Confirming every call</b> addresses autonomy, not the presence of dangerous tools, and degrades usability without closing the gap.",
-    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/agents-action-create.html",
+    "explanation": "The root cause is <b>excessive functionality</b>: the agent can invoke high-impact tools it never needs. <b>Scoping the Gateway to expose only the two read-only tools</b>, and denying the rest with an <b>AgentCore Policy</b> that is evaluated on every tool call at the Gateway boundary, removes the dangerous operations at the source. A <b>system-prompt instruction</b> is not an enforced control and can be overridden by prompt injection. <b>Observability</b> is detective, not preventive. <b>Confirming every call</b> addresses excessive autonomy, not the presence of dangerous tools, and degrades usability without closing the gap.",
+    "docUrl": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/gateway-fine-grained-access-control.html",
     "id": "aipc01-0112"
   },
   {
@@ -2412,18 +2412,18 @@
     "tag": "Domain 5",
     "type": "single",
     "difficulty": "easy",
-    "stem": "An Amazon Bedrock agent intermittently returns an unhelpful final answer, and the developer needs to see, step by step, how the agent reasoned, which action group or knowledge base it invoked, and what each returned, in order to find where the orchestration went wrong. What should the developer use to diagnose this?",
+    "stem": "An Amazon Bedrock AgentCore agent intermittently returns an unhelpful final answer. The developer needs to see, step by step, how the agent reasoned, which tools it invoked, and what each returned, to find where the orchestration went wrong. What should the developer use to diagnose this?",
     "options": [
-      "Increase the agent's temperature so that it produces a more detailed final answer that reveals its internal reasoning.",
-      "Read AWS CloudTrail management events, which record the intermediate reasoning and tool outputs of each agent step.",
-      "Enable and inspect the agent's trace, which exposes the model's step-by-step reasoning, the action groups and knowledge bases it invoked, and their inputs and outputs for the session.",
-      "Re-create the agent with a larger foundation model, which removes the need to inspect intermediate steps."
+      "Increase the agent's temperature so it produces a more detailed final answer that reveals its internal reasoning",
+      "Read AWS CloudTrail management events, which record the intermediate reasoning and tool outputs of each agent step",
+      "Enable AgentCore Observability and inspect the traces, which visualize each step of the agent's execution path, including the model's reasoning, the tools it invoked, and the inputs and outputs of each step",
+      "Re-create the agent with a larger foundation model, which removes the need to inspect intermediate steps"
     ],
     "correct": [
       2
     ],
-    "explanation": "The Amazon Bedrock Agents <b>trace</b> exposes the agent's step-by-step orchestration, including the model's reasoning, which action groups and knowledge bases were invoked, and the inputs and outputs of each step, which is exactly what you need to pinpoint where orchestration failed. Raising temperature changes randomness, not observability. CloudTrail records API management activity, not the intermediate reasoning or tool outputs of a step. Swapping in a larger model may change behavior but does not reveal why the current agent misbehaves.",
-    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/agents-test.html",
+    "explanation": "<b>AgentCore Observability</b> emits OpenTelemetry traces to Amazon CloudWatch and provides step-by-step visualizations of the agent's execution path, including the model's reasoning, the tools it invoked, and each step's inputs and outputs, which is exactly what pinpoints where orchestration failed. Raising <b>temperature</b> changes randomness, not visibility. <b>CloudTrail</b> records API management activity, not an agent's intermediate reasoning or tool outputs. Swapping in a <b>larger model</b> may change behavior but does not reveal why the current agent misbehaves.",
+    "docUrl": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/observability.html",
     "id": "aipc01-0125"
   },
   {
