@@ -1,0 +1,40 @@
+{
+  "certId": "sap-c02",
+  "idPrefix": "sapc02",
+  "vendor": "AWS",
+  "title": "AWS Certified Solutions Architect - Professional",
+  "examCode": "SAP-C02",
+  "level": "Professional",
+  "mockQuestionCount": 65,
+  "mockMinutes": 156,
+  "passLinePct": 75,
+  "verified": "Q3 2026",
+  "seoTitle": "Free SAP-C02 Practice Exam - AWS Certified Solutions Architect Professional",
+  "seoDescription": "Free full-length SAP-C02 practice exam with {n} original scenario questions, instant explanations, and a per-domain readiness read. No signup.",
+  "domains": [
+    {
+      "name": "Design Solutions for Organizational Complexity",
+      "tag": "Domain 1",
+      "weightPct": 26,
+      "mockCount": 17
+    },
+    {
+      "name": "Design for New Solutions",
+      "tag": "Domain 2",
+      "weightPct": 29,
+      "mockCount": 19
+    },
+    {
+      "name": "Continuous Improvement for Existing Solutions",
+      "tag": "Domain 3",
+      "weightPct": 25,
+      "mockCount": 16
+    },
+    {
+      "name": "Accelerate Workload Migration and Modernization",
+      "tag": "Domain 4",
+      "weightPct": 20,
+      "mockCount": 13
+    }
+  ]
+}

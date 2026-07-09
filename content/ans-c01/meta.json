@@ -1,0 +1,20 @@
+{
+  "certId": "ans-c01",
+  "idPrefix": "ansc01",
+  "vendor": "AWS",
+  "title": "AWS Certified Advanced Networking - Specialty",
+  "examCode": "ANS-C01",
+  "level": "Specialty",
+  "mockQuestionCount": 40,
+  "mockMinutes": 105,
+  "passLinePct": 70,
+  "verified": "Q3 2026",
+  "seoTitle": "Free ANS-C01 Practice Exam - AWS Certified Advanced Networking Specialty",
+  "seoDescription": "Free full-length ANS-C01 practice exam with {n} original scenario questions, instant explanations, and a per-domain readiness read. No signup.",
+  "domains": [
+    { "name": "Network Design", "tag": "Domain 1", "weightPct": 30, "mockCount": 12 },
+    { "name": "Network Implementation", "tag": "Domain 2", "weightPct": 26, "mockCount": 10 },
+    { "name": "Network Management and Operation", "tag": "Domain 3", "weightPct": 20, "mockCount": 8 },
+    { "name": "Network Security, Compliance, and Governance", "tag": "Domain 4", "weightPct": 24, "mockCount": 10 }
+  ]
+}

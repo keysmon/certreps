@@ -3,6 +3,12 @@ import aipc01Bank from "@/content/aip-c01/questions.json";
 import aipc01Meta from "@/content/aip-c01/meta.json";
 import mlac01Bank from "@/content/mla-c01/questions.json";
 import mlac01Meta from "@/content/mla-c01/meta.json";
+import saac03Bank from "@/content/saa-c03/questions.json";
+import saac03Meta from "@/content/saa-c03/meta.json";
+import clfc02Bank from "@/content/clf-c02/questions.json";
+import clfc02Meta from "@/content/clf-c02/meta.json";
+import dvac02Bank from "@/content/dva-c02/questions.json";
+import dvac02Meta from "@/content/dva-c02/meta.json";
 
 export interface CertEntry {
   meta: CertMeta;
@@ -18,6 +24,9 @@ export interface CertEntry {
 const REGISTRY: Record<string, CertEntry> = {
   "aip-c01": { meta: aipc01Meta satisfies CertMeta, bank: aipc01Bank as Question[] },
   "mla-c01": { meta: mlac01Meta satisfies CertMeta, bank: mlac01Bank as Question[] },
+  "saa-c03": { meta: saac03Meta satisfies CertMeta, bank: saac03Bank as Question[] },
+  "clf-c02": { meta: clfc02Meta satisfies CertMeta, bank: clfc02Bank as Question[] },
+  "dva-c02": { meta: dvac02Meta satisfies CertMeta, bank: dvac02Bank as Question[] },
 };
 
 export function listCerts(): CertMeta[] {

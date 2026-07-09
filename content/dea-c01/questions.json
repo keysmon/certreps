@@ -1,0 +1,1251 @@
+[
+  {
+    "domain": "Data Ingestion and Transformation",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A company lands raw CSV files from several source systems into a single Amazon S3 bucket and wants the schema and Hive-style partitions in the keys detected automatically so the data becomes queryable in Amazon Athena without manual DDL. Which AWS Glue capability should the team use?",
+    "options": [
+      "A Glue crawler, which classifies the files, infers schema and partitions, and writes table definitions to the AWS Glue Data Catalog.",
+      "A Glue DataBrew recipe job, which applies a saved visual cleaning recipe to the data.",
+      "A Glue Data Quality ruleset, which evaluates DQDL rules against the data.",
+      "A Glue Studio visual ETL job with a fixed target schema defined by the developer."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>A Glue crawler</b> connects to the data store, infers schema and Hive-style partitions from the S3 key structure, and writes or updates table definitions in the <b>Data Catalog</b> so Athena can query them without hand-written DDL. DataBrew applies cleaning transforms but does not discover schema for the Data Catalog. A Data Quality ruleset validates data against rules and does not create tables. A Glue Studio ETL job transforms data according to a schema the developer already defines; it does not infer an unknown schema.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/glue/latest/dg/add-crawler.html",
+    "id": "deac01-0001"
+  },
+  {
+    "domain": "Data Ingestion and Transformation",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A retailer streams several thousand clickstream events per second and wants them buffered and delivered into Amazon S3 as Parquet files, with the least possible operational overhead and no servers to manage. Which service BEST meets this need?",
+    "options": [
+      "Amazon SQS standard queues polled continuously by a fleet of Amazon EC2 consumers.",
+      "Amazon Data Firehose, which buffers incoming records and delivers them to Amazon S3 with optional Parquet conversion, fully managed.",
+      "AWS Database Migration Service configured for full load and change data capture.",
+      "An Amazon EMR cluster running a custom Spark Structured Streaming job around the clock."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Amazon Data Firehose</b> is a fully managed delivery service: it buffers streaming records, can convert them to Parquet or ORC on the way, and writes to S3 with no servers or clusters to operate. SQS with a custom EC2 consumer fleet requires writing and operating the polling and conversion logic yourself. DMS replicates database changes; it is not a clickstream buffering service. A standing EMR cluster running a hand-written streaming job adds cluster management and code the team explicitly wants to avoid.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/firehose/latest/dev/what-is-this-service.html",
+    "id": "deac01-0002"
+  },
+  {
+    "domain": "Data Ingestion and Transformation",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A data engineering team already maintains a large body of custom PySpark code with specific cluster-level tuning (custom bootstrap actions, a particular Spark version, and direct HDFS access) for a nightly batch job. Which service lets them keep full control over the cluster software stack and configuration?",
+    "options": [
+      "AWS Glue Studio, using only the visual, no-code job authoring canvas.",
+      "AWS Lambda, invoking the transformation once per file.",
+      "Amazon EMR, which provisions clusters where the team chooses the Spark version, installs custom bootstrap actions, and manages the full software stack.",
+      "Amazon Athena, running the transformation as a single SQL statement."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Amazon EMR</b> gives full control over the cluster: choice of engine versions, bootstrap actions, instance types, and direct access to the underlying Hadoop/HDFS stack, which fits a team with existing tuned PySpark code and specific cluster requirements. Glue Studio's visual canvas targets no-code authoring, not custom cluster-level tuning. Lambda has a 15-minute run limit and no persistent cluster or HDFS, the wrong fit for a large Spark job. Athena runs serverless SQL over data in S3 and cannot run arbitrary PySpark cluster jobs.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-what-is-emr.html",
+    "id": "deac01-0003"
+  },
+  {
+    "domain": "Data Ingestion and Transformation",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "An existing analytics platform has dozens of consumer applications written against the native Apache Kafka producer and consumer APIs, including custom partition assignment logic. The team wants to move the Kafka brokers to a managed AWS service while keeping those Kafka client applications unchanged. Which service is the BEST fit?",
+    "options": [
+      "Amazon Kinesis Data Streams, using the Kinesis Client Library (KCL) to replace the Kafka clients.",
+      "Amazon Data Firehose, configured with a Kafka source connector.",
+      "Amazon Simple Queue Service (SQS), migrating consumers to the SQS API.",
+      "Amazon Managed Streaming for Apache Kafka (MSK), which runs Kafka brokers so unmodified Kafka client applications keep working against the managed cluster."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Amazon MSK</b> runs actual Apache Kafka brokers as a managed service, so existing Kafka producer and consumer applications, including custom partition-assignment logic, connect without code changes. Kinesis Data Streams uses a different API (PutRecord/KCL), so every Kafka client would need to be rewritten. Firehose is a one-way delivery service to destinations like S3, not a Kafka-compatible broker. SQS is a queue service with its own API, not a Kafka protocol endpoint.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/msk/latest/developerguide/what-is-msk.html",
+    "id": "deac01-0004"
+  },
+  {
+    "domain": "Data Ingestion and Transformation",
+    "tag": "Domain 1",
+    "type": "multi",
+    "stem": "A team is converting a large clickstream dataset from JSON to Apache Parquet in Amazon S3 before running it through nightly Glue ETL jobs and querying it in Athena. Which TWO characteristics of Parquet make this conversion worthwhile? (Select TWO.)",
+    "options": [
+      "Parquet stores records row-by-row, so a job reading every column scans less data than JSON.",
+      "Parquet is a columnar format, so jobs and queries that read a subset of columns scan far less data than row-oriented JSON.",
+      "Parquet requires a fixed, single schema version forever and cannot tolerate any column additions over time.",
+      "Parquet applies efficient per-column compression and encoding, which shrinks S3 storage size and I/O compared to JSON.",
+      "Parquet is a plain-text format, which makes it easier to open and read manually than JSON."
+    ],
+    "correct": [
+      1,
+      3
+    ],
+    "explanation": "Parquet is <b>columnar</b>, so Athena and Glue jobs that need only a few columns skip the rest entirely, and its <b>per-column compression and encoding</b> reduce storage size and the bytes scanned, both lowering cost and runtime. The row-by-row claim is backwards: Parquet is columnar, not row oriented. Parquet actually supports schema evolution such as adding columns, so 'cannot tolerate any column additions' is false. Parquet is a binary format, not human-readable plain text; JSON is the text format here.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/athena/latest/ug/columnar-storage.html",
+    "id": "deac01-0005"
+  },
+  {
+    "domain": "Data Ingestion and Transformation",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A business analyst with limited coding experience needs to profile a dataset, remove outliers, and apply many cleaning and standardization steps through a visual interface, then run that same recipe against new data on a recurring schedule. Which service is the BEST fit?",
+    "options": [
+      "AWS Glue DataBrew, using a visual recipe and a scheduled recipe job.",
+      "Amazon EMR running a hand-written PySpark script on a persistent cluster.",
+      "AWS Database Migration Service running continuous replication.",
+      "AWS Step Functions invoking a state machine once per row of the dataset."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>AWS Glue DataBrew</b> is the no-code visual data-preparation tool with 250-plus built-in transforms, profiling, and schedulable recipe jobs, which matches a low-code analyst directly. EMR with hand-written PySpark requires writing and maintaining Spark code. DMS replicates database changes and does not perform visual data cleaning. Step Functions orchestrates workflows and is not designed to run per-row, and it has no visual cleaning transforms.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/databrew/latest/dg/what-is.html",
+    "id": "deac01-0006"
+  },
+  {
+    "domain": "Data Ingestion and Transformation",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A nightly Glue Spark job reads new files that land in an S3 prefix and writes transformed output downstream. The team wants each run to process only the files that have not already been processed, without the job tracking state itself. Which Glue feature accomplishes this?",
+    "options": [
+      "Increase the job's DPU (data processing unit) count so it finishes faster.",
+      "Enable Glue job bookmarks, which track which S3 files (and, for JDBC sources, which rows) have already been processed across runs.",
+      "Switch the job type from Spark to Python shell.",
+      "Add a Glue Data Quality ruleset to the job."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Job bookmarks</b> persist state between runs, letting Glue skip files (or already-read database rows) that were processed in a previous run, so only new data goes through the job. Adding more DPUs speeds up processing but still reprocesses everything each run. Changing the job type does not add incremental tracking. A Data Quality ruleset validates rows against rules; it does not track which files were already processed.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/glue/latest/dg/monitor-continuations.html",
+    "id": "deac01-0007"
+  },
+  {
+    "domain": "Data Ingestion and Transformation",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A small daily job runs a single Python script that calls a few AWS APIs and does light row-level transformation on under 1 GB of data; it never needs a distributed Spark engine. The team wants the lowest-cost Glue job type for this workload. Which job type should they choose?",
+    "options": [
+      "A Glue Spark ETL job running on the default worker type with 10 DPUs.",
+      "A Glue streaming ETL job that stays running continuously.",
+      "A Glue Python shell job, which runs plain Python without a Spark cluster and bills at a lower minimum capacity.",
+      "A Glue Ray job configured with a large multi-node Ray cluster."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "A <b>Glue Python shell job</b> runs a Python script without provisioning a Spark cluster, and it can run at a fraction of a DPU, making it the cheapest option for small, non-distributed tasks like light API calls and row-level transforms. A Spark ETL job spins up executors for distributed processing, unnecessary overhead and cost for under 1 GB. A streaming ETL job stays running continuously and is meant for continuous data, not a small daily batch. A Ray job with a large multi-node cluster is built for large-scale parallel Python workloads, not a light single-script task.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/glue/latest/dg/aws-glue-api-jobs-job.html",
+    "id": "deac01-0008"
+  },
+  {
+    "domain": "Data Ingestion and Transformation",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A company must migrate an on-premises Oracle database to Amazon RDS, first copying all existing rows and then continuously replicating ongoing changes until cutover, with minimal downtime. Which AWS service is designed for this task?",
+    "options": [
+      "Amazon Kinesis Data Streams, capturing row-level Oracle changes natively.",
+      "AWS Glue crawlers, to infer the Oracle schema into the Data Catalog.",
+      "Amazon Data Firehose, delivering database rows to RDS as they change.",
+      "AWS Database Migration Service (DMS), which performs an initial full load and then ongoing change data capture (CDC) replication until cutover."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>AWS DMS</b> is purpose-built for this pattern: it performs a full load of existing data and then streams ongoing changes through change data capture, keeping source and target in sync until cutover, with minimal source downtime. Kinesis Data Streams has no native Oracle CDC capability; a CDC source has to write to it. Glue crawlers catalog schema; they do not migrate or replicate data. Firehose delivers streaming records to destinations like S3; it is not a database replication tool.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Introduction.CDC.html",
+    "id": "deac01-0009"
+  },
+  {
+    "domain": "Data Ingestion and Transformation",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A pipeline runs a Glue crawler, then a Glue ETL job, then an EMR step, in strict sequence, and must automatically retry a failed step a limited number of times before routing to a failure-notification branch. Which orchestration service is the BEST fit for coordinating this multi-step, cross-service workflow?",
+    "options": [
+      "AWS Step Functions, which models the workflow as a state machine with built-in retry, catch, and branching logic across AWS service calls.",
+      "Amazon EventBridge Scheduler, which only invokes a single target on a fixed schedule.",
+      "AWS Glue triggers configured to fire only on a calendar schedule.",
+      "Amazon CloudWatch Alarms, which only monitor metrics and do not invoke a sequence of job steps."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Step Functions</b> defines the sequence of Glue, EMR, and other AWS service calls as states in a state machine, with native retry policies, catch blocks for failure branches, and visual execution tracking, exactly this ordered, retry-aware workflow. EventBridge Scheduler only invokes one target on a schedule and has no branching or retry-across-services model. Glue triggers can chain Glue jobs and crawlers but do not orchestrate EMR steps or general retry/catch logic outside Glue. CloudWatch Alarms watch metrics and trigger actions; they do not sequence a multi-service pipeline.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/step-functions/latest/dg/concepts-error-handling.html",
+    "id": "deac01-0010"
+  },
+  {
+    "domain": "Data Ingestion and Transformation",
+    "tag": "Domain 1",
+    "type": "multi",
+    "stem": "A team compares Amazon Kinesis Data Streams to Amazon Data Firehose for a new ingestion pipeline. Which TWO statements correctly describe Kinesis Data Streams? (Select TWO.)",
+    "options": [
+      "Kinesis Data Streams retains records for a configurable period (default 24 hours, extendable), allowing multiple consumer applications to read and replay the same data independently.",
+      "Kinesis Data Streams automatically buffers and delivers records directly to Amazon S3 with zero consumer code required.",
+      "Kinesis Data Streams requires the producer/consumer application to manage shards (or use On-Demand mode) and process records with the Kinesis Client Library or a compatible consumer.",
+      "Kinesis Data Streams cannot be read by more than one consumer application at a time.",
+      "Kinesis Data Streams converts records to Apache Parquet automatically before storing them."
+    ],
+    "correct": [
+      0,
+      2
+    ],
+    "explanation": "Kinesis Data Streams <b>retains records</b> for a configurable window so multiple independent consumer applications can each read (and replay) the stream, and it is a <b>self-managed consumption model</b> where the application (via the KCL or a compatible library) handles shards or relies on On-Demand capacity mode. Automatic delivery straight to S3 with no consumer code describes Firehose, not Data Streams. Data Streams supports many concurrent consumer applications, so 'cannot be read by more than one' is false. Automatic Parquet conversion on delivery is a Firehose data-format-conversion feature; Data Streams itself does not convert formats.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/streams/latest/dev/introduction.html",
+    "id": "deac01-0011"
+  },
+  {
+    "domain": "Data Ingestion and Transformation",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A team lands billions of sales transaction records in Amazon S3 and most Athena queries filter on order_date. Which S3 layout choice BEST reduces the amount of data scanned per query, and therefore both cost and latency?",
+    "options": [
+      "Store every record in a single large file with no folder structure.",
+      "Partition the data into S3 prefixes by order_date (Hive-style, e.g. order_date=2026-06-01/), so Athena can prune to only the relevant partitions.",
+      "Randomly shuffle records across many small files regardless of date.",
+      "Store the data as an uncompressed CSV file per hour with no partition keys in the path."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Partitioning by order_date</b> using Hive-style S3 prefixes lets Athena use partition pruning to skip every prefix outside the query's date filter, scanning far less data. A single unpartitioned file forces a full scan on every query. Randomly shuffled files with no date grouping give Athena nothing to prune on. An uncompressed CSV-per-hour layout with no partition keys in the path also cannot be pruned by date and adds the extra cost of an uncompressed row format.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/athena/latest/ug/partitions.html",
+    "id": "deac01-0012"
+  },
+  {
+    "domain": "Data Ingestion and Transformation",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "An Athena table over an S3 prefix is backed by millions of tiny (a few KB each) Parquet files produced by a streaming job, and query performance is poor due to per-file overhead. Which change BEST addresses the root cause?",
+    "options": [
+      "Switch the table's file format from Parquet to CSV.",
+      "Add more Athena workgroups to spread the query load.",
+      "Compact the small files into fewer, larger Parquet files, for example with a scheduled Glue job or S3DistCp on Amazon EMR.",
+      "Enable S3 Transfer Acceleration on the source bucket."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "The small-files problem comes from per-object listing and read overhead multiplying across millions of tiny objects; <b>compacting them into fewer, larger Parquet files</b> removes that overhead and is the standard fix, whether done with a scheduled Glue job or S3DistCp on EMR. Switching to CSV would change the row format but lose columnar pruning and does not fix the file count. Adding Athena workgroups only manages cost allocation and query grouping, not the underlying file layout. S3 Transfer Acceleration speeds long-distance uploads over the internet, not per-object read overhead within a Region.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/emr/latest/ReleaseGuide/emr-s3distcp.html",
+    "id": "deac01-0013"
+  },
+  {
+    "domain": "Data Ingestion and Transformation",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A retail website emits a modest, sporadic volume of order-confirmation events (a few per minute, none overnight) that must be written as JSON objects into an S3 data lake as soon as each order completes. The team wants no servers or clusters to manage and wants to pay only when an event actually occurs. Which approach BEST fits?",
+    "options": [
+      "A persistent Amazon EMR cluster polling a queue every second.",
+      "A Kinesis Data Streams stream provisioned with a fixed number of shards sized for peak load.",
+      "A scheduled Glue Python shell job that runs every minute regardless of whether new orders exist.",
+      "An AWS Lambda function, invoked directly from the order-processing flow per event, that writes the object to the data lake."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "For a sporadic, low, event-driven volume, invoking <b>AWS Lambda directly per event</b> writes each record with no idle infrastructure, and cost accrues only per invocation. A persistent EMR cluster polling constantly burns cost overnight when there is nothing to process. A Kinesis stream provisioned with fixed shards charges for shard-hours whether or not events arrive, unnecessary for a few events per minute. A Glue Python shell job scheduled every minute still runs (and bills) on the schedule even when no order has completed.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/lambda/latest/dg/with-s3.html",
+    "id": "deac01-0014"
+  },
+  {
+    "domain": "Data Ingestion and Transformation",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A team must apply continuous, low-latency SQL-based transformations (filtering, aggregation, and windowed joins) directly on a Kinesis Data Streams stream as records arrive, without standing up and operating a Spark or Flink cluster themselves. Which service BEST fits?",
+    "options": [
+      "Amazon Managed Service for Apache Flink (Kinesis Data Analytics), which runs SQL or Flink applications against a streaming source without managing the underlying cluster.",
+      "AWS Glue crawlers, scheduled to run once per hour against the stream.",
+      "Amazon Athena, running a batch SQL query against the stream once a day.",
+      "AWS DataSync, to replicate the raw records into a second bucket."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Amazon Managed Service for Apache Flink</b> (formerly Kinesis Data Analytics) runs streaming SQL or Flink applications continuously against a Kinesis source, handling scaling and cluster operations for you, matching continuous low-latency transforms with no cluster to manage. Glue crawlers only discover schema and do not transform streaming records. Athena queries data at rest and is not built for continuous, low-latency stream processing. DataSync copies files or objects between storage systems and performs no stream transformation.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/kinesisanalytics/latest/java/what-is.html",
+    "id": "deac01-0015"
+  },
+  {
+    "domain": "Data Ingestion and Transformation",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A data engineering team is already fluent in Apache Airflow and needs a workflow with complex branching, backfills, and dozens of interdependent tasks defined as Python DAGs, some of which call non-AWS APIs. Which AWS orchestration service lets them reuse that Airflow knowledge directly?",
+    "options": [
+      "AWS Step Functions, using Amazon States Language JSON definitions.",
+      "Amazon Managed Workflows for Apache Airflow (MWAA), which runs Airflow and Python DAGs the team already knows how to write.",
+      "AWS Glue workflows, which only chain Glue jobs, crawlers, and triggers.",
+      "Amazon EventBridge Scheduler, which invokes a single target on a cron expression."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>MWAA</b> is a managed Apache Airflow environment: teams author the same Python DAGs, use existing Airflow operators (including for non-AWS APIs), and reuse their existing Airflow expertise directly. Step Functions models workflows in Amazon States Language, a different paradigm from Python DAGs and Airflow operators. Glue workflows only orchestrate Glue-native objects (jobs, crawlers, triggers), not arbitrary Python tasks or non-AWS API calls. EventBridge Scheduler triggers one target on a schedule and has no DAG or branching model of its own.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/mwaa/latest/userguide/what-is-mwaa.html",
+    "id": "deac01-0016"
+  },
+  {
+    "domain": "Data Ingestion and Transformation",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "An S3 prefix used by a Glue crawler contains both the data files to catalog and a subfolder of temporary staging files that should never appear as catalog tables. Which crawler feature lets the team catalog only the intended files?",
+    "options": [
+      "A Glue job bookmark configured on the crawler.",
+      "A Glue Data Quality ruleset attached to the crawler.",
+      "An exclude pattern (or a custom classifier) on the crawler that skips the staging subfolder.",
+      "A larger crawler worker count."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "Crawlers support <b>exclude patterns</b> (and custom classifiers for unusual formats) that skip specified paths, such as a staging subfolder, so only the intended files become catalog tables. Job bookmarks track processed rows/files for ETL jobs, not what a crawler catalogs. A Data Quality ruleset validates data values; it does not filter which paths a crawler scans. Worker count affects crawl speed, not which paths are included.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/glue/latest/dg/add-classifier.html",
+    "id": "deac01-0017"
+  },
+  {
+    "domain": "Data Ingestion and Transformation",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A nightly batch of several hundred compressed CSV files in Amazon S3 must be bulk-loaded into a Redshift table as fast as possible, loading in parallel across all cluster slices. Which approach is the BEST fit?",
+    "options": [
+      "Run individual INSERT statements for each row, submitted one at a time.",
+      "Use Redshift Spectrum to query the files in place without loading them.",
+      "Load the files one at a time with single-file COPY commands run sequentially.",
+      "Issue a single COPY command with a manifest file that lists all the S3 objects, letting Redshift load them in parallel across slices."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "The <b>COPY command with a manifest</b> lets Redshift read the list of S3 objects and distribute the load across all cluster slices in parallel, the fastest supported bulk-load path. Row-by-row INSERTs are drastically slower for bulk loads and are explicitly discouraged. Redshift Spectrum queries external files in place but is not a mechanism for loading data into a native Redshift table. Sequential single-file COPY commands do not use parallel slice loading and take far longer than one manifest-driven COPY.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/redshift/latest/dg/loading-data-files-using-manifest.html",
+    "id": "deac01-0018"
+  },
+  {
+    "domain": "Data Ingestion and Transformation",
+    "tag": "Domain 1",
+    "type": "multi",
+    "stem": "A team is choosing among AWS Glue job types for different workloads. Which TWO statements about Glue job types are correct? (Select TWO.)",
+    "options": [
+      "A Glue Spark ETL job cannot read or write data in Amazon S3.",
+      "A Glue Python shell job automatically distributes work across a Spark cluster.",
+      "A Glue Spark ETL job runs on a managed Apache Spark environment and is suited to large, distributed transformations.",
+      "A Glue streaming ETL job processes a single fixed batch of data and then terminates immediately.",
+      "A Glue Ray job runs Python workloads across a Ray cluster, suited to large-scale parallel Python processing that does not fit the Spark programming model."
+    ],
+    "correct": [
+      2,
+      4
+    ],
+    "explanation": "A <b>Glue Spark ETL job</b> runs on a managed Spark environment for large, distributed transformations, and a <b>Glue Ray job</b> runs Python code across a Ray cluster for large-scale parallel Python workloads that are not naturally expressed in Spark. Spark ETL jobs read and write S3 constantly, so the first option is false. A Python shell job runs plain Python without a Spark cluster and does not distribute work across Spark executors, the opposite of what the option claims. A streaming ETL job is designed to run continuously against an unbounded source, not process one batch and stop.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/glue/latest/dg/author-job-ray-jobs.html",
+    "id": "deac01-0019"
+  },
+  {
+    "domain": "Data Ingestion and Transformation",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A streaming pipeline delivers events through Amazon Data Firehose into Amazon S3, and downstream Athena queries filter heavily by event date and event type. The team wants Firehose itself to write objects into date/type-partitioned S3 prefixes without adding a separate Lambda transformation for partitioning. Which Firehose feature does this?",
+    "options": [
+      "Dynamic partitioning, which uses values from the record data (or metadata) to route each record to the matching S3 prefix automatically.",
+      "Increasing the Firehose buffer size to 128 MB.",
+      "Enabling server-side encryption on the delivery stream.",
+      "Switching the delivery stream's destination from S3 to Amazon Redshift."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Dynamic partitioning</b> lets Firehose parse specified keys out of each record (or use metadata) and route it to the corresponding S3 prefix, such as event_date=.../event_type=..., without a custom Lambda partitioning step. A larger buffer size changes how much data accumulates before delivery but does not create partitions. Server-side encryption protects data at rest and is unrelated to partition layout. Switching the destination to Redshift changes where data lands entirely and does not address S3 partitioning.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/firehose/latest/dev/dynamic-partitioning.html",
+    "id": "deac01-0020"
+  },
+  {
+    "domain": "Data Ingestion and Transformation",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "Five independent consumer applications must each read the full throughput of a busy Kinesis Data Streams stream in near real time, and the team observes that consumers are competing for the shared 2 MB/sec per-shard read throughput, causing throttling. Which feature resolves the contention while giving each consumer its own dedicated throughput?",
+    "options": [
+      "Reduce the stream to a single shard so all consumers read from the same place.",
+      "Enhanced fan-out, which gives each registered consumer a dedicated 2 MB/sec pipe per shard delivered over HTTP/2, removing contention with other consumers.",
+      "Switch the stream's retention period from 24 hours to 7 days.",
+      "Enable server-side encryption on the stream."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Enhanced fan-out</b> registers each consumer for a dedicated throughput pipe per shard (2 MB/sec each, pushed over HTTP/2), so multiple consumers no longer share and compete for the shard's aggregate read throughput. Reducing shard count would shrink total throughput and worsen contention. Extending the retention period affects how long records are stored, not how throughput is shared among consumers. Server-side encryption protects data at rest and in transit but does not change per-consumer throughput allocation.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/streams/latest/dev/introduction-to-enhanced-consumers.html",
+    "id": "deac01-0021"
+  },
+  {
+    "domain": "Data Ingestion and Transformation",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A company must migrate an on-premises SQL Server database to Amazon Aurora PostgreSQL, a different database engine, and the source schema uses SQL Server-specific data types and stored procedures that must be converted to PostgreSQL equivalents before any data movement begins. Which AWS capability should the team use FIRST?",
+    "options": [
+      "AWS DMS ongoing replication, started immediately against the existing SQL Server schema.",
+      "A Glue crawler pointed at the SQL Server database to infer a PostgreSQL-compatible schema.",
+      "The AWS Schema Conversion Tool (SCT), which analyzes the source schema and converts SQL Server-specific objects to PostgreSQL-compatible equivalents before migration.",
+      "Amazon DataZone, to publish the SQL Server schema as a data product."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "For a <b>heterogeneous</b> migration between different engines, the <b>AWS Schema Conversion Tool</b> analyzes the source schema, flags objects that cannot convert automatically, and generates the target-compatible schema (tables, procedures) before DMS moves any data. Starting DMS replication first, without a compatible target schema, has nothing correctly structured to load into. A Glue crawler only catalogs an existing schema for querying; it does not translate SQL Server T-SQL objects into PostgreSQL equivalents. Amazon DataZone catalogs and governs data assets for discovery; it does not perform schema conversion.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/SchemaConversionTool/latest/userguide/CHAP_Welcome.html",
+    "id": "deac01-0022"
+  },
+  {
+    "domain": "Data Store Management",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "An application needs a fully managed relational database for an OLTP web application with ACID transactions, complex multi-table joins, and up to a few TB of data. Which AWS service is the BEST fit?",
+    "options": [
+      "Amazon Aurora (or Amazon RDS), a managed relational database supporting ACID transactions and multi-table joins.",
+      "Amazon Redshift, a columnar data warehouse optimized for large-scale analytical aggregations.",
+      "Amazon S3, an object store with no native table joins or transactions.",
+      "Amazon DynamoDB, a key-value and document store best suited to single-item access patterns."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Amazon Aurora/RDS</b> is a managed relational engine built for OLTP: ACID transactions, foreign keys, and complex joins across normalized tables. Redshift is a columnar warehouse tuned for large analytical scans and aggregations, not transactional row-level updates. S3 stores objects with no query engine, joins, or transactions of its own. DynamoDB excels at single-item, key-based access patterns but is not designed for ad hoc multi-table relational joins.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html",
+    "id": "deac01-0023"
+  },
+  {
+    "domain": "Data Store Management",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A Redshift fact table with billions of rows is frequently joined to a much smaller dimension table on customer_id, and query plans show heavy network redistribution during the join. Which distribution style change BEST reduces this redistribution cost?",
+    "options": [
+      "EVEN distribution on the fact table, spreading rows round-robin regardless of join key.",
+      "KEY distribution on customer_id for the fact table, matched to ALL (or KEY on customer_id) distribution on the small dimension table, so matching rows co-locate on the same slice.",
+      "ALL distribution on the multi-billion-row fact table, copying it to every node.",
+      "No distribution style at all, leaving Redshift to choose automatically without regard to the join column."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>KEY distribution on the join column</b> (customer_id) co-locates matching rows from the fact and dimension tables on the same slice, eliminating the network shuffle the join would otherwise need; a small dimension table can also use <b>ALL</b> distribution so a full copy sits on every node. EVEN distribution ignores the join key and forces redistribution at query time. Using ALL distribution on a multi-billion-row fact table would copy that huge table to every node, wasting storage and load time. Leaving the style unset does not target the specific join pattern the team is optimizing for.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/redshift/latest/dg/c_choosing_dist_sort.html",
+    "id": "deac01-0024"
+  },
+  {
+    "domain": "Data Store Management",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A Redshift table storing years of sensor readings is queried almost exclusively with a WHERE clause filtering a narrow reading_date range. Which table design choice BEST lets Redshift skip blocks outside the requested range?",
+    "options": [
+      "Define reading_date as the distribution key instead of a sort key.",
+      "Leave the table completely unsorted so all blocks must be scanned.",
+      "Define reading_date as a (compound) sort key, so Redshift's zone maps let it skip blocks whose date range falls outside the filter.",
+      "Add a secondary index on reading_date, similar to a relational database B-tree index."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "A <b>sort key on reading_date</b> physically orders the data on disk, so Redshift's per-block zone maps record each block's min/max date and the query can skip blocks entirely outside the filtered range. A distribution key controls which slice a row lands on, not the on-disk ordering used for range pruning. An unsorted table forces a full scan since no block can be safely skipped. Redshift does not use traditional B-tree secondary indexes; sort keys and zone maps are the mechanism for range-based pruning.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/redshift/latest/dg/t_Sorting_data.html",
+    "id": "deac01-0025"
+  },
+  {
+    "domain": "Data Store Management",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A Redshift cluster normally runs steady reporting workloads, but every Monday morning a burst of extra concurrent queries causes queuing and slower response times. The team does not want to keep the cluster permanently oversized for a burst that happens one morning a week. Which Redshift feature BEST addresses this?",
+    "options": [
+      "Increase the cluster's WLM query timeout so slow queries are allowed to run longer.",
+      "Switch every table's distribution style to EVEN.",
+      "Enable Redshift Spectrum on every table in the cluster.",
+      "Enable concurrency scaling, which automatically adds transient extra cluster capacity during bursts of concurrent queries and removes it when the burst ends."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Concurrency scaling</b> automatically provisions additional transient clusters when concurrent query volume spikes, routes eligible queued queries to them, and removes that capacity once the burst subsides, all without permanently resizing the main cluster. Increasing the WLM timeout lets slow queries run longer but does not add capacity to handle more concurrent queries. Changing distribution style affects join and scan efficiency, not concurrency handling. Redshift Spectrum offloads scans to S3 but does not add compute capacity for a burst of concurrent internal queries.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/redshift/latest/dg/c_intro_concurrency_scaling.html",
+    "id": "deac01-0026"
+  },
+  {
+    "domain": "Data Store Management",
+    "tag": "Domain 2",
+    "type": "multi",
+    "stem": "A team is deciding between Amazon Redshift Serverless and a traditional provisioned Redshift cluster for a new, intermittently used analytics workload. Which TWO statements are correct? (Select TWO.)",
+    "options": [
+      "Redshift Serverless automatically provisions and scales compute capacity based on workload demand, and you pay for the compute used, which suits variable or intermittent workloads.",
+      "A provisioned Redshift cluster automatically pauses and resumes with no configuration whenever a query is not running.",
+      "Redshift Serverless requires the team to manually choose and manage node types and node counts.",
+      "A provisioned Redshift cluster requires the team to choose node type and node count up front, and capacity runs (and is billed) continuously unless the cluster is manually paused.",
+      "Redshift Serverless cannot query external data in Amazon S3 through Redshift Spectrum."
+    ],
+    "correct": [
+      0,
+      3
+    ],
+    "explanation": "<b>Redshift Serverless</b> scales compute automatically to match demand and bills for what is used, which fits variable or intermittent workloads well, while a <b>provisioned cluster</b> requires choosing node type and count up front and runs (and bills) continuously unless someone manually pauses it. A provisioned cluster does not auto-pause and resume on its own without configuration; Serverless is the option built around automatic capacity management. Serverless removes node-type/node-count management from the team, the opposite of what the option claims. Serverless still supports querying external S3 data through Spectrum, so that limitation is false.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/redshift/latest/mgmt/serverless-whatis.html",
+    "id": "deac01-0027"
+  },
+  {
+    "domain": "Data Store Management",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A team wants to run SQL queries directly against Parquet files in Amazon S3 from within Redshift, joining them with native Redshift tables, without first loading the S3 data into the cluster. Which Redshift capability supports this?",
+    "options": [
+      "Redshift Spectrum, which defines external tables over data in S3 and queries them directly, joinable with native Redshift tables.",
+      "The COPY command, which must first load all S3 data into local cluster storage before any query can run.",
+      "Redshift Serverless, which is a billing and scaling model rather than a way to query external S3 data.",
+      "AWS Glue crawlers, which only catalog schema and cannot execute SQL joins."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Redshift Spectrum</b> registers S3 data as external tables in the cluster's catalog and lets Redshift SQL query and join them with native tables directly, without a load step. COPY is the mechanism for loading external data into native tables, exactly what the team wants to avoid. Redshift Serverless is a capacity model, not a way to query external files; either serverless or provisioned Redshift can use Spectrum. Glue crawlers only populate table metadata; they cannot execute SQL joins themselves.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/redshift/latest/dg/c_redshift-spectrum.html",
+    "id": "deac01-0028"
+  },
+  {
+    "domain": "Data Store Management",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A DynamoDB table using a low-cardinality partition key such as status (with only three possible values) suffers from a small number of 'hot' partitions receiving most of the read and write traffic. Which change BEST spreads the load evenly?",
+    "options": [
+      "Add a global secondary index using the same status attribute as its partition key.",
+      "Redesign the partition key to a higher-cardinality attribute (or a composite key that adds a random or sharded suffix) so traffic distributes across many more partitions.",
+      "Switch the table's capacity mode from On-Demand to Provisioned with a fixed low throughput.",
+      "Enable DynamoDB Streams on the table."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "A <b>higher-cardinality partition key</b>, or adding a random/sharded suffix to a low-cardinality key, spreads items (and the traffic to them) across many more physical partitions instead of concentrating on a handful of 'hot' status values. A GSI reusing the same low-cardinality attribute as its own partition key would recreate the identical hot-partition problem in the index. Switching capacity modes changes how throughput is billed and provisioned, not how keys distribute traffic across partitions. DynamoDB Streams captures a change log for downstream consumers and does not affect partition-key distribution.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-partition-key-design.html",
+    "id": "deac01-0029"
+  },
+  {
+    "domain": "Data Store Management",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A DynamoDB table's primary key is (order_id partition key, item_id sort key), but a common access pattern must look up all orders for a given customer_id, an attribute that is not part of the primary key. Which approach avoids scanning the entire table for this access pattern?",
+    "options": [
+      "Run a Scan operation with a FilterExpression on customer_id across the whole table for every request.",
+      "Change the table's primary key to use item_id as the partition key instead of order_id.",
+      "Create a global secondary index (GSI) with customer_id as its partition key, and query the GSI directly.",
+      "Enable point-in-time recovery on the table."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "A <b>global secondary index with customer_id as its partition key</b> lets the application Query directly by customer_id with the same efficiency as querying the base table's primary key, avoiding a full-table scan. A Scan with a filter still reads every item in the table before filtering, which does not scale. Changing the base table's partition key to item_id does not add a customer_id access path and would break the existing order_id-based lookups. Point-in-time recovery is a backup and restore feature and has no effect on query access patterns.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GSI.html",
+    "id": "deac01-0030"
+  },
+  {
+    "domain": "Data Store Management",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A new DynamoDB table will support a mobile app with highly unpredictable traffic, including occasional viral spikes that are hard to forecast, and the team wants to avoid manually managing throughput or being throttled during a spike. Which capacity mode BEST fits?",
+    "options": [
+      "Provisioned capacity mode with a fixed read/write throughput sized for average traffic.",
+      "Provisioned capacity mode with auto scaling configured to react only after a scaling alarm breaches for several consecutive minutes.",
+      "Reserved capacity purchased a year in advance for a fixed throughput level.",
+      "On-Demand capacity mode, which scales instantly to accommodate traffic and bills per request with no capacity planning required."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>On-Demand capacity mode</b> scales instantly to match incoming traffic, including sudden unpredictable spikes, and bills per request rather than requiring pre-planned throughput. Fixed Provisioned throughput sized for average traffic throttles once a spike exceeds it. Provisioned auto scaling reacts to CloudWatch alarms with a delay of a few minutes, which can still throttle a sudden viral spike before capacity catches up. Reserved capacity is a one- or three-year commitment for predictable baseline throughput, the opposite of an unpredictable spiky workload.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/ProvisionedThroughput.html",
+    "id": "deac01-0031"
+  },
+  {
+    "domain": "Data Store Management",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A team wants to automatically trigger a Lambda function to update a search index every time an item is inserted, modified, or deleted in a DynamoDB table, without polling the table on a schedule. Which DynamoDB feature enables this?",
+    "options": [
+      "DynamoDB Streams, an ordered, near-real-time change log of item-level modifications that can invoke a Lambda function as a trigger.",
+      "A global secondary index, which only supports alternate query patterns on current data.",
+      "DynamoDB Accelerator (DAX), an in-memory cache for read requests.",
+      "Point-in-time recovery, which restores the table to a prior state."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>DynamoDB Streams</b> captures an ordered, near-real-time log of item-level insert, update, and delete events, and can be configured as a Lambda event source so changes trigger downstream processing automatically, no polling required. A GSI supports alternate query access patterns but does not capture or push a change history. DAX caches read requests for lower latency and has no relationship to reacting to write events. Point-in-time recovery restores past table states for disaster recovery and does not trigger anything on individual writes.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Streams.html",
+    "id": "deac01-0032"
+  },
+  {
+    "domain": "Data Store Management",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A company has log data whose future access pattern is unknown: some log files might be queried again within days, others might never be touched again. The team wants S3 to automatically move each object to the most cost-effective storage tier based on its actual access pattern, without writing custom lifecycle rules per object. Which S3 feature BEST fits?",
+    "options": [
+      "S3 Standard storage class only, since it has the lowest per-GB storage price.",
+      "S3 Intelligent-Tiering, which monitors access patterns and automatically moves objects between access tiers without operational overhead or retrieval fees for the frequent/infrequent tiers.",
+      "S3 Glacier Deep Archive, moving every object there immediately regardless of access pattern.",
+      "A single manually managed lifecycle rule that transitions all objects to Glacier after exactly 30 days regardless of access."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>S3 Intelligent-Tiering</b> watches each object's access pattern and automatically moves it between frequent-access and infrequent-access tiers (and optionally archive tiers) with no retrieval fees on those tiers, exactly suited to data whose access pattern is unpredictable. S3 Standard alone has the highest storage cost and does not adapt to infrequent access. Moving everything straight to Glacier Deep Archive adds retrieval delay and cost for objects that turn out to be accessed again soon. A single fixed 30-day rule to Glacier does not adapt per object and can incur early-deletion or retrieval charges for objects accessed sooner than expected.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/intelligent-tiering.html",
+    "id": "deac01-0033"
+  },
+  {
+    "domain": "Data Store Management",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A compliance policy requires that raw ingestion objects in an S3 bucket move to a cheaper storage class after 30 days and be permanently deleted after 365 days, without any custom code running on a schedule. Which S3 feature should the team configure?",
+    "options": [
+      "An AWS Lambda function invoked manually once a month to check object ages and move or delete them.",
+      "S3 Object Lock in compliance mode, which prevents any object from ever being deleted.",
+      "An S3 Lifecycle configuration with a transition rule at 30 days and an expiration rule at 365 days.",
+      "S3 Cross-Region Replication to a second bucket in a different Region."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "An <b>S3 Lifecycle configuration</b> lets you declare transition rules (for example, to a cheaper class at 30 days) and expiration rules (permanent deletion at 365 days) that S3 applies automatically with no custom scheduling code. A manually invoked Lambda function reintroduces the operational burden the team wants to avoid. Object Lock in compliance mode is designed to prevent deletion, the opposite of what is required here. Cross-Region Replication copies objects to another bucket/Region for durability or latency reasons and does not transition or expire objects on a schedule.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/lifecycle-transition-general-considerations.html",
+    "id": "deac01-0034"
+  },
+  {
+    "domain": "Data Store Management",
+    "tag": "Domain 2",
+    "type": "multi",
+    "stem": "A company wants Amazon Athena, Redshift Spectrum, and Amazon EMR to all share one consistent view of table definitions for data in Amazon S3, with fine-grained permissions layered on top. Which TWO statements about the AWS Glue Data Catalog and AWS Lake Formation are correct? (Select TWO.)",
+    "options": [
+      "Each of Athena, Redshift Spectrum, and EMR requires its own separate, independently maintained copy of the table metadata.",
+      "The AWS Glue Data Catalog is a central metadata repository that Athena, Redshift Spectrum, and EMR (via Spark/Hive) can all reference for the same table definitions.",
+      "AWS Lake Formation replaces the Glue Data Catalog entirely and stores metadata in a completely separate system.",
+      "Fine-grained (row-level, column-level, or tag-based) access control on Data Catalog tables cannot be layered on top of the Data Catalog by any AWS service.",
+      "AWS Lake Formation builds on top of the Glue Data Catalog to add fine-grained permissions, such as table, column, row, and LF-Tag-based access control, enforced across integrated query engines."
+    ],
+    "correct": [
+      1,
+      4
+    ],
+    "explanation": "The <b>Glue Data Catalog</b> is the shared metadata store that Athena, Redshift Spectrum, and EMR can all query against, avoiding duplicated table definitions, and <b>Lake Formation</b> layers fine-grained permissions, including LF-Tags and column/row-level access control, on top of that same catalog and enforces them across integrated engines. Requiring each engine to keep its own separate copy defeats the purpose of a shared catalog and is not how these services work. Lake Formation does not replace the Data Catalog or store metadata elsewhere; it governs access to the existing catalog. Fine-grained access control absolutely can be layered on top of the Data Catalog, that is Lake Formation's core purpose.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/lake-formation/latest/dg/how-it-works.html",
+    "id": "deac01-0035"
+  },
+  {
+    "domain": "Data Store Management",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "Multiple producer applications write Avro-encoded events to an MSK topic, and a schema change in one producer silently breaks a downstream consumer that assumed the old field layout. The team wants schema compatibility enforced and violations rejected before they reach the topic. Which AWS capability addresses this?",
+    "options": [
+      "Increase the MSK topic's partition count to isolate the incompatible producer.",
+      "Enable S3 Object Lock on the destination bucket that eventually stores the events.",
+      "Add a Glue crawler that re-infers the schema after every producer deployment.",
+      "AWS Glue Schema Registry, which stores schema versions and enforces compatibility rules (for example backward compatibility) so incompatible schema changes are rejected at write time."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "The <b>Glue Schema Registry</b> centrally stores schema versions for streaming data and enforces a configured compatibility mode (such as backward or forward compatibility), rejecting producer writes that would break that contract before consumers ever see the incompatible data. Adding partitions changes throughput distribution, not schema enforcement. Object Lock on a downstream bucket protects objects from deletion and has nothing to do with schema validation at write time. A Glue crawler only infers schema after the fact for cataloging; it does not gate producer writes against a compatibility contract.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/glue/latest/dg/what-is-glue-schema-registry.html",
+    "id": "deac01-0036"
+  },
+  {
+    "domain": "Data Store Management",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A retailer's central data team maintains a live, frequently updated Redshift dataset that three other business units, each running their own separate Redshift cluster, need to query with up-to-date results, without any team copying or re-loading the data with COPY jobs. Which Redshift capability BEST meets this need?",
+    "options": [
+      "Redshift data sharing, which grants live, read-only access to a dataset from another cluster (or account) without copying or moving the data.",
+      "A nightly UNLOAD to S3 followed by a COPY into each business unit's cluster.",
+      "Redshift Spectrum, pointed at a manual daily export of the dataset in S3.",
+      "Cross-Region snapshot copy of the producer cluster to each consumer cluster's Region."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Redshift data sharing</b> lets a producer cluster grant live, read-only access to specific databases, schemas, or tables to other clusters or accounts, so consumers always see current data with no copy or reload step. A nightly UNLOAD/COPY cycle duplicates data and introduces staleness between refreshes. Spectrum over a manual daily export still depends on someone re-running that export and is not live. Cross-Region snapshot copies duplicate an entire cluster's data for disaster recovery, not a live shared read-only view.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/redshift/latest/dg/c-redshift-data-sharing.html",
+    "id": "deac01-0037"
+  },
+  {
+    "domain": "Data Store Management",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A reporting dashboard runs heavy read-only analytical queries against the same Amazon Aurora instance that serves a production application's live transactions, and the reporting queries are starting to slow down the application. Which change offloads the reporting load with the LEAST disruption to the application?",
+    "options": [
+      "Add more application-side retry logic around slow queries.",
+      "Create an Aurora read replica and point the reporting dashboard at the replica instead of the primary writer instance.",
+      "Increase the primary instance's storage size.",
+      "Enable Multi-AZ standby only, without changing which instance serves reads."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "An <b>Aurora read replica</b> serves read-only queries from a separate replicated instance, so pointing the reporting dashboard at the replica moves that load off the primary writer with no changes needed to the application's write path. Adding retry logic only masks slow queries and does not reduce contention on the primary. Increasing storage size does not address compute or I/O contention from concurrent reporting queries. A Multi-AZ standby exists for failover and, unless explicitly used as a reader, does not offload read traffic from the primary.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReadRepl.html",
+    "id": "deac01-0038"
+  },
+  {
+    "domain": "Data Store Management",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A fleet of Lambda functions handling a traffic spike opens a large number of short-lived connections to an RDS database, and the database begins rejecting new connections because its maximum connection limit is exhausted. Which change addresses this without redesigning the Lambda functions' connection code?",
+    "options": [
+      "Increase the Lambda functions' reserved concurrency limit.",
+      "Switch the RDS instance from Multi-AZ to Single-AZ.",
+      "Place Amazon RDS Proxy in front of the database to pool and share a smaller number of physical database connections across the many Lambda invocations.",
+      "Enable DynamoDB Streams on an unrelated DynamoDB table."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>RDS Proxy</b> sits between the application and the database, pooling and multiplexing a large number of client connections (such as many concurrent Lambda invocations) over a much smaller number of actual database connections, which prevents connection exhaustion without changing application connection code. Raising Lambda's reserved concurrency would only increase the number of simultaneous invocations trying to connect, worsening the problem. Switching Multi-AZ to Single-AZ affects availability and failover, not the connection limit. DynamoDB Streams is unrelated to a relational database's connection handling.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-proxy.html",
+    "id": "deac01-0039"
+  },
+  {
+    "domain": "Data Operations and Support",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A data pipeline invokes hundreds of thousands of short Step Functions executions per day, each completing in under a minute, and the team wants to minimize per-execution cost while still getting retries and basic error handling. Which Step Functions workflow type is the BEST fit?",
+    "options": [
+      "An Express Workflow, priced by execution duration and number of requests, designed for high-volume, short-duration workloads.",
+      "A Standard Workflow, priced per state transition and designed for long-running workflows with exactly-once execution semantics.",
+      "An AWS Glue workflow, which only orchestrates Glue-native jobs, crawlers, and triggers.",
+      "An Amazon EventBridge rule with no state machine at all."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Express Workflows</b> are priced by execution duration and number of requests and are built for high-volume, short-duration workloads exactly like hundreds of thousands of sub-minute executions per day, while still supporting Retry and Catch error handling. <b>Standard Workflows</b> price per state transition and add exactly-once semantics and long execution history, better suited to lower-volume, longer-running workflows, and would cost more at this volume. A Glue workflow only chains Glue-native objects, not arbitrary retryable state machine logic. An EventBridge rule with no state machine has no built-in retry/Catch semantics of its own.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/step-functions/latest/dg/concepts-standard-vs-express.html",
+    "id": "deac01-0040"
+  },
+  {
+    "domain": "Data Operations and Support",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A Glue ETL job must run automatically every day at 2 AM, and the team wants the trigger managed centrally alongside dozens of other unrelated scheduled tasks across various AWS services, not tied only to Glue's own trigger console. Which approach is the BEST fit?",
+    "options": [
+      "A Glue trigger of type SCHEDULED, configured with a cron expression, viewable only within the Glue console.",
+      "An Amazon EventBridge Scheduler schedule that invokes the Glue StartJobRun API at 2 AM daily, managed centrally alongside schedules for other services.",
+      "A Lambda function that sleeps until 2 AM and then calls StartJobRun.",
+      "A Step Functions Standard Workflow with no schedule, started manually every day."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>EventBridge Scheduler</b> centralizes cron- or rate-based schedules across many AWS service targets (Glue, Lambda, Step Functions, and more) in one place, which fits a team managing dozens of unrelated scheduled tasks. A Glue-native SCHEDULED trigger works but is visible only within Glue, not alongside other services' schedules. A Lambda function that sleeps wastes execution time and money and does not belong in a serverless scheduling design. A Standard Workflow started manually every day requires human intervention and defeats the purpose of an automatic daily schedule.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-what-is.html",
+    "id": "deac01-0041"
+  },
+  {
+    "domain": "Data Operations and Support",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "After a batch of Glue jobs fails overnight, an engineer must quickly search millions of log lines across many CloudWatch Logs log streams for a specific error pattern, without downloading logs manually. Which approach is the BEST fit?",
+    "options": [
+      "Open each job run's log stream individually in the console and read line by line.",
+      "Download every log file to a local machine and grep them one at a time.",
+      "Run a CloudWatch Logs Insights query across the relevant log group(s) to search and filter for the error pattern at scale.",
+      "Enable AWS CloudTrail data events for the Glue jobs' log group."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>CloudWatch Logs Insights</b> lets you run a purpose-built query language across one or many log groups to search, filter, and aggregate log lines at scale, far faster than manual inspection. Opening each stream individually or downloading files to grep locally does not scale to millions of lines across many runs. CloudTrail records API activity (who called which AWS API), not the application-level log content emitted by a Glue job, so it would not help search job log messages.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/AnalyzingLogData.html",
+    "id": "deac01-0042"
+  },
+  {
+    "domain": "Data Operations and Support",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A team wants the on-call data engineer to be paged automatically within minutes whenever a critical nightly Glue job fails, without anyone having to check a dashboard. Which combination of services BEST achieves this?",
+    "options": [
+      "Rely on the engineer to check the Glue console manually every morning.",
+      "Configure the Glue job to write a log entry on failure, with no further action.",
+      "Use AWS CloudTrail to record the job failure as a management event.",
+      "Configure a CloudWatch alarm on the job's failure metric (or an EventBridge rule matching the Glue job state-change event) that publishes to an SNS topic subscribed by the on-call engineer."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "A <b>CloudWatch alarm on the failure metric, or an EventBridge rule matching the Glue job's FAILED state-change event, that publishes to an SNS topic</b> notifies the on-call engineer within minutes automatically, with no manual dashboard checking. Manually checking a dashboard each morning introduces hours of delay. Writing only a log entry produces no active notification unless something reads and reacts to that log. CloudTrail records that the StartJobRun/GetJobRun API was called; it does not evaluate job success or failure as an alerting condition or notify anyone.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/AlarmThatSendsEmail.html",
+    "id": "deac01-0043"
+  },
+  {
+    "domain": "Data Operations and Support",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A Glue Spark ETL job repeatedly fails with out-of-memory errors only on the largest daily partitions, while smaller partitions process successfully with the same script. Which change is the MOST direct fix for this resource-constrained failure?",
+    "options": [
+      "Increase the worker type (for example to a larger G.2X/G.4X or memory-optimized worker) or the number of workers so each executor has more memory for the largest partitions.",
+      "Switch the job type from Spark ETL to Python shell, which has no distributed memory to allocate.",
+      "Add a Glue Data Quality ruleset to validate the partition before processing.",
+      "Disable job bookmarks so every run reprocesses all historical data."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Increasing worker type or worker count</b> gives each Spark executor more memory and parallelism, which is the direct fix for out-of-memory failures tied to the largest partitions. A Python shell job runs on a single non-distributed process and would make a large-partition Spark workload worse, not better, if it even fit. A Data Quality ruleset validates data values and has no effect on executor memory. Disabling job bookmarks would make the job reprocess more data on every run, increasing memory pressure rather than relieving it.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/glue/latest/dg/glue-troubleshooting-errors.html",
+    "id": "deac01-0044"
+  },
+  {
+    "domain": "Data Operations and Support",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "Several ad hoc analysts share one Athena workgroup, and an unbounded query recently scanned terabytes of data and produced an unexpectedly large bill. The team wants to cap how much data any single query in that workgroup can scan, rejecting queries that would exceed the limit. Which Athena feature does this?",
+    "options": [
+      "Increase the S3 bucket's default storage class to reduce per-GB storage cost.",
+      "A per-query data usage control configured on the Athena workgroup, which cancels any query that would scan more than the configured data limit.",
+      "AWS Glue job bookmarks, applied to the Athena workgroup.",
+      "Amazon Macie, scanning the workgroup's queries for sensitive data."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "Athena <b>workgroups support a per-query data usage control</b> that cancels a query once it is projected to scan more data than a configured threshold, directly capping the cost impact of any single runaway query. Changing S3 storage class affects storage price, not the bytes an Athena query scans and bills for. Job bookmarks are a Glue ETL concept and do not apply to Athena workgroups or queries. Macie discovers sensitive data in S3; it does not enforce a scan-size limit on SQL queries.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/athena/latest/ug/workgroups-manage-queries-control-costs-with-workgroups.html",
+    "id": "deac01-0045"
+  },
+  {
+    "domain": "Data Operations and Support",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A Glue Data Catalog table used by several production pipelines was unexpectedly deleted, and the team must determine which IAM principal called the delete API and when. Which AWS service provides this audit trail?",
+    "options": [
+      "Amazon CloudWatch Logs, which stores only the log lines the application chose to emit.",
+      "AWS Glue Data Quality, which evaluates data against DQDL rules.",
+      "AWS CloudTrail, which records management events such as DeleteTable calls, including the calling principal and timestamp.",
+      "Amazon S3 Inventory, which reports on object metadata within a bucket."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>AWS CloudTrail</b> logs management-plane API activity across AWS services, including a Glue DeleteTable call, recording which IAM principal made the call and when, exactly the audit trail needed here. CloudWatch Logs only captures whatever log lines an application explicitly writes, not a record of the DeleteTable API call itself. Glue Data Quality validates data values against rules and has nothing to do with auditing API calls. S3 Inventory reports on S3 object metadata and does not track Glue Data Catalog API activity.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-concepts.html",
+    "id": "deac01-0046"
+  },
+  {
+    "domain": "Data Operations and Support",
+    "tag": "Domain 3",
+    "type": "multi",
+    "stem": "A data platform team wants ongoing, automated detection of data quality problems in a pipeline, not just a one-time validation at ingestion, and wants quality scores visible in existing operational dashboards. Which TWO capabilities of AWS Glue Data Quality support this? (Select TWO.)",
+    "options": [
+      "Glue Data Quality can only run once, at table creation time, and never again afterward.",
+      "Glue Data Quality can recommend rules and detect anomalies automatically based on statistics learned from historical data, flagging unusual patterns without every rule being hand-written.",
+      "Glue Data Quality results can only be viewed inside the Athena query editor and nowhere else.",
+      "Glue Data Quality can publish data quality scores and rule outcomes as CloudWatch metrics, which existing operational dashboards and alarms can consume.",
+      "Glue Data Quality replaces the need for AWS CloudTrail to audit any AWS API call."
+    ],
+    "correct": [
+      1,
+      3
+    ],
+    "explanation": "Glue Data Quality can <b>recommend rulesets and detect statistical anomalies</b> from historical patterns, reducing the need to hand-write every rule, and it can <b>publish scores and outcomes to CloudWatch</b> so existing dashboards and alarms pick them up without a separate reporting system. It runs repeatedly, on every job or crawler run configured to use it, not only once at table creation. Results surface in the Glue console and CloudWatch, not solely the Athena query editor. Glue Data Quality checks data values and has nothing to do with CloudTrail's API-activity auditing.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/glue/latest/dg/glue-data-quality.html",
+    "id": "deac01-0047"
+  },
+  {
+    "domain": "Data Operations and Support",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A Step Functions state occasionally calls a downstream third-party API that returns a transient throttling error, and the team wants the workflow to automatically retry with an increasing wait between attempts before giving up, rather than failing immediately on the first throttling response. Which Step Functions feature configures this?",
+    "options": [
+      "A Wait state placed after the task with a single fixed 60-second pause and no further logic.",
+      "A Parallel state that calls the same API twice at once to increase the odds one succeeds.",
+      "A Map state that iterates over a static list of retry attempts defined in advance.",
+      "A Retry field on the task state specifying the error type, an interval, and a backoff rate, so Step Functions automatically retries with exponential backoff."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "A task state's <b>Retry field</b> lets you match specific error types (such as a throttling exception) and configure an interval and backoff rate, so Step Functions automatically retries with increasing wait times before failing, exactly the transient-error handling described. A single fixed Wait state does not retry the failed call at all; it just pauses. A Parallel state calling the API twice simultaneously adds load and does not implement backoff logic. A Map state iterates over a collection for per-item processing; it is not the mechanism for configuring automatic retries with backoff on a single task.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/step-functions/latest/dg/concepts-error-handling.html",
+    "id": "deac01-0048"
+  },
+  {
+    "domain": "Data Operations and Support",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A team runs data pipelines as Airflow DAGs on Amazon MWAA and wants visibility into task successes, failures, and durations without building a separate monitoring system. Where can the team find this operational telemetry?",
+    "options": [
+      "MWAA publishes Airflow task and scheduler logs and metrics to Amazon CloudWatch, which the team can view in Logs Insights and CloudWatch dashboards.",
+      "MWAA only stores telemetry locally on the underlying worker instances, inaccessible to the team.",
+      "MWAA requires a separate self-hosted Prometheus and Grafana stack before any task-level telemetry is available.",
+      "MWAA telemetry is available only by manually reading DAG source files."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>MWAA sends Airflow task logs, scheduler logs, and operational metrics to Amazon CloudWatch</b>, so the team can search them in Logs Insights or build CloudWatch dashboards and alarms without standing up separate infrastructure. MWAA does not lock telemetry away on inaccessible worker instances; CloudWatch is the intended integration point. No separate Prometheus/Grafana stack is required to get basic task-level telemetry, since CloudWatch already receives it. Reading DAG source files shows workflow definitions, not runtime execution telemetry.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/mwaa/latest/userguide/what-is-mwaa.html",
+    "id": "deac01-0049"
+  },
+  {
+    "domain": "Data Operations and Support",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A Redshift cluster occasionally runs a runaway analytical query that consumes most of the cluster's resources and slows every other query for several minutes before finishing. The team wants Redshift to automatically detect and stop (or downgrade) queries that exceed defined resource thresholds, without a human watching the console. Which capability BEST fits?",
+    "options": [
+      "Increase the cluster's node count permanently to absorb any future runaway query.",
+      "Query monitoring rules (QMR) within WLM, which can automatically log, hop to another queue, or abort a query once it crosses defined metrics thresholds such as CPU time or rows scanned.",
+      "Redshift Spectrum, to move the offending query's data outside the cluster.",
+      "S3 Lifecycle rules on the cluster's backup bucket."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Query monitoring rules inside WLM</b> continuously evaluate running queries against metrics such as CPU time, rows scanned, or execution time, and can automatically log, reprioritize (hop), or abort a query that crosses the defined thresholds, with no human intervention. Permanently adding nodes raises cost for a problem that only happens occasionally and does not stop a specific runaway query. Redshift Spectrum changes where external data is scanned from, not how internal queries are monitored or throttled. S3 Lifecycle rules manage object storage tiers and have no relationship to query-level resource control.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/redshift/latest/dg/c_workload_mgmt_classification.html",
+    "id": "deac01-0050"
+  },
+  {
+    "domain": "Data Operations and Support",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A pipeline currently uses a Lambda function that polls an S3 prefix every minute to detect new objects and start downstream processing, adding both cost and up-to-a-minute latency. The team wants processing to start immediately when an object lands, with no polling. Which change BEST achieves this?",
+    "options": [
+      "Increase the polling Lambda's memory allocation so each poll runs faster.",
+      "Reduce the polling interval to every 10 seconds instead of every minute.",
+      "Configure an S3 event notification (or an EventBridge rule for S3 object-created events) that invokes the downstream processing directly when an object is created, removing polling entirely.",
+      "Move the polling Lambda function to run on an EC2 instance instead of Lambda."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "An <b>S3 event notification (or an EventBridge rule matching S3 Object Created events)</b> invokes downstream processing the moment an object lands, which is truly event-driven, has no polling cost, and reacts far faster than any fixed polling interval. Increasing memory only speeds up each individual poll invocation, not the fact that it still waits up to a minute to notice new objects. Polling every 10 seconds still polls, and adds ten times the invocation cost for a smaller latency improvement. Moving the polling function to EC2 still leaves it as a poller and adds infrastructure to manage.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/EventNotifications.html",
+    "id": "deac01-0051"
+  },
+  {
+    "domain": "Data Operations and Support",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A DMS ongoing replication task feeding a downstream analytics pipeline appears healthy in the console, but the team suspects the target is falling behind the source and wants a specific metric to confirm and quantify replication lag. Which CloudWatch metric published by DMS should the team check?",
+    "options": [
+      "The task's FreeableMemory metric, which reports available memory on the replication instance.",
+      "The task's NetworkTransmitThroughput metric, which reports outbound network throughput.",
+      "The task's FullLoadThroughputRowsSource metric, which reports full-load throughput only.",
+      "The task's CDCLatencyTarget (and CDCLatencySource) metric, which reports how far behind the target is from the source during change data capture."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "DMS publishes <b>CDCLatencySource and CDCLatencyTarget</b> metrics that directly report replication lag during change data capture, in seconds, letting the team quantify exactly how far behind the target has fallen. FreeableMemory reports instance memory headroom, not replication lag. NetworkTransmitThroughput reports network bytes per second, a proxy at best, not a direct lag measurement. FullLoadThroughputRowsSource only applies during the initial full-load phase, not ongoing CDC replication.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Monitoring.html",
+    "id": "deac01-0052"
+  },
+  {
+    "domain": "Data Operations and Support",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A Step Functions pipeline occasionally fails at a specific ETL state due to a known, recoverable condition, and the team wants the workflow to automatically invoke a remediation Lambda function and resume the pipeline from that point, rather than requiring an engineer to manually re-run the entire pipeline from the start. Which Step Functions construct enables this automated recovery?",
+    "options": [
+      "A Catch field on the failing state that routes to a remediation branch (for example a Lambda function) which fixes the condition and then transitions back into the pipeline.",
+      "A Wait state with no Catch or Retry configuration, that pauses indefinitely on any failure.",
+      "Deleting the failed execution's history so the next scheduled run starts clean.",
+      "Increasing the Lambda function's timeout so the task can never fail."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "A <b>Catch field</b> on the state that can fail routes execution to a defined remediation branch (such as a Lambda function that fixes the recoverable condition), which can then transition the workflow back into the normal pipeline path, all without an engineer manually re-running anything. A bare Wait state with no Catch or Retry does not react to failure at all; it just pauses. Deleting execution history does not fix the underlying condition and only hides the record of what happened. Increasing a timeout does not address a logical failure condition and cannot guarantee a task 'never fails'.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/step-functions/latest/dg/concepts-error-handling.html",
+    "id": "deac01-0053"
+  },
+  {
+    "domain": "Data Security and Governance",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A Glue ETL job must read from and write to Amazon S3 buckets and call other AWS APIs. The security team requires that no long-term access keys be embedded in the job's script or configuration. Which approach meets this requirement?",
+    "options": [
+      "Attach an IAM role to the Glue job, granting only the permissions the job needs; Glue uses the role to obtain temporary credentials automatically.",
+      "Store an IAM user's access key and secret key as Glue job parameters.",
+      "Embed the AWS account root user's access key in the job script.",
+      "Hard-code an IAM user's credentials in a configuration file stored alongside the script in S3."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>An IAM role attached to the Glue job</b> lets Glue assume the role and obtain short-lived, automatically rotated credentials scoped to only the granted permissions, so no long-term keys exist anywhere in the job. Storing an IAM user's access key as a job parameter, embedding the root user's key, or hard-coding credentials in a config file all place long-term, hard-to-rotate secrets where they can leak, exactly what the requirement forbids.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction.html",
+    "id": "deac01-0054"
+  },
+  {
+    "domain": "Data Security and Governance",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A company's S3 data lake must encrypt every object at rest using a key that the security team fully controls, including the ability to disable the key and immediately cut off decryption access, with a full audit trail of every key usage. Which encryption approach BEST meets this?",
+    "options": [
+      "Rely on the default Amazon S3-managed encryption (SSE-S3), which uses keys fully managed internally by S3 with no customer control over key policy.",
+      "Server-side encryption with AWS KMS customer managed keys (SSE-KMS), where the security team owns the key policy, can disable the key, and every use is logged to CloudTrail.",
+      "Client-side encryption using a hard-coded key embedded in each application.",
+      "No encryption at rest, relying only on IAM policies to restrict access to the bucket."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>SSE-KMS with a customer managed key</b> gives the security team full control over the key policy and grants, the ability to disable or schedule deletion of the key to cut off decryption instantly, and an automatic CloudTrail record of every Encrypt/Decrypt/GenerateDataKey call. SSE-S3 encrypts data but uses AWS-managed keys with no customer key policy or standalone audit trail of key usage. A hard-coded client-side key has no centralized rotation, revocation, or usage logging. Relying only on IAM with no encryption at rest fails to meet an explicit encryption-at-rest requirement.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingKMSEncryption.html",
+    "id": "deac01-0055"
+  },
+  {
+    "domain": "Data Security and Governance",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A company's Lake Formation-governed data lake has hundreds of tables, and the security team must grant many different groups of analysts access to specific columns and tables based on business classification (for example, 'PII' or 'Finance') without editing permissions on every individual table whenever a new table is added. Which Lake Formation feature BEST supports this at scale?",
+    "options": [
+      "A separate IAM policy per table, manually updated every time a new table is created.",
+      "S3 bucket policies applied directly to the underlying data files, bypassing the Data Catalog entirely.",
+      "LF-Tags (tag-based access control), where tables and columns are tagged with business classifications and permissions are granted against the tags, automatically applying to any table or column carrying that tag.",
+      "Disabling Lake Formation and granting direct IAM access to the S3 data lake bucket for each analyst."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>LF-Tags</b> let the team classify tables and columns with business labels such as PII or Finance and grant permissions against the tag rather than each individual object, so any new table tagged the same way automatically inherits the same access rules, scaling far better than per-table edits. A separate IAM policy per table requires manual updates for every new table, the opposite of scalable. Bucket policies on the underlying files bypass Lake Formation's governance model and its column-level controls entirely. Disabling Lake Formation and granting direct IAM access to the bucket removes fine-grained, catalog-aware access control altogether.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/lake-formation/latest/dg/tag-based-access-control.html",
+    "id": "deac01-0056"
+  },
+  {
+    "domain": "Data Security and Governance",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A Glue job runs inside a VPC with no route to the internet and must call AWS Secrets Manager to retrieve a database credential, without adding a NAT gateway or an internet gateway to the subnet. Which approach meets this requirement?",
+    "options": [
+      "Attach an internet gateway directly to the private subnet the Glue job runs in.",
+      "Deploy a NAT gateway in the subnet solely to reach Secrets Manager.",
+      "Store the credential in plaintext inside the Glue job script instead of using Secrets Manager.",
+      "Create an interface VPC endpoint (AWS PrivateLink) for Secrets Manager in the VPC, so the private call reaches the service over the AWS network with no internet path."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "An <b>interface VPC endpoint for Secrets Manager</b>, backed by AWS PrivateLink, lets resources in the VPC reach the service privately over the AWS network, with no NAT gateway or internet gateway required. Attaching an internet gateway to a private subnet defeats its purpose and still requires public routing. A NAT gateway would work but adds cost and is unnecessary when a direct interface endpoint exists for the specific service. Storing the credential in plaintext in the script abandons Secrets Manager and its rotation and access-control benefits entirely.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/vpc/latest/privatelink/what-is-privatelink.html",
+    "id": "deac01-0057"
+  },
+  {
+    "domain": "Data Security and Governance",
+    "tag": "Domain 4",
+    "type": "multi",
+    "stem": "Before granting broad analyst access to a newly ingested S3 data lake, a security team wants to automatically discover whether the data contains personally identifiable information (PII) such as names, emails, or national ID numbers. Which TWO statements about Amazon Macie support this goal? (Select TWO.)",
+    "options": [
+      "Amazon Macie uses machine learning and pattern matching to discover and classify sensitive data, including PII, across S3 buckets.",
+      "Amazon Macie encrypts S3 objects at rest using a customer managed KMS key.",
+      "Amazon Macie can generate findings that flag specific S3 objects or buckets containing sensitive data, which the security team can review before changing access policies.",
+      "Amazon Macie replaces IAM entirely as the mechanism for controlling who can access S3 objects.",
+      "Amazon Macie can only scan data stored in Amazon RDS, not Amazon S3."
+    ],
+    "correct": [
+      0,
+      2
+    ],
+    "explanation": "<b>Amazon Macie</b> uses machine learning and pattern matching to discover and classify sensitive data such as PII across S3, and it <b>generates findings</b> identifying specific buckets or objects containing that data, which the team can review before deciding how to open up access. Macie discovers sensitive data; it does not perform encryption, that is KMS/S3's job. Macie does not replace IAM, access control still runs through IAM and bucket policies; Macie only informs those decisions. Macie is built specifically to scan Amazon S3 data, not Amazon RDS.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/macie/latest/user/what-is-macie.html",
+    "id": "deac01-0058"
+  },
+  {
+    "domain": "Data Security and Governance",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A Redshift table stores customer credit card numbers, and most analysts should see only a masked version (for example, the last four digits) while a small fraud-investigation role must see the full value. Which Redshift feature meets this with the least operational overhead?",
+    "options": [
+      "Dynamic data masking, which applies a masking policy to the column so most users see masked output while an authorized role sees the unmasked value, all from the same underlying table.",
+      "Two fully separate physical copies of the table, one masked and one unmasked, kept in sync manually.",
+      "Client-side masking implemented independently by every BI tool that queries the table.",
+      "S3 Object Lock applied to the Redshift cluster's snapshot bucket."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Dynamic data masking</b> attaches a masking policy directly to the column so Redshift itself returns masked or unmasked output depending on the querying role's grants, from a single source table with no data duplication. Maintaining two synchronized physical copies adds ongoing operational burden and risk of drift. Client-side masking in every BI tool is fragile and must be reimplemented and trusted in each tool. S3 Object Lock protects objects in S3 from deletion or overwrite; it has nothing to do with masking column values in Redshift query results.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/redshift/latest/dg/t_dynamic_data_masking.html",
+    "id": "deac01-0059"
+  },
+  {
+    "domain": "Data Security and Governance",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A regulation requires that audit log objects in an S3 bucket cannot be deleted or overwritten by anyone, including the account's root user, for a fixed retention period. Which S3 feature enforces this?",
+    "options": [
+      "A standard S3 bucket policy that denies DeleteObject to all principals except one administrator.",
+      "S3 Object Lock in compliance mode with a defined retention period, which prevents deletion or overwrite of a locked object version by any user, including the root user, until the retention period expires.",
+      "S3 Versioning alone, with no Object Lock configuration.",
+      "S3 Cross-Region Replication to a second bucket as the only safeguard."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>S3 Object Lock in compliance mode</b> prevents a locked object version from being deleted or overwritten by any principal, including the root user, until the configured retention period elapses, which is exactly the WORM guarantee the regulation demands. A bucket policy denying DeleteObject can still be changed by an administrator or the root user, so it does not provide the same tamper-proof guarantee. Versioning alone keeps prior versions but does not prevent a user with delete permissions from deleting them. Cross-Region Replication creates a second copy but does not, by itself, prevent deletion of either copy.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lock.html",
+    "id": "deac01-0060"
+  },
+  {
+    "domain": "Data Security and Governance",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A security team must determine exactly which IAM principal called GetObject on a specific sensitive S3 object last month, information that does not appear in the S3 access logging the team currently has enabled. Which change would have captured this activity going forward?",
+    "options": [
+      "Rely on CloudTrail's default trail, which records only account-level management events and does not include individual S3 object-level API calls by default.",
+      "Enable S3 Server Access Logging only, with no CloudTrail changes.",
+      "Enable CloudTrail data events for the S3 bucket (or specific objects), which log object-level API activity such as GetObject, including the calling principal and timestamp.",
+      "Enable GuardDuty finding types related to EC2 instance behavior."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>CloudTrail data events</b> for S3 must be explicitly enabled and log object-level API calls such as GetObject, PutObject, and DeleteObject, including the calling principal and timestamp, exactly the missing telemetry here. The default trail only records account-level management events (such as CreateBucket or PutBucketPolicy), not individual object reads. S3 Server Access Logging records requests in a different log format and does not by itself substitute for enabling CloudTrail data events. GuardDuty focuses on threat-detection findings such as anomalous EC2 or IAM behavior, not a direct per-call audit trail of a specific object's access history.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html",
+    "id": "deac01-0061"
+  },
+  {
+    "domain": "Data Security and Governance",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A large organization has dozens of independent data-producing teams and hundreds of internal consumers who need to discover, understand, and request access to datasets across the company, with a governed approval workflow rather than ad hoc access grants over email or chat. Which AWS service is purpose-built for this business-wide data catalog and access-request workflow?",
+    "options": [
+      "AWS Glue Data Catalog alone, which stores technical table metadata but has no built-in business glossary or access-request workflow.",
+      "Amazon Macie, which discovers sensitive data but does not catalog or broker access to datasets.",
+      "AWS CloudTrail, which records API calls but provides no data discovery or access-request interface.",
+      "Amazon DataZone, which provides a business data catalog, data portal for discovery, and governed publish/subscribe access-request workflows across producers and consumers."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Amazon DataZone</b> is built for exactly this: a business-friendly catalog with descriptions and glossaries, a self-service portal where consumers discover data, and a governed workflow where consumers request access and producers or data stewards approve it. The Glue Data Catalog stores technical metadata (schemas, locations) that DataZone and other services build on, but it has no business glossary or access-request workflow of its own. Macie only discovers sensitive data; it is not a catalog or an access broker. CloudTrail is an audit log of API activity, not a discovery or governance interface.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/datazone/latest/userguide/what-is-datazone.html",
+    "id": "deac01-0062"
+  },
+  {
+    "domain": "Data Security and Governance",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "Team A's AWS account owns a Glue Data Catalog with tables backed by S3 data that Team B, in a separate AWS account, must query directly via Athena, without Team B copying any data or tables into their own account. Which approach enables this cross-account access to the shared catalog?",
+    "options": [
+      "Configure AWS Lake Formation (or a Glue Data Catalog resource policy) to grant Team B's account cross-account access to the specific databases and tables in Team A's catalog.",
+      "Export Team A's Glue Data Catalog as a file and email it to Team B for manual import.",
+      "Have Team B run its own Glue crawler directly against Team A's private S3 bucket without any permissions granted.",
+      "Make Team A's S3 bucket public so Team B's Athena queries can read the objects."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Lake Formation cross-account grants (or a Glue Data Catalog resource policy)</b> let Team A's account share specific databases and tables in its catalog with Team B's account, so Team B queries the same tables through Athena with no data copy and fine-grained control over what is shared. Exporting and emailing a catalog file is not a supported or secure sharing mechanism and would quickly go stale. Team B cannot successfully crawl a bucket it has no permissions on; the crawler would simply fail with access denied. Making the bucket public exposes the data to the entire internet, far broader than sharing with one named account.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/glue/latest/dg/glue-data-catalog-resource-policies.html",
+    "id": "deac01-0063"
+  },
+  {
+    "domain": "Data Security and Governance",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A Redshift table contains a salary column that only the HR analytics group should be able to read, while every other column in the same table must remain visible to the broader analytics team. Which approach enforces this with the LEAST duplication of data?",
+    "options": [
+      "Export the entire table to a second, HR-only Redshift table that duplicates every column.",
+      "Grant column-level SELECT privileges so only the HR analytics group's role has access to the salary column, while other roles retain access to the remaining columns on the same table.",
+      "Revoke all SELECT access to the table for every group, including HR.",
+      "Move the entire table out of Redshift and into an S3 bucket with a single shared bucket policy."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Column-level GRANT/REVOKE privileges</b> in Redshift let the team expose the salary column only to the HR analytics role while every other role continues to query the remaining columns of the very same table, with no duplication. Duplicating the whole table into an HR-only copy wastes storage and creates a second copy to keep in sync. Revoking all access for everyone, including HR, fails the requirement that HR must be able to read the column. Moving the table to S3 with one shared bucket policy cannot express column-level distinctions and would need to either expose or hide the entire object for every reader.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/redshift/latest/dg/c_columnlevelsecurity.html",
+    "id": "deac01-0064"
+  },
+  {
+    "domain": "Data Security and Governance",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A Glue job's IAM role currently has the AmazonS3FullAccess managed policy attached so it can read one input prefix and write one output prefix, both within the same bucket. A security review flags this as overly broad. Which change BEST follows least privilege while keeping the job working?",
+    "options": [
+      "Replace AmazonS3FullAccess with AdministratorAccess so the job never again hits a permissions error.",
+      "Leave AmazonS3FullAccess in place, since Glue jobs are trusted internal workloads.",
+      "Replace the broad managed policy with a custom policy that grants only the specific S3 actions (such as GetObject, PutObject, ListBucket) scoped to the exact input and output prefixes the job uses.",
+      "Remove the IAM role from the job entirely and rely on the job failing safely if it lacks permissions."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "A <b>custom least-privilege policy scoped to only the needed actions and the exact input/output prefixes</b> gives the job everything it requires and nothing more, which is the direct fix for an overly broad managed policy. Switching to AdministratorAccess makes the problem drastically worse, granting account-wide control. Leaving AmazonS3FullAccess in place ignores the review's finding; internal workloads still warrant least privilege since a compromised or buggy job could otherwise touch every bucket in the account. Removing the role entirely would break the job outright rather than scoping its permissions correctly.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html",
+    "id": "deac01-0065"
+  }
+]

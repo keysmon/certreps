@@ -1,0 +1,46 @@
+{
+  "certId": "aif-c01",
+  "idPrefix": "aifc01",
+  "vendor": "AWS",
+  "title": "AWS Certified AI Practitioner",
+  "examCode": "AIF-C01",
+  "level": "Foundational",
+  "mockQuestionCount": 50,
+  "mockMinutes": 69,
+  "passLinePct": 70,
+  "verified": "Q3 2026",
+  "seoTitle": "Free AIF-C01 Practice Exam - AWS Certified AI Practitioner",
+  "seoDescription": "Free full-length AIF-C01 practice exam with {n} original scenario questions, instant explanations, and a per-domain readiness read. No signup.",
+  "domains": [
+    {
+      "name": "Fundamentals of AI and ML",
+      "tag": "Domain 1",
+      "weightPct": 20,
+      "mockCount": 10
+    },
+    {
+      "name": "Fundamentals of GenAI",
+      "tag": "Domain 2",
+      "weightPct": 24,
+      "mockCount": 12
+    },
+    {
+      "name": "Applications of Foundation Models",
+      "tag": "Domain 3",
+      "weightPct": 28,
+      "mockCount": 14
+    },
+    {
+      "name": "Guidelines for Responsible AI",
+      "tag": "Domain 4",
+      "weightPct": 14,
+      "mockCount": 7
+    },
+    {
+      "name": "Security, Compliance, and Governance for AI Solutions",
+      "tag": "Domain 5",
+      "weightPct": 14,
+      "mockCount": 7
+    }
+  ]
+}

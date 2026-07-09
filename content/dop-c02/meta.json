@@ -1,0 +1,52 @@
+{
+  "certId": "dop-c02",
+  "idPrefix": "dopc02",
+  "vendor": "AWS",
+  "title": "AWS Certified DevOps Engineer - Professional",
+  "examCode": "DOP-C02",
+  "level": "Professional",
+  "mockQuestionCount": 50,
+  "mockMinutes": 120,
+  "passLinePct": 75,
+  "verified": "Q3 2026",
+  "seoTitle": "Free DOP-C02 Practice Exam - AWS Certified DevOps Engineer Professional",
+  "seoDescription": "Free full-length DOP-C02 practice exam with {n} original scenario questions, instant explanations, and a per-domain readiness read. No signup.",
+  "domains": [
+    {
+      "name": "SDLC Automation",
+      "tag": "Domain 1",
+      "weightPct": 22,
+      "mockCount": 11
+    },
+    {
+      "name": "Configuration Management and IaC",
+      "tag": "Domain 2",
+      "weightPct": 17,
+      "mockCount": 9
+    },
+    {
+      "name": "Resilient Cloud Solutions",
+      "tag": "Domain 3",
+      "weightPct": 15,
+      "mockCount": 8
+    },
+    {
+      "name": "Monitoring and Logging",
+      "tag": "Domain 4",
+      "weightPct": 15,
+      "mockCount": 7
+    },
+    {
+      "name": "Incident and Event Response",
+      "tag": "Domain 5",
+      "weightPct": 14,
+      "mockCount": 7
+    },
+    {
+      "name": "Security and Compliance",
+      "tag": "Domain 6",
+      "weightPct": 17,
+      "mockCount": 8
+    }
+  ]
+}

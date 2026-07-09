@@ -1,0 +1,40 @@
+{
+  "certId": "clf-c02",
+  "idPrefix": "clfc02",
+  "vendor": "AWS",
+  "title": "AWS Certified Cloud Practitioner",
+  "examCode": "CLF-C02",
+  "level": "Foundational",
+  "mockQuestionCount": 65,
+  "mockMinutes": 90,
+  "passLinePct": 70,
+  "verified": "Q3 2026",
+  "seoTitle": "Free CLF-C02 Practice Exam - AWS Certified Cloud Practitioner",
+  "seoDescription": "Free full-length CLF-C02 practice exam with {n} original scenario questions, instant explanations, and a per-domain readiness read. No signup.",
+  "domains": [
+    {
+      "name": "Cloud Concepts",
+      "tag": "Domain 1",
+      "weightPct": 24,
+      "mockCount": 16
+    },
+    {
+      "name": "Security and Compliance",
+      "tag": "Domain 2",
+      "weightPct": 30,
+      "mockCount": 19
+    },
+    {
+      "name": "Cloud Technology and Services",
+      "tag": "Domain 3",
+      "weightPct": 34,
+      "mockCount": 22
+    },
+    {
+      "name": "Billing, Pricing, and Support",
+      "tag": "Domain 4",
+      "weightPct": 12,
+      "mockCount": 8
+    }
+  ]
+}

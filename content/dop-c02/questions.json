@@ -1,0 +1,540 @@
+[
+  {
+    "domain": "SDLC Automation",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A DevOps team wants a human sign-off before AWS CodePipeline promotes a build to the production deployment stage, and wants the approver group emailed automatically whenever their input is needed. Which pipeline change meets this requirement with the least custom code?",
+    "options": [
+      "Add a Manual Approval action between the staging and production stages and configure it to publish to an Amazon SNS topic that emails the approver group.",
+      "Add a CodeBuild project that polls the pipeline execution status every minute and calls the Amazon SES SendEmail API when a new execution starts.",
+      "Build a custom Lambda-backed approval portal in front of a DynamoDB table and invoke it from a Lambda action.",
+      "Split the pipeline into two separate CodePipelines and have an engineer manually start the second one from the console after checking Slack."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "A <b>Manual Approval action</b> pauses the pipeline at that stage and can publish directly to an <b>SNS topic</b>, which emails the subscribed approvers with no extra code. A polling CodeBuild project only detects that an execution started, not that an approval decision is needed, and adds unnecessary compute. A custom Lambda-backed portal duplicates a feature CodePipeline already provides natively. Splitting into two pipelines removes the audit trail and notification CodePipeline gives for free and leaves the hand-off to memory.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/codepipeline/latest/userguide/approvals.html",
+    "id": "dopc02-0001"
+  },
+  {
+    "domain": "SDLC Automation",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A DevOps engineer builds a CodePipeline pipeline in a tooling account that deploys a CloudFormation stack into a separate production account. The pipeline artifact store is an S3 bucket in the tooling account, encrypted with a customer managed KMS key. Deployments to the production account fail with an access-denied error on the artifact, while deployments within the tooling account succeed. What MOST likely explains the failure, and what should the engineer do?",
+    "options": [
+      "CodePipeline cannot deploy cross-account at all, so the engineer must create a second, fully independent pipeline entirely inside the production account.",
+      "The production account's CodePipeline deployment role cannot decrypt the artifact because the KMS key policy does not grant it kms:Decrypt; add the production account role as a key user in the KMS key policy.",
+      "The S3 artifact bucket needs S3 Transfer Acceleration enabled so the production account can reach it.",
+      "The production account is in a different AWS Region, so the artifact bucket must be replicated with S3 Cross-Region Replication."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "For cross-account CodePipeline deployments, the <b>target account's role must be granted decrypt permission on the artifact bucket's KMS key</b> in addition to the cross-account bucket policy and role trust; a missing key grant is the classic cause of an access-denied error that appears only cross-account. CodePipeline explicitly supports cross-account actions via a role the target account assumes, so a second pipeline is not required. Transfer Acceleration only speeds long-distance uploads and has nothing to do with authorization. The scenario never mentions a Region mismatch, and Cross-Region Replication solves data locality, not KMS access.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/codepipeline/latest/userguide/pipelines-create-cross-account.html",
+    "id": "dopc02-0002"
+  },
+  {
+    "domain": "SDLC Automation",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "An application deploys to an Auto Scaling group behind an Application Load Balancer using CodeDeploy blue/green deployments. The team wants CodeDeploy to automatically stop and roll back a deployment if a CloudWatch alarm on the replacement instances' 5xx error rate enters ALARM state during the deployment, with nobody watching the console. What should the engineer configure?",
+    "options": [
+      "Create an EventBridge rule that triggers a Lambda function to manually call StopDeployment when the deployment group's health checks fail.",
+      "Set the Auto Scaling group's health check type to ELB and rely on Auto Scaling to replace unhealthy instances.",
+      "Attach the CloudWatch alarm to the deployment group and enable automatic rollback on alarm threshold in the deployment group's configuration.",
+      "Reduce the deployment configuration's minimum healthy hosts to 0 percent so failing instances are ignored."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "CodeDeploy deployment groups can have <b>CloudWatch alarms attached with automatic rollback on alarm enabled</b>, which stops and rolls back the deployment as soon as the alarm enters ALARM state, with no manual intervention. Building a custom EventBridge-plus-Lambda watcher duplicates a feature CodeDeploy already provides and adds an unnecessary moving part. ELB health checks on the Auto Scaling group replace unhealthy instances but do not stop or roll back a CodeDeploy deployment. Setting minimum healthy hosts to 0 percent would make the deployment ignore failures entirely, which is the opposite of the goal.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/codedeploy/latest/userguide/monitoring-create-alarms.html",
+    "id": "dopc02-0003"
+  },
+  {
+    "domain": "SDLC Automation",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A serverless team deploys a new Lambda function version through CodeDeploy using a Canary10Percent5Minutes traffic-shifting configuration. Before ANY production traffic reaches the new version, they want an automated smoke test to run against it and abort the deployment if the test fails. Which CodeDeploy feature should they use?",
+    "options": [
+      "Lower the canary window to Canary1Percent1Minute so a bad version only affects 1 percent of requests for 1 minute.",
+      "Configure a CloudWatch alarm on the Lambda function's Errors metric and enable automatic rollback on alarm.",
+      "Publish the new version to the $LATEST alias and monitor manually in the CodeDeploy console during the shift.",
+      "Define a PreTraffic hook Lambda function in the AppSpec file that CodeDeploy invokes to validate the new version before shifting any traffic."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "A CodeDeploy AppSpec for Lambda supports <b>PreTraffic and PostTraffic hook functions</b>; the PreTraffic hook runs before any live traffic is shifted, and reporting a failure status from it aborts the deployment before customers are affected. A smaller canary window still exposes some percentage of real traffic to an untested version, which is exactly what the team wants to avoid entirely. A CloudWatch alarm on Errors only reacts after traffic, and therefore real errors, has already occurred. Publishing to $LATEST bypasses CodeDeploy's traffic-shifting and hook mechanism altogether.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/lambda/latest/dg/automating-updates-to-serverless-apps.html",
+    "id": "dopc02-0004"
+  },
+  {
+    "domain": "SDLC Automation",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A production ECS service on Fargate handles a strict, predictable transaction volume, and the team wants any bad deployment detected and rolled back automatically well before all traffic moves to the new task set, while still completing routine deployments in about 10 minutes. Which CodeDeploy configuration for the ECS blue/green deployment type BEST fits this goal?",
+    "options": [
+      "A linear deployment configuration such as CodeDeployDefault.ECSLinear10PercentEvery1Minutes, paired with a CloudWatch alarm on the target group's 5xx metric and automatic rollback on alarm.",
+      "CodeDeployDefault.ECSAllAtOnce, so the cutover finishes in a single step and the team checks the dashboard right after.",
+      "A rolling update performed directly through the ECS UpdateService API instead of CodeDeploy.",
+      "CodeDeployDefault.ECSCanary10Percent15Minutes with no CloudWatch alarm attached, relying on manual monitoring during the 15-minute bake."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "A <b>linear shift with a bound CloudWatch alarm and automatic rollback</b> moves traffic in small, evenly spaced increments, catches problems early through the alarm, and still completes on a predictable schedule within roughly 10 minutes, matching both the safety and time goals. All-at-once cuts over 100 percent of traffic immediately, so a bad deployment reaches every request before anyone can react. ECS's native rolling update through UpdateService does not use target-group traffic shifting or CodeDeploy's alarm-based automatic rollback at all. A canary with no attached alarm depends on someone watching the console, which is not automatic and does not reliably catch a regression before the bake window ends.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-type-bluegreen.html",
+    "id": "dopc02-0005"
+  },
+  {
+    "domain": "SDLC Automation",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A monorepo's CodeBuild project reinstalls the same unchanged npm dependencies on every build, adding several minutes to each run. The build environment does not persist between build executions. Which change MOST directly reduces this repeated cost with the least operational overhead?",
+    "options": [
+      "Increase the CodeBuild compute type to the largest available instance size so npm install runs faster.",
+      "Enable CodeBuild build caching (local or S3-backed) for the dependency directories so unchanged dependency layers are reused across builds.",
+      "Switch the source provider from webhook-based triggers to polling so builds trigger less often.",
+      "Move the npm registry to a self-managed EC2 instance inside the build VPC."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "CodeBuild supports <b>build caching</b>, either a local source/Docker-layer cache on the build host or an <b>S3-backed cache</b>, so dependency directories such as node_modules persist across otherwise-ephemeral build environments and do not need to be reinstalled from scratch every time. A bigger compute type reduces raw compute time slightly but still re-downloads and reinstalls every dependency. Changing the trigger mechanism affects how often builds start, not how long each build takes. Self-hosting the registry adds infrastructure to manage and does not address the lack of caching.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/codebuild/latest/userguide/build-caching.html",
+    "id": "dopc02-0006"
+  },
+  {
+    "domain": "SDLC Automation",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A team's CodePipeline pipeline currently polls a GitHub repository every few minutes to detect new commits, which adds noticeable delay before a pipeline execution starts. They want pipeline executions to start immediately when a commit is pushed, using a fully managed AWS integration rather than a self-hosted webhook receiver. What should they configure?",
+    "options": [
+      "Reduce the polling interval configuration on the source action to 10 seconds.",
+      "Add an EC2 instance that receives GitHub webhooks directly and calls the StartPipelineExecution API.",
+      "Connect the repository using a CodeStar (Developer Tools) connection and switch the source action's change detection to webhook-based, event-driven triggers.",
+      "Move the repository from GitHub to an S3 bucket so CodePipeline can poll it faster."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "A <b>CodeStar (Developer Tools) connection</b> lets CodePipeline subscribe to GitHub push events directly, so an execution starts immediately when a commit lands, with no polling interval and no infrastructure to run. CodePipeline does not expose a configurable polling interval that low, and reducing polling still means it is polling. Standing up an EC2 instance to receive webhooks and call the API works but is exactly the self-managed infrastructure the team wants to avoid. Moving source control from GitHub to S3 abandons the team's existing Git workflow and does not solve the triggering delay directly.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/codepipeline/latest/userguide/connections-github.html",
+    "id": "dopc02-0007"
+  },
+  {
+    "domain": "SDLC Automation",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A company wants its internal npm packages served from a private repository, wants public npm packages proxied and cached through that same private repository so builds do not depend on direct internet access to the public registry, and wants both package sets resolved through a single configured registry URL for developers. Which CodeArtifact configuration meets this?",
+    "options": [
+      "Create two entirely separate CodeArtifact repositories, one for internal packages and one mirroring npm, and have developers manually switch registries.",
+      "Use an S3 bucket as a static file host for npm packages and configure it as the npm registry.",
+      "Disable CodeArtifact's upstream feature and allow CodeBuild direct outbound internet access to the public npm registry instead.",
+      "Create a CodeArtifact repository with an external connection to the public npm registry, and add the company's internal package repository as an upstream to that same repository."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "CodeArtifact repositories support an <b>external connection to a public repository such as npm</b> plus one or more <b>internal upstream repositories</b> in the same hierarchy, so a single downstream repository resolves both the company's own packages and cached public packages through one endpoint, and CodeArtifact caches the public packages so builds are not blocked by an internet outage. Two separate repositories force developers to juggle registries manually, which is exactly what the requirement rules out. S3 alone does not implement the npm registry protocol or dependency resolution. Removing the upstream feature and opening direct internet access reintroduces the public-internet dependency the team wants to avoid.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/codeartifact/latest/ug/external-connection.html",
+    "id": "dopc02-0008"
+  },
+  {
+    "domain": "SDLC Automation",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A team manages application infrastructure for dev, test, and production accounts using AWS CDK, and wants a single pipeline defined in code that deploys to all three accounts in order, automatically updates its own pipeline structure when the CDK pipeline definition changes, and requires the fewest manually maintained cross-account IAM resources. Which approach BEST satisfies this?",
+    "options": [
+      "Define the pipeline using CDK Pipelines, bootstrap each target account and Region for cross-account deployment, and let the self-mutation step update the pipeline automatically on each run.",
+      "Write three completely independent CloudFormation templates, one per account, and trigger each manually with the AWS CLI in sequence.",
+      "Use a single CodeBuild project with hardcoded long-term IAM access keys for each of the three accounts stored as CodeBuild environment variables.",
+      "Deploy the application only to the production account and skip dev and test to reduce the number of accounts CDK must manage."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>CDK Pipelines</b> is purpose-built for this: bootstrapping each target account and Region creates the trust relationships CDK needs, the pipeline definition lives in code alongside the application, and a <b>self-mutation stage</b> updates the pipeline's own CodePipeline and CodeBuild resources automatically whenever the pipeline construct changes, without hand-maintained cross-account roles. Three independent templates triggered manually reintroduce the manual, error-prone process CDK Pipelines exists to remove. Long-term access keys in environment variables violate least privilege and are unnecessary since CDK Pipelines uses assumed roles. Skipping dev and test does not satisfy the stated requirement of deploying to all three accounts.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/cdk/v2/guide/cdk_pipeline.html",
+    "id": "dopc02-0009"
+  },
+  {
+    "domain": "SDLC Automation",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A pipeline defined in us-east-1 must deploy a CloudFormation stack into eu-west-1 as one of its stages. The team wants CodePipeline to manage the artifact replication to the target Region automatically rather than building a custom replication process. What must the engineer configure for the cross-Region deploy action to work?",
+    "options": [
+      "A single S3 bucket in us-east-1 only, since CodePipeline downloads it directly from eu-west-1 targets over the public internet at deploy time.",
+      "An artifact store (an S3 bucket and, if applicable, its KMS key) for each Region involved, so CodePipeline replicates the action's input artifact to the target Region automatically.",
+      "A VPC peering connection between us-east-1 and eu-west-1 so the deploy action can reach the artifact bucket across Regions.",
+      "A separate, fully independent pipeline manually created in eu-west-1 that polls the us-east-1 pipeline's S3 bucket for new artifacts."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "For a <b>cross-Region action</b>, CodePipeline requires an artifact store configured for every Region a stage's actions target; given that, CodePipeline <b>automatically replicates</b> the relevant artifacts to each Region's bucket before running the action there, with no custom replication code. A single Region's bucket does not satisfy this, and the action fails to find its input artifact. VPC peering addresses network reachability between VPCs, not S3 cross-Region artifact replication, which CodePipeline handles at the S3 and API level. Standing up a second independent pipeline that polls for artifacts duplicates functionality CodePipeline already provides natively and loses the single pipeline's unified execution history.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/codepipeline/latest/userguide/actions-create-cross-region.html",
+    "id": "dopc02-0010"
+  },
+  {
+    "domain": "SDLC Automation",
+    "tag": "Domain 1",
+    "type": "multi",
+    "stem": "A CodeBuild project must run integration tests against an Amazon RDS database that sits in private subnets with no route to the internet, and must also pull dependencies from a CodeArtifact repository, without giving the build environment a public IP address or a route through a NAT gateway. Which TWO actions together satisfy this? (Select TWO.)",
+    "options": [
+      "Configure the CodeBuild project to run inside the VPC, in the private subnets, with a security group that allows outbound access to the RDS database's port.",
+      "Create VPC interface endpoints (AWS PrivateLink) for the CodeArtifact API and repository endpoints, plus an S3 gateway endpoint for the CodeArtifact-backed S3 bucket, so CodeBuild reaches them without internet access.",
+      "Attach an internet gateway directly to the private subnets so CodeBuild can reach CodeArtifact over the public internet.",
+      "Disable the CodeBuild project's VPC configuration entirely so it runs in the AWS-managed network instead of the customer VPC.",
+      "Give the CodeBuild project's builds a public IP address and rely on a network ACL to block all traffic except CodeArtifact."
+    ],
+    "correct": [
+      0,
+      1
+    ],
+    "explanation": "Running the <b>CodeBuild project inside the VPC's private subnets with an appropriate security group</b> lets it reach the RDS database directly, and adding <b>VPC interface endpoints for CodeArtifact plus an S3 gateway endpoint</b> lets it reach CodeArtifact's API and its underlying S3 storage over AWS's private network, with no NAT gateway or public IP needed. Attaching an internet gateway to private subnets converts them into effectively public subnets and still depends on internet routing, which the requirement rules out. Disabling the VPC configuration would prevent CodeBuild from ever reaching the private RDS instance at all. Assigning a public IP directly contradicts the no-public-IP requirement, and a network ACL alone does not provide the private connectivity path to CodeArtifact.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/codebuild/latest/userguide/vpc-support.html",
+    "id": "dopc02-0011"
+  },
+  {
+    "domain": "Configuration Management and IaC",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A team stores a handful of static application configuration values (feature flags, an external API endpoint) as plaintext, and separately stores an RDS database password that must rotate automatically every 30 days. Which combination of AWS services BEST fits both needs with the least operational overhead?",
+    "options": [
+      "Store the static configuration values as Systems Manager Parameter Store parameters, and store the RDS password in Secrets Manager with automatic rotation enabled.",
+      "Store both the configuration values and the RDS password as Parameter Store SecureString parameters, and write a custom Lambda function on a cron schedule to rotate the password.",
+      "Store both in Secrets Manager, and disable rotation for both since it adds unnecessary API calls.",
+      "Store both as environment variables baked directly into each application's CodeBuild buildspec.yml file."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Parameter Store</b> handles simple configuration values well and can add KMS encryption with SecureString when needed. <b>Secrets Manager</b>, for the RDS password, provides built-in automatic rotation with a native RDS rotation Lambda that AWS manages the wiring for, so the team never builds its own rotation logic. Doing rotation through Parameter Store means writing and maintaining a custom Lambda and schedule that Secrets Manager already provides out of the box. Disabling rotation defeats the stated 30-day rotation requirement. Baking secrets into a buildspec file hardcodes credentials in source-adjacent build configuration, which is a security anti-pattern regardless of complexity.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-parameter-store.html",
+    "id": "dopc02-0012"
+  },
+  {
+    "domain": "Configuration Management and IaC",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A platform team wants a baseline CloudFormation stack (a logging bucket, an IAM permissions boundary, and a CloudTrail trail) automatically deployed to every AWS account in a specific Organizations OU, including accounts that join the OU in the future, without manually creating CloudFormation administration and execution IAM roles in each account. Which StackSets configuration should they use?",
+    "options": [
+      "Create a StackSet with self-managed permissions and manually create the CloudFormation StackSet administration and execution roles in every current and future member account.",
+      "Create a StackSet with service-managed permissions, enable trusted access with AWS Organizations, and target the OU with automatic deployment enabled for new accounts.",
+      "Deploy the stack once in the management account and rely on Organizations SCPs to replicate the resources into member accounts.",
+      "Create a separate, independent CloudFormation stack in each account and update all of them by hand whenever the baseline template changes."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Service-managed permissions with trusted access to AWS Organizations enabled</b> let StackSets create and manage the required IAM roles automatically, and targeting an OU with automatic deployment ensures accounts that join later receive the stack instance with no manual step. Self-managed permissions would work but require creating and maintaining the administration and execution roles by hand in every account, exactly the manual overhead the team wants to avoid. SCPs only set permission guardrails; they cannot deploy or create resources. Independent per-account stacks updated manually do not scale and reintroduce the drift and effort StackSets exists to remove.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-associate-stackset-with-organization.html",
+    "id": "dopc02-0013"
+  },
+  {
+    "domain": "Configuration Management and IaC",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "An engineer suspects that manual console changes have caused configuration drift across dozens of stacks deployed by a StackSet into 40 member accounts. They need to identify every drifted stack instance without checking each account by hand. What should they do?",
+    "options": [
+      "Manually open the CloudFormation console in each of the 40 accounts and run per-stack drift detection one account at a time.",
+      "Enable AWS Config in one account and assume it automatically reports CloudFormation drift for stacks in all 40 accounts.",
+      "Run drift detection on the StackSet itself, which triggers drift detection on every stack instance across all target accounts and Regions and reports which instances have drifted.",
+      "Re-deploy the StackSet with a forced update, which automatically reverts any manual changes without needing to detect drift first."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "CloudFormation supports <b>drift detection at the StackSet level</b>, which fans out and runs drift detection on every stack instance across all target accounts and Regions, then aggregates each instance's drift status in one place. Doing this per-account manually works but does not scale to 40 accounts and is exactly what StackSet-level drift detection exists to avoid. AWS Config tracks resource configuration history per account and Region and does not aggregate CloudFormation stack drift status across accounts on its own. Forcing a StackSet update without first detecting drift risks silently overwriting intentional out-of-band changes and gives no visibility into where drift existed.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-stack-drift.html",
+    "id": "dopc02-0014"
+  },
+  {
+    "domain": "Configuration Management and IaC",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A CloudFormation template must look up the latest AMI ID published by a third-party vendor at deploy time and use it as an EC2 instance's ImageId, but CloudFormation has no native intrinsic function or resource type for this vendor's AMI catalog. What is the standard way to add this capability to the template?",
+    "options": [
+      "Hardcode the current AMI ID as a plain string parameter and update the template by hand every time a new AMI is published.",
+      "Use the Fn::ImportValue intrinsic function to import the AMI ID from an unrelated stack's output.",
+      "Add a CloudFormation macro that runs before every deployment across the entire account and rewrites every template's ImageId value.",
+      "Define a custom resource backed by a Lambda function that queries the vendor's AMI catalog and returns the AMI ID to CloudFormation, then reference that custom resource's return value elsewhere in the template."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "A <b>Lambda-backed custom resource</b> is exactly the extension point CloudFormation provides for capabilities it does not support natively: the Lambda function runs custom logic, here querying the vendor's catalog, and returns data that other resources in the template can reference. Hardcoding the AMI ID and updating it by hand reintroduces manual maintenance and quickly goes stale. Fn::ImportValue only imports another stack's already-known output value; it cannot invoke external logic to look up a fresh AMI ID. A macro transforms template text before deployment and is a much heavier, account-wide mechanism than a single dynamic lookup needs.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-custom-resources.html",
+    "id": "dopc02-0015"
+  },
+  {
+    "domain": "Configuration Management and IaC",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A shared networking stack exports its VPC ID and subnet IDs so several independent application teams' stacks can import them with Fn::ImportValue. Over time, the platform team can no longer update the networking stack's subnet configuration because CloudFormation blocks changes to any exported value that is still imported elsewhere, and tracking which teams import which values has become difficult. Which change reduces this coupling for FUTURE cross-stack values while keeping the sharing intact?",
+    "options": [
+      "Publish shared values to Systems Manager Parameter Store instead of stack exports, and have consuming stacks read them with a CloudFormation dynamic reference at deploy time rather than Fn::ImportValue.",
+      "Convert the networking stack into a nested stack of every consuming application's stack so all values live in a single combined template.",
+      "Stop exporting any values and have each application team hardcode the current VPC and subnet IDs as plain string parameters.",
+      "Add more stack exports for every possible future value so teams never need to ask the networking team for a new one."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Parameter Store values, read through a CloudFormation dynamic reference, resolve at deploy time and are not tracked as a hard CloudFormation dependency</b> the way Fn::ImportValue exports are, so the networking team can update or replace a parameter without CloudFormation blocking the change or needing to know every consumer up front. Making the networking stack a nested stack of every consumer creates a tight, one-to-one coupling that does not fit a shared resource used by many independent teams. Hardcoding IDs removes the CloudFormation-managed relationship entirely and reintroduces manual, error-prone updates whenever networking changes. Adding more exports does not solve the underlying problem, since any of those exports would still block future changes once imported.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/dynamic-references.html",
+    "id": "dopc02-0016"
+  },
+  {
+    "domain": "Configuration Management and IaC",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A DevOps team wants to continuously enforce that every EC2 instance in a fleet has a specific CloudWatch agent configuration applied, re-applying it automatically if an instance drifts from the baseline, on a recurring schedule, without an operator re-running a script by hand. Which Systems Manager capability fits this?",
+    "options": [
+      "Create a one-time Systems Manager Automation runbook execution and rely on operators to re-run it whenever they remember.",
+      "Create a State Manager association targeting the fleet by tag that applies the configuration document on a recurring schedule and reports compliance.",
+      "Use Systems Manager Session Manager to open a shell on each instance and apply the configuration by hand.",
+      "Use Systems Manager Inventory to passively collect the current CloudWatch agent configuration with no enforcement."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "A <b>State Manager association</b> is built for exactly this: it applies a specified configuration document to targeted instances on a recurring schedule and continuously reports and re-enforces compliance, self-healing drift without operator action. A one-time Automation runbook execution only remediates once and depends on someone remembering to re-run it, which does not meet the continuous, unattended goal. Session Manager gives interactive shell access but is a manual, one-instance-at-a-time action, not fleet-wide automation. Inventory only collects and reports current state; it does not apply or enforce any configuration.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-state-manager.html",
+    "id": "dopc02-0017"
+  },
+  {
+    "domain": "Configuration Management and IaC",
+    "tag": "Domain 2",
+    "type": "multi",
+    "stem": "A StackSet deploys a stack to 200 accounts across 4 Regions. The platform team wants the rollout to proceed in parallel across many accounts to finish quickly, but wants the StackSet to automatically stop launching new stack instances if more than 10 percent of the attempted instances fail, so a bad template does not roll out everywhere before anyone notices. Which TWO StackSet operation preferences together achieve this? (Select TWO.)",
+    "options": [
+      "Set MaxConcurrentPercentage (or MaxConcurrentCount) high enough to deploy to many accounts and Regions in parallel.",
+      "Set FailureTolerancePercentage (or FailureToleranceCount) to 10 percent so the operation stops launching new instances once that failure threshold is crossed.",
+      "Set the StackSet's capabilities field to CAPABILITY_NAMED_IAM so failed instances are automatically retried.",
+      "Disable stack instance drift detection so failed instances are not reported as drifted.",
+      "Set the deployment order to strictly sequential across Regions and rely on manual review between each Region with no automated stop condition."
+    ],
+    "correct": [
+      0,
+      1
+    ],
+    "explanation": "<b>MaxConcurrentPercentage/Count controls how many accounts and Regions StackSets works on simultaneously</b>, giving the parallelism the team wants for a fast rollout, and <b>FailureTolerancePercentage/Count sets the failure threshold that automatically halts the operation</b> before it continues to remaining targets, together delivering a fast but safe deployment. CAPABILITY_NAMED_IAM only acknowledges that a template creates named IAM resources; it has nothing to do with retries or failure thresholds. Disabling drift detection hides configuration drift after the fact and does not stop a failing rollout in progress. A purely sequential, manually reviewed rollout removes the parallelism the team wants and provides no automated stop condition of its own.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-options.html",
+    "id": "dopc02-0018"
+  },
+  {
+    "domain": "Configuration Management and IaC",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A team runs drift detection on a stack that contains a nested stack and a Lambda-backed custom resource, expecting a complete drift report for every resource. Which limitation should they be aware of?",
+    "options": [
+      "Drift detection reports drift for every resource type without exception, including all custom resources.",
+      "Drift detection only works on stacks deployed through StackSets, never on standalone stacks.",
+      "CloudFormation drift detection does not support custom resources; the check skips them, so a custom resource's real-world state must be verified through other means, such as the underlying service's own APIs.",
+      "Drift detection automatically remediates any drifted resource back to its template-defined state during the check."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "CloudFormation drift detection covers a defined set of supported resource types, and <b>custom resources are explicitly excluded</b>; the check skips them rather than reporting on them, so a custom resource's real-world state must be verified through the underlying service's own APIs or other means. It is false that drift detection covers every resource type without exception, since custom resources are a documented gap. Drift detection works on standalone stacks as well as StackSet-deployed stacks, not only the latter. Drift detection is strictly read-only reporting; it never modifies resources, so remediation still requires a separate stack update.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-stack-drift.html",
+    "id": "dopc02-0019"
+  },
+  {
+    "domain": "Configuration Management and IaC",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A platform team uses AWS CDK across dozens of stacks and wants to enforce, at synthesis time, that every taggable resource in every stack carries a CostCenter tag, failing the cdk synth step if any resource is missing it, rather than discovering the gap after deployment. Which CDK mechanism BEST fits this?",
+    "options": [
+      "Add the tag manually to each construct's props in every stack and rely on code review to catch omissions.",
+      "Run an AWS Config rule after deployment that flags untagged resources for the team to fix later.",
+      "Add the tag only to the top-level Stack construct and assume CDK propagates it to every child resource automatically in all cases.",
+      "Implement a CDK Aspect that visits every construct in the tree during synthesis, checks for the required tag, and reports an error through Annotations when the tag is missing."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "A <b>CDK Aspect</b> is built exactly for this: it visits every construct in the tree during synthesis, so a custom Aspect can check for the required tag on each taggable resource and raise an Annotations error to fail cdk synth before anything is ever deployed. Manual tagging with code review is not automated and does not fail the build outright when someone forgets. An AWS Config rule only detects the gap after deployment, which is exactly the after-the-fact discovery the team wants to avoid. CDK's tagging helper does propagate tags downward from a scope by default, but that only guarantees the tags it applies are propagated; it does not verify or enforce that every resource actually carries a required tag, so an Aspect is still needed to check and fail on omissions.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/cdk/v2/guide/aspects.html",
+    "id": "dopc02-0020"
+  },
+  {
+    "domain": "Resilient Cloud Solutions",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A production RDS database needs automatic failover to a standby in a different Availability Zone if the primary instance becomes unhealthy, with minimal manual intervention. Which RDS feature provides this?",
+    "options": [
+      "A Multi-AZ deployment, which keeps a synchronously replicated standby in a different AZ and automatically fails over to it.",
+      "A read replica, which asynchronously replicates data for read scaling but is not an automatic failover target by default.",
+      "Aurora Serverless v2 autoscaling, which adjusts compute capacity but does not provide cross-AZ automatic failover by itself.",
+      "A manual snapshot restore, performed by an operator after the primary instance fails."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "An RDS <b>Multi-AZ deployment</b> keeps a synchronously replicated standby instance in a different Availability Zone and automatically promotes it and updates the DNS endpoint when the primary becomes unhealthy, with no manual step. A read replica replicates asynchronously for read scaling and is not automatically promoted on primary failure unless an operator or automation explicitly promotes it. Aurora Serverless v2 solves capacity elasticity, not AZ-level automatic failover. A manual snapshot restore is slow, requires a human to initiate it, and is a backup mechanism, not a high-availability one.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html",
+    "id": "dopc02-0021"
+  },
+  {
+    "domain": "Resilient Cloud Solutions",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A team runs an active-active application across two Regions behind Route 53, and wants a safe, auditable way to manually shift all traffic away from a Region during an incident, backed by pre-checks that catch capacity or configuration gaps in the other Region before the team ever needs to rely on it working. Which service BEST fits this?",
+    "options": [
+      "A Route 53 simple routing policy with no health checks, since it always returns a fixed record.",
+      "Route 53 Application Recovery Controller, using its readiness checks together with its routing controls.",
+      "AWS Global Accelerator custom routing endpoint groups configured without any readiness validation.",
+      "CloudFront origin failover configured only for static assets served through the CDN."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Route 53 Application Recovery Controller (ARC)</b> combines <b>readiness checks</b>, which continuously audit whether the standby Region has enough capacity and matching configuration to safely receive traffic, with <b>routing controls</b>, simple and highly available on/off switches operators toggle to redirect traffic, together giving a tested, auditable manual failover path. A simple routing policy has no health or capacity awareness at all. Global Accelerator can route traffic across Regions, but without readiness checks it gives no pre-failover validation that the target Region can actually absorb the load. CloudFront origin failover operates at the CDN layer for cached or static content and does not address a full application-level regional traffic shift.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/r53recovery/latest/dg/what-is-route53-recovery.html",
+    "id": "dopc02-0022"
+  },
+  {
+    "domain": "Resilient Cloud Solutions",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A relational workload needs a secondary Region that can be promoted to accept writes within about a minute during a regional outage, with typical replication lag under a second, and the team does not want to build or operate custom replication tooling. Which architecture BEST fits?",
+    "options": [
+      "An RDS Multi-AZ deployment, since its standby can be promoted to serve as the cross-Region secondary.",
+      "A cross-Region read replica managed with a custom AWS DMS ongoing-replication task built and operated by the team.",
+      "An Aurora Global Database with a secondary Region cluster, promoted to the primary during failover.",
+      "A nightly cross-Region snapshot copy, restored into a new DB instance only when a regional outage is declared."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Aurora Global Database</b> is purpose-built for this: it replicates to a secondary Region cluster with typical lag under a second and a managed failover that can promote the secondary to read/write in about a minute, with no custom replication pipeline to build. An RDS Multi-AZ standby lives within the same Region's AZs, not a separate Region, so it cannot serve as the cross-Region secondary the requirement describes. A custom DMS-based replication pipeline can move data cross-Region but requires the team to build and operate the tooling themselves, and typically has higher lag and a slower, more manual promotion path than Aurora Global Database. A nightly snapshot copy gives an RPO of up to 24 hours and a restore-time RTO far longer than a minute, missing both targets by a wide margin.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-global-database.html",
+    "id": "dopc02-0023"
+  },
+  {
+    "domain": "Resilient Cloud Solutions",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "An engineer wants a stateless web tier to automatically replace instances that fail the load balancer's health checks, and to automatically add capacity as CPU utilization rises, spread across multiple Availability Zones, with minimal manual operations. Which combination BEST achieves this?",
+    "options": [
+      "A single, larger EC2 instance in one AZ with a CloudWatch alarm configured to reboot it whenever CPU spikes.",
+      "An Application Load Balancer on its own, since it automatically launches new EC2 instances when existing ones fail health checks.",
+      "A Systems Manager Automation runbook that an on-call engineer manually triggers after reviewing a CloudWatch dashboard.",
+      "An EC2 Auto Scaling group spanning multiple AZs with ELB health checks enabled, plus a target-tracking scaling policy on CPU utilization."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "An <b>Auto Scaling group spanning multiple AZs, with ELB health checks enabled, replaces instances that fail the load balancer's health checks</b>, and a <b>target-tracking policy on CPU utilization</b> adds or removes capacity automatically as load changes, together meeting both the self-healing and elasticity goals with no manual steps. A single larger instance in one AZ has no multi-AZ redundancy and rebooting on a CPU spike does not address unhealthy-instance replacement. An Application Load Balancer distributes and health-checks traffic but does not launch or terminate EC2 instances by itself; that capacity management is the Auto Scaling group's job. A manually triggered runbook depends on a human noticing and acting, which is not automatic.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/autoscaling/ec2/userguide/what-is-amazon-ec2-auto-scaling.html",
+    "id": "dopc02-0024"
+  },
+  {
+    "domain": "Resilient Cloud Solutions",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A company's disaster recovery requirement specifies an RTO of about 10 minutes and an RPO of about 1 minute for a critical transactional application, at the lowest cost that still meets those targets, minimizing idle infrastructure in the DR Region when there is no disaster. Which DR strategy from the AWS resiliency spectrum BEST matches this?",
+    "options": [
+      "Pilot light: keep only the core data tier continuously replicated (for example, an Aurora Global Database secondary) in the DR Region, with application compute defined but not running, and bring compute online through automation during failover.",
+      "Backup and restore: periodically back up data to the DR Region and restore both data and infrastructure from scratch only after a disaster is declared.",
+      "Warm standby: run a full-scale, fully running copy of the entire production stack in the DR Region at all times, at the same capacity as production.",
+      "Multi-site active-active: run production traffic simultaneously in both Regions at full scale at all times, with a global load balancer splitting live traffic."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Pilot light</b> keeps the data tier warm and continuously replicated so RPO stays in the minutes range, while compute is only defined, not running, so idle-time cost stays low; automation brings the application tier online during failover, landing RTO in the tens-of-minutes range that fits the 10-minute target. Backup and restore typically has an RPO and RTO measured in hours, since both data and infrastructure are rebuilt from backups only after a disaster is declared, missing both targets. Running a full-scale, fully running warm standby stack around the clock meets the RTO/RPO targets but costs far more in idle standby capacity than the requirement calls for, since production-equivalent compute runs continuously even when idle. Multi-site active-active gives the lowest possible RTO/RPO of any strategy but runs full production capacity in both Regions at all times, the most expensive option, which overshoots what a 10-minute RTO and 1-minute RPO target actually requires.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-workloads-on-aws/disaster-recovery-options-in-the-cloud.html",
+    "id": "dopc02-0025"
+  },
+  {
+    "domain": "Resilient Cloud Solutions",
+    "tag": "Domain 3",
+    "type": "multi",
+    "stem": "A team wants to adopt Route 53 Application Recovery Controller (ARC) to enable safe, tested manual failover between two Regions. Which TWO ARC building blocks together provide this capability? (Select TWO.)",
+    "options": [
+      "Routing controls: highly available on/off switches, backed by a resilient cluster of endpoints, that application code or operators toggle to redirect traffic between Regions.",
+      "Readiness checks: continuous audits of whether each Region's resources have the capacity and configuration needed to safely accept failover traffic before it is ever sent there.",
+      "CloudFront origin groups, which retry failed requests against a secondary origin at the CDN edge.",
+      "A Route 53 simple routing policy, which returns one static record with no health or readiness awareness.",
+      "AWS Config conformance packs, which evaluate account-wide compliance rules on a recurring schedule."
+    ],
+    "correct": [
+      0,
+      1
+    ],
+    "explanation": "ARC's two core building blocks are <b>routing controls</b>, simple and highly available switches you toggle to redirect traffic, and <b>readiness checks</b>, which continuously verify that a Region has the capacity and configuration parity to safely receive failover traffic; together they give a tested, auditable way to shift traffic during an incident. CloudFront origin groups retry at the CDN layer and are a separate, unrelated mechanism from ARC. A simple routing policy has no health or readiness awareness at all. AWS Config conformance packs check compliance rules, not regional failover readiness.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/r53recovery/latest/dg/routing-control.html",
+    "id": "dopc02-0026"
+  },
+  {
+    "domain": "Resilient Cloud Solutions",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A company runs its primary application stack in us-east-1 and a passive, fully deployed standby stack in us-west-2. They want DNS to automatically direct users to us-west-2 only when us-east-1's application-level health check fails, using native Route 53 configuration with no custom Lambda logic. Which routing policy should they use?",
+    "options": [
+      "A weighted routing policy that splits traffic by a fixed percentage between the two Regions regardless of health status.",
+      "A failover routing policy, with a Route 53 health check on the primary endpoint, one record set marked PRIMARY and the standby record set marked SECONDARY.",
+      "A geolocation routing policy that sends users to the Region closest to their geographic location.",
+      "A multivalue answer routing policy that returns several healthy records at random with no primary or secondary distinction."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "A <b>failover routing policy with a health check on the primary record</b> is exactly what Route 53 provides for active-passive failover: as long as the primary's health check passes, Route 53 answers with the PRIMARY record, and it automatically switches to the SECONDARY record only when the primary fails its health check. Weighted routing splits traffic by percentage with no concept of primary versus standby or automatic failover. Geolocation routing chooses a Region by requester location, not by health. Multivalue answer routing can incorporate health checks but returns multiple values with no primary/secondary semantics, which does not match the described active-passive requirement.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-failover.html",
+    "id": "dopc02-0027"
+  },
+  {
+    "domain": "Resilient Cloud Solutions",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "An Auto Scaling group and Application Load Balancer serve a multi-AZ application. During a partial impairment of a single Availability Zone (elevated latency and errors, though the AZ is not fully down), the team wants traffic shifted away from the impaired AZ within minutes, without first diagnosing the root cause, and ideally without a human triggering it overnight. Which AWS capability directly addresses this?",
+    "options": [
+      "Cross-Region failover using Route 53 ARC routing controls, treating the single-AZ impairment as a full Regional failover event.",
+      "Manually terminating every instance in the impaired AZ and waiting for Auto Scaling to relaunch replacements, potentially back into the same AZ.",
+      "Route 53 Application Recovery Controller zonal shift (or zonal autoshift), which shifts an Application Load Balancer's traffic and Auto Scaling launches away from an impaired AZ for a bounded time, with autoshift able to trigger automatically.",
+      "Permanently removing the impaired Availability Zone from the VPC's configuration."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Zonal shift, and its automatic counterpart zonal autoshift, in Route 53 Application Recovery Controller</b> is built for exactly this case: it moves an impaired AZ out of an Application Load Balancer's and Auto Scaling group's traffic and capacity rotation for a bounded time, with autoshift able to react automatically without a human paged in the middle of the night. Treating a single-AZ impairment as a full Regional failover is a much heavier, slower response than the localized problem needs. Manually terminating instances does not guarantee Auto Scaling avoids relaunching into the same impaired AZ and requires a human to act. A VPC has no setting to disable an Availability Zone, and permanently removing AZ capacity is not an appropriate response to a transient impairment.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/r53recovery/latest/dg/arc-zonal-shift.html",
+    "id": "dopc02-0028"
+  }
+]
