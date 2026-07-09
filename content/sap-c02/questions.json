@@ -1,0 +1,329 @@
+[
+  {
+    "domain": "Design Solutions for Organizational Complexity",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A startup is setting up AWS for the first time and expects to grow to dozens of teams and AWS accounts over the next two years. Leadership wants every new account to start with a consistent security baseline, centralized logging, and a self-service way for teams to request new accounts, with the least amount of custom automation to build and maintain. Which approach is MOST appropriate?",
+    "options": [
+      "Deploy AWS Control Tower to establish a landing zone with prebuilt guardrails, a shared logging and audit account, and Account Factory for self-service account provisioning.",
+      "Create a single AWS account and use IAM users and resource tags to separate each team's workloads logically.",
+      "Have each team create its own standalone AWS account and independently configure CloudTrail, Config, and IAM policies to match a shared internal wiki.",
+      "Use AWS Organizations alone to group accounts into organizational units, without any additional guardrail or logging automation, and rely on manual reviews to catch drift."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>AWS Control Tower</b> builds a multi-account landing zone on top of AWS Organizations, deploying a shared logging and audit account, prebuilt guardrails (implemented as SCPs and AWS Config rules), and Account Factory for self-service, standardized account creation, covering all three requirements out of the box. A single account with IAM users and tags does not isolate workloads or blast radius the way separate accounts do, and it does not scale as team count grows. Independent per-team account setup against a wiki guarantees drift as teams interpret the wiki differently, defeating the goal of a consistent baseline. AWS Organizations alone provides account grouping and policy attachment points but no logging automation, guardrail enforcement, or self-service provisioning; Control Tower is built on top of Organizations specifically to add those capabilities.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/controltower/latest/userguide/what-is-control-tower.html",
+    "id": "sapc02-0001"
+  },
+  {
+    "domain": "Design Solutions for Organizational Complexity",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A security team manages an Organizations OU named Sandbox for experimentation accounts. They must guarantee that no principal in any Sandbox account, including that account's own root user, can disable GuardDuty or leave the organization, even if an account is fully compromised. Which control enforces this MOST reliably?",
+    "options": [
+      "Attach an IAM permissions boundary to every IAM role created in Sandbox accounts that denies GuardDuty and Organizations actions.",
+      "Attach a service control policy (SCP) to the Sandbox OU that explicitly denies guardduty:DeleteDetector, guardduty:DisassociateFromMasterAccount, and organizations:LeaveOrganization.",
+      "Enable AWS Config rules in each Sandbox account that flag GuardDuty as disabled after the fact.",
+      "Ask each account owner to acknowledge a policy document that prohibits disabling GuardDuty."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "A <b>service control policy</b> attached to the Sandbox OU sets the maximum available permissions for every principal in every account under that OU, including the account's own root user and administrators, and an explicit Deny in an SCP cannot be overridden by any identity-based policy in the account. An IAM permissions boundary is set per-principal within a single account, can be changed or removed by that account's own administrators, and does not bind the root user, so a compromised account could simply delete or bypass it. Config rules only detect and report a change after the fact; they do not block the API call from happening. A written acknowledgment is a process control, not a technical guardrail, and enforces nothing.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps.html",
+    "id": "sapc02-0002"
+  },
+  {
+    "domain": "Design Solutions for Organizational Complexity",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "An enterprise organization has hundreds of AWS accounts. Some S3 buckets are occasionally misconfigured with overly permissive bucket policies during development. The security team wants a durable, organization-wide guardrail that guarantees no identity outside the organization can ever access objects in any member account's S3 buckets, KMS keys, or Secrets Manager secrets, regardless of what any individual bucket policy or key policy says. Which approach BEST achieves this?",
+    "options": [
+      "Attach a service control policy to the organization root that denies s3:GetObject to any principal.",
+      "Require every account to enable S3 Block Public Access at the bucket level and review policies quarterly.",
+      "Attach a resource control policy (RCP) at the organization root with a condition that only allows access from principals within the organization.",
+      "Configure AWS Config rules that flag S3 buckets with a policy granting access to a wildcard principal."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "A <b>resource control policy (RCP)</b> is a resource-centric guardrail that sets the maximum available permissions for supported resources, Amazon S3, AWS KMS, Amazon SQS, AWS Secrets Manager, and AWS STS, across every account in its scope, and it applies even when a bucket or key policy would otherwise grant broader access, closing the identity perimeter organization-wide without touching every individual resource policy. An SCP governs what principals inside the organization's accounts can do; it has no effect on a request from an external identity that a misconfigured bucket policy already allows, because SCPs constrain principals, not resources. Block Public Access plus quarterly reviews is a manual, drift-prone process that only addresses public access, not access from other external identities such as another organization's account. Config rules detect a misconfigured policy after it exists but do not prevent the access it grants in the meantime.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_rcps.html",
+    "id": "sapc02-0003"
+  },
+  {
+    "domain": "Design Solutions for Organizational Complexity",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A company's AWS Organizations management account must give its central security team a single, tamper-evident record of every API call made across all 200+ member accounts, delivered to one S3 bucket that member-account administrators cannot modify or disable, with no per-account setup required as new accounts are created. Which design meets this requirement?",
+    "options": [
+      "Enable CloudTrail independently in each member account and configure S3 Cross-Region Replication to a central bucket.",
+      "Enable AWS Config in each account and aggregate findings with a Config aggregator in the management account.",
+      "Enable GuardDuty with a delegated administrator account so member-account findings roll up automatically.",
+      "Create an organization trail in AWS CloudTrail from the management account, which automatically applies to every current and future member account and delivers logs to a central S3 bucket."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "An <b>organization trail</b> created from the management account (or a delegated CloudTrail administrator account) automatically enables logging in every existing member account and every account added later, delivers all events to one central S3 bucket, and member accounts cannot disable or reconfigure that trail from within their own account. Per-account CloudTrail plus S3 replication requires configuring and maintaining that setup in every one of the 200+ accounts, and a member administrator could still disable their local trail. AWS Config aggregation reports resource configuration history and compliance, not the API call activity that CloudTrail records. GuardDuty delegated administration centralizes threat-detection findings, which is a different data set from a complete API audit log.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/creating-trail-organization.html",
+    "id": "sapc02-0004"
+  },
+  {
+    "domain": "Design Solutions for Organizational Complexity",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A central security team wants Amazon GuardDuty and AWS Security Hub findings from all current and future member accounts to appear automatically in one central account, without the security team needing IAM access to each member account, and without manually enabling the services in every new account. Which action is required in AWS Organizations?",
+    "options": [
+      "Designate a delegated administrator account for GuardDuty and Security Hub, and enable auto-enable for new organization accounts.",
+      "Create a cross-account IAM role in every member account that the security team assumes to check each account's findings individually.",
+      "Attach a service control policy that forces every account to enable GuardDuty and Security Hub.",
+      "Set up an AWS Config aggregator in the management account and subscribe to GuardDuty findings through it."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "Designating a <b>delegated administrator</b> account for GuardDuty and Security Hub lets that account view and manage findings across every member account centrally, and enabling <b>auto-enable</b> means every account added to the organization afterward is automatically enrolled with no manual step. Assuming a role into each account individually does not scale and still requires per-account setup as new accounts appear. An SCP can require the service not be disabled, but it cannot enable the service or aggregate its findings into one account; SCPs are a permissions guardrail, not a provisioning or aggregation mechanism. A Config aggregator aggregates AWS Config compliance data, not GuardDuty or Security Hub findings.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/securityhub/latest/userguide/what-is-securityhub.html",
+    "id": "sapc02-0005"
+  },
+  {
+    "domain": "Design Solutions for Organizational Complexity",
+    "tag": "Domain 1",
+    "type": "multi",
+    "stem": "An organization onboards a new AWS account roughly every week. The platform team wants every new account to automatically receive the same set of IAM roles, a standard VPC layout, and required CloudWatch alarms, with minimal manual work per account and without waiting on a change ticket. Which TWO approaches achieve this? (Select TWO.)",
+    "options": [
+      "Enable AWS Control Tower Account Factory (or Account Factory for Terraform) so each new account is provisioned from an approved account blueprint that already includes the required baseline resources.",
+      "Ask each new account owner to manually apply the baseline resources from a documented runbook.",
+      "Attach a service control policy that lists the required IAM roles as an explicit Allow.",
+      "Register a CloudFormation StackSet targeted at the organization or OU with automatic deployment enabled, so the baseline template deploys to every new account placed in that OU.",
+      "Wait for the next scheduled AWS Config conformance pack run to detect and report missing baseline resources."
+    ],
+    "correct": [
+      0,
+      3
+    ],
+    "explanation": "<b>Control Tower Account Factory</b> (or Account Factory for Terraform, AFT) provisions new accounts directly from a standardized blueprint, so the baseline resources exist the moment the account is created, and a <b>CloudFormation StackSet</b> with automatic deployment targeted at an OU deploys its template to any account placed in that OU without a manual step; both remove per-account manual work. A documented runbook still requires a human to execute it correctly for every account, which is exactly the manual burden the team wants removed. An SCP can only allow or deny actions; it cannot create IAM roles, a VPC, or CloudWatch alarms, so it cannot provision the baseline. A Config conformance pack only reports drift from the baseline after the fact; it does not create the missing resources.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/controltower/latest/userguide/account-factory.html",
+    "id": "sapc02-0006"
+  },
+  {
+    "domain": "Design Solutions for Organizational Complexity",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A 500-person engineering organization spans 40 AWS accounts. Employees currently receive individual IAM users and access keys in every account they touch, which is difficult to audit and slow to deprovision when someone leaves. The company wants centralized, federated sign-in against its existing corporate identity provider, with role-based access that differs by account, and immediate access removal across all accounts when a user is deactivated centrally. Which solution BEST fits?",
+    "options": [
+      "Create IAM users in a shared services account and use STS AssumeRole across accounts, synchronized manually with the identity provider's user list.",
+      "Use AWS IAM Identity Center connected to the corporate identity provider via SAML or SCIM, and assign permission sets to users and groups per account.",
+      "Distribute long-term IAM access keys generated from a central account to every employee.",
+      "Enable AWS Directory Service AD Connector in each of the 40 accounts independently."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>IAM Identity Center</b> federates with the corporate identity provider over SAML for sign-in and SCIM for automatic user and group provisioning, and <b>permission sets</b> map to different IAM roles per account, so removing or disabling a user centrally in the identity provider immediately revokes their access everywhere. Manually synchronizing IAM users and cross-account roles against the identity provider's list reintroduces the audit and deprovisioning lag the company is trying to eliminate. Long-term IAM access keys are exactly the credential type the company wants to move away from, and they carry no centralized revocation story. Configuring AD Connector separately in 40 accounts multiplies the setup and does not provide the single, centralized permission-set model IAM Identity Center provides in one place.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/singlesignon/latest/userguide/what-is.html",
+    "id": "sapc02-0007"
+  },
+  {
+    "domain": "Design Solutions for Organizational Complexity",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A networking team manages one VPC per Region for a 30-account organization and wants application teams in different accounts to launch resources directly into shared subnets of a central VPC, instead of building VPC peering connections between every pair of accounts. Central network and security teams must retain ownership of the VPC and subnet route tables. Which AWS capability enables this MOST directly?",
+    "options": [
+      "VPC peering between the central VPC and every application account's own VPC.",
+      "AWS Transit Gateway with a route table entry per attached VPC.",
+      "AWS Resource Access Manager (RAM) to share the central VPC's subnets with other accounts in the organization, so application teams launch resources directly into those subnets.",
+      "AWS PrivateLink endpoints exposing each application's service to the central VPC."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>AWS RAM</b> lets the VPC owner share specific subnets with other accounts in the organization; application teams then launch ENIs, EC2 instances, and other resources directly into the shared subnets while the network team retains ownership of the VPC, subnets, and route tables. VPC peering connects two separate VPCs with their own subnets and route tables; it does not let other accounts launch resources inside the central VPC's own subnets, and a full mesh of peering connections is exactly the sprawl the team wants to avoid. Transit Gateway routes traffic between separate VPCs; it does not let another account provision resources inside someone else's subnet either. PrivateLink exposes a specific service endpoint between VPCs, which solves service access, not shared subnet placement.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/ram/latest/userguide/what-is.html",
+    "id": "sapc02-0008"
+  },
+  {
+    "domain": "Design Solutions for Organizational Complexity",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A company has one on-premises data center and 15 VPCs spread across 3 AWS Regions, all needing private, low-latency connectivity to the data center. Building a separate VPN or Direct Connect connection from the data center to every VPC individually is becoming unmanageable. Requirements: a single physical connection point at the data center, centralized routing, and the ability to add new VPCs without new physical circuits. Which architecture BEST meets these requirements?",
+    "options": [
+      "A site-to-site VPN connection from the data center to each of the 15 VPCs independently.",
+      "A separate dedicated AWS Direct Connect connection into each of the 3 Regions, with no further aggregation.",
+      "AWS Transit Gateway peering connections between all 15 VPCs, with VPN back to the data center from each Transit Gateway.",
+      "A single AWS Direct Connect connection to a Direct Connect gateway, associated with a Transit Gateway in each Region, so new VPCs attach to their Region's Transit Gateway without new physical circuits."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "A <b>Direct Connect gateway</b> lets one Direct Connect connection reach <b>Transit Gateways</b> in multiple Regions, and each Transit Gateway then centralizes routing to every VPC attached in its Region; adding a new VPC is just a new Transit Gateway attachment, with no new physical circuit. Fifteen independent VPN connections multiply operational overhead and give up the private, dedicated bandwidth of Direct Connect. Three separate Direct Connect connections without a Direct Connect gateway or Transit Gateway still require managing routing and virtual interfaces per VPC within each Region, which does not solve the routing centralization requirement. Transit Gateway peering plus per-Transit-Gateway VPN back to the data center recreates multiple hybrid connections instead of the single physical connection point the company asked for.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/directconnect/latest/UserGuide/direct-connect-gateways-intro.html",
+    "id": "sapc02-0009"
+  },
+  {
+    "domain": "Design Solutions for Organizational Complexity",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A finance team wants to charge back AWS costs to five business units that share a mix of dedicated accounts and a few shared accounts, want proactive alerts when a business unit's spend deviates sharply from its historical pattern, and want the categorization to work even though cost allocation tags are applied inconsistently across resources. Which combination BEST meets these needs?",
+    "options": [
+      "AWS Cost Categories to define rule-based groupings by account, tag, or service that do not depend on every resource being tagged consistently, combined with AWS Cost Anomaly Detection for automatic alerts on unusual spend.",
+      "Cost allocation tags alone, requiring every team to tag every resource consistently before any chargeback report can be produced.",
+      "A separate AWS account per business unit with manual monthly invoice review by finance.",
+      "AWS Budgets with a fixed monthly threshold per business unit and no additional grouping logic."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>AWS Cost Categories</b> let finance define rules that group costs by account ID, tag, service, or charge type, which keeps the chargeback working even where tagging is incomplete, and <b>Cost Anomaly Detection</b> uses machine learning to alert on spend that deviates from a business unit's own historical pattern rather than a fixed threshold. Tags alone break down the moment any resource is missed, which the scenario says already happens. One account per business unit does not solve the mixed dedicated-and-shared-account reality described, and manual monthly review is neither proactive nor scalable. AWS Budgets with a fixed threshold catches only breaches of that one number; it does not detect an unusual pattern that still falls under the threshold, and it needs Cost Categories or tags underneath it to group the shared accounts correctly in the first place.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/cost-management/latest/userguide/ce-what-is.html",
+    "id": "sapc02-0010"
+  },
+  {
+    "domain": "Design Solutions for Organizational Complexity",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A compliance mandate requires every production account in a 60-account organization to back up its RDS databases and EBS volumes daily, retain backups for 35 days, and copy backups to a separate account in a different Region for ransomware resilience. The security team wants this enforced centrally so individual account owners cannot opt out or weaken the schedule. Which approach satisfies this?",
+    "options": [
+      "Ask each account team to configure their own AWS Backup plan following a shared internal document.",
+      "Use AWS Backup with an organization-wide backup policy defined in the management account, applied via AWS Organizations, specifying the schedule, retention, and cross-account cross-region copy destination.",
+      "Write a Lambda function triggered by CloudWatch Events in each account that calls the RDS and EBS snapshot APIs directly.",
+      "Enable point-in-time recovery on each RDS instance and rely on default EBS snapshot lifecycle policies."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "An <b>AWS Backup organization-wide backup policy</b>, authored once in the management (or delegated administrator) account and attached through AWS Organizations, is enforced automatically on every account and resource in scope; account owners cannot opt out, because the policy is applied centrally rather than configured locally. A shared document relies on every team following it correctly and gives the security team no enforcement or visibility. A custom Lambda function per account recreates the same central-policy problem in code the team must write and keep in sync in 60 places. Point-in-time recovery and default EBS lifecycle rules are per-resource, opt-in settings with no organization-wide enforcement and no built-in cross-account cross-region copy step.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html",
+    "id": "sapc02-0011"
+  },
+  {
+    "domain": "Design Solutions for Organizational Complexity",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A company migrating to AWS wants EC2-hosted Windows applications to authenticate against its existing on-premises Active Directory user accounts, without duplicating user identities in the cloud, and wants AWS-hosted resources to eventually be manageable via the same AD administrative tools. Which AWS Directory Service option is MOST appropriate?",
+    "options": [
+      "AD Connector, which proxies authentication requests to the on-premises directory but supports only a limited set of directory-aware AWS applications.",
+      "Simple AD, a standalone Samba-based directory that does not integrate with the existing on-premises Active Directory.",
+      "AWS Directory Service for Microsoft Active Directory (AWS Managed Microsoft AD) with a two-way trust relationship to the on-premises Active Directory.",
+      "Amazon Cognito user pools synchronized nightly with the on-premises directory via a custom batch job."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>AWS Managed Microsoft AD</b> is an actual Microsoft AD directory running in AWS, and establishing a <b>two-way trust</b> with the on-premises directory lets on-premises users authenticate to AWS-hosted resources and lets AWS-hosted directory objects be managed with standard AD tools like Group Policy, without duplicating identities, since the trust references the existing on-premises users directly. AD Connector only proxies sign-in to a limited set of AWS applications and directory-aware services; it does not host a directory that AWS-native Windows workloads can join directly the way a trust-based Managed AD setup does. Simple AD is a standalone directory with no path to trust or integrate with an existing on-premises AD forest. Cognito user pools are built for application sign-in (web and mobile), not for domain-joining Windows EC2 instances or extending Active Directory management tooling into AWS.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/directoryservice/latest/admin-guide/what_is.html",
+    "id": "sapc02-0012"
+  },
+  {
+    "domain": "Design Solutions for Organizational Complexity",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A platform team runs a shared internal API (for feature flags and configuration) that must be reachable from 80 application accounts across the organization. The platform team wants to avoid a full mesh of VPC peering connections, wants to expose only the specific API endpoint (not the whole VPC), and wants to keep the ability to change its own VPC's internal architecture without breaking consumers. Which design BEST fits?",
+    "options": [
+      "Establish a VPC peering connection between the platform team's VPC and each of the 80 application VPCs.",
+      "Attach all 81 VPCs to a single Transit Gateway and open the platform VPC's full CIDR range to every attachment.",
+      "Publish the API on the public internet, protected only by an API key, so any account can call it without additional networking.",
+      "Create an AWS PrivateLink endpoint service backed by a Network Load Balancer in front of the API, and let each application account create a VPC interface endpoint to consume it."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>AWS PrivateLink</b> exposes only the specific service (through an NLB-backed endpoint service) to consumers, not the whole VPC or CIDR range, so consumer accounts see a single interface endpoint and the platform team can freely re-architect anything behind the NLB without any consumer-facing changes, and it needs no full mesh, since each of the 80 accounts simply creates its own endpoint. VPC peering exposes the peered VPC's full routing to the other side and requires 80 separate connections to maintain. Attaching every VPC to one Transit Gateway with the platform VPC's full CIDR opened up exposes far more than the one API and creates a large flat network the team explicitly wants to avoid. Putting the API on the public internet behind only an API key drops the private-connectivity requirement entirely and is a materially weaker security posture for internal configuration data.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/vpc/latest/privatelink/what-is-privatelink.html",
+    "id": "sapc02-0013"
+  },
+  {
+    "domain": "Design Solutions for Organizational Complexity",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A financial services company must guarantee that no engineer in any of its 90 AWS accounts can ever create resources outside the two AWS Regions approved by its regulator, even though engineers already hold broad IAM permissions in their own accounts for productivity reasons. Which control enforces this MOST effectively across the whole organization?",
+    "options": [
+      "A service control policy attached at the organization root that denies all actions unless the request Region matches one of the two approved Regions, using a condition on the aws:RequestedRegion key.",
+      "IAM policies in every account that deny actions outside the two approved Regions, reviewed periodically for consistency.",
+      "AWS Config rules in every account that flag resources created outside the two approved Regions after they are created.",
+      "A tagging policy in AWS Organizations requiring a Region tag on every resource."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "An <b>SCP</b> with a Deny statement conditioned on <b>aws:RequestedRegion</b>, attached at the organization root, applies to every principal in every account regardless of how permissive that account's own IAM policies are, which is exactly the guarantee a regulator-driven residency requirement needs. Per-account IAM policies depend on every account being configured correctly and consistently, and engineers with broad permissions could still modify or remove them locally. Config rules only detect a resource already created in the wrong Region; they do not block the create call, so they cannot guarantee residency. A tagging policy governs tag key and value compliance, not which Region a resource can be created in, so it does nothing to prevent the violation.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps.html",
+    "id": "sapc02-0014"
+  },
+  {
+    "domain": "Design Solutions for Organizational Complexity",
+    "tag": "Domain 1",
+    "type": "multi",
+    "stem": "A platform team supports 50 accounts running variable, spiky workloads. Twice in the past quarter, a workload hit an EC2 service quota during a traffic spike and could not scale further until the team manually requested an increase. The team wants to catch quota pressure before it becomes an outage, across all accounts, with minimal manual account-by-account checking. Which TWO actions help MOST? (Select TWO.)",
+    "options": [
+      "Wait for the EC2 service quota increase request to be approved after the workload has already failed to scale.",
+      "Use Service Quotas with an Amazon CloudWatch alarm on quota utilization, so an alert fires automatically once usage crosses a threshold such as 80 percent of the current limit.",
+      "Manually check the Service Quotas console in each of the 50 accounts once a month.",
+      "Rely solely on the default EC2 quotas and assume they scale automatically with demand.",
+      "Enable AWS Trusted Advisor's service-limit checks across the organization (with Business or Enterprise Support) to surface accounts approaching their quotas."
+    ],
+    "correct": [
+      1,
+      4
+    ],
+    "explanation": "<b>Service Quotas utilization alarms</b> in CloudWatch alert automatically once usage crosses a chosen threshold, catching pressure before a spike causes a failure, and organization-wide <b>Trusted Advisor service-limit checks</b> (available with Business or Enterprise Support) surface which accounts are approaching quota limits without the team manually opening each account's console. Waiting for a quota increase request after a failed scale-out is the reactive pattern the team is trying to eliminate. Manually checking 50 accounts once a month is exactly the manual, account-by-account effort the team wants to avoid, and it is far too infrequent to catch a spike happening between checks. Quotas are not automatic; they are fixed limits per account and Region until someone requests an increase, so assuming they scale on their own would leave the team exposed to the same failure again.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/servicequotas/latest/userguide/intro.html",
+    "id": "sapc02-0015"
+  },
+  {
+    "domain": "Design Solutions for Organizational Complexity",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A global enterprise operates AWS Transit Gateways in 12 Regions, connected through a hand-built mesh of Transit Gateway peering attachments, and manages routing policy separately in each Region. As the company adds more Regions and on-premises sites, the network team spends increasing time keeping routing policies consistent and wants a single, centrally managed global network with policy defined once and applied everywhere. Which AWS capability BEST addresses this operational challenge?",
+    "options": [
+      "Add more Transit Gateway peering attachments between each new Region and every existing Region.",
+      "Migrate to AWS Cloud WAN, which manages a global network across Regions from a central policy document and provisions the underlying core network automatically.",
+      "Replace all Transit Gateways with VPC peering connections between every VPC pair globally.",
+      "Continue using per-Region Transit Gateways and standardize only through a shared internal wiki of routing conventions."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>AWS Cloud WAN</b> is purpose-built for exactly this problem: it defines the global network, segments, routing, and policy, in one central network policy document and automatically provisions and manages the underlying core network edges and attachments across Regions, removing the manual per-Region Transit Gateway peering mesh. Continuing to add Transit Gateway peering attachments as Regions grow scales the mesh complexity roughly quadratically and keeps routing policy managed separately per Region, worsening the exact problem described. Replacing Transit Gateways with VPC peering removes the transitive routing Transit Gateway already provides and would require even more individual connections. A shared wiki is a documentation convention, not a technical control, and does nothing to centrally enforce or automatically apply the policy.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/network-manager/latest/cloudwan/cloudwan-welcome.html",
+    "id": "sapc02-0016"
+  },
+  {
+    "domain": "Design Solutions for Organizational Complexity",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A holding company's AWS Organizations management account consolidates billing for 25 linked member accounts. Different subsidiaries independently purchase Reserved Instances and Savings Plans in their own accounts, but overall utilization is uneven: some accounts have unused reserved capacity while others pay on-demand rates for the same instance families. Finance wants to maximize savings across the whole organization without asking any subsidiary to change its purchasing process. Which built-in behavior achieves this?",
+    "options": [
+      "Nothing changes automatically; each subsidiary must manually transfer unused Reserved Instances to another account.",
+      "Consolidated billing only aggregates invoices for payment; discount sharing must be configured separately through AWS Budgets.",
+      "With consolidated billing enabled, Reserved Instance and Savings Plan discounts are automatically shared across all accounts in the organization by default, applying unused reserved capacity from one account's purchase to matching usage in another.",
+      "Each linked account must explicitly opt in per purchase before its Reserved Instance or Savings Plan discount can apply to any other account's usage."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Consolidated billing</b> in AWS Organizations shares Reserved Instance and Savings Plan discounts across all linked accounts by default: unused reserved capacity purchased in one account automatically applies to matching, eligible usage in any other linked account in the same organization, with no manual transfer or per-purchase opt-in required. There is no manual RI transfer step needed for this default behavior to work, and Budgets is a spend-alerting tool with no role in how RI or Savings Plan discounts are shared across accounts. Sharing is on by default at the payer level; an account can opt out of sharing its discounts, but sharing does not require every account to individually opt in per purchase before it works.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/ri-sharing.html",
+    "id": "sapc02-0017"
+  }
+]
