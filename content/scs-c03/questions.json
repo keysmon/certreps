@@ -734,5 +734,124 @@
     "difficulty": "medium",
     "docUrl": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-control-block-public-access.html",
     "id": "scsc03-0043"
+  },
+  {
+    "domain": "Security Foundations and Governance",
+    "tag": "Domain 6",
+    "type": "single",
+    "stem": "A company with an AWS Organization containing 25 member accounts wants CloudTrail events from every account, in every enabled Region, delivered automatically to a single, centrally managed S3 bucket in the management account, without each member account needing to create or configure its own trail. Which CloudTrail feature BEST meets this requirement?",
+    "options": [
+      "A separate trail manually created and configured identically in each of the 25 member accounts.",
+      "An AWS Config aggregator configured in the management account to collect CloudTrail events from each member account.",
+      "An organization trail created in the management account (or a delegated administrator account) with the option to apply the trail to all accounts in the organization enabled, which automatically creates and enables the same trail configuration in every current and future member account, delivering all events to one centrally managed S3 bucket.",
+      "Amazon CloudWatch cross-account observability, which shares CloudWatch dashboards across accounts but does not create or manage CloudTrail trails."
+    ],
+    "correct": [2],
+    "explanation": "An <b>organization trail</b>, created in the management account or a delegated CloudTrail administrator account with the option to apply the trail to all accounts in the organization enabled, automatically creates the same trail in every current and future member account and delivers all of their events to one centrally managed S3 bucket, with member accounts unable to disable or modify it, exactly matching the requirement. Manually creating a trail per account is the laborious, non-automatic approach the requirement rules out, and it does nothing for future accounts. A Config aggregator collects AWS Config resource compliance data, not CloudTrail events. CloudWatch cross-account observability shares metrics and dashboards across accounts, but it does not create or centrally deliver CloudTrail trails.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/creating-trail-organization.html",
+    "id": "scsc03-0044"
+  },
+  {
+    "domain": "Security Foundations and Governance",
+    "tag": "Domain 6",
+    "type": "single",
+    "stem": "A company wants to define a single, reusable collection of AWS Config rules and remediation actions, such as 'S3 buckets must have encryption enabled' and 'security groups must not allow unrestricted SSH,' and deploy that exact collection consistently to many accounts and Regions in its AWS Organization, tracking compliance for the whole collection as one unit. Which AWS Config capability BEST fits?",
+    "options": [
+      "A single, individually created Config rule per account, manually replicated by copying JSON parameters between accounts.",
+      "An AWS Config aggregator, which only provides a read-only, consolidated view of existing compliance data and cannot deploy rules.",
+      "AWS Trusted Advisor, which offers fixed, non-customizable best-practice checks that cannot be extended with custom rules.",
+      "An AWS Config conformance pack, a packaged collection of Config rules and remediation actions defined as a single template that can be deployed consistently across many accounts and Regions in an organization, for example via CloudFormation StackSets, with compliance tracked for the pack as a whole."
+    ],
+    "correct": [3],
+    "explanation": "A <b>conformance pack</b> packages a set of Config rules and their associated remediation actions into a single deployable template, which an organization can roll out consistently to many accounts and Regions at once, commonly through CloudFormation StackSets, and reports compliance for the whole packaged collection, matching every part of the requirement. Manually replicating individual rules account by account is exactly the inconsistent, error-prone process a conformance pack is meant to replace. A Config aggregator only gives a consolidated, read-only view of compliance data that already exists; it does not deploy rules or remediations anywhere. Trusted Advisor's checks are fixed and cannot be authored as custom rules, so it cannot represent the company's own specific rule set.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/config/latest/developerguide/conformance-packs.html",
+    "id": "scsc03-0045"
+  },
+  {
+    "domain": "Security Foundations and Governance",
+    "tag": "Domain 6",
+    "type": "single",
+    "stem": "A central security team manages 30 AWS accounts across 3 Regions and wants one consolidated dashboard showing AWS Config resource compliance status across every account and Region, without logging into each account individually. Which AWS Config capability BEST provides this?",
+    "options": [
+      "An AWS Config aggregator, which collects configuration and compliance data from multiple source accounts and Regions, or an entire AWS Organization, into a single aggregator account for one consolidated view.",
+      "A conformance pack deployed only in the management account, which reports on the management account's resources only.",
+      "AWS Trusted Advisor's consolidated view of Support case history.",
+      "Amazon CloudWatch composite alarms, which combine multiple alarm states into a single alarm."
+    ],
+    "correct": [0],
+    "explanation": "An <b>AWS Config aggregator</b> is built specifically to collect configuration and compliance data from many source accounts and Regions, or an entire AWS Organization, into a single aggregator account, giving one consolidated view without switching accounts, which is exactly the requirement. A conformance pack deployed only in the management account reports on that account's own resources; it does not pull in data from other accounts, so it cannot serve as the multi-account dashboard by itself. Trusted Advisor's Support case history view has nothing to do with Config compliance data. CloudWatch composite alarms combine the states of existing CloudWatch alarms into one alarm; they do not aggregate Config compliance data across accounts.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/config/latest/developerguide/aggregate-data.html",
+    "id": "scsc03-0046"
+  },
+  {
+    "domain": "Security Foundations and Governance",
+    "tag": "Domain 6",
+    "type": "single",
+    "stem": "A compliance team must continuously collect evidence, such as configuration snapshots, resource inventories, and control-test results, mapped to a specific compliance framework like PCI DSS, to support an upcoming external audit, and wants the evidence collection to run continuously rather than only at audit time. Which AWS service BEST supports this?",
+    "options": [
+      "AWS Config, used alone with no other service, since Config rules alone constitute a full audit-ready evidence package mapped to named compliance frameworks.",
+      "AWS Audit Manager, which maps prebuilt or custom control sets to frameworks such as PCI DSS, continuously and automatically collects evidence from services like AWS Config, CloudTrail, and Security Hub, and organizes it into audit-ready reports.",
+      "Amazon Macie, which discovers sensitive data in S3 but does not map evidence to compliance frameworks.",
+      "AWS Trusted Advisor, which offers point-in-time recommendations without continuous evidence collection tied to named frameworks."
+    ],
+    "correct": [1],
+    "explanation": "<b>AWS Audit Manager</b> uses prebuilt (and custom) framework mappings, such as one for PCI DSS, to continuously and automatically collect evidence from sources like AWS Config, CloudTrail, and Security Hub, and it organizes that evidence into structured, audit-ready assessment reports, exactly matching the continuous, framework-mapped evidence collection the team wants. AWS Config alone evaluates and reports on resource compliance against rules, but it does not organize that data into named-framework evidence packages or manage the audit workflow; Audit Manager builds on top of Config as one of its evidence sources. Macie is focused on discovering and classifying sensitive data, not organizing audit evidence against a framework. Trusted Advisor gives point-in-time best-practice recommendations, not continuous, framework-mapped evidence collection.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/audit-manager/latest/userguide/what-is.html",
+    "id": "scsc03-0047"
+  },
+  {
+    "domain": "Security Foundations and Governance",
+    "tag": "Domain 6",
+    "type": "single",
+    "stem": "An AWS Control Tower administrator needs to enforce that member accounts in the organization can NEVER disable CloudTrail logging, a hard, always-on restriction enforced before the action can even occur, while separately being alerted whenever an S3 bucket is found without encryption enabled, a check performed after the fact against existing resources. Which pairing of guardrail types matches these two needs?",
+    "options": [
+      "Both requirements are met by the same type of guardrail, since Control Tower guardrails do not distinguish between preventing an action and detecting a condition.",
+      "A detective guardrail for disabling CloudTrail, implemented as a Config rule, and a preventive guardrail for the encryption check, implemented as an SCP.",
+      "A preventive guardrail, implemented via a service control policy that denies the CloudTrail-disabling action outright, for the first requirement, and a detective guardrail, implemented via an AWS Config rule that evaluates existing S3 buckets and flags noncompliant ones, for the second requirement.",
+      "Both requirements are best met with IAM permission boundaries, since Control Tower does not provide any native guardrail mechanism for either scenario."
+    ],
+    "correct": [2],
+    "explanation": "Control Tower <b>preventive guardrails</b> are implemented as <b>service control policies</b> that block a disallowed action before it can happen at all, which fits the 'CloudTrail can never be disabled' requirement, while <b>detective guardrails</b> are implemented as <b>AWS Config rules</b> that evaluate existing resources after the fact and flag noncompliant ones, which fits the 'alert when an S3 bucket lacks encryption' requirement. The two guardrail types are not interchangeable and do serve different purposes, so the first option is wrong to claim they are the same. The second option swaps the mechanisms: disabling CloudTrail is exactly the kind of hard block an SCP-based preventive guardrail enforces, not a Config-based detective one, and an SCP cannot evaluate existing resource state such as bucket encryption after the fact. Control Tower does provide native preventive and detective guardrail mechanisms; IAM permission boundaries are unrelated to either scenario here.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/controltower/latest/userguide/how-controls-work.html",
+    "id": "scsc03-0048"
+  },
+  {
+    "domain": "Security Foundations and Governance",
+    "tag": "Domain 6",
+    "type": "single",
+    "stem": "A security team suspects that CloudTrail log files stored in S3 may have been tampered with after delivery, and wants a way to cryptographically verify that a specific log file has not been altered or deleted since CloudTrail delivered it. Which CloudTrail feature provides this?",
+    "options": [
+      "S3 Object Lock in governance mode, which is the only mechanism CloudTrail offers to detect tampering.",
+      "AWS Config resource compliance history for the S3 bucket.",
+      "GuardDuty S3 Protection, which flags any modification to any object in the bucket as malicious.",
+      "CloudTrail log file integrity validation, which uses digitally signed digest files, delivered periodically alongside the log files, that can be used to cryptographically verify that a given log file has not been modified or deleted since CloudTrail delivered it."
+    ],
+    "correct": [3],
+    "explanation": "<b>CloudTrail log file integrity validation</b> generates digitally signed <b>digest files</b> that reference the hashes of the actual log files delivered in a given period; validating a log file against its digest cryptographically proves whether the log file has been modified or deleted since delivery, which is exactly the tamper-detection capability requested. S3 Object Lock can independently help prevent deletion or overwrite of objects, but it is a separate S3 feature, not a CloudTrail-native tamper-verification mechanism, and it is not the only or primary way CloudTrail addresses this. AWS Config tracks configuration compliance history for resources like the bucket's own settings, not the integrity of individual log file contents. GuardDuty S3 Protection looks for suspicious API access patterns and threat indicators, not cryptographic verification of a specific file's integrity.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-log-file-validation-intro.html",
+    "id": "scsc03-0049"
+  },
+  {
+    "domain": "Security Foundations and Governance",
+    "tag": "Domain 6",
+    "type": "single",
+    "stem": "A security team wants AWS Config to automatically remediate noncompliant resources the moment a rule evaluation flags them, for example automatically enabling S3 bucket encryption on any bucket found without it, with no analyst manually running a script. Which AWS Config capability BEST supports this?",
+    "options": [
+      "Config rule remediation configured with an SSM Automation document as the remediation action, which Config can trigger automatically whenever the rule evaluates a resource as NON_COMPLIANT, applying the fix without manual intervention.",
+      "A conformance pack alone, since packaging rules together automatically grants them the ability to remediate resources.",
+      "AWS Trusted Advisor, which can flag but never remediate noncompliant resources of any kind.",
+      "Amazon Inspector, which reports vulnerabilities but is not integrated with AWS Config's rule evaluation results."
+    ],
+    "correct": [0],
+    "explanation": "AWS Config supports attaching a <b>remediation configuration</b>, most often an <b>SSM Automation document</b>, to a Config rule; when set to automatic, Config invokes that remediation as soon as the rule evaluates a resource as <b>NON_COMPLIANT</b>, applying the fix, such as enabling S3 bucket encryption, without any analyst running a script by hand. Simply packaging rules into a conformance pack does not by itself grant remediation ability; a conformance pack can include remediation actions, but the remediation mechanism is still the same Config-rule-plus-SSM-Automation pairing, not something conformance packing adds on its own. Trusted Advisor's checks are advisory only and have no built-in remediation action. Amazon Inspector reports vulnerabilities on workloads but does not consume Config rule evaluation results or trigger Config remediations.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/config/latest/developerguide/remediation.html",
+    "id": "scsc03-0050"
   }
 ]
