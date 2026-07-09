@@ -242,7 +242,7 @@
       3
     ],
     "explanation": "<b>Self-attention</b> is the mechanism unique to the transformer architecture that lets the model weigh how relevant every other token is to the one currently being processed, which is what enables transformers to capture long-range dependencies. <b>Convolution</b> and <b>pooling</b> are building blocks of convolutional neural networks used mainly in computer vision, not the defining transformer mechanism. <b>Gradient descent</b> is the general training optimization algorithm used across most neural networks, not something specific to transformers.",
-    "difficulty": "medium",
+    "difficulty": "easy",
     "docUrl": "https://aws.amazon.com/what-is/transformers-in-artificial-intelligence/",
     "domain": "Fundamentals of GenAI",
     "tag": "Domain 2",
@@ -394,7 +394,7 @@
       0
     ],
     "explanation": "<b>SageMaker JumpStart</b> is the model hub inside SageMaker where teams browse pretrained foundation and open-source models and then deploy or fine-tune them on infrastructure they manage directly, matching the described need for more infrastructure control. <b>Amazon Q Business</b> is an assistant grounded in company content, not a model hub for deploy-and-fine-tune workflows. <b>Amazon Bedrock</b> deliberately abstracts away hosting infrastructure, which is the opposite of what this team wants. <b>AWS Trainium</b> is training hardware, not a model catalog.",
-    "difficulty": "medium",
+    "difficulty": "easy",
     "docUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/studio-jumpstart.html",
     "domain": "Fundamentals of GenAI",
     "tag": "Domain 2",
@@ -472,7 +472,7 @@
       3
     ],
     "explanation": "The <b>context window</b> is the maximum amount of text, measured in tokens, that a model can take into account in one request; when input exceeds it, earlier content is effectively dropped or truncated, matching the described behavior. Temperature governs randomness, not how much text fits in a request. The training data cutoff date affects the model's factual knowledge horizon, not how much of a given prompt it can process. Embedding dimension describes vector size, unrelated to how much input text a model can consider at once.",
-    "difficulty": "medium",
+    "difficulty": "hard",
     "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html",
     "domain": "Applications of Foundation Models",
     "tag": "Domain 3",
@@ -671,22 +671,20 @@
     "id": "aifc01-0035"
   },
   {
-    "type": "multi",
-    "stem": "A company is choosing AWS AI services for a customer-experience project. Which TWO of the following service-to-capability pairings are correct? (Select TWO.)",
+    "type": "single",
+    "stem": "Which statement correctly pairs an AWS AI service with its core capability?",
     "options": [
-      "Amazon Transcribe converts spoken audio into text.",
       "Amazon Polly converts spoken audio into text.",
-      "Amazon Rekognition analyzes images and video to detect objects, faces, and scenes.",
       "Amazon Kendra is a text-to-speech service for generating natural-sounding voice audio.",
+      "Amazon Rekognition analyzes images and video to detect objects, faces, and scenes.",
       "Amazon Lex is a managed relational database service for storing conversation transcripts."
     ],
     "correct": [
-      0,
       2
     ],
-    "explanation": "<b>Amazon Transcribe</b> performs automatic speech recognition, converting spoken audio into text, and <b>Amazon Rekognition</b> analyzes images and video to detect objects, faces, and scenes, so both pairings are correct. The Polly pairing is backwards: Polly performs text-to-speech, turning text into natural-sounding audio, the opposite of speech-to-text. Kendra is an intelligent enterprise search service, not a text-to-speech service. Lex builds conversational chatbot interfaces using voice and text; it is not a relational database.",
+    "explanation": "<b>Amazon Rekognition</b> analyzes images and video to detect objects, faces, and scenes, which is a correct pairing. The Polly pairing is backwards: Polly performs text-to-speech, turning text into natural-sounding audio, the opposite of speech-to-text (that is Amazon Transcribe's role). Kendra is an intelligent enterprise search service, not a text-to-speech service. Lex builds conversational chatbot interfaces using voice and text; it is not a relational database.",
     "difficulty": "medium",
-    "docUrl": "https://docs.aws.amazon.com/transcribe/latest/dg/what-is.html",
+    "docUrl": "https://docs.aws.amazon.com/rekognition/latest/dg/what-is.html",
     "domain": "Applications of Foundation Models",
     "tag": "Domain 3",
     "id": "aifc01-0036"
@@ -761,7 +759,7 @@
       1
     ],
     "explanation": "<b>SageMaker Clarify</b> is purpose-built for both needs described: it measures statistical bias in training data across groups before training, and it produces feature-importance explanations for individual predictions after training. <b>Model Monitor</b> instead watches for data and prediction drift after a model is already deployed, a different concern. <b>Feature Store</b> centralizes and serves engineered features, with no bias-detection or explainability role. <b>Ground Truth</b> manages human labeling workflows, unrelated to bias measurement or prediction explanation.",
-    "difficulty": "medium",
+    "difficulty": "easy",
     "docUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-model-explainability.html",
     "domain": "Guidelines for Responsible AI",
     "tag": "Domain 4",
@@ -799,7 +797,7 @@
       2
     ],
     "explanation": "<b>Underrepresentation in the training data</b> is the classic root cause of this pattern: when certain groups make up too small a share of training examples, the model learns their patterns poorly and performs worse for them after deployment. <b>Temperature</b> is a generative-model inference setting unrelated to a discriminative facial-analysis model's group-level accuracy. <b>RLHF</b> is a technique for aligning generative language models with human preferences, not a cause of demographic performance gaps in a vision model. Choosing <b>ROUGE over BLEU</b> is an evaluation-metric mismatch for text tasks, unrelated to an image model's skin-tone performance gap.",
-    "difficulty": "medium",
+    "difficulty": "hard",
     "docUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-detect-data-bias.html",
     "domain": "Guidelines for Responsible AI",
     "tag": "Domain 4",
@@ -858,7 +856,7 @@
       3
     ],
     "explanation": "<b>Guardrails for Amazon Bedrock</b> is purpose-built for exactly this: configurable content filters, denied topics, and PII redaction applied to both inputs and outputs of a foundation model application. <b>Agents</b> orchestrate multi-step tool-using tasks, a different capability. <b>Knowledge Bases</b> connect a model to a retrieval data source for RAG, not content safety controls. <b>Model customization</b> (fine-tuning) changes model behavior through training, not through configurable runtime content filters.",
-    "difficulty": "medium",
+    "difficulty": "easy",
     "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails.html",
     "domain": "Security, Compliance, and Governance for AI Solutions",
     "tag": "Domain 5",
@@ -896,7 +894,7 @@
       0
     ],
     "explanation": "<b>AWS KMS</b> is the service that creates, manages, and controls access to the cryptographic keys used to encrypt data at rest and in transit across AWS services such as S3 and SageMaker. <b>CloudWatch</b> collects logs and metrics for monitoring, unrelated to key management. <b>AWS Config</b> tracks configuration changes over time, not encryption keys. <b>Amazon SNS</b> is a messaging service for notifications, unrelated to encryption.",
-    "difficulty": "medium",
+    "difficulty": "easy",
     "docUrl": "https://docs.aws.amazon.com/kms/latest/developerguide/overview.html",
     "domain": "Security, Compliance, and Governance for AI Solutions",
     "tag": "Domain 5",
@@ -934,7 +932,7 @@
       0
     ],
     "explanation": "<b>AWS CloudTrail</b> records API activity across AWS services, capturing who made each call, when, and from where, which is exactly the audit trail this compliance team needs for Bedrock and SageMaker usage. <b>Macie</b> discovers and classifies sensitive data in S3, a different governance function from call-level auditing. <b>QuickSight</b> is a BI and dashboarding tool, not an API activity log. <b>Glue</b> is a data integration and ETL service, unrelated to auditing API calls.",
-    "difficulty": "medium",
+    "difficulty": "easy",
     "docUrl": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-user-guide.html",
     "domain": "Security, Compliance, and Governance for AI Solutions",
     "tag": "Domain 5",
