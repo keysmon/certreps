@@ -72,7 +72,7 @@
     ],
     "explanation": "<b>AWS Secrets Manager supports built-in automatic rotation for Amazon RDS secrets</b>, using a Lambda rotation function that AWS manages for common database engines, so passwords rotate on a schedule with no application changes beyond retrieving the current secret. KMS only encrypts data and has no rotation-scheduling or credential-generation capability of its own. Parameter Store SecureString parameters store secrets securely but have no built-in rotation workflow without extra automation. Cognito issues identity tokens for application users, not database credentials.",
     "difficulty": "easy",
-    "docUrl": "https://docs.aws.amazon.com/secretsmanager/latest/userguide/rotate-secrets_how-rotation-works.html",
+    "docUrl": "https://docs.aws.amazon.com/secretsmanager/latest/userguide/rotating-secrets.html",
     "id": "saac03-0004"
   },
   {
@@ -110,7 +110,7 @@
     ],
     "explanation": "<b>An EventBridge rule that matches the GuardDuty finding and invokes a Lambda function</b> reacts within seconds of the finding and automatically applies the isolation security group, requiring no human step. Emailing the team for manual action is slower and not automated. AWS Config rules evaluate configuration compliance on a periodic or change-triggered basis but are not designed to react to a specific GuardDuty threat finding or to change a security group. Trusted Advisor produces periodic best-practice reports, not real-time, finding-specific remediation.",
     "difficulty": "hard",
-    "docUrl": "https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_findings_cloudwatch.html",
+    "docUrl": "https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_findings_eventbridge.html",
     "id": "saac03-0006"
   },
   {
@@ -148,7 +148,7 @@
     ],
     "explanation": "<b>An AWS WAF rate-based rule</b> tracks the request rate per IP address and automatically blocks addresses that exceed the configured threshold, mitigating the application-layer flood directly at the edge with no infrastructure changes. Scaling instance size treats a symptom rather than the cause and still lets abusive traffic reach the application. GuardDuty detects and reports threats but does not block traffic itself. Adding a Network Load Balancer changes how traffic is distributed but does not filter or rate-limit abusive requests.",
     "difficulty": "medium",
-    "docUrl": "https://docs.aws.amazon.com/waf/latest/developerguide/waf-rate-based-rules.html",
+    "docUrl": "https://docs.aws.amazon.com/waf/latest/developerguide/waf-rule-statement-type-rate-based.html",
     "id": "saac03-0008"
   },
   {
@@ -437,7 +437,7 @@
     ],
     "explanation": "<b>An SQS queue decouples the two services</b>: the order-processing application enqueues a message and moves on immediately, so a slow or unavailable inventory service no longer blocks or times out order placement, and the queue naturally buffers load. Increasing instance size does not address the architectural coupling causing the slowdown. Reducing the timeout only fails faster; it does not remove the dependency. Moving both services to the same AZ reduces latency slightly but does not remove the synchronous coupling that causes cascading failure.",
     "difficulty": "easy",
-    "docUrl": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-how-it-works.html",
+    "docUrl": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/welcome.html",
     "id": "saac03-0023"
   },
   {
@@ -532,7 +532,7 @@
     ],
     "explanation": "<b>Amazon EFS Standard storage class stores file data and metadata redundantly across multiple Availability Zones</b> and can be mounted concurrently by instances in any AZ within the Region, so an AZ failure does not take down the shared file system. An EBS volume attached to and shared from a single instance creates a single point of failure at that instance. Instance store volumes are ephemeral, local to one instance, and manual rsync is operationally fragile and not truly shared or resilient. A standard EBS volume can only attach to one instance at a time (except io2 Multi-Attach within a single AZ), so it cannot be shared across AZs at all.",
     "difficulty": "easy",
-    "docUrl": "https://docs.aws.amazon.com/efs/latest/ug/availability-durability.html",
+    "docUrl": "https://docs.aws.amazon.com/efs/latest/ug/how-it-works.html",
     "id": "saac03-0028"
   },
   {
@@ -551,7 +551,7 @@
     ],
     "explanation": "<b>Externalizing session state to a shared cache such as ElastiCache</b> makes the application stateless at the instance level, so any healthy instance can serve any user and terminating or replacing an instance no longer loses that user's session. Increasing the grace period delays detection but does not solve the underlying architecture problem. Disabling instance replacement removes the self-healing benefit of Auto Scaling and leaves unhealthy instances in service. Sticky sessions alone still keep session data in one instance's memory, so replacing that instance still loses the session.",
     "difficulty": "medium",
-    "docUrl": "https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/elasticache-use-cases.html",
+    "docUrl": "https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/elasticache-use-cases.html",
     "id": "saac03-0029"
   },
   {
@@ -646,7 +646,7 @@
     ],
     "explanation": "<b>Publishing to an SNS topic with a dedicated SQS queue per subscriber</b> fans the event out to all three systems independently and durably; each queue buffers messages for its own consumer, so one slow or unavailable system does not block delivery to the others, and adding a fourth subscriber only means subscribing a new queue with no producer changes. Calling each API directly and sequentially couples the producer to every consumer's availability and latency. Writing directly to each downstream database tightly couples the producer to the internal schemas of every system. A single shared queue where all three systems poll and delete messages means each message can only be processed once, not by all three consumers, so the other two systems would never see it.",
     "difficulty": "medium",
-    "docUrl": "https://docs.aws.amazon.com/sns/latest/dg/sns-common-scenarios.html",
+    "docUrl": "https://docs.aws.amazon.com/sns/latest/dg/sns-sqs-as-subscriber.html",
     "id": "saac03-0034"
   },
   {
@@ -726,7 +726,7 @@
     ],
     "explanation": "<b>Amazon ElastiCache placed in front of the database with a cache-aside pattern</b> serves the repeated catalog queries from an in-memory cache instead of hitting RDS every time, directly cutting database read load and latency for hot queries. Increasing storage size affects capacity, not the throughput of repeated read queries. Disabling automated backups removes a durability safeguard and has little to no effect on read query performance. Read replicas do help distribute read traffic, but sizing them smaller than the primary would create a performance bottleneck rather than solve the caching problem, and it does not target the specific repeated-query pattern the way a cache does.",
     "difficulty": "medium",
-    "docUrl": "https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/elasticache-use-cases.html",
+    "docUrl": "https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/elasticache-use-cases.html",
     "id": "saac03-0038"
   },
   {
@@ -1186,7 +1186,7 @@
     ],
     "explanation": "<b>Applying a consistent cost allocation tag to every resource and activating it in the Billing and Cost Management console</b> lets Cost Explorer filter and group cost and usage data by that tag, giving an accurate, automated per-business-unit breakdown. Creating a separate management account per business unit is a much larger organizational restructuring, not a straightforward tagging solution, and management accounts are not typically created per business unit. Shield Advanced is a DDoS protection service and has no cost-reporting feature. Manual spreadsheet estimates are error-prone and not based on actual metered usage, unlike tag-based cost allocation.",
     "difficulty": "easy",
-    "docUrl": "https://docs.aws.amazon.com/cur/latest/userguide/cost-alloc-tags.html",
+    "docUrl": "https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html",
     "id": "saac03-0062"
   },
   {
