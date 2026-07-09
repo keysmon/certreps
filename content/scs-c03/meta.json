@@ -1,0 +1,52 @@
+{
+  "certId": "scs-c03",
+  "idPrefix": "scsc03",
+  "vendor": "AWS",
+  "title": "AWS Certified Security - Specialty",
+  "examCode": "SCS-C03",
+  "level": "Specialty",
+  "mockQuestionCount": 50,
+  "mockMinutes": 130,
+  "passLinePct": 75,
+  "verified": "Q3 2026",
+  "seoTitle": "Free SCS-C03 Practice Exam - AWS Certified Security Specialty",
+  "seoDescription": "Free full-length SCS-C03 practice exam with {n} original scenario questions, instant explanations, and a per-domain readiness read. No signup.",
+  "domains": [
+    {
+      "name": "Detection",
+      "tag": "Domain 1",
+      "weightPct": 16,
+      "mockCount": 8
+    },
+    {
+      "name": "Incident Response",
+      "tag": "Domain 2",
+      "weightPct": 14,
+      "mockCount": 7
+    },
+    {
+      "name": "Infrastructure Security",
+      "tag": "Domain 3",
+      "weightPct": 18,
+      "mockCount": 9
+    },
+    {
+      "name": "Identity and Access Management",
+      "tag": "Domain 4",
+      "weightPct": 20,
+      "mockCount": 10
+    },
+    {
+      "name": "Data Protection",
+      "tag": "Domain 5",
+      "weightPct": 18,
+      "mockCount": 9
+    },
+    {
+      "name": "Security Foundations and Governance",
+      "tag": "Domain 6",
+      "weightPct": 14,
+      "mockCount": 7
+    }
+  ]
+}
