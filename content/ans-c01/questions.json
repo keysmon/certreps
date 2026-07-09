@@ -1,0 +1,207 @@
+[
+  {
+    "domain": "Network Design",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A team is designing Direct Connect connectivity for a mission-critical workload and needs the configuration that the AWS Direct Connect Resiliency Toolkit recommends for the highest connection SLA (99.99%), by terminating separate connections on separate devices in more than one Direct Connect location. Which configuration matches this recommendation?",
+    "options": [
+      "Four connections that terminate on separate devices, spread across two or more Direct Connect locations.",
+      "A single connection at one Direct Connect location, optionally placed in a LAG to increase throughput.",
+      "Two connections, each terminating on a different device, but both within the same Direct Connect location.",
+      "Two connections, one at each of two Direct Connect locations, each using a single device per location."
+    ],
+    "correct": [0],
+    "explanation": "The <b>Maximum resiliency</b> model uses <b>separate connections that terminate on separate devices in more than one location</b> (a minimum of four connections across two or more locations) and is the only Resiliency Toolkit model that achieves the 99.99% SLA while protecting against device, connectivity, and complete location failure at the same time. A single connection has no built-in redundancy at all. Two connections on separate devices within one location is the Development and Test model, which protects against device failure but not location failure and does not reach the higher SLA tiers. One connection per location, one device each, is the High Resiliency model, which achieves the 99.9% SLA rather than 99.99%.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/directconnect/latest/UserGuide/resiliency_toolkit.html",
+    "id": "ansc01-0001"
+  },
+  {
+    "domain": "Network Design",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A media company is designing a transit gateway architecture that must deliver multicast video streams to receivers in several attached VPCs, while a subset of receivers sit at an on-premises data center reached over an existing Direct Connect connection. Which design constraint must the team account for regarding transit gateway multicast?",
+    "options": [
+      "Transit gateway multicast automatically tunnels multicast traffic over any Direct Connect virtual interface without extra configuration.",
+      "Transit gateway multicast can route multicast traffic between subnets in attached VPCs, but multicast routing is not supported over Direct Connect, Site-to-Site VPN, peering attachments, or Connect attachments, so on-premises receivers need a different distribution method.",
+      "Transit gateway multicast requires every receiving instance to use a non-Nitro instance type to join a multicast group.",
+      "Transit gateway multicast can be enabled on any existing transit gateway at any time without recreating it."
+    ],
+    "correct": [1],
+    "explanation": "<b>Transit gateway multicast routes traffic only between subnets in attached VPCs</b>, and multicast routing is explicitly <b>not supported over Direct Connect, Site-to-Site VPN, peering attachments, or Connect attachments</b>, so the on-premises receivers need a separate distribution mechanism rather than native transit gateway multicast. Multicast is not automatically tunneled over Direct Connect; it is unsupported there entirely. Non-Nitro instances cannot even act as multicast senders and must have source/destination checking disabled, the opposite of being required for every receiver. A new transit gateway must be created specifically to support multicast; it cannot be enabled retroactively on an existing one.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/vpc/latest/tgw/tgw-multicast-overview.html",
+    "id": "ansc01-0002"
+  },
+  {
+    "domain": "Network Design",
+    "tag": "Domain 1",
+    "type": "multi",
+    "stem": "A company peers three transit gateways in a chain: TGW-A is peered with TGW-B, and TGW-B is peered with TGW-C. A VPC attached to TGW-A needs to reach a VPC attached to TGW-C. Which TWO statements correctly describe the design implications of transit gateway peering in this scenario? (Select TWO.)",
+    "options": [
+      "Traffic from the VPC on TGW-A can reach the VPC on TGW-C automatically through TGW-B, because transit gateway peering supports transitive routing.",
+      "Transit gateway peering does not support transitive routing, so a direct peering attachment between TGW-A and TGW-C is required for that traffic to flow.",
+      "Routes to a peering attachment are added automatically through dynamic route propagation, so no static routes are needed in the transit gateway route tables.",
+      "Routes to a peering attachment must be added as static routes in each transit gateway's route table; dynamic route propagation is not used over peering attachments.",
+      "Inter-Region transit gateway peering traffic is sent unencrypted across the AWS backbone between Regions."
+    ],
+    "correct": [1, 3],
+    "explanation": "<b>Transit gateway peering is not transitive</b>: a VPC on TGW-A cannot reach a VPC on TGW-C just because TGW-A peers with TGW-B and TGW-B peers with TGW-C, so a direct peering attachment between TGW-A and TGW-C is required. Routing over a peering attachment also always uses <b>static routes added to each transit gateway route table</b>, since peering attachments do not support dynamic route propagation. The transitive-routing option is the opposite of how peering behaves, and automatic dynamic propagation over peering attachments does not exist. Inter-Region peering traffic is encrypted with AES-256 at the virtual network layer (and again at the physical layer outside AWS's control), so it is not sent unencrypted.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/vpc/latest/tgw/tgw-peering.html",
+    "id": "ansc01-0003"
+  },
+  {
+    "domain": "Network Design",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A company centralizes networking in a shared-services account and wants every VPC in dozens of member accounts to resolve a corporate domain hosted on-premises, without configuring a separate DNS forwarder in every account. Which design achieves this with the least ongoing per-account effort?",
+    "options": [
+      "In each member account, deploy a separate Route 53 Resolver outbound endpoint and a duplicate forwarding rule pointing to the on-premises DNS servers.",
+      "Configure a Route 53 private hosted zone in every member account that duplicates the on-premises DNS records.",
+      "In the shared-services account, create one Route 53 Resolver outbound endpoint and one forwarding rule for the domain, then share the rule using AWS Resource Access Manager so member accounts can associate it with their own VPCs.",
+      "Attach a Route 53 Resolver inbound endpoint to every VPC that needs to query the on-premises domain."
+    ],
+    "correct": [2],
+    "explanation": "<b>Route 53 Resolver forwarding rules can be created once in a central account and shared through AWS RAM</b>, so each member account only has to associate the shared rule with its own VPCs, avoiding duplicated outbound endpoints and rules everywhere. Deploying a separate outbound endpoint and rule in every account duplicates the same configuration repeatedly. Manually duplicating DNS records in a private hosted zone creates an ongoing synchronization burden and is not how conditional forwarding works. An <b>inbound</b> endpoint accepts queries arriving from on-premises into the VPC; it is the wrong direction for VPC resources querying an on-premises name, which needs an <b>outbound</b> endpoint.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resolver.html",
+    "id": "ansc01-0004"
+  },
+  {
+    "domain": "Network Design",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A company has a primary Direct Connect private virtual interface and a backup private virtual interface to the same VPC, and wants inbound traffic from AWS to always prefer the primary path unless it fails, without changing AS_PATH prepending. Which BGP community tag design achieves this active/passive behavior?",
+    "options": [
+      "Apply the same local preference community, such as 7224:7200, to the prefixes on both virtual interfaces so traffic load-balances across them.",
+      "Apply the NO_EXPORT community to the primary virtual interface only.",
+      "Rely on Multi-Exit Discriminator (MED) values instead of any local preference community tag, since MED is evaluated before AS_PATH.",
+      "Apply a higher local preference community, such as 7224:7300, to the prefixes advertised on the primary virtual interface, and a lower one, such as 7224:7100, on the backup virtual interface."
+    ],
+    "correct": [3],
+    "explanation": "Direct Connect local preference BGP communities let you set <b>a higher-preference tag (7224:7300) on the primary virtual interface and a lower-preference tag (7224:7100) on the backup virtual interface</b> to build deterministic active/passive failover, and local preference is evaluated before AS_PATH. Applying the same community to both interfaces is the active/active load-balancing pattern, the opposite of what is needed here. NO_EXPORT only limits how far a route propagates beyond the Amazon network and has no effect on active/passive preference. AWS does not recommend relying on MED for this, and MED is in fact evaluated after prefix length, local preference, and AS_PATH, making it a weak, low-priority mechanism for this purpose.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/directconnect/latest/UserGuide/routing-and-bgp.html",
+    "id": "ansc01-0005"
+  },
+  {
+    "domain": "Network Design",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A network team wants to own and centrally manage the VPCs, route tables, and network ACLs for the whole company, while individual application teams in their own AWS accounts deploy EC2 instances and RDS databases into the appropriate subnets without needing their own VPCs. Which design meets this goal?",
+    "options": [
+      "Have the network team share specific subnets from its VPC using AWS Resource Access Manager with the application team accounts (participants) in the same AWS Organizations organization.",
+      "Give every application team account a VPC peering connection to the network team's VPC.",
+      "Have every application team create its own VPC and connect to the network team's VPC over a transit gateway.",
+      "Grant application teams IAM permissions to modify the network team's VPC directly using cross-account roles."
+    ],
+    "correct": [0],
+    "explanation": "<b>VPC subnet sharing through AWS RAM</b> lets an owner account share specific subnets with participant accounts in the same organization; participants can then deploy their own resources (EC2, RDS, Lambda, and so on) directly into the shared subnets, while the owner retains control of the VPC itself, its route tables, and its NACLs, and participants cannot view or modify other participants' or the owner's resources. Peering and a transit gateway design both still require every application team to run its own VPC, exactly the operational overhead the network team wants to avoid. Granting cross-account IAM roles to modify the owner's VPC breaks the centralized-ownership model the network team wants to keep.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/vpc/latest/userguide/vpc-sharing.html",
+    "id": "ansc01-0006"
+  },
+  {
+    "domain": "Network Design",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A team enables IPv6 for a VPC and wants instances in a private subnet to initiate outbound IPv6 connections to the internet, while preventing the internet from initiating inbound IPv6 connections to those instances. A NAT gateway is already used for IPv4 outbound access. Which component should the team add for IPv6?",
+    "options": [
+      "A second NAT gateway configured specifically for IPv6 traffic.",
+      "An egress-only internet gateway, with a route for ::/0 pointing to it in the subnet's route table.",
+      "A standard internet gateway attached directly to the private subnet's route table for ::/0.",
+      "A Direct Connect public virtual interface to reach IPv6 destinations."
+    ],
+    "correct": [1],
+    "explanation": "An <b>egress-only internet gateway</b> is the IPv6 equivalent of a NAT gateway for outbound-only access: it lets private-subnet instances initiate outbound IPv6 traffic while blocking internet-initiated inbound connections, and it is enabled with a ::/0 route in the subnet's route table. NAT gateways are an IPv4-only construct and do not support IPv6. Attaching a standard internet gateway directly would make the subnet's IPv6 addresses reachable from the internet, since IPv6 addresses are globally routable by default, defeating the goal. A Direct Connect public virtual interface is for hybrid connectivity to AWS public endpoints, not general internet access control.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/vpc/latest/userguide/egress-only-internet-gateway.html",
+    "id": "ansc01-0007"
+  },
+  {
+    "domain": "Network Design",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A multiplayer gaming company runs a UDP-based matchmaking service in two AWS Regions and needs a fixed set of entry-point IP addresses, fast failover to the healthy Region, and traffic carried over the AWS global network rather than the public internet. Which service is the BEST fit?",
+    "options": [
+      "Amazon CloudFront, because it caches content at edge locations closest to players.",
+      "Amazon Route 53 latency-based routing alone, without any accelerator.",
+      "AWS Global Accelerator, using static anycast IP addresses that route traffic onto the AWS global network and fail over automatically between healthy endpoints.",
+      "An Application Load Balancer in a single Region with cross-zone load balancing enabled."
+    ],
+    "correct": [2],
+    "explanation": "<b>AWS Global Accelerator</b> provides fixed anycast static IP addresses that bring traffic onto the AWS global network at the nearest edge location, supports non-HTTP protocols such as UDP, and performs automatic health-check-based failover across Regional endpoints, matching every requirement in the stem. CloudFront is an HTTP/S content-delivery cache, not a fit for a UDP matchmaking protocol. Route 53 latency-based routing alone still relies on DNS TTLs for failover and does not carry traffic over the AWS backbone. A single-Region Application Load Balancer provides no multi-Region failover and, as an HTTP(S) load balancer, is not intended for UDP matchmaking traffic either.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/global-accelerator/latest/dg/introduction-how-it-works.html",
+    "id": "ansc01-0008"
+  },
+  {
+    "domain": "Network Design",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A team needs more aggregate throughput between an on-premises network and a transit gateway than a single Site-to-Site VPN tunnel provides, and wants to scale bandwidth by spreading traffic across multiple tunnels. Which design is required to achieve this with equal-cost multi-path routing?",
+    "options": [
+      "Configure static routes on every VPN connection, since ECMP works only with static routing.",
+      "Create a single VPN connection and rely on its two tunnels alone, since ECMP does not apply across separate VPN connections.",
+      "Increase the instance size of the customer gateway device, which automatically enables ECMP across tunnels.",
+      "Establish multiple Site-to-Site VPN connections to the transit gateway using BGP (dynamic routing) with matching AS_PATH length and attributes, so traffic can be spread across all tunnels using ECMP."
+    ],
+    "correct": [3],
+    "explanation": "Equal-cost multi-path routing across VPN tunnels requires <b>BGP dynamic routing</b> so that multiple tunnels, across one or more VPN connections, can present routes with the same AS_PATH length and attributes for the transit gateway to load-balance across; this is also how AWS documents scaling beyond a single Large Bandwidth Tunnel's cap by adding more VPN connections. <b>Static routing does not support ECMP</b> in this way. A single VPN connection's two tunnels exist for tunnel redundancy, not as the mechanism for scaling bandwidth beyond one connection; ECMP explicitly extends across multiple VPN connections. Customer gateway instance size has no bearing on whether ECMP is enabled.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/vpn/latest/s2svpn/VPNTunnels.html",
+    "id": "ansc01-0009"
+  },
+  {
+    "domain": "Network Design",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A network team manages dozens of route tables and security groups across many accounts that all reference the same set of corporate office CIDR ranges. The ranges change periodically, and updating every route table and security group by hand is error-prone. Which design BEST reduces this operational burden?",
+    "options": [
+      "Create a customer-managed prefix list containing the office CIDR ranges, share it using AWS Resource Access Manager, and reference the prefix list ID in route tables and security group rules instead of individual CIDRs.",
+      "Create a separate AWS Managed Microsoft AD directory to store the CIDR ranges as attributes.",
+      "Use AWS Config rules to automatically rewrite security group CIDR entries whenever they drift from a baseline.",
+      "Store the CIDR ranges in an Amazon S3 object and have every route table poll the object for changes."
+    ],
+    "correct": [0],
+    "explanation": "A <b>customer-managed prefix list</b> centralizes a reusable set of CIDR blocks; updating the prefix list once propagates the change everywhere it is referenced in route tables and security group rules, and it can be <b>shared across accounts through AWS RAM</b> for consistent multi-account management. AWS Managed Microsoft AD stores directory objects, not network CIDR configuration. AWS Config can detect and report drift but does not natively rewrite security group CIDR entries as a design pattern for this problem. Route tables and security groups do not poll S3 objects; there is no such native mechanism.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/vpc/latest/userguide/working-with-managed-prefix-lists.html",
+    "id": "ansc01-0010"
+  },
+  {
+    "domain": "Network Design",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A security team wants to insert third-party firewall appliances transparently in front of many application VPCs, with the appliances centrally managed and scaled independently of the applications, and with traffic inspection kept within the same Availability Zone to avoid cross-AZ charges and latency. Which design is BEST?",
+    "options": [
+      "Deploy the firewall appliances directly in each application VPC's public subnet and update each application team's route tables individually.",
+      "Deploy the firewall appliances behind a Gateway Load Balancer in a central inspection VPC, and create a Gateway Load Balancer endpoint in each application VPC's subnet in the matching Availability Zone, with route table entries directing traffic through the endpoint.",
+      "Attach a Network Firewall directly to each application VPC's internet gateway with no endpoints required.",
+      "Run the firewall appliances as targets behind an Application Load Balancer in the inspection VPC and use VPC peering to route traffic to it."
+    ],
+    "correct": [1],
+    "explanation": "<b>Gateway Load Balancer</b> centralizes the appliance fleet in an inspection VPC, and <b>Gateway Load Balancer endpoints deployed in each application VPC's subnet, matched to the same Availability Zone as the load balancer</b>, let route tables transparently redirect traffic through the endpoint using GENEVE encapsulation on UDP port 6081, avoiding cross-AZ traffic. Deploying appliances into every application VPC abandons central management and does not scale independently. Network Firewall integrates through firewall subnets and route tables, not by attaching directly to an internet gateway with no endpoints. An Application Load Balancer operates at Layer 7 for HTTP(S) targets, not the load-balancing tier that transparent GWLB-based appliance insertion uses, and VPC peering does not carry GENEVE-encapsulated GWLB traffic the way a GWLB endpoint does.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/vpc/latest/privatelink/vpce-gateway-load-balancer.html",
+    "id": "ansc01-0011"
+  },
+  {
+    "domain": "Network Design",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A company has a single Direct Connect connection in one Region and transit gateways with VPC attachments in that Region and in a second Region. The team wants on-premises to reach VPCs in both Regions using only the existing single Direct Connect connection. Which design achieves this?",
+    "options": [
+      "Order a second, dedicated Direct Connect connection terminating in the second Region.",
+      "Create a VPC peering connection between the transit gateways in the two Regions.",
+      "Attach a transit virtual interface to a Direct Connect gateway, and associate the Direct Connect gateway with the transit gateway in each Region, configuring allowed prefixes for each association.",
+      "Enable a Site-to-Site VPN connection from on-premises directly into the second Region's transit gateway as the only path to that Region."
+    ],
+    "correct": [2],
+    "explanation": "A <b>Direct Connect gateway</b> is a globally available, distributed resource: associating it with a <b>transit virtual interface</b> on the existing connection and then <b>associating the gateway with a transit gateway in each Region</b> (with allowed prefixes configured per association) lets a single Direct Connect connection reach VPCs across multiple Regions. Ordering a second physical connection is unnecessary extra cost and defeats the single-connection requirement. Transit gateways cannot be linked using VPC peering; that is a distinct feature (transit gateway peering attachments) and does not apply here. Adding a separate VPN into the second Region does not use the existing Direct Connect connection at all.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/directconnect/latest/UserGuide/direct-connect-gateways-intro.html",
+    "id": "ansc01-0012"
+  }
+]
