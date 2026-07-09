@@ -108,6 +108,9 @@ export function CatalogClient({ certs }: { certs: CatalogCert[] }) {
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<SortKey>("pop");
   const [drawerOpen, setDrawerOpen] = useState(false);
+  // Narrow-viewport flag for the drawer a11y guard below. Read from matchMedia in an effect (jsdom
+  // has no matchMedia - guarded), so SSR and the first client render carry no `inert` (no mismatch).
+  const [isNarrow, setIsNarrow] = useState(false);
   // Progress + status hydrate from localStorage in an effect so SSR (and the first client
   // render) show zero-progress "Not started" cards with no hydration mismatch.
   const [progress, setProgress] = useState<Record<string, number>>({});
@@ -127,6 +130,18 @@ export function CatalogClient({ certs }: { certs: CatalogCert[] }) {
     setProgress(prog);
     setStatus(stat);
   }, [certs]);
+
+  // Track the sub-960px breakpoint (where .ct-facets becomes the off-screen drawer) so the closed
+  // drawer can be marked inert without disabling the desktop sidebar (same element, always visible
+  // above 960px). Binds once; matchMedia is absent in jsdom, so tests keep their non-inert behavior.
+  useEffect(() => {
+    if (typeof window.matchMedia !== "function") return;
+    const mq = window.matchMedia("(max-width: 960px)");
+    const sync = () => setIsNarrow(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
 
   // "/" jumps to search, unless focus is already in a field (matches the design shortcut).
   useEffect(() => {
@@ -205,7 +220,9 @@ export function CatalogClient({ certs }: { certs: CatalogCert[] }) {
 
   return (
     <div className="ct-wrap">
-      <aside className={`ct-facets${drawerOpen ? " ct-facets-open" : ""}`} aria-label="Filters">
+      {/* Closed mobile drawer sits off-screen but stays in the tab order - mark it inert then (narrow
+          AND closed). Never inert on desktop, where this same element is the live sticky sidebar. */}
+      <aside className={`ct-facets${drawerOpen ? " ct-facets-open" : ""}`} aria-label="Filters" inert={isNarrow && !drawerOpen}>
         <button type="button" className="ct-facet-close" onClick={() => setDrawerOpen(false)}>
           Done <span aria-hidden="true">{CROSS}</span>
         </button>

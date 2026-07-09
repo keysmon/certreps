@@ -13,6 +13,7 @@
   --panel: #111c29;
   --panel-2: #18273a;
   --panel-3: #20344b;
+  --ink-glass: rgba(10, 14, 21, 0.85); /* translucent ink for sticky bars over content (backdrop-blur) */
 
   /* lines */
   --line: rgba(132, 170, 208, 0.14);
