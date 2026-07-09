@@ -1,0 +1,367 @@
+[
+  {
+    "domain": "Design Secure Architectures",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A company runs an application on EC2 instances that must read objects from an S3 bucket in the same account. The security team requires that no long-term access keys be stored on the instances. Which approach meets this requirement?",
+    "options": [
+      "Create an IAM user with an access key and secret key, and store the credentials in the instance's user data script.",
+      "Embed the AWS account root user access key in the application configuration file.",
+      "Create an IAM role with the required S3 permissions and attach it to the EC2 instances through an instance profile.",
+      "Store an IAM user's access key and secret key in a file on the instance's root EBS volume."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>An IAM role attached to the EC2 instances through an instance profile</b> lets the application retrieve temporary credentials automatically from the instance metadata service, so no long-term keys are stored anywhere. Storing an IAM user's access key in user data or on the EBS volume leaves long-term credentials on disk, and using the root user access key violates least privilege and is never appropriate for an application.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2.html",
+    "id": "saac03-0001"
+  },
+  {
+    "domain": "Design Secure Architectures",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A company in Account A must let a trusted partner in Account B read objects from a specific S3 bucket. The partner must not receive any long-term AWS credentials from Account A. Which approach follows AWS security best practices?",
+    "options": [
+      "Create an IAM role in Account A with a trust policy that allows Account B's IAM role to assume it, and attach a permissions policy that grants read access to the bucket.",
+      "Create an IAM user in Account A, generate an access key, and email the access key to the partner.",
+      "Make the S3 bucket public so the partner can read the objects without any credentials.",
+      "Share the root user credentials of Account A with the partner so they can access the bucket directly."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>A cross-account IAM role with a trust policy that names Account B's role as a trusted principal</b> lets the partner call AWS STS AssumeRole to obtain short-lived, scoped credentials, with no long-term keys ever leaving Account A. Emailing an access key creates a long-lived credential that is hard to rotate and easy to leak. Making the bucket public exposes it to the entire internet, not just the partner. Sharing root credentials violates the core IAM best practice of never using the root user for daily operations.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_common-scenarios_aws-accounts.html",
+    "id": "saac03-0002"
+  },
+  {
+    "domain": "Design Secure Architectures",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A solutions architect is troubleshooting why return traffic from a web server is being dropped. The subnet's network ACL allows inbound traffic on port 443 but has no explicit outbound rule for ephemeral ports back to the client. The instance's security group allows inbound 443 from anywhere. What is the MOST likely cause of the dropped return traffic?",
+    "options": [
+      "Security groups are stateless, so the security group must also allow outbound traffic on the ephemeral port range.",
+      "Network ACLs do not evaluate outbound traffic, only inbound traffic, so the rule is unnecessary.",
+      "Security groups only support inbound rules, so no configuration change is possible.",
+      "Network ACLs are stateless, so a separate outbound rule allowing the ephemeral port range back to the client is required even though the security group allows the traffic."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Network ACLs are stateless</b>, so return traffic must be explicitly permitted by an outbound rule that allows the client's ephemeral port range; without it, the NACL drops the reply even though the inbound request was allowed. Security groups, by contrast, are stateful, so a security group that allows inbound 443 automatically allows the matching return traffic without any outbound rule. NACLs evaluate both inbound and outbound traffic, and security groups support both inbound and outbound rules, so the other two options are factually wrong.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/vpc/latest/userguide/vpc-network-acls.html",
+    "id": "saac03-0003"
+  },
+  {
+    "domain": "Design Secure Architectures",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A company stores database credentials for an Amazon RDS instance in application configuration files. The security team wants the credentials automatically rotated on a schedule without any application code changes to fetch new passwords. Which service should the company use?",
+    "options": [
+      "AWS Key Management Service (KMS) to encrypt the configuration file that stores the password.",
+      "AWS Secrets Manager with automatic rotation configured for the RDS database secret.",
+      "AWS Systems Manager Parameter Store SecureString parameters with no additional configuration.",
+      "Amazon Cognito user pools to issue temporary database passwords."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>AWS Secrets Manager supports built-in automatic rotation for Amazon RDS secrets</b>, using a Lambda rotation function that AWS manages for common database engines, so passwords rotate on a schedule with no application changes beyond retrieving the current secret. KMS only encrypts data and has no rotation-scheduling or credential-generation capability of its own. Parameter Store SecureString parameters store secrets securely but have no built-in rotation workflow without extra automation. Cognito issues identity tokens for application users, not database credentials.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/secretsmanager/latest/userguide/rotate-secrets_how-rotation-works.html",
+    "id": "saac03-0004"
+  },
+  {
+    "domain": "Design Secure Architectures",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "Instances in a private subnet with no internet access must read and write objects in Amazon S3 without traversing the public internet or a NAT gateway. Which solution meets this requirement with the lowest cost?",
+    "options": [
+      "Create a gateway VPC endpoint for Amazon S3 and add a route to it in the private subnet's route table.",
+      "Deploy a NAT gateway in a public subnet and route all S3 traffic through it.",
+      "Attach an internet gateway directly to the private subnet.",
+      "Create an interface VPC endpoint for Amazon S3 in a public subnet and route traffic through the internet gateway."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>A gateway VPC endpoint for S3</b> is added as a route table target and lets private-subnet instances reach S3 over the AWS private network with no NAT gateway, internet gateway, or per-hour endpoint charge, since gateway endpoints for S3 and DynamoDB have no hourly cost. A NAT gateway would work but adds hourly and data-processing charges for traffic that never needs to leave AWS. Attaching an internet gateway to a private subnet defeats the purpose of the subnet being private. An interface endpoint for S3 works but bills hourly and per-GB, making the gateway endpoint the lower-cost choice for S3 specifically.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/vpc/latest/privatelink/vpc-endpoints-s3.html",
+    "id": "saac03-0005"
+  },
+  {
+    "domain": "Design Secure Architectures",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A security team wants to automatically isolate an EC2 instance by changing its security group the moment Amazon GuardDuty reports a finding that the instance is communicating with a known command-and-control IP address. Which design achieves automated remediation with the LEAST operational effort?",
+    "options": [
+      "Configure GuardDuty to email the security team, who will manually update the security group after reviewing the finding.",
+      "Enable AWS Config rules to periodically scan for suspicious security groups and flag them as non-compliant.",
+      "Create an Amazon EventBridge rule that matches the specific GuardDuty finding type and triggers a Lambda function that updates the instance's security group to an isolation group.",
+      "Use AWS Trusted Advisor to generate a weekly report of security groups with overly permissive rules."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>An EventBridge rule that matches the GuardDuty finding and invokes a Lambda function</b> reacts within seconds of the finding and automatically applies the isolation security group, requiring no human step. Emailing the team for manual action is slower and not automated. AWS Config rules evaluate configuration compliance on a periodic or change-triggered basis but are not designed to react to a specific GuardDuty threat finding or to change a security group. Trusted Advisor produces periodic best-practice reports, not real-time, finding-specific remediation.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_findings_cloudwatch.html",
+    "id": "saac03-0006"
+  },
+  {
+    "domain": "Design Secure Architectures",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A company must continuously verify that every new Amazon EBS volume created in an account is encrypted, and automatically flag any that are not, without writing a custom polling script. Which service should the company use?",
+    "options": [
+      "AWS CloudTrail, configured to log all EBS API calls for later manual review.",
+      "Amazon Inspector, configured to scan EBS volumes for network vulnerabilities.",
+      "AWS Trusted Advisor's cost-optimization checks.",
+      "AWS Config with a managed rule that evaluates whether EBS volumes are encrypted, triggered on every configuration change."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>AWS Config continuously records resource configuration and evaluates managed rules such as the encrypted-volumes check</b> every time a resource changes, flagging non-compliant EBS volumes automatically. CloudTrail records API activity for audit and troubleshooting but does not evaluate configuration against a rule. Amazon Inspector assesses vulnerabilities and network exposure, not encryption configuration compliance. Trusted Advisor's cost checks are unrelated to encryption compliance.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/config/latest/developerguide/encrypted-volumes.html",
+    "id": "saac03-0007"
+  },
+  {
+    "domain": "Design Secure Architectures",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A public web application behind an Application Load Balancer is receiving an unusually high rate of HTTP requests from a small set of IP addresses, degrading performance for legitimate users. Which solution addresses this at the application layer with the LEAST operational overhead?",
+    "options": [
+      "Move the application to larger EC2 instance types to absorb the additional request volume.",
+      "Attach an AWS WAF web ACL to the ALB with a rate-based rule that blocks IP addresses exceeding a request threshold.",
+      "Enable Amazon GuardDuty on the VPC to detect and drop the excess packets.",
+      "Configure a Network Load Balancer in front of the ALB to distribute the load across more targets."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>An AWS WAF rate-based rule</b> tracks the request rate per IP address and automatically blocks addresses that exceed the configured threshold, mitigating the application-layer flood directly at the edge with no infrastructure changes. Scaling instance size treats a symptom rather than the cause and still lets abusive traffic reach the application. GuardDuty detects and reports threats but does not block traffic itself. Adding a Network Load Balancer changes how traffic is distributed but does not filter or rate-limit abusive requests.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/waf/latest/developerguide/waf-rate-based-rules.html",
+    "id": "saac03-0008"
+  },
+  {
+    "domain": "Design Secure Architectures",
+    "tag": "Domain 1",
+    "type": "multi",
+    "stem": "A company is designing defense-in-depth network protection for a public web application running on EC2 instances behind an Application Load Balancer. Which TWO controls should the company implement? (Select TWO.)",
+    "options": [
+      "Configure the EC2 instances' security groups to allow inbound traffic only from the ALB's security group.",
+      "Disable the VPC's network ACLs entirely to simplify troubleshooting.",
+      "Attach an AWS WAF web ACL to the ALB to filter common web exploits such as SQL injection and cross-site scripting.",
+      "Place the EC2 instances in a public subnet with public IP addresses so the ALB can reach them directly.",
+      "Grant the EC2 instance role full administrator IAM permissions to simplify application deployment."
+    ],
+    "correct": [
+      0,
+      2
+    ],
+    "explanation": "<b>Restricting the instances' security group to allow traffic only from the ALB's security group</b> ensures instances are unreachable except through the load balancer, and <b>an AWS WAF web ACL on the ALB</b> filters common web exploits before they reach the application, giving layered protection at both the network and application layers. Disabling network ACLs removes a security layer rather than adding one. Placing instances in a public subnet is unnecessary and increases exposure, since the ALB can reach instances in private subnets. Granting the instance role full administrator permissions violates least privilege and has nothing to do with network defense in depth.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/elasticloadbalancing/latest/application/application-load-balancers.html",
+    "id": "saac03-0009"
+  },
+  {
+    "domain": "Design Secure Architectures",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A mobile application needs to let end users sign up and sign in with a username and password, and then obtain temporary AWS credentials scoped to their identity so they can upload files directly to an S3 bucket. Which combination of Amazon Cognito features meets this requirement?",
+    "options": [
+      "A Cognito identity pool alone, since it can authenticate users directly with a username and password.",
+      "An IAM user created for every mobile app user, since Cognito cannot issue temporary credentials.",
+      "A Cognito user pool for sign-up and sign-in, federated into a Cognito identity pool that vends temporary AWS credentials scoped by IAM role.",
+      "AWS Directory Service to manage the mobile app's end users."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>A Cognito user pool handles user sign-up, sign-in, and directory management</b>, and <b>federating the user pool into a Cognito identity pool lets the identity pool exchange the user's identity token for temporary, scoped AWS credentials</b> through STS, which the app can use to call S3 directly. An identity pool alone does not manage user sign-up or passwords; it federates identities from a pool or external IdP. Creating an IAM user per mobile user does not scale and Cognito already solves this without IAM users. AWS Directory Service manages Active Directory-compatible directories for enterprise workloads, not mobile app end users.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/cognito/latest/developerguide/what-is-amazon-cognito.html",
+    "id": "saac03-0010"
+  },
+  {
+    "domain": "Design Secure Architectures",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A company wants administrators to connect to EC2 instances in private subnets for troubleshooting without opening inbound port 22, managing SSH keys, or maintaining a bastion host. Which solution meets these requirements?",
+    "options": [
+      "Use AWS Systems Manager Session Manager, which connects through the SSM Agent over an outbound HTTPS connection with no inbound ports opened.",
+      "Deploy a bastion host in a public subnet with port 22 open to the internet.",
+      "Assign each instance a public IP address and open port 22 to the administrators' office IP range.",
+      "Use AWS Direct Connect to establish a private network path with SSH still required."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Systems Manager Session Manager</b> uses the SSM Agent on the instance to establish an outbound connection to the Systems Manager service, so administrators get a shell session with no inbound security group rule, no SSH key management, and no bastion host required. A bastion host with an open port 22 still requires inbound access and key management. Assigning public IPs and opening port 22, even scoped to an office range, still opens an inbound port and requires SSH key management. Direct Connect provides a private network link to on-premises but does not remove the need for SSH access or an inbound port unless paired with Session Manager.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html",
+    "id": "saac03-0011"
+  },
+  {
+    "domain": "Design Secure Architectures",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A company has dozens of S3 buckets and wants an automated way to identify which buckets are accessible from outside the AWS account or organization due to a bucket policy or ACL, without manually reviewing each policy. Which service should the company use?",
+    "options": [
+      "Amazon Macie, to classify the sensitivity of the data stored in each bucket.",
+      "AWS Trusted Advisor's performance checks.",
+      "Amazon Inspector's network reachability assessment.",
+      "IAM Access Analyzer, which evaluates resource policies and reports S3 buckets, IAM roles, and other resources that are accessible from outside the account or a defined zone of trust."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>IAM Access Analyzer</b> continuously analyzes resource-based policies, including S3 bucket policies and ACLs, and generates findings whenever a resource is accessible from outside the account or organization, exactly the automated cross-account exposure check described. Macie classifies data sensitivity such as PII inside objects, not policy exposure. Trusted Advisor's performance checks are unrelated to access exposure. Amazon Inspector assesses EC2 and container vulnerabilities and network reachability, not S3 bucket policy exposure.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/what-is-access-analyzer.html",
+    "id": "saac03-0012"
+  },
+  {
+    "domain": "Design Secure Architectures",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "An organization using AWS Organizations wants to prevent every account in a specific organizational unit from launching resources outside two approved AWS Regions, regardless of what IAM permissions an individual account grants its own users. Which mechanism enforces this?",
+    "options": [
+      "An IAM permissions boundary attached to every IAM user in each account.",
+      "A service control policy (SCP) attached to the organizational unit that denies actions outside the approved Regions.",
+      "A resource-based policy attached to each S3 bucket in the accounts.",
+      "An AWS Config rule that flags resources created outside the approved Regions after the fact."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>A service control policy attached at the organizational unit level</b> sets the maximum available permissions for every account and IAM principal within it, including the account's own administrators, so a Region-restriction SCP is enforced organization-wide regardless of individual IAM policies. Permissions boundaries are set per IAM principal within a single account and would have to be applied and maintained individually, and can still be changed by an account administrator, unlike an SCP. A resource-based policy on S3 buckets only controls access to those buckets, not resource creation across services. An AWS Config rule can only detect and report violations after the fact; it does not prevent resource creation.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps.html",
+    "id": "saac03-0013"
+  },
+  {
+    "domain": "Design Secure Architectures",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A company needs to add HTTPS support to a public Application Load Balancer and wants AWS to issue and automatically renew the TLS certificate at no additional cost. Which service should the company use?",
+    "options": [
+      "Generate a self-signed certificate and upload it to the ALB listener.",
+      "Purchase a certificate from a third-party certificate authority and manually renew it every year.",
+      "Request a public certificate through AWS Certificate Manager (ACM) and attach it to the ALB's HTTPS listener; ACM manages renewal automatically for ACM-issued certificates used with integrated services.",
+      "Store the private key for the certificate in Amazon S3 and reference it from the ALB configuration."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>AWS Certificate Manager issues public TLS certificates at no additional cost and automatically renews certificates that are in use with integrated services such as an ALB listener</b>, removing manual renewal work. A self-signed certificate triggers browser trust warnings for public users. A third-party certificate works but requires manual purchase and renewal, and is not free. ALB listeners reference a certificate through ACM or IAM certificate storage, not a raw private key file in S3.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/acm/latest/userguide/acm-overview.html",
+    "id": "saac03-0014"
+  },
+  {
+    "domain": "Design Secure Architectures",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A company must encrypt objects in an S3 bucket with a customer-managed key so that access to decrypt objects can be independently audited and revoked through key policy changes, separate from the S3 bucket policy. Which configuration meets this requirement?",
+    "options": [
+      "Enable server-side encryption on the bucket using SSE-KMS with a customer-managed CMK, and control decrypt access through the CMK's key policy and grants.",
+      "Enable SSE-S3 default encryption, which uses keys that customers can audit and revoke through IAM.",
+      "Encrypt objects on the client side using a hardcoded AES key stored in the application source code.",
+      "Rely on the bucket policy alone, since S3 bucket policies control both storage and encryption key access."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>SSE-KMS with a customer-managed CMK</b> lets the company control and audit who can decrypt data through the CMK's key policy, grants, and CloudTrail key-usage logs, independent of the S3 bucket policy. SSE-S3 uses AWS-owned keys that customers cannot manage, audit individually, or revoke through a key policy. Hardcoding an encryption key in source code is insecure and impossible to rotate or audit centrally. A bucket policy controls access to the S3 API operations but has no visibility into or control over decrypt permissions on the encryption key itself.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingKMSEncryption.html",
+    "id": "saac03-0015"
+  },
+  {
+    "domain": "Design Secure Architectures",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "After a security incident, a team needs to determine which source IP addresses sent traffic to a specific EC2 instance's network interface over the past 30 days, including traffic that was rejected by the security group. Which AWS feature provides this data?",
+    "options": [
+      "AWS CloudTrail management event history, which records all network traffic reaching an ENI.",
+      "Amazon CloudWatch billing alarms.",
+      "AWS Config resource configuration history.",
+      "VPC Flow Logs enabled on the network interface, subnet, or VPC, which record accepted and rejected IP traffic metadata."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>VPC Flow Logs capture metadata about IP traffic, including source and destination addresses, ports, and whether traffic was accepted or rejected</b> by security groups or network ACLs, and can be retained and queried for 30 days or longer. CloudTrail records API calls made against AWS services, not raw network packet or flow metadata. CloudWatch billing alarms track cost thresholds and have nothing to do with network traffic. AWS Config tracks resource configuration changes over time, not traffic flows.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs.html",
+    "id": "saac03-0016"
+  },
+  {
+    "domain": "Design Secure Architectures",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A platform team wants to let application teams create their own IAM roles for their workloads, but must guarantee that no application team can create a role with permissions broader than a pre-approved maximum, even if a team's IAM policy attempts to grant more. Which mechanism enforces this?",
+    "options": [
+      "Require every application team to submit role definitions through a support ticket for manual review before creation.",
+      "Attach an IAM permissions boundary to the application teams' roles that limits creation of new roles to a maximum permission set, regardless of the identity-based policy on the new role.",
+      "Grant application teams the IAMFullAccess managed policy so they can manage roles without restriction.",
+      "Use Amazon CloudWatch alarms to notify the platform team after a role with excessive permissions is created."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>A permissions boundary attached to the application teams' own roles caps the maximum permissions any role they create can have</b>, so even if their identity-based policy would grant broader access, the effective permissions are the intersection with the boundary. Manual ticket review is a process control, not a technical enforcement mechanism, and does not scale. Granting IAMFullAccess removes restrictions entirely, the opposite of the goal. A CloudWatch alarm only detects a problem after the fact; it does not prevent the over-permissioned role from being created.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html",
+    "id": "saac03-0017"
+  },
+  {
+    "domain": "Design Secure Architectures",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A company with 15 AWS accounts in AWS Organizations wants employees to sign in once with their existing corporate Active Directory credentials and then switch between authorized AWS accounts without separate IAM users in each account. Which service should the company use?",
+    "options": [
+      "Create an identical IAM user in every account with the same password for consistency.",
+      "Use Amazon Cognito user pools to authenticate employees against Active Directory.",
+      "Use AWS IAM Identity Center (successor to AWS SSO) with an Active Directory identity source, and assign permission sets that federate employees into the appropriate accounts.",
+      "Share one root user login across the company for simplicity."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>AWS IAM Identity Center connects to an existing Active Directory as an identity source and uses permission sets to federate employees into multiple AWS accounts with a single sign-on</b>, removing the need for per-account IAM users. Creating identical IAM users with shared passwords in every account is unmanageable and insecure. Cognito user pools are designed for customer-facing application authentication, not workforce federation into AWS accounts. Sharing the root user login violates fundamental IAM security guidance and provides no per-user accountability.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/singlesignon/latest/userguide/what-is.html",
+    "id": "saac03-0018"
+  },
+  {
+    "domain": "Design Secure Architectures",
+    "tag": "Domain 1",
+    "type": "multi",
+    "stem": "A security review finds that several IAM policies in an account grant far broader permissions than the roles actually use. Which TWO actions help the company move toward least privilege? (Select TWO.)",
+    "options": [
+      "Attach the AdministratorAccess managed policy to every role so future permission changes never require an update.",
+      "Use IAM Access Analyzer's policy generation feature, which reviews AWS CloudTrail activity and generates a policy containing only the permissions actually used.",
+      "Disable CloudTrail logging to reduce the volume of data the security team must review.",
+      "Review IAM Access Analyzer findings and CloudTrail-based service last accessed data to identify and remove unused permissions from existing policies.",
+      "Grant every new role permissions to all services by default, then restrict access only if an incident occurs."
+    ],
+    "correct": [
+      1,
+      3
+    ],
+    "explanation": "<b>IAM Access Analyzer's policy generation feature builds a least-privilege policy from a role's actual CloudTrail activity</b>, and <b>reviewing Access Analyzer findings alongside service last accessed data</b> lets a team find and strip out permissions that are granted but never used, both concrete steps toward least privilege. Attaching AdministratorAccess to every role is the opposite of least privilege. Disabling CloudTrail removes the very activity data needed to right-size policies. Granting all-service access by default and restricting only after an incident is a reactive, high-risk posture, not least privilege.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-policy-generation.html",
+    "id": "saac03-0019"
+  }
+]
