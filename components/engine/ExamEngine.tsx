@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { Attempt, Mode, Question } from "@/lib/types";
 import { getBank, getMeta } from "@/lib/bank";
 import { sampleDrill, sampleMock, sampleQuick, questionsByIds } from "@/lib/sampler";
@@ -24,90 +24,104 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId }: { certId?:
   const meta = getMeta(certId);
   const isMock = mode === "mock";
 
-  // Resume target resolved once per mount: a STORED, UNFINISHED attempt whose mode matches this
-  // engine. Anything else (no id / missing / already finished / mode mismatch) yields null and the
-  // engine silently takes the normal fresh-sample path - no error UI (see Task 8).
-  const resumed: Attempt | null = useMemo(() => {
-    if (!resumeAttemptId) return null;
-    const a = getAttempt(resumeAttemptId);
-    if (!a || a.finishedAt !== null || a.mode !== mode) return null;
-    return a;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // Deferred session init (Task 10 hydration must-fix): sampling (Math.random via the lib samplers)
+  // and the resume storage reads run in the init effect below, NOT during render. This client
+  // component is prerendered, so sampling at render time baked a server-time question set into the
+  // static HTML that the client then re-sampled - a hydration mismatch (browser-confirmed: server
+  // "Domain 5" vs client "Domain 2") and a wrong-question flash on every practice load. Until the
+  // effect runs, `ready` is false and we render the loading shell, so the server HTML and the first
+  // client render agree and only the client ever samples. Mirrors the CatalogClient/CertDetailClient
+  // idiom (SSR the zero-state default, hydrate from localStorage in an effect).
+  const [ready, setReady] = useState(false);
+  const [questions, setQuestions] = useState<Question[]>([]);
 
-  const questions: Question[] = useMemo(() => {
-    // Resume reuses the STORED question order verbatim (never resamples).
-    if (resumed) return questionsByIds(bank, resumed.questionIds);
-    if (mode === "quick") return sampleQuick(bank, QUICK_N);
-    if (mode === "drill" && domain) return sampleDrill(bank, domain, DRILL_N);
-    if (mode === "retry") return questionsByIds(bank, missedQuestionIds(meta.certId));
-    if (mode === "mock") return sampleMock(bank, meta);
-    return [];
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  // Sampled once per mount; callers must key ExamEngine by mode+domain+resume (see PracticeClient,
-  // Task 15) - prop changes without remount are ignored.
-
-  // Contract C1 (Task 5 review): saveAttempt exactly once here; recordResult/finishAttempt thereafter.
-  // NEVER re-save the engine-held copy - it would clobber recorded results.
-  // Lazy-ref init (React docs "avoiding recreating the ref contents"): a useRef(IIFE()) initializer
-  // is RE-EVALUATED every render, which fired saveAttempt on each render (21x in the loop) and
-  // violated C1; the null-guard runs createAttempt/saveAttempt exactly once on the first render.
-  // Resume ADOPTS the stored attempt as-is: no createAttempt (that mints a second attemptId / row)
-  // and no saveAttempt (the row already exists) - recordResult/finishAttempt keep upserting the
-  // SAME id, so the write-once contract holds and no duplicate attempt is ever created.
-  const attemptRef = useRef<Attempt | null>(null);
-  if (attemptRef.current === null && questions.length) {
-    if (resumed) {
-      attemptRef.current = resumed;
-    } else {
-      const a = createAttempt(meta.certId, mode, questions.map((qq) => qq.id), domain);
-      saveAttempt(a);
-      attemptRef.current = a;
-    }
-  }
-
-  // Seed the write-through UI journal from the resumed attempt's results (once per mount). Practice
-  // modes hydrate `graded` (chosen + correctness -> an already-answered question shows its graded
-  // state, not a fresh form); mock hydrates `answers` (silent chosen). Flags restore for both modes.
-  const seed = useMemo(() => {
-    const graded: Record<string, { chosen: number[]; correct: boolean }> = {};
-    const answers: Record<string, number[]> = {};
-    const flags: Record<string, boolean> = {};
-    if (resumed) {
-      for (const r of Object.values(resumed.results)) {
-        if (isMock) answers[r.questionId] = r.chosen;
-        else graded[r.questionId] = { chosen: r.chosen, correct: r.correct };
-        if (r.flagged) flags[r.questionId] = true;
-      }
-    }
-    return { graded, answers, flags };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // Resume position: the first UNANSWERED question (or index 0 when every question is answered).
-  const initialIndex = useMemo(() => {
-    if (!resumed) return 0;
-    const i = questions.findIndex((qq) => !resumed.results[qq.id]);
-    return i === -1 ? 0 : i;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const [index, setIndex] = useState(initialIndex);
+  const [index, setIndex] = useState(0);
   const [phase, setPhase] = useState<"question" | "review" | "results">("question");
-  // In-memory UI projection of attempt.results (write-through journal), seeded from the resumed
-  // attempt above - do not read storage during render.
-  const [graded, setGraded] = useState<Record<string, { chosen: number[]; correct: boolean }>>(seed.graded);
-  const [answers, setAnswers] = useState<Record<string, number[]>>(seed.answers); // mock: chosen without reveal
-  const [flags, setFlags] = useState<Record<string, boolean>>(seed.flags);
+  // In-memory UI projection of attempt.results (write-through journal), seeded from a resumed attempt
+  // by the init effect - do not read storage during render.
+  const [graded, setGraded] = useState<Record<string, { chosen: number[]; correct: boolean }>>({});
+  const [answers, setAnswers] = useState<Record<string, number[]>>({}); // mock: chosen without reveal
+  const [flags, setFlags] = useState<Record<string, boolean>>({});
   // Resume continues the stored clock + pause tally so a post-resume finish accumulates rather than
-  // clobbering them (initialElapsedSec below keeps the mock countdown honest).
-  const elapsedRef = useRef(resumed ? resumed.elapsedSec : 0);
-  const pausesRef = useRef(resumed ? resumed.pauseCount : 0);
+  // clobbering them. The init effect seeds these from the resumed attempt BEFORE flipping `ready`, so
+  // the Timer mounts with the restored elapsed (never the full budget) - initialElapsedSec reads them.
+  const elapsedRef = useRef(0);
+  const pausesRef = useRef(0);
   // Contract C1b (Task 13 review): finish is one-way. Once submitted (or the countdown expires),
   // every nav/jump/flag/submit handler no-ops so a queued setPhase("question") cannot reopen a
   // sealed exam after onExpire has already moved it to results.
   const finishedRef = useRef(false);
+  // Contract C1 (Task 5 review): the adopted/created attempt. saveAttempt happens exactly once (in
+  // the init effect); recordResult/finishAttempt upsert the SAME id thereafter. NEVER re-save the
+  // engine-held copy - it would clobber recorded results.
+  const attemptRef = useRef<Attempt | null>(null);
+  // Guards the init effect to exactly-once even under React StrictMode's dev double-invoke of effects.
+  // Without it the second invoke would mint a SECOND createAttempt row (a C1 violation + a phantom
+  // unfinished attempt the dashboard would surface) - a dev-only bug RTL (no StrictMode) cannot catch.
+  const initedRef = useRef(false);
+
+  // Sample + adopt/create the attempt once on mount. Reproduces the OLD render-time path verbatim:
+  // resume resolves a STORED, UNFINISHED, mode-matching attempt (else null -> fresh sample); resume
+  // reuses the stored question order (never resamples) and ADOPTS the row as-is (no createAttempt -
+  // that would mint a second id - and no saveAttempt - the row already exists); the fresh path samples
+  // per mode and calls createAttempt + saveAttempt exactly once (C1). Then seeds the write-through
+  // journal (graded/answers/flags), the clock, and the resume position from the resumed attempt, and
+  // flips ready. Every setState here batches into a single re-render.
+  useEffect(() => {
+    if (initedRef.current) return;
+    initedRef.current = true;
+
+    const resumed: Attempt | null = (() => {
+      if (!resumeAttemptId) return null;
+      const a = getAttempt(resumeAttemptId);
+      if (!a || a.finishedAt !== null || a.mode !== mode) return null;
+      return a;
+    })();
+
+    const sampled: Question[] = resumed
+      ? questionsByIds(bank, resumed.questionIds)
+      : mode === "quick"
+      ? sampleQuick(bank, QUICK_N)
+      : mode === "drill" && domain
+      ? sampleDrill(bank, domain, DRILL_N)
+      : mode === "retry"
+      ? questionsByIds(bank, missedQuestionIds(meta.certId))
+      : mode === "mock"
+      ? sampleMock(bank, meta)
+      : [];
+
+    if (sampled.length) {
+      if (resumed) {
+        attemptRef.current = resumed;
+      } else {
+        const a = createAttempt(meta.certId, mode, sampled.map((qq) => qq.id), domain);
+        saveAttempt(a);
+        attemptRef.current = a;
+      }
+    }
+
+    if (resumed) {
+      const graded0: Record<string, { chosen: number[]; correct: boolean }> = {};
+      const answers0: Record<string, number[]> = {};
+      const flags0: Record<string, boolean> = {};
+      for (const r of Object.values(resumed.results)) {
+        if (isMock) answers0[r.questionId] = r.chosen;
+        else graded0[r.questionId] = { chosen: r.chosen, correct: r.correct };
+        if (r.flagged) flags0[r.questionId] = true;
+      }
+      setGraded(graded0);
+      setAnswers(answers0);
+      setFlags(flags0);
+      elapsedRef.current = resumed.elapsedSec;
+      pausesRef.current = resumed.pauseCount;
+      const i = sampled.findIndex((qq) => !resumed.results[qq.id]);
+      setIndex(i === -1 ? 0 : i);
+    }
+
+    setQuestions(sampled);
+    setReady(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const q = questions[index];
 
@@ -173,6 +187,13 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId }: { certId?:
       persist();
     };
   }, []);
+
+  // Session not sampled yet (see the deferred-init note): render the loading shell. It matches the
+  // page-level Suspense fallback so the static-HTML -> hydrated-shell transition is seamless, and it
+  // MUST precede the questions-empty check below, or retry-with-no-missed would read as Loading forever.
+  if (!ready) {
+    return <p className="stage">Loading...</p>;
+  }
 
   if (questions.length === 0) {
     return (
