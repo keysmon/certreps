@@ -690,5 +690,313 @@
     "difficulty": "medium",
     "docUrl": "https://docs.aws.amazon.com/step-functions/latest/dg/welcome.html",
     "id": "sapc02-0036"
+  },
+  {
+    "domain": "Continuous Improvement for Existing Solutions",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A company is building a brand-new CI/CD pipeline for a service and has no existing preference for a source repository. An engineer suggests using AWS CodeCommit as the pipeline's source stage. Which statement correctly describes the current state of that option and the recommended path forward?",
+    "options": [
+      "AWS CodeCommit stopped onboarding new customers in mid-2024, so a new pipeline should use a third-party source provider such as GitHub or Bitbucket, or Amazon CodeCatalyst, as the CodePipeline source stage instead.",
+      "AWS CodeCommit is the only source provider CodePipeline supports, so it must be used regardless of when the project started.",
+      "AWS CodeCommit was retired entirely in 2024 and no longer works even for existing customers.",
+      "AWS CodeCommit is AWS's newest source-control offering and is the recommended default for all new projects."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>AWS CodeCommit stopped onboarding new customers in mid-2024</b>; existing customers can keep using it, but a brand-new project cannot create a new CodeCommit repository, so the practical recommendation is a third-party provider such as GitHub, GitLab, or Bitbucket, or Amazon CodeCatalyst, connected to CodePipeline as the source stage. CodePipeline supports many source providers beyond CodeCommit, including the third-party providers just named, so CodeCommit was never the only option. CodeCommit was not retired for existing customers; AWS explicitly continues to support current users, it simply closed new sign-ups. Since it is closed to new customers, it is the opposite of a recommended default for a brand-new project.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/codepipeline/latest/userguide/welcome.html",
+    "id": "sapc02-0037"
+  },
+  {
+    "domain": "Continuous Improvement for Existing Solutions",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "An existing production ECS service on Fargate has suffered two bad deployments in the past quarter, where a new task definition passed its health check but still served elevated error rates, and the team only noticed after a full fleet replacement had already completed. They want new deployments to shift traffic gradually, monitor a CloudWatch alarm during the shift, and automatically roll back if the alarm trips, without a human needing to watch the rollout. Which deployment approach BEST fixes this for the existing service?",
+    "options": [
+      "Continue with the current rolling update, but add a Slack notification so an engineer can manually roll back faster next time.",
+      "Switch the service to a CodeDeploy blue/green ECS deployment with traffic shifting and a CloudWatch alarm configured to trigger automatic rollback if error rates rise during the shift.",
+      "Increase the ECS service's minimum healthy percent to 100 percent so the old tasks are never removed.",
+      "Deploy the new task definition directly by stopping and starting all tasks at once, then checking the CloudWatch dashboard afterward."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "A <b>CodeDeploy blue/green ECS deployment</b> stands up the new task set alongside the old one, shifts traffic gradually (linearly or canary-style), and a <b>CloudWatch alarm</b> attached to the deployment automatically triggers rollback to the original task set the moment it trips, all without a human watching the rollout in real time. A Slack notification only speeds up a manual response; it does not shift traffic gradually or roll back automatically. Raising minimum healthy percent to 100 percent affects how many old tasks stay running during a rolling update, but it does not add gradual traffic shifting, alarm-based automatic rollback, or address the root problem that bad task definitions currently pass health checks but still misbehave. Stopping and starting all tasks at once is a full, all-at-once replacement, which is the exact pattern already causing full-fleet impact before anyone notices.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-type-bluegreen.html",
+    "id": "sapc02-0038"
+  },
+  {
+    "domain": "Continuous Improvement for Existing Solutions",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A team's existing Lambda function backs a customer-facing endpoint through an alias pointed at the latest version. They want new versions to first receive a small percentage of production traffic, then ramp up automatically over several minutes, with automatic rollback tied to a CloudWatch alarm on function errors, rather than shifting all traffic to the new version immediately. Which CodeDeploy configuration fits this requirement?",
+    "options": [
+      "A Lambda deployment configuration using AllAtOnce traffic shifting, which points the alias at the new version immediately.",
+      "Publishing a new Lambda version and manually updating the alias weight in the console once a day.",
+      "A Lambda deployment configuration using Canary or Linear traffic shifting, with a CloudWatch alarm configured to trigger automatic rollback of the alias if errors spike during the shift.",
+      "Removing the alias entirely and invoking each Lambda version directly by version number from the client."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "CodeDeploy's <b>Canary or Linear</b> traffic-shifting configurations for Lambda move a defined percentage of traffic to the new version over time (for example 10 percent immediately then the rest after some minutes for canary, or steady increments for linear), and an attached <b>CloudWatch alarm</b> automatically rolls the alias back to the previous version if it trips, which is exactly the gradual, self-healing rollout the team wants. AllAtOnce shifts 100 percent of traffic to the new version immediately, which is the opposite of the gradual approach requested. Manually adjusting alias weights once a day is a slow, human-driven process with no automatic rollback tied to an alarm. Removing the alias and invoking specific versions directly pushes version selection onto every client and removes the single stable endpoint the alias is meant to provide.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/codedeploy/latest/userguide/deployment-configurations.html",
+    "id": "sapc02-0039"
+  },
+  {
+    "domain": "Continuous Improvement for Existing Solutions",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "An existing microservices application has a single API endpoint that occasionally takes 8 seconds to respond instead of its usual 200 milliseconds, but CloudWatch Logs Insights queries against each service's logs do not clearly show which of the seven downstream services in the call chain is responsible. Which tool should the team add to pinpoint exactly where the time is being spent across the call chain?",
+    "options": [
+      "AWS Trusted Advisor, to check for over-provisioned resources across the account.",
+      "Amazon CloudWatch Logs Insights, running the same log queries again with a longer time range.",
+      "Amazon CloudWatch dashboards showing only aggregate CPU and memory utilization per service.",
+      "AWS X-Ray, instrumenting each service to produce a trace showing the time spent in each downstream call within a single request."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>AWS X-Ray</b> produces an end-to-end trace of a single request as it flows through every downstream service, showing exactly how much time each hop and each downstream call within the chain consumed, which is precisely the visibility needed to isolate one slow hop among seven. Re-running the same Logs Insights queries over a longer time range does not add the cross-service, per-request timing breakdown that is missing; it only searches more of the same disconnected per-service logs. Aggregate CPU and memory dashboards show resource utilization, not where time is spent within a single slow request's call chain, so a service could look perfectly healthy on CPU while still being the one adding the latency. Trusted Advisor checks cost, security, and service-limit best practices; it does not trace individual request latency across microservices.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/xray/latest/devguide/aws-xray.html",
+    "id": "sapc02-0040"
+  },
+  {
+    "domain": "Continuous Improvement for Existing Solutions",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "An operations team runs an existing fleet of ECS and EKS workloads and currently relies on default CloudWatch infrastructure metrics (CPU, memory) per task and pod. They want prebuilt dashboards showing cluster, service, and task-level performance without writing custom CloudWatch metric math, and ideally service-level operational health tied to business-relevant SLOs. Which CloudWatch capability improvement BEST addresses both needs?",
+    "options": [
+      "Enable Amazon CloudWatch Container Insights for cluster and task-level dashboards, and adopt CloudWatch Application Signals for service-level SLO-based operational health.",
+      "Continue using only the default CloudWatch EC2 and ECS metrics already being collected.",
+      "Switch entirely to AWS X-Ray and stop collecting any CloudWatch metrics.",
+      "Enable AWS Config rules that check whether Container Insights is enabled, without actually enabling it."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Container Insights</b> automatically collects and aggregates cluster-, service-, and task-level metrics into prebuilt CloudWatch dashboards for ECS and EKS, and <b>Application Signals</b> layers service-level operational health and SLO tracking (like latency and availability against a target) on top, together closing both gaps without hand-built metric math. Continuing with only default per-task metrics is the current state the team wants to improve on and provides no cluster-level rollup or SLO tracking. X-Ray provides distributed request tracing, not the infrastructure and cluster-level dashboards or SLO health status being asked for here, and dropping CloudWatch metrics entirely would remove capacity and utilization visibility the team still needs. A Config rule that only checks whether Container Insights is enabled does not enable it or produce any dashboard; it only reports compliance after the fact.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContainerInsights.html",
+    "id": "sapc02-0041"
+  },
+  {
+    "domain": "Continuous Improvement for Existing Solutions",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A FinOps team inherited an existing fleet of 400 EC2 instances and their associated EBS volumes and Lambda functions, many of which were sized years ago and never revisited. They want data-driven, automatically generated right-sizing recommendations based on actual historical utilization, covering EC2, EBS, and Lambda, without manually analyzing CloudWatch metrics for each resource. Which service BEST fits this specific need?",
+    "options": [
+      "AWS Trusted Advisor's cost-optimization category alone, which flags idle resources but does not recommend specific target instance types or memory sizes based on utilization history.",
+      "AWS Compute Optimizer, which analyzes historical utilization metrics and generates specific rightsizing recommendations for EC2 instances, EBS volumes, and Lambda functions.",
+      "AWS Cost Explorer, which reports historical spend by service and account but does not recommend specific target instance types or configurations.",
+      "Amazon CloudWatch dashboards, requiring the team to manually build and interpret utilization charts for all 400 instances one at a time."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>AWS Compute Optimizer</b> analyzes historical CloudWatch utilization data with machine learning and produces specific, per-resource rightsizing recommendations, target instance type or size, for EC2, EBS, and Lambda, which is exactly the automated, data-driven recommendation the FinOps team wants across all three resource types. Trusted Advisor's cost checks flag some idle or low-utilization resources but do not produce the detailed, ML-based target-configuration recommendations Compute Optimizer generates. Cost Explorer is a spend-visibility and forecasting tool; it shows what was spent, not what size a given resource should be based on its utilization pattern. Manually building CloudWatch dashboards for 400 resources is exactly the manual analysis effort the team is trying to eliminate.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/compute-optimizer/latest/ug/what-is-compute-optimizer.html",
+    "id": "sapc02-0042"
+  },
+  {
+    "domain": "Continuous Improvement for Existing Solutions",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A company's data lake has grown organically to thousands of S3 buckets across 30 accounts over several years. Finance and storage teams want a single view of storage usage and cost trends across the whole organization, with recommendations on which buckets are good candidates to transition to a lower-cost storage class, without writing custom scripts against every account's S3 inventory. Which capability BEST fits this existing-environment improvement?",
+    "options": [
+      "AWS Cost Explorer filtered to the S3 service, showing only total spend without per-bucket usage metrics.",
+      "S3 Lifecycle rules configured independently on each of the thousands of buckets, with no organization-wide reporting.",
+      "Amazon S3 Storage Lens, providing organization-wide visibility into usage and cost metrics across accounts, with recommendations on storage class transition opportunities.",
+      "Manually running the S3 ListObjects API against every bucket in every account and aggregating the results in a spreadsheet."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>S3 Storage Lens</b> aggregates usage and cost metrics across every bucket and account in an organization into a single dashboard, and its recommendations surface exactly which buckets or prefixes are good candidates for a lower-cost storage class based on their actual access patterns, which is precisely the organization-wide visibility the finance and storage teams are asking for. Configuring Lifecycle rules on every bucket independently, without an aggregated view, still leaves the team guessing which of the thousands of buckets are worth targeting and gives no organization-wide reporting. Cost Explorer filtered to S3 shows aggregate spend, not the granular, per-bucket usage detail needed to identify transition candidates. Manually scripting ListObjects across every account is exactly the manual, unscalable effort the team wants to replace.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage_lens.html",
+    "id": "sapc02-0043"
+  },
+  {
+    "domain": "Continuous Improvement for Existing Solutions",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A company already uses a mix of EC2, Fargate, and Lambda for its existing workloads and wants to commit to a one- or three-year spend-based discount to lower its compute bill, but it does not want the discount tied to a specific instance family or Region, since the mix of compute services shifts often as teams re-architect. Which purchasing option BEST fits this flexibility requirement?",
+    "options": [
+      "Standard Reserved Instances for a specific EC2 instance family and Region, locked in for three years.",
+      "On-Demand pricing only, avoiding any commitment so the compute mix can keep changing freely.",
+      "Convertible Reserved Instances, which allow instance family changes but do not extend to Fargate or Lambda usage.",
+      "Compute Savings Plans, which apply automatically to EC2 usage in any instance family and Region, as well as to Fargate and Lambda usage, in exchange for a committed hourly spend."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Compute Savings Plans</b> commit to an hourly spend amount, not a specific instance family or Region, and the discount automatically applies across EC2 (any family, any Region), Fargate, and Lambda usage, which matches a company whose compute mix across services keeps shifting. Standard Reserved Instances lock in a specific instance family and Region for the term, which is the rigidity the company wants to avoid. Convertible Reserved Instances add flexibility to change EC2 instance families but still apply only to EC2, not to the Fargate and Lambda usage the company also wants covered. Staying on pure On-Demand avoids commitment risk entirely but gives up the discount the company is specifically trying to capture.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/savingsplans/latest/userguide/what-is-savings-plans.html",
+    "id": "sapc02-0044"
+  },
+  {
+    "domain": "Continuous Improvement for Existing Solutions",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "An existing production Amazon RDS for PostgreSQL database has become noticeably slower over the past month, and reporting queries from a nightly analytics job are suspected of contending with the primary application's transactional queries. The team wants to identify exactly which SQL statements and wait events are consuming the most database load right now, and then offload the reporting workload without touching the primary. Which combination of actions BEST addresses this?",
+    "options": [
+      "Use Amazon RDS Performance Insights to identify the top SQL statements and wait events causing load, then add a read replica and point the nightly analytics job at it.",
+      "Restart the RDS instance to clear any accumulated query cache and hope performance recovers.",
+      "Enable RDS Multi-AZ, since a standby instance can absorb the reporting queries directly.",
+      "Manually inspect the PostgreSQL error log for slow-query entries, since Performance Insights only reports CPU utilization."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>RDS Performance Insights</b> shows exactly which SQL statements and wait events are driving database load in near real time, confirming whether the analytics job is the actual contention source, and adding a <b>read replica</b> for the analytics job to query lets reporting run without competing with transactional queries on the primary. Restarting the instance does not diagnose or fix a workload-contention problem; any recovery would be coincidental and temporary. A Multi-AZ standby is a synchronous failover target, not a queryable read endpoint; application connections cannot read from it directly, so it cannot absorb reporting queries. Performance Insights reports far more than CPU: it breaks load down by specific SQL statements and database wait events, which is exactly the diagnostic detail this scenario needs.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PerfInsights.html",
+    "id": "sapc02-0045"
+  },
+  {
+    "domain": "Continuous Improvement for Existing Solutions",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "An operations team manages an existing fleet of 2,000 EC2 instances across multiple accounts and currently patches each instance manually on an ad hoc schedule, causing inconsistent patch levels and occasional emergency work during a critical vulnerability disclosure. They want scheduled, automated OS patching across the whole fleet, grouped by maintenance window, with reporting on which instances are non-compliant. Which AWS capability BEST fits this improvement?",
+    "options": [
+      "Manually SSH into each instance and run the OS package manager's update command during business hours.",
+      "AWS Systems Manager Patch Manager, using patch baselines and maintenance windows to automatically patch instances on a schedule and report compliance.",
+      "AWS Config rules that only report which instances are missing patches, with no mechanism to apply them.",
+      "Rebuilding every instance from a brand-new AMI every time a patch is needed, without a fleet-wide automation tool."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Systems Manager Patch Manager</b>, paired with maintenance windows, applies patch baselines to instances on an automated schedule across the fleet and reports patch compliance per instance, which replaces the manual, inconsistent process with a scheduled, auditable one. Manually SSH-ing into each of 2,000 instances is the exact ad hoc, unscalable process the team wants to eliminate. Config rules can report which instances are missing patches, but on their own they do not apply patches; they still need Patch Manager (or similar automation) to actually remediate. Rebuilding from a new AMI every time a patch is needed is a heavier, slower process than in-place scheduled patching and still lacks a fleet-wide scheduling and reporting mechanism by itself.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-patch.html",
+    "id": "sapc02-0046"
+  },
+  {
+    "domain": "Continuous Improvement for Existing Solutions",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A team's existing production application is designed to survive the loss of a single Availability Zone, with Auto Scaling and RDS Multi-AZ already configured, but this failover behavior has never actually been tested against a real AZ impairment. Leadership wants proof, under controlled conditions, that the system actually fails over correctly before relying on that design during a real incident. Which approach BEST validates this without waiting for an actual outage?",
+    "options": [
+      "Read through the Auto Scaling group and RDS configuration to confirm the settings look correct on paper.",
+      "Wait for the next real Availability Zone event and observe what happens then.",
+      "Use AWS Fault Injection Service (FIS) to run a controlled experiment that simulates an Availability Zone impairment and observe whether the application and database fail over as designed.",
+      "Increase the Auto Scaling group's desired capacity temporarily and assume that proves AZ failover works."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>AWS Fault Injection Service</b> runs controlled chaos-engineering experiments, such as simulating an Availability Zone impairment, against real infrastructure under safe, pre-defined conditions with stop conditions to halt the experiment if things go wrong, giving the team actual evidence of failover behavior rather than a theoretical review. Reading the configuration only confirms intent; it does not prove the failover mechanism actually works end to end under a real impairment. Waiting for a real AZ event to test failover means the first real test happens during an uncontrolled production incident, which is exactly the risk leadership wants to avoid. Increasing desired capacity exercises scaling, not AZ failure detection and failover, so it does not validate the specific behavior in question.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/fis/latest/userguide/what-is.html",
+    "id": "sapc02-0047"
+  },
+  {
+    "domain": "Continuous Improvement for Existing Solutions",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A security team has been using Amazon GuardDuty for over a year and now has a backlog of related findings across several accounts that appear connected, such as a compromised credential, an unusual API call, and a suspicious network connection, all around the same time window. They want to understand the full scope and root cause of a potential incident by exploring relationships between these findings and historical account activity, rather than looking at each finding in isolation. Which service BEST supports this investigation?",
+    "options": [
+      "Amazon GuardDuty alone, since it already generates the individual findings.",
+      "AWS Trusted Advisor, which surfaces best-practice recommendations rather than security incident investigation data.",
+      "AWS Config, which tracks configuration changes over time but not security finding relationships.",
+      "Amazon Detective, which builds an interactive, visualized view of relationships across GuardDuty findings, API calls, and network activity over time to support root-cause investigation."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Amazon Detective</b> automatically collects and organizes findings, API activity, and network flow data into a graph the team can explore interactively, connecting a compromised credential, an API call, and a network connection into one incident timeline for root-cause analysis, which is exactly the cross-finding investigation being requested. GuardDuty alone generates and prioritizes individual findings; it does not provide the graph-based, historical investigation view needed to connect multiple findings into one incident story. AWS Config tracks resource configuration history, which is a different data set from security finding correlation. Trusted Advisor offers best-practice checks across cost, security, and performance categories; it has no incident investigation or finding-correlation capability at all.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/detective/latest/userguide/what-is-detective.html",
+    "id": "sapc02-0048"
+  },
+  {
+    "domain": "Continuous Improvement for Existing Solutions",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A data platform team's S3-based data lake has grown for three years with contributions from many teams, and a recent audit suspects that some objects may now contain customer PII that was never supposed to land there unmasked. The team wants to scan the existing data lake to discover and classify any sensitive data that is present today, without writing custom pattern-matching code. Which AWS service BEST fits this existing-environment improvement?",
+    "options": [
+      "Amazon Macie, which uses machine learning and pattern matching to discover and classify sensitive data, including PII, across existing S3 buckets.",
+      "AWS KMS, which encrypts data at rest but does not identify what sensitive data a bucket contains.",
+      "Amazon GuardDuty, which detects threats and anomalous account activity rather than scanning object content for PII.",
+      "AWS Glue Data Quality, which validates data against defined business rules rather than discovering unclassified sensitive data."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Amazon Macie</b> uses machine learning and pattern matching to scan existing S3 buckets and classify sensitive data such as PII, exactly the retroactive discovery capability the team needs, without the team writing any custom detection code. KMS protects data confidentiality through encryption; it has no visibility into what the encrypted (or unencrypted) data actually contains. GuardDuty focuses on threat detection from account and network activity, not on scanning object content inside S3 for sensitive data patterns. Glue Data Quality evaluates data against rules the team defines, such as null checks or allowed values; it is not built to discover previously unknown sensitive data patterns the way Macie is.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/macie/latest/user/what-is-macie.html",
+    "id": "sapc02-0049"
+  },
+  {
+    "domain": "Continuous Improvement for Existing Solutions",
+    "tag": "Domain 3",
+    "type": "multi",
+    "stem": "A FinOps review of an existing, long-running EC2 and EBS fleet finds sustained low utilization across many instances, with the team still paying full On-Demand rates because no one has revisited sizing or purchasing since launch. Leadership wants concrete cost reduction with no changes to application code. Which TWO actions should the team take? (Select TWO.)",
+    "options": [
+      "Do nothing, since resources already running do not benefit from any further cost optimization.",
+      "Delete AWS Cost Explorer access for the finance team so engineers are not distracted by cost reports.",
+      "Review AWS Compute Optimizer recommendations and resize over-provisioned EC2 instances and EBS volumes to match actual observed utilization.",
+      "Move every instance to a larger instance size to reduce the total instance count, without checking utilization data first.",
+      "Purchase a Compute Savings Plan sized to the fleet's steady-state baseline usage to lower the effective hourly rate on the workloads that will keep running."
+    ],
+    "correct": [
+      2,
+      4
+    ],
+    "explanation": "<b>Compute Optimizer</b> resizing recommendations right-size instances and volumes to match actual, observed utilization, directly cutting waste with no code changes, and a <b>Compute Savings Plan</b> sized to the fleet's steady-state baseline lowers the effective rate paid for the usage that continues, which are the two concrete, data-driven actions FinOps is asking for. Doing nothing ignores the sustained low utilization the review already found and leaves money on the table. Removing Cost Explorer access does not reduce any cost; it only reduces visibility into the problem, which works against the goal. Moving every instance to a larger size without checking utilization data would increase cost, not decrease it, and directly contradicts the finding that the fleet is already under-utilized.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/compute-optimizer/latest/ug/what-is-compute-optimizer.html",
+    "id": "sapc02-0050"
+  },
+  {
+    "domain": "Continuous Improvement for Existing Solutions",
+    "tag": "Domain 3",
+    "type": "multi",
+    "stem": "An existing CI/CD pipeline currently deploys every change to 100 percent of the production fleet in one step, and the team has had to manually roll back twice this year after a bad release reached every server simultaneously. Without changing what the application does, which TWO changes to the pipeline BEST reduce the blast radius of a future bad deployment? (Select TWO.)",
+    "options": [
+      "Switch the deployment configuration to a canary or linear traffic-shifting pattern instead of an all-at-once release.",
+      "Increase the frequency of all-at-once deployments so problems are found sooner.",
+      "Remove the pipeline's staging environment entirely to speed up releases.",
+      "Attach a CloudWatch alarm to the deployment so that a spike in errors during the shift automatically triggers rollback.",
+      "Grant every engineer production SSH access so they can manually patch a bad release faster."
+    ],
+    "correct": [
+      0,
+      3
+    ],
+    "explanation": "Moving to a <b>canary or linear traffic-shifting</b> deployment configuration limits how much of the fleet is exposed to a bad release before anyone or anything can react, and an attached <b>CloudWatch alarm</b> that triggers automatic rollback closes the loop without waiting for a human to notice and intervene, both of which directly shrink blast radius. Removing the staging environment removes a pre-production safety net entirely, which increases risk rather than reducing blast radius in production. Deploying all-at-once more often does not change that each deployment still hits 100 percent of the fleet at once; it only increases how often the full-blast-radius risk occurs. Granting broad SSH access speeds up an ad hoc manual response but does nothing to limit how much of the fleet is affected before that response happens, and it also expands the security attack surface.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/codedeploy/latest/userguide/deployment-configurations.html",
+    "id": "sapc02-0051"
+  },
+  {
+    "domain": "Continuous Improvement for Existing Solutions",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A compliance team manages security posture across 150 existing AWS accounts and wants continuous, automated auditing against an AWS-published security best-practices standard, with the ability to see and track non-compliant resources as they drift over time, rather than performing a one-time manual review. Which combination BEST supports this ongoing improvement?",
+    "options": [
+      "A one-time manual review of each account's configuration, repeated whenever someone remembers to schedule it.",
+      "Enable AWS Security Hub with the AWS Foundational Security Best Practices standard across all accounts, and use AWS Config conformance packs to continuously track resource compliance and drift.",
+      "Rely only on each account team's own internal documentation of what good security configuration looks like.",
+      "Enable GuardDuty alone, since it already covers configuration compliance in addition to threat detection."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Security Hub</b> with the <b>AWS Foundational Security Best Practices</b> standard continuously evaluates accounts against an AWS-curated best-practices baseline, and <b>Config conformance packs</b> continuously track resource-level compliance and drift over time, together giving the compliance team ongoing, automated auditing instead of a point-in-time snapshot. A one-time manual review repeated only when someone remembers is exactly the ad hoc, non-continuous process the team wants to move away from. Relying on each team's own documentation provides no automated verification and is prone to drift and inconsistency across 150 accounts. GuardDuty detects threats and anomalous behavior; it does not evaluate resource configuration against a compliance standard, which is a job Config and Security Hub do instead.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/config/latest/developerguide/conformance-packs.html",
+    "id": "sapc02-0052"
   }
 ]
