@@ -169,7 +169,7 @@
     ],
     "explanation": "<b>AWS DMS</b> is purpose-built for this pattern: it performs a full load of existing data and then streams ongoing changes through change data capture, keeping source and target in sync until cutover, with minimal source downtime. Kinesis Data Streams has no native Oracle CDC capability; a CDC source has to write to it. Glue crawlers catalog schema; they do not migrate or replicate data. Firehose delivers streaming records to destinations like S3; it is not a database replication tool.",
     "difficulty": "easy",
-    "docUrl": "https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Introduction.CDC.html",
+    "docUrl": "https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Task.CDC.html",
     "id": "deac01-0009"
   },
   {
@@ -247,7 +247,7 @@
     ],
     "explanation": "The small-files problem comes from per-object listing and read overhead multiplying across millions of tiny objects; <b>compacting them into fewer, larger Parquet files</b> removes that overhead and is the standard fix, whether done with a scheduled Glue job or S3DistCp on EMR. Switching to CSV would change the row format but lose columnar pruning and does not fix the file count. Adding Athena workgroups only manages cost allocation and query grouping, not the underlying file layout. S3 Transfer Acceleration speeds long-distance uploads over the internet, not per-object read overhead within a Region.",
     "difficulty": "medium",
-    "docUrl": "https://docs.aws.amazon.com/emr/latest/ReleaseGuide/emr-s3distcp.html",
+    "docUrl": "https://docs.aws.amazon.com/emr/latest/ReleaseGuide/UsingEMR_s3distcp.html",
     "id": "deac01-0013"
   },
   {
@@ -285,7 +285,7 @@
     ],
     "explanation": "<b>Amazon Managed Service for Apache Flink</b> (formerly Kinesis Data Analytics) runs streaming SQL or Flink applications continuously against a Kinesis source, handling scaling and cluster operations for you, matching continuous low-latency transforms with no cluster to manage. Glue crawlers only discover schema and do not transform streaming records. Athena queries data at rest and is not built for continuous, low-latency stream processing. DataSync copies files or objects between storage systems and performs no stream transformation.",
     "difficulty": "hard",
-    "docUrl": "https://docs.aws.amazon.com/kinesisanalytics/latest/java/what-is.html",
+    "docUrl": "https://docs.aws.amazon.com/managed-flink/latest/java/what-is.html",
     "id": "deac01-0015"
   },
   {
@@ -363,7 +363,7 @@
     ],
     "explanation": "A <b>Glue Spark ETL job</b> runs on a managed Spark environment for large, distributed transformations, and a <b>Glue Ray job</b> runs Python code across a Ray cluster for large-scale parallel Python workloads that are not naturally expressed in Spark. Spark ETL jobs read and write S3 constantly, so the first option is false. A Python shell job runs plain Python without a Spark cluster and does not distribute work across Spark executors, the opposite of what the option claims. A streaming ETL job is designed to run continuously against an unbounded source, not process one batch and stop.",
     "difficulty": "hard",
-    "docUrl": "https://docs.aws.amazon.com/glue/latest/dg/author-job-ray-jobs.html",
+    "docUrl": "https://docs.aws.amazon.com/glue/latest/dg/ray-jobs-section.html",
     "id": "deac01-0019"
   },
   {
@@ -401,7 +401,7 @@
     ],
     "explanation": "<b>Enhanced fan-out</b> registers each consumer for a dedicated throughput pipe per shard (2 MB/sec each, pushed over HTTP/2), so multiple consumers no longer share and compete for the shard's aggregate read throughput. Reducing shard count would shrink total throughput and worsen contention. Extending the retention period affects how long records are stored, not how throughput is shared among consumers. Server-side encryption protects data at rest and in transit but does not change per-consumer throughput allocation.",
     "difficulty": "hard",
-    "docUrl": "https://docs.aws.amazon.com/streams/latest/dev/introduction-to-enhanced-consumers.html",
+    "docUrl": "https://docs.aws.amazon.com/streams/latest/dev/enhanced-consumers.html",
     "id": "deac01-0021"
   },
   {
@@ -496,7 +496,7 @@
     ],
     "explanation": "<b>Concurrency scaling</b> automatically provisions additional transient clusters when concurrent query volume spikes, routes eligible queued queries to them, and removes that capacity once the burst subsides, all without permanently resizing the main cluster. Increasing the WLM timeout lets slow queries run longer but does not add capacity to handle more concurrent queries. Changing distribution style affects join and scan efficiency, not concurrency handling. Redshift Spectrum offloads scans to S3 but does not add compute capacity for a burst of concurrent internal queries.",
     "difficulty": "medium",
-    "docUrl": "https://docs.aws.amazon.com/redshift/latest/dg/c_intro_concurrency_scaling.html",
+    "docUrl": "https://docs.aws.amazon.com/redshift/latest/dg/concurrency-scaling.html",
     "id": "deac01-0026"
   },
   {
@@ -536,7 +536,7 @@
     ],
     "explanation": "<b>Redshift Spectrum</b> registers S3 data as external tables in the cluster's catalog and lets Redshift SQL query and join them with native tables directly, without a load step. COPY is the mechanism for loading external data into native tables, exactly what the team wants to avoid. Redshift Serverless is a capacity model, not a way to query external files; either serverless or provisioned Redshift can use Spectrum. Glue crawlers only populate table metadata; they cannot execute SQL joins themselves.",
     "difficulty": "easy",
-    "docUrl": "https://docs.aws.amazon.com/redshift/latest/dg/c_redshift-spectrum.html",
+    "docUrl": "https://docs.aws.amazon.com/redshift/latest/dg/c-using-spectrum.html",
     "id": "deac01-0028"
   },
   {
@@ -593,7 +593,7 @@
     ],
     "explanation": "<b>On-Demand capacity mode</b> scales instantly to match incoming traffic, including sudden unpredictable spikes, and bills per request rather than requiring pre-planned throughput. Fixed Provisioned throughput sized for average traffic throttles once a spike exceeds it. Provisioned auto scaling reacts to CloudWatch alarms with a delay of a few minutes, which can still throttle a sudden viral spike before capacity catches up. Reserved capacity is a one- or three-year commitment for predictable baseline throughput, the opposite of an unpredictable spiky workload.",
     "difficulty": "medium",
-    "docUrl": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/ProvisionedThroughput.html",
+    "docUrl": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/on-demand-capacity-mode.html",
     "id": "deac01-0031"
   },
   {
@@ -690,7 +690,7 @@
     ],
     "explanation": "The <b>Glue Schema Registry</b> centrally stores schema versions for streaming data and enforces a configured compatibility mode (such as backward or forward compatibility), rejecting producer writes that would break that contract before consumers ever see the incompatible data. Adding partitions changes throughput distribution, not schema enforcement. Object Lock on a downstream bucket protects objects from deletion and has nothing to do with schema validation at write time. A Glue crawler only infers schema after the fact for cataloging; it does not gate producer writes against a compatibility contract.",
     "difficulty": "medium",
-    "docUrl": "https://docs.aws.amazon.com/glue/latest/dg/what-is-glue-schema-registry.html",
+    "docUrl": "https://docs.aws.amazon.com/glue/latest/dg/schema-registry.html",
     "id": "deac01-0036"
   },
   {
@@ -709,7 +709,7 @@
     ],
     "explanation": "<b>Redshift data sharing</b> lets a producer cluster grant live, read-only access to specific databases, schemas, or tables to other clusters or accounts, so consumers always see current data with no copy or reload step. A nightly UNLOAD/COPY cycle duplicates data and introduces staleness between refreshes. Spectrum over a manual daily export still depends on someone re-running that export and is not live. Cross-Region snapshot copies duplicate an entire cluster's data for disaster recovery, not a live shared read-only view.",
     "difficulty": "hard",
-    "docUrl": "https://docs.aws.amazon.com/redshift/latest/dg/c-redshift-data-sharing.html",
+    "docUrl": "https://docs.aws.amazon.com/redshift/latest/dg/datashare-overview.html",
     "id": "deac01-0037"
   },
   {
@@ -766,7 +766,7 @@
     ],
     "explanation": "<b>Express Workflows</b> are priced by execution duration and number of requests and are built for high-volume, short-duration workloads exactly like hundreds of thousands of sub-minute executions per day, while still supporting Retry and Catch error handling. <b>Standard Workflows</b> price per state transition and add exactly-once semantics and long execution history, better suited to lower-volume, longer-running workflows, and would cost more at this volume. A Glue workflow only chains Glue-native objects, not arbitrary retryable state machine logic. An EventBridge rule with no state machine has no built-in retry/Catch semantics of its own.",
     "difficulty": "easy",
-    "docUrl": "https://docs.aws.amazon.com/step-functions/latest/dg/concepts-standard-vs-express.html",
+    "docUrl": "https://docs.aws.amazon.com/step-functions/latest/dg/choosing-workflow-type.html",
     "id": "deac01-0040"
   },
   {
@@ -823,7 +823,7 @@
     ],
     "explanation": "A <b>CloudWatch alarm on the failure metric, or an EventBridge rule matching the Glue job's FAILED state-change event, that publishes to an SNS topic</b> notifies the on-call engineer within minutes automatically, with no manual dashboard checking. Manually checking a dashboard each morning introduces hours of delay. Writing only a log entry produces no active notification unless something reads and reacts to that log. CloudTrail records that the StartJobRun/GetJobRun API was called; it does not evaluate job success or failure as an alerting condition or notify anyone.",
     "difficulty": "medium",
-    "docUrl": "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/AlarmThatSendsEmail.html",
+    "docUrl": "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Alarms.html",
     "id": "deac01-0043"
   },
   {
@@ -861,7 +861,7 @@
     ],
     "explanation": "Athena <b>workgroups support a per-query data usage control</b> that cancels a query once it is projected to scan more data than a configured threshold, directly capping the cost impact of any single runaway query. Changing S3 storage class affects storage price, not the bytes an Athena query scans and bills for. Job bookmarks are a Glue ETL concept and do not apply to Athena workgroups or queries. Macie discovers sensitive data in S3; it does not enforce a scan-size limit on SQL queries.",
     "difficulty": "medium",
-    "docUrl": "https://docs.aws.amazon.com/athena/latest/ug/workgroups-manage-queries-control-costs-with-workgroups.html",
+    "docUrl": "https://docs.aws.amazon.com/athena/latest/ug/workgroups-setting-control-limits-cloudwatch.html",
     "id": "deac01-0045"
   },
   {
@@ -958,7 +958,7 @@
     ],
     "explanation": "<b>Query monitoring rules inside WLM</b> continuously evaluate running queries against metrics such as CPU time, rows scanned, or execution time, and can automatically log, reprioritize (hop), or abort a query that crosses the defined thresholds, with no human intervention. Permanently adding nodes raises cost for a problem that only happens occasionally and does not stop a specific runaway query. Redshift Spectrum changes where external data is scanned from, not how internal queries are monitored or throttled. S3 Lifecycle rules manage object storage tiers and have no relationship to query-level resource control.",
     "difficulty": "hard",
-    "docUrl": "https://docs.aws.amazon.com/redshift/latest/dg/c_workload_mgmt_classification.html",
+    "docUrl": "https://docs.aws.amazon.com/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html",
     "id": "deac01-0050"
   },
   {
@@ -1131,7 +1131,7 @@
     ],
     "explanation": "<b>Dynamic data masking</b> attaches a masking policy directly to the column so Redshift itself returns masked or unmasked output depending on the querying role's grants, from a single source table with no data duplication. Maintaining two synchronized physical copies adds ongoing operational burden and risk of drift. Client-side masking in every BI tool is fragile and must be reimplemented and trusted in each tool. S3 Object Lock protects objects in S3 from deletion or overwrite; it has nothing to do with masking column values in Redshift query results.",
     "difficulty": "easy",
-    "docUrl": "https://docs.aws.amazon.com/redshift/latest/dg/t_dynamic_data_masking.html",
+    "docUrl": "https://docs.aws.amazon.com/redshift/latest/dg/t_ddm.html",
     "id": "deac01-0059"
   },
   {
@@ -1207,7 +1207,7 @@
     ],
     "explanation": "<b>Lake Formation cross-account grants (or a Glue Data Catalog resource policy)</b> let Team A's account share specific databases and tables in its catalog with Team B's account, so Team B queries the same tables through Athena with no data copy and fine-grained control over what is shared. Exporting and emailing a catalog file is not a supported or secure sharing mechanism and would quickly go stale. Team B cannot successfully crawl a bucket it has no permissions on; the crawler would simply fail with access denied. Making the bucket public exposes the data to the entire internet, far broader than sharing with one named account.",
     "difficulty": "medium",
-    "docUrl": "https://docs.aws.amazon.com/glue/latest/dg/glue-data-catalog-resource-policies.html",
+    "docUrl": "https://docs.aws.amazon.com/glue/latest/dg/cross-account-access.html",
     "id": "deac01-0063"
   },
   {
@@ -1226,7 +1226,7 @@
     ],
     "explanation": "<b>Column-level GRANT/REVOKE privileges</b> in Redshift let the team expose the salary column only to the HR analytics role while every other role continues to query the remaining columns of the very same table, with no duplication. Duplicating the whole table into an HR-only copy wastes storage and creates a second copy to keep in sync. Revoking all access for everyone, including HR, fails the requirement that HR must be able to read the column. Moving the table to S3 with one shared bucket policy cannot express column-level distinctions and would need to either expose or hide the entire object for every reader.",
     "difficulty": "hard",
-    "docUrl": "https://docs.aws.amazon.com/redshift/latest/dg/c_columnlevelsecurity.html",
+    "docUrl": "https://docs.aws.amazon.com/redshift/latest/dg/r_GRANT.html",
     "id": "deac01-0064"
   },
   {
