@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { getSupabase } from "@/lib/supabase/client";
 import { useSession } from "@/lib/supabase/useSession";
+import { initials } from "@/lib/initials";
 import "./TopNav.css";
 
 /**
@@ -59,6 +60,10 @@ export function TopNav({ active }: { active?: "catalog" | "progress" }) {
             <button type="button" className="tn-signout" onClick={() => getSupabase()?.auth.signOut()}>
               Sign out
             </button>
+            {/* Initials avatar -> Settings (the design routes the avatar there). Signed-out shows none. */}
+            <Link href="/settings" className="tn-avatar" aria-label="Settings">
+              {initials(label)}
+            </Link>
           </>
         ) : (
           <Link href="/login" className="tn-signin">Sign in</Link>

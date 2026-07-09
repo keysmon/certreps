@@ -73,7 +73,17 @@ describe("TopNav", () => {
     mockedGetSupabase.mockReturnValue(fakeClient(sessionWith("ada@example.com"), signOut));
     render(<TopNav />);
     expect(await screen.findByText("ada@example.com")).toBeInTheDocument();
+    // Signed-in state gains an initials avatar linking to Settings (the design routes it there).
+    expect(screen.getByRole("link", { name: /settings/i })).toHaveAttribute("href", "/settings");
     await userEvent.click(screen.getByRole("button", { name: /sign out/i }));
     expect(signOut).toHaveBeenCalledTimes(1);
+  });
+
+  it("shows no Settings avatar when signed out", async () => {
+    mockedAvailable.mockReturnValue(true);
+    mockedGetSupabase.mockReturnValue(fakeClient(null));
+    render(<TopNav />);
+    await screen.findByRole("link", { name: /sign in/i });
+    expect(screen.queryByRole("link", { name: /settings/i })).not.toBeInTheDocument();
   });
 });

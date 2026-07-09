@@ -108,6 +108,14 @@ describe("AuthButton", () => {
     expect(container).toBeEmptyDOMElement();
   });
 
+  it("suppresses itself on Settings /settings (TopNav owns it)", () => {
+    mockedAvailable.mockReturnValue(true);
+    mockedGetSupabase.mockReturnValue(fakeClient(sessionWith("ada@example.com")));
+    mockedPathname.mockReturnValue("/settings");
+    const { container } = render(<AuthButton />);
+    expect(container).toBeEmptyDOMElement();
+  });
+
   it("still renders on the review-past route /account/attempts/<id> (no TopNav there)", async () => {
     mockedAvailable.mockReturnValue(true);
     mockedGetSupabase.mockReturnValue(fakeClient(sessionWith("ada@example.com")));

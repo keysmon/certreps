@@ -26,6 +26,8 @@ export function AuthButton() {
   // The My progress dashboard mounts TopNav (Task 8) - it owns the auth surface there.
   // Scoped to the exact page: /account/attempts/<id> (review-past) has no TopNav and keeps this strip.
   if (pathname === "/account") return null;
+  // Settings mounts TopNav too (Task 8) - it owns the auth surface there.
+  if (pathname === "/settings") return null;
   // The exam room is distraction-free chrome by design (Task 6): the practice surface has
   // its own slim bar and no auth affordance - signing in mid-exam is not a real flow.
   if (pathname && /^\/aws\/[^/]+\/practice$/.test(pathname)) return null;
