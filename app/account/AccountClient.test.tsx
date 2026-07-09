@@ -1,17 +1,35 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
+import type { Session } from "@supabase/supabase-js";
 import { AccountClient } from "./AccountClient";
 import { writeAll } from "@/lib/storage";
 import { getMeta } from "@/lib/bank";
+import { getSupabase, supabaseAvailable } from "@/lib/supabase/client";
 import type { Attempt } from "@/lib/types";
 
-// The page reaches Supabase only through these two helpers. Held unavailable so `session`
-// resolves to null synchronously (no async auth) and the sync banner stays hidden - that
-// isolates the dashboard derivation (stat tiles, continue cards, recent activity, empty state).
+// The page reaches Supabase only through these two helpers. Default them to unavailable in
+// beforeEach so `session` resolves to null (no async auth) and the sync banner stays hidden -
+// that isolates the dashboard derivation. The signed-in test flips them to exercise the banner.
 vi.mock("@/lib/supabase/client", () => ({
-  getSupabase: vi.fn(() => null),
-  supabaseAvailable: vi.fn(() => false),
+  getSupabase: vi.fn(),
+  supabaseAvailable: vi.fn(),
 }));
+const mockedAvailable = vi.mocked(supabaseAvailable);
+const mockedGetSupabase = vi.mocked(getSupabase);
+
+function sessionWith(email: string): Session {
+  return { user: { id: "u1", email, user_metadata: {} } } as unknown as Session;
+}
+
+function fakeClient(session: Session | null) {
+  return {
+    auth: {
+      getSession: vi.fn().mockResolvedValue({ data: { session } }),
+      onAuthStateChange: vi.fn(() => ({ data: { subscription: { unsubscribe: vi.fn() } } })),
+      signOut: vi.fn().mockResolvedValue({ error: null }),
+    },
+  } as unknown as ReturnType<typeof getSupabase>;
+}
 
 // A STABLE router singleton: AccountClient's load effect lists `router` in its deps, so a
 // fresh object per render would re-fire the effect every setState and spin an infinite loop.
@@ -38,7 +56,14 @@ function attempt(over: Partial<Attempt>): Attempt {
   };
 }
 
-beforeEach(() => localStorage.clear());
+beforeEach(() => {
+  vi.clearAllMocks();
+  localStorage.clear();
+  // Default: Supabase unavailable, so `session` stays null and the sync banner is hidden.
+  mockedAvailable.mockReturnValue(false);
+  mockedGetSupabase.mockReturnValue(null);
+});
+afterEach(() => vi.clearAllMocks());
 
 // The multi-cert section headings of the pre-v1d /account page are gone: the dashboard now renders
 // a stat strip, continue-studying cards, and a recent-activity list (grouping semantics moved into
@@ -85,5 +110,17 @@ describe("AccountClient dashboard", () => {
 
     expect(await screen.findByRole("heading", { level: 3, name: getMeta().title })).toBeInTheDocument();
     expect(screen.getByText(/1 attempt from certifications no longer available/i)).toBeInTheDocument();
+  });
+
+  it("renders the signed-in sync banner and Synced-as eyebrow when signed in", async () => {
+    mockedAvailable.mockReturnValue(true);
+    mockedGetSupabase.mockReturnValue(fakeClient(sessionWith("ada@example.com")));
+    render(<AccountClient welcome={false} />);
+
+    // The emerald "Syncing on" banner, its Sign out button, and the identity eyebrow are the
+    // signed-in surface - none of which render in the signed-out tests above.
+    expect(await screen.findByText(/syncing on/i)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /sign out/i })).toBeInTheDocument();
+    expect(screen.getByText(/synced as ada@example.com/i)).toBeInTheDocument();
   });
 });

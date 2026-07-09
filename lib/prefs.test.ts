@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { readPrefs, writePrefs, setPref } from "./prefs";
+import { readPrefs, writePrefs, setPref, clearPrefs } from "./prefs";
 
 const KEY = "certreps.prefs.v1";
 
@@ -29,6 +29,13 @@ describe("prefs store", () => {
     expect(readPrefs()).toEqual({ reminders: false, newCerts: false, weekly: true });
 
     localStorage.setItem(KEY, "not json");
+    expect(readPrefs()).toEqual({ reminders: false, newCerts: false, weekly: false });
+  });
+
+  it("clearPrefs wipes the store back to defaults", () => {
+    writePrefs({ reminders: true, newCerts: true, weekly: true });
+    clearPrefs();
+    expect(localStorage.getItem(KEY)).toBeNull();
     expect(readPrefs()).toEqual({ reminders: false, newCerts: false, weekly: false });
   });
 });

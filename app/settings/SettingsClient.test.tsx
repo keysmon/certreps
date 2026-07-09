@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import type { Session } from "@supabase/supabase-js";
 import { SettingsClient } from "./SettingsClient";
 import { getSupabase, supabaseAvailable } from "@/lib/supabase/client";
-import { readPrefs } from "@/lib/prefs";
+import { readPrefs, writePrefs } from "@/lib/prefs";
 import { readAll, writeAll } from "@/lib/storage";
 import type { Attempt } from "@/lib/types";
 
@@ -118,6 +118,7 @@ describe("SettingsClient", () => {
     const mocks = fakeClient(sessionWith("ada@example.com"));
     mockedGetSupabase.mockReturnValue(mocks.client);
     writeAll([attempt()]);
+    writePrefs({ reminders: true, newCerts: false, weekly: true });
     const confirmSpy = vi.spyOn(window, "confirm").mockReturnValue(true);
 
     render(<SettingsClient />);
@@ -126,7 +127,8 @@ describe("SettingsClient", () => {
 
     expect(mocks.from).toHaveBeenCalledWith("attempts");
     expect(mocks.eq).toHaveBeenCalledWith("user_id", "u1");
-    expect(readAll()).toEqual([]); // local store cleared
+    expect(readAll()).toEqual([]); // local attempt store cleared
+    expect(readPrefs()).toEqual({ reminders: false, newCerts: false, weekly: false }); // prefs wiped too
     expect(mocks.signOut).toHaveBeenCalledTimes(1);
     expect(router.push).toHaveBeenCalledWith("/");
     confirmSpy.mockRestore();

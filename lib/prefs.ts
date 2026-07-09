@@ -52,3 +52,13 @@ export function setPref<K extends keyof Prefs>(key: K, value: Prefs[K]): Prefs {
   writePrefs(next);
   return next;
 }
+
+/** Wipe the stored prefs. Used by the Settings "Delete all my data" action so the delete is honest
+ *  to its label (progress AND preferences), not just the attempt store. Degrades silently if blocked. */
+export function clearPrefs(): void {
+  try {
+    localStorage.removeItem(KEY);
+  } catch {
+    /* storage blocked - nothing else to do */
+  }
+}

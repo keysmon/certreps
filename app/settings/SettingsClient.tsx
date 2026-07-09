@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { getSupabase } from "@/lib/supabase/client";
 import { useSession } from "@/lib/supabase/useSession";
 import { readAll, clearAll } from "@/lib/storage";
-import { readPrefs, setPref, type Prefs } from "@/lib/prefs";
+import { readPrefs, setPref, clearPrefs, type Prefs } from "@/lib/prefs";
 import { initials } from "@/lib/initials";
 import "./settings.css";
 
@@ -87,6 +87,7 @@ export function SettingsClient() {
       window.alert("Your cloud data could not be deleted right now - it may reappear when you next sign in. Local data was still cleared.");
     }
     clearAll();
+    clearPrefs(); // honest to the "Delete all my data" label - wipe preferences too, not just attempts
     try {
       await supabase?.auth.signOut();
     } catch {
@@ -192,7 +193,7 @@ export function SettingsClient() {
         <div className="st-row">
           <div className="rt">
             <div className="rl danger">Delete all my data</div>
-            <div className="rs">Deletes your practice data here and in the cloud, then signs you out. Cannot be undone.</div>
+            <div className="rs">Deletes your practice data and preferences on this device, removes your cloud data, then signs you out. Cannot be undone.</div>
           </div>
           <button type="button" className="btn btn-sm st-danger" onClick={onDelete}>
             Delete
