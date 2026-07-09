@@ -203,5 +203,176 @@
     "difficulty": "medium",
     "docUrl": "https://docs.aws.amazon.com/directconnect/latest/UserGuide/direct-connect-gateways-intro.html",
     "id": "ansc01-0012"
+  },
+  {
+    "domain": "Network Implementation",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A team wants to combine multiple existing Direct Connect connections into a single logical, higher-bandwidth connection using a Link Aggregation Group (LAG). Which combination of connections can be placed into one LAG?",
+    "options": [
+      "Two 10 Gbps connections that terminate on two different Direct Connect devices in the same location.",
+      "A 10 Gbps connection and a 1 Gbps connection that both terminate on the same Direct Connect device.",
+      "Five 1 Gbps connections that all terminate on the same Direct Connect device.",
+      "Four 1 Gbps connections that all terminate on the same Direct Connect device and use the same bandwidth."
+    ],
+    "correct": [3],
+    "explanation": "A LAG requires <b>all connections to terminate at the same Direct Connect device (endpoint)</b>, <b>use the same bandwidth</b>, and is limited to a <b>maximum of four connections below 100 Gbps</b> (or two connections at 100/400 Gbps), so four matching 1 Gbps connections on the same device is valid. Connections on two different devices cannot join the same LAG, since AWS prevents connections used for device-level resiliency from being combined into a single LAG. Mixing 10 Gbps and 1 Gbps connections violates the same-bandwidth rule. Five connections below the 100 Gbps tier exceeds the four-connection maximum for that speed tier.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/directconnect/latest/UserGuide/lags.html",
+    "id": "ansc01-0013"
+  },
+  {
+    "domain": "Network Implementation",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A company needs remote employees to connect over a VPN into a specific application subnet, using X.509 client certificates for endpoint trust, and then restricting which employees can reach that subnet based on their Active Directory group membership. Which Client VPN configuration achieves both requirements?",
+    "options": [
+      "Configure the Client VPN endpoint with mutual authentication using a server and client certificate chain, combined with Active Directory authentication, and add an authorization rule that grants only the required AD group access to the target subnet's CIDR.",
+      "Configure the Client VPN endpoint with mutual authentication only, and rely on the VPC's security groups alone to restrict which employees can reach the subnet.",
+      "Configure the Client VPN endpoint with federated (SAML) authentication only, since combining it with mutual authentication is not supported.",
+      "Skip authorization rules entirely and rely only on the network ACL of the target subnet to restrict access by AD group."
+    ],
+    "correct": [0],
+    "explanation": "Client VPN supports combining <b>mutual (certificate-based) authentication with Active Directory or federated authentication</b>, and <b>authorization rules</b> map a user group, such as an AD group, to a specific target network CIDR, which is exactly how to layer certificate-based trust with group-based access restriction. Relying on security groups alone does not use Client VPN's built-in group-to-network authorization model and conflates network-layer filtering with user-identity-based access. Combining mutual authentication with federated or Active Directory authentication is explicitly supported, so that combination is not disallowed. Network ACLs operate on IP ranges, not AD group identity, so they cannot enforce group-based authorization by themselves.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/vpn/latest/clientvpn-admin/client-authentication.html",
+    "id": "ansc01-0014"
+  },
+  {
+    "domain": "Network Implementation",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A team must let resources in a VPC resolve a domain that is authoritative on an on-premises DNS server reachable over an existing Direct Connect connection. Which set of Route 53 Resolver components must the team configure in the VPC's account?",
+    "options": [
+      "A Route 53 Resolver inbound endpoint only, since inbound endpoints handle all DNS forwarding in both directions.",
+      "A Route 53 Resolver outbound endpoint with elastic network interfaces in at least two Availability Zones, plus a forwarding rule for the on-premises domain that points to the on-premises DNS server IP addresses, associated with the VPC.",
+      "A public Route 53 hosted zone that duplicates the on-premises domain's records.",
+      "A Direct Connect public virtual interface dedicated to DNS traffic."
+    ],
+    "correct": [1],
+    "explanation": "Resolving an on-premises domain from within a VPC requires an <b>outbound Resolver endpoint</b> (with ENIs across multiple Availability Zones for availability) and a <b>forwarding (conditional) rule</b> for that domain pointing at the on-premises DNS server IPs, associated with the VPC; traffic then flows over the existing private connection. An <b>inbound</b> endpoint handles the opposite direction: queries arriving from on-premises into the VPC's Resolver, not from the VPC out to on-premises. A duplicated public hosted zone requires ongoing manual synchronization and does not reflect live on-premises records. Direct Connect virtual interfaces have no dedicated DNS-traffic VIF type; DNS queries simply ride over the existing private connection.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resolver.html",
+    "id": "ansc01-0015"
+  },
+  {
+    "domain": "Network Implementation",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A security vendor wants to offer a centralized traffic-inspection appliance as a service that other AWS accounts can insert transparently into their own VPCs, without exposing the appliance fleet's IP addresses or requiring the consumer accounts to peer with the vendor's VPC. Which implementation is correct?",
+    "options": [
+      "The vendor creates a Network Load Balancer and shares its DNS name directly with consumer accounts to call over the internet.",
+      "The vendor creates a VPC peering connection to every consumer account and routes traffic to the appliances through the peering connection.",
+      "The vendor fronts the appliance fleet with a Gateway Load Balancer, creates a VPC endpoint service backed by that Gateway Load Balancer, and consumer accounts create Gateway Load Balancer endpoints that connect to the service through AWS PrivateLink.",
+      "The vendor publishes the appliance fleet's private IP addresses so consumer accounts can add static routes directly to the appliance instances."
+    ],
+    "correct": [2],
+    "explanation": "A <b>Gateway Load Balancer endpoint service</b>, built with AWS PrivateLink, lets a provider front an appliance fleet with a Gateway Load Balancer and expose it as a service; <b>consumer accounts create their own Gateway Load Balancer endpoints</b> that connect privately to the service without the provider exposing appliance IP addresses or requiring VPC peering. Sharing an NLB DNS name over the internet exposes the service publicly and forgoes PrivateLink's private connectivity model. VPC peering to every consumer does not scale and is not how PrivateLink-based service sharing works. Publishing raw private IP addresses for static routing exposes internal appliance addressing and bypasses the endpoint-service model entirely.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/vpc/latest/privatelink/vpce-gateway-load-balancer.html",
+    "id": "ansc01-0016"
+  },
+  {
+    "domain": "Network Implementation",
+    "tag": "Domain 2",
+    "type": "multi",
+    "stem": "A team has three VPCs (Prod, Shared-Services, and Dev) and creates two VPC peering connections: Prod-to-Shared-Services and Shared-Services-to-Dev. Which TWO statements correctly describe the limitations of this design? (Select TWO.)",
+    "options": [
+      "Traffic from Prod can already reach Dev through Shared-Services without any extra configuration, because VPC peering is transitive.",
+      "A new, direct VPC peering connection between Prod and Dev is unnecessary as long as both existing peering connections remain active.",
+      "Prod and Dev can be peered directly even if their IPv4 CIDR blocks overlap with each other.",
+      "If Shared-Services has a NAT gateway or a Direct Connect connection, Dev cannot use it through the Shared-Services-to-Dev peering connection, because VPC peering does not support edge-to-edge routing through a peered VPC.",
+      "To let Prod reach Dev directly, a separate VPC peering connection must be created between Prod and Dev, because peering relationships are not transitive."
+    ],
+    "correct": [3, 4],
+    "explanation": "<b>VPC peering is never transitive</b>, so Prod cannot reach Dev through Shared-Services without a <b>separate, direct peering connection between Prod and Dev</b>. Peering also does not support <b>edge-to-edge routing</b>: a VPC cannot use another peered VPC's NAT gateway, internet gateway, VPN, or Direct Connect connection to reach beyond it. The transitive-routing claim and the claim that both existing connections remaining active is enough are both false for the same non-transitive reason. Overlapping CIDR blocks are explicitly disallowed for a new peering connection, so Prod and Dev could not even be peered directly if their CIDRs overlapped.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/vpc/latest/peering/vpc-peering-basics.html",
+    "id": "ansc01-0017"
+  },
+  {
+    "domain": "Network Implementation",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A team runs private subnets in three Availability Zones and wants outbound internet access for those subnets to keep working even if one Availability Zone has a problem, while avoiding unnecessary cross-AZ data transfer charges during normal operation. Which NAT gateway design is BEST?",
+    "options": [
+      "Deploy a single NAT gateway in one Availability Zone and route all three private subnets' default traffic to it.",
+      "Deploy one NAT gateway per Region instead of per Availability Zone, since NAT gateways are Region-scoped resources.",
+      "Deploy two NAT gateways in the same Availability Zone for redundancy, and route all subnets to whichever is cheaper.",
+      "Deploy one NAT gateway in each of the three Availability Zones, and route each private subnet's default route to the NAT gateway in its own Availability Zone."
+    ],
+    "correct": [3],
+    "explanation": "<b>One NAT gateway per Availability Zone</b>, with each subnet's default route pointing to the NAT gateway in the <b>same</b> AZ, keeps outbound traffic local to the zone, avoiding cross-AZ data transfer charges, and means an AZ-level issue only affects that AZ's own NAT gateway rather than the whole VPC. A single NAT gateway in one AZ is a single point of failure and forces cross-AZ traffic from the other two AZs. NAT gateways are created within a specific subnet in a specific Availability Zone, not deployed as one Region-wide resource. Placing two NAT gateways in the same AZ still leaves the whole design exposed if that one AZ has a problem.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html",
+    "id": "ansc01-0018"
+  },
+  {
+    "domain": "Network Implementation",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A company wants to enable MACsec (802.1AE) encryption on an existing Direct Connect connection for wire-speed, point-to-point encryption between their router and the AWS Direct Connect device. Which implementation requirement applies?",
+    "options": [
+      "MACsec is available only on dedicated connections at MACsec-capable ports and locations, and requires associating a Connectivity Association Key (CAK) and Connectivity Association Key Name (CKN) pair with the connection.",
+      "MACsec can be enabled on any hosted connection provided by an AWS Direct Connect Partner, with no location restrictions.",
+      "MACsec replaces the need for BGP authentication, so no CAK/CKN key association is required.",
+      "MACsec is configured entirely within the customer's on-premises router and requires no configuration on the AWS side of the connection."
+    ],
+    "correct": [0],
+    "explanation": "MACsec on Direct Connect is supported only on <b>dedicated connections</b> at <b>MACsec-capable ports and locations</b>, and is enabled by associating a <b>CAK/CKN key pair</b> with the connection (or with a LAG, where only one key is active across all LAG links at a time). It is not available on hosted connections. MACsec operates at the Ethernet (Layer 2) frame level and is independent of BGP peer authentication, so it does not replace BGP authentication. Because MACsec secures the physical link between the customer router and the AWS Direct Connect device, both sides must be configured, including key association on the AWS side, in addition to the customer router.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/directconnect/latest/UserGuide/MACsec.html",
+    "id": "ansc01-0019"
+  },
+  {
+    "domain": "Network Implementation",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A team creates an interface VPC endpoint for an AWS service so that applications already coded to call the service's standard public DNS hostname (as used by the AWS SDK) transparently resolve to the endpoint's private IP addresses instead of the public endpoint. Which configuration is required?",
+    "options": [
+      "Disable DNS resolution and DNS hostnames for the VPC, since private DNS names bypass VPC DNS settings entirely.",
+      "Enable the endpoint's private DNS name option, and ensure the VPC has both DNS hostnames and DNS resolution enabled.",
+      "Manually create a public Route 53 hosted zone that overrides the AWS service's public hostname for the whole internet.",
+      "Configure a Route 53 Resolver inbound endpoint, since private DNS names for interface endpoints depend on inbound endpoints."
+    ],
+    "correct": [1],
+    "explanation": "Enabling an interface endpoint's <b>private DNS name</b> option, together with the VPC's <b>DNS hostnames and DNS resolution attributes both enabled</b>, makes the standard public service hostname resolve to the endpoint's private IPs for resources inside the VPC, so existing SDK code needs no changes. Disabling the VPC's DNS attributes is the opposite of what is required, since private DNS resolution depends on those attributes being enabled. Overriding a hostname in a public Route 53 hosted zone would incorrectly affect resolution for the entire internet, not just the VPC. Resolver inbound endpoints handle queries arriving from outside the VPC and are unrelated to how an interface endpoint's private DNS name resolves for resources inside the VPC.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/vpc/latest/privatelink/create-interface-endpoint.html",
+    "id": "ansc01-0020"
+  },
+  {
+    "domain": "Network Implementation",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A team is implementing IPv6 outbound-only access for a private subnet. After associating an IPv6 CIDR block with the VPC and allocating a /64 IPv6 range to the subnet, which route table entry correctly completes the implementation?",
+    "options": [
+      "A route for the subnet's own IPv6 CIDR pointing to a NAT gateway.",
+      "A route for 0.0.0.0/0 pointing to the egress-only internet gateway.",
+      "A route for ::/0 pointing to the egress-only internet gateway.",
+      "A route for ::/0 pointing to a standard internet gateway."
+    ],
+    "correct": [2],
+    "explanation": "Outbound-only IPv6 internet access needs a route for <b>::/0 (all IPv6 destinations) pointing to the egress-only internet gateway</b> in the subnet's route table, alongside the local routes for the VPC's own CIDR blocks. Routing the subnet's own CIDR to a NAT gateway does not make sense for outbound-to-internet traffic, and NAT gateways are IPv4-only besides. 0.0.0.0/0 is the IPv4 default-route syntax, not IPv6. Routing ::/0 to a standard internet gateway would make the subnet's globally routable IPv6 addresses reachable from the internet, defeating the outbound-only requirement.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/vpc/latest/userguide/egress-only-internet-gateway.html",
+    "id": "ansc01-0021"
+  },
+  {
+    "domain": "Network Implementation",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "Account Z owns a Direct Connect gateway. Account A owns a transit gateway with several VPC attachments and wants to use Account Z's Direct Connect gateway to reach on-premises. Which sequence correctly implements this cross-account association?",
+    "options": [
+      "Account Z creates the transit gateway attachment directly inside Account A's account, bypassing any proposal step.",
+      "Account A shares its transit gateway with Account Z using AWS RAM, and Account Z attaches VPCs directly to it.",
+      "Account Z sends an association proposal to Account A, and Account A must accept it before traffic can flow.",
+      "Account A sends an association proposal for its transit gateway to Account Z, Account Z accepts the proposal and can optionally adjust the allowed prefixes, and only then can traffic route between Account A's transit gateway and Account Z's Direct Connect gateway."
+    ],
+    "correct": [3],
+    "explanation": "For a cross-account Direct Connect gateway association, the <b>owner of the transit gateway (Account A) sends the association proposal</b> to the <b>Direct Connect gateway owner (Account Z)</b>, who must accept it (and can adjust the allowed prefixes) before routing works; Account Z, as the gateway owner, retains routing ownership to the customer. The proposal flows from the transit gateway owner to the gateway owner, not the reverse. Account Z cannot unilaterally create the attachment inside Account A's account; the transit gateway owner must initiate the proposal. Sharing a transit gateway through AWS RAM for VPC attachments is a different mechanism than a Direct Connect gateway association proposal and does not match this scenario.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/directconnect/latest/UserGuide/direct-connect-gateways-intro.html",
+    "id": "ansc01-0022"
   }
 ]
