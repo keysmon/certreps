@@ -12,6 +12,8 @@ export const VENDORS: Record<string, { n: string; c: string }> = {
   k8s: { n: "Kubernetes", c: "var(--v-k8s)" },
   hashi: { n: "HashiCorp", c: "var(--v-hashi)" },
   cisco: { n: "Cisco", c: "var(--v-cisco)" },
+  databricks: { n: "Databricks", c: "var(--v-databricks)" },
+  nvidia: { n: "NVIDIA", c: "var(--v-nvidia)" },
 };
 
 export interface VendorDotProps {

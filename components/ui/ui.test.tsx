@@ -86,8 +86,11 @@ describe("VendorDot", () => {
   it("exports a typed VENDORS accent map keyed by lowercase slug", () => {
     expect(VENDORS.aws).toEqual({ n: "AWS", c: "var(--v-aws)" });
     expect(VENDORS.azure.c).toBe("var(--v-azure)");
+    // v1g Wave 1 vendors: routing + accent land before their certs' content.
+    expect(VENDORS.databricks).toEqual({ n: "Databricks", c: "var(--v-databricks)" });
+    expect(VENDORS.nvidia).toEqual({ n: "NVIDIA", c: "var(--v-nvidia)" });
     expect(Object.keys(VENDORS)).toEqual(
-      expect.arrayContaining(["aws", "azure", "ms", "gcp", "comptia", "k8s", "hashi", "cisco"]),
+      expect.arrayContaining(["aws", "azure", "ms", "gcp", "comptia", "k8s", "hashi", "cisco", "databricks", "nvidia"]),
     );
   });
 

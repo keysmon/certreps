@@ -51,6 +51,8 @@
   --v-k8s: #8a9bff;
   --v-hashi: #c58bec;
   --v-cisco: #4fc6d4;
+  --v-databricks: #ff6b4d; /* brand red-orange, muted for dark; distinct from --v-aws amber + --v-comptia salmon */
+  --v-nvidia: #86c232; /* brand lime, distinct from --v-gcp teal-green */
 
   /* type - --font-display / --font-mono resolve to the next/font variables */
   --font-display: var(--font-bricolage), -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
