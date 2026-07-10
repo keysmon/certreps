@@ -123,4 +123,16 @@ describe("PracticeClient interstitial", () => {
     expect(await screen.findByText(/Domain Drill in progress/i)).toBeInTheDocument();
     expect(screen.getByText(/Domain 2/)).toBeInTheDocument();
   });
+
+  it("counts only recorded choices as answered - a flagged-unanswered empty row does not inflate it", async () => {
+    const a = createAttempt(AIP, "mock", IDS);
+    saveAttempt(a);
+    recordResult(a.attemptId, { questionId: IDS[0], chosen: [0], correct: false, flagged: false });
+    recordResult(a.attemptId, { questionId: IDS[1], chosen: [0], correct: false, flagged: false });
+    // A flag on an unanswered question persists as an empty-chosen row (v1h) - it must NOT count.
+    recordResult(a.attemptId, { questionId: IDS[2], chosen: [], correct: false, flagged: true });
+    setParams("mode=mock");
+    render(<PracticeClient certId={AIP} />);
+    expect(await screen.findByText(/2 of 5 answered/i)).toBeInTheDocument();
+  });
 });

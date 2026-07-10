@@ -108,7 +108,9 @@ function PracticeInterstitial({
   onDiscard: () => void;
 }) {
   const [confirming, setConfirming] = useState(false);
-  const answered = Object.keys(attempt.results).length;
+  // Count a question answered only when a CHOICE was recorded: a flagged-but-unanswered mock
+  // question now carries a legitimate empty-chosen row, which must not inflate "n of m answered".
+  const answered = Object.values(attempt.results).filter((r) => r.chosen.length > 0).length;
   const total = attempt.questionIds.length;
   const label = MODE_LABEL[attempt.mode] ?? attempt.mode;
 
