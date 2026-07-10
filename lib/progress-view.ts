@@ -2,7 +2,7 @@ import { getBank } from "./bank";
 import { readinessRead, type GradedMock, type ReadinessRead } from "./readiness";
 import { gradeAttempt } from "./scoring";
 import { questionsByIds } from "./sampler";
-import { getInProgress, listAttempts } from "./storage";
+import { listAttempts } from "./storage";
 
 export type CertStatus = "Not started" | "In progress" | "Ready";
 
@@ -38,13 +38,12 @@ function gradedFinishedMocks(certId: string): GradedMock[] {
 export function progressView(certId: string, passLinePct: number): ProgressView {
   const finished = gradedFinishedMocks(certId);
   const bestMockPct = finished.length ? Math.max(...finished.map((m) => m.pct)) : 0;
-  const inProgress = getInProgress(certId) !== null;
+  // ANY attempt - any mode, finished or not - means the cert is started. The old read
+  // (unfinished attempts + finished mocks only) flipped a cert BACK to "Not started"
+  // the moment a drill or quick session was completed (user-reported, 2026-07-10).
+  const started = listAttempts(certId).length > 0;
   const status: CertStatus =
-    finished.length && bestMockPct >= passLinePct
-      ? "Ready"
-      : inProgress || finished.length
-        ? "In progress"
-        : "Not started";
+    finished.length && bestMockPct >= passLinePct ? "Ready" : started ? "In progress" : "Not started";
   return { bestMockPct, status };
 }
 

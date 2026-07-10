@@ -129,7 +129,18 @@ describe("ReadinessPanel", () => {
   it("shows Not started yet at 0% with no history", () => {
     render(<ReadinessPanel certId={AIP} passLinePct={75} />);
     expect(screen.getByText("Not started yet")).toBeInTheDocument();
-    expect(screen.getByText(/get your first read/i)).toBeInTheDocument();
+    expect(screen.getByText(/Take a full mock to get your first read/i)).toBeInTheDocument();
+  });
+
+  // User-reported regression (2026-07-10): a FINISHED drill left the panel saying
+  // "Not started yet - do a quick drill", recommending the exact thing just done
+  // (which never feeds the mock-fed ring). Started-but-no-mock now reads honestly.
+  it("reads In progress after a finished drill, pointing at a full mock for the read", async () => {
+    writeAll([attempt({ mode: "drill", finishedAt: 1_700_000_100_000 })]);
+    render(<ReadinessPanel certId={AIP} passLinePct={75} />);
+    expect(await screen.findByText("In progress")).toBeInTheDocument();
+    expect(screen.getByText(/Finish a full mock to get your readiness read/i)).toBeInTheDocument();
+    expect(screen.queryByText("Not started yet")).not.toBeInTheDocument();
   });
 
   it("reads Ready to book once the best finished mock meets the pass line", async () => {

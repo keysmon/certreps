@@ -180,9 +180,12 @@ export function ReadinessPanel({
   passLineOfficial?: boolean;
 }) {
   const [pct, setPct] = useState(0);
+  const [started, setStarted] = useState(false);
   const [weakest, setWeakest] = useState<string | null>(null);
   useEffect(() => {
-    setPct(progressView(certId, passLinePct).bestMockPct);
+    const pv = progressView(certId, passLinePct);
+    setPct(pv.bestMockPct);
+    setStarted(pv.status !== "Not started");
     const doms = Object.entries(domainReadiness(certId, passLinePct).domains);
     if (doms.length) {
       const min = doms.reduce((a, b) => (b[1].pct < a[1].pct ? b : a));
@@ -192,13 +195,19 @@ export function ReadinessPanel({
     }
   }, [certId, passLinePct]);
 
-  const label = pct === 0 ? "Not started yet" : pct >= passLinePct ? "Ready to book" : "Getting there";
+  // The ring is mock-fed (bestMockPct), so pct 0 has two honest states: never touched vs
+  // started-but-no-scored-mock. The old copy said "Not started yet - do a quick drill to
+  // get your first read" even after a FINISHED drill, and drills never move this panel
+  // (user-reported, 2026-07-10) - only a finished full mock does, so the note says so.
+  const label = pct === 0 ? (started ? "In progress" : "Not started yet") : pct >= passLinePct ? "Ready to book" : "Getting there";
   // Vendors that publish no official passing score: passLinePct is OUR study target, so the note
   // says "Study target" instead of asserting an official "Pass line" (absent/true stays "Pass line").
   const passLabel = passLineOfficial === false ? "Study target" : "Pass line";
   const note =
     pct === 0
-      ? "Do a quick drill to get your first read."
+      ? started
+        ? "Finish a full mock to get your readiness read."
+        : "Take a full mock to get your first read."
       : weakest
         ? `${passLabel} ${passLinePct}%. Weakest: ${weakest}.`
         : `${passLabel} ${passLinePct}%.`;

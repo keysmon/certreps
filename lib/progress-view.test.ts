@@ -45,6 +45,18 @@ describe("progressView", () => {
     expect(progressView(AIP, 75)).toEqual({ bestMockPct: 0, status: "In progress" });
   });
 
+  // User-reported regression (2026-07-10): a FINISHED drill flipped the cert back to
+  // "Not started" because only unfinished attempts and finished mocks were counted.
+  it("reads a finished drill as In progress over a 0% bar (mock-fed bar untouched)", () => {
+    writeAll([attempt({ certId: AIP, mode: "drill", finishedAt: 1_700_000_100_000 })]);
+    expect(progressView(AIP, 75)).toEqual({ bestMockPct: 0, status: "In progress" });
+  });
+
+  it("reads a finished quick session as In progress", () => {
+    writeAll([attempt({ certId: AIP, mode: "quick", finishedAt: 1_700_000_100_000 })]);
+    expect(progressView(AIP, 75).status).toBe("In progress");
+  });
+
   it("takes the best finished mock as the bar and reads below-pass as In progress", () => {
     // 10/20 = 50% and 14/20 = 70%; best is 70, under the 75 pass line.
     writeAll([gradedMock(AIP, 20, 10), gradedMock(AIP, 20, 14)]);
