@@ -6,11 +6,9 @@
   display: grid;
   place-items: center;
   padding: 40px 20px;
-  background:
-    radial-gradient(1200px 620px at 20% -10%, rgba(233, 180, 76, 0.07), transparent 60%),
-    radial-gradient(1000px 620px at 100% 110%, rgba(90, 169, 240, 0.06), transparent 55%);
+  background: var(--glow-auth);
 }
-.li-wrap { width: 100%; max-width: 940px; display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--line); border-radius: 22px; overflow: hidden; background: var(--panel); box-shadow: 0 50px 120px -50px rgba(0, 0, 0, 0.8); }
+.li-wrap { width: 100%; max-width: 940px; display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--line); border-radius: 22px; overflow: hidden; background: var(--panel); box-shadow: 0 50px 120px -50px var(--shadow-color); }
 
 .li-pitch { padding: 44px 40px; background: linear-gradient(180deg, var(--ink-2), var(--panel)); border-right: 1px solid var(--line); }
 .li-logo { display: flex; align-items: center; gap: 11px; font-family: var(--font-display); font-weight: 800; font-size: 20px; letter-spacing: -0.02em; margin-bottom: 34px; color: var(--text); }

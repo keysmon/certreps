@@ -3,9 +3,7 @@
    review-past attempt page inherits that room (Task 8 owns the account-shell width).
    Class names are pg- prefixed to stay collision-free with the engine/catalog styles. */
 .pg-glow {
-  background:
-    radial-gradient(1200px 560px at 12% -8%, rgba(233, 180, 76, 0.05), transparent 60%),
-    radial-gradient(1000px 560px at 100% -4%, rgba(90, 169, 240, 0.055), transparent 55%);
+  background: var(--glow-page);
 }
 /* 1200 aligns the content edge with the shared TopNav + catalog + detail (Task 10 shell-width
    reconciliation - all interior shells at 1200; the landing keeps its designed 1080). */
@@ -17,7 +15,7 @@
 /* Sync banner (signed-out gold prompt / signed-in emerald confirmation). */
 .pg-banner { display: flex; align-items: center; gap: 14px; border-radius: 14px; padding: 14px 18px; margin-top: 18px; }
 .pg-banner.gold { background: var(--gold-soft); border: 1px solid var(--gold-dim); }
-.pg-banner.emerald { background: var(--emerald-soft); border: 1px solid rgba(63, 207, 142, 0.4); }
+.pg-banner.emerald { background: var(--emerald-soft); border: 1px solid var(--emerald-line); }
 .pg-banner .dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
 .pg-banner .body { flex: 1; min-width: 0; }
 .pg-banner .bt { font-weight: 600; font-size: 14px; }
@@ -50,7 +48,7 @@
 .pg-panel { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 8px 20px; }
 .pg-act { display: flex; align-items: center; gap: 14px; padding: 13px 0; border-bottom: 1px solid var(--line); color: inherit; text-decoration: none; }
 .pg-act:last-child { border-bottom: none; }
-.pg-act:hover { color: inherit; background: rgba(132, 170, 208, 0.03); }
+.pg-act:hover { color: inherit; background: var(--hover-soft); }
 .pg-act .ad { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
 .pg-act .amode { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 8px; border-radius: 6px; border: 1px solid var(--line-strong); color: var(--muted); white-space: nowrap; }
 .pg-act .an { flex: 1; min-width: 0; font-size: 14px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

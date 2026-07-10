@@ -11,10 +11,7 @@
 /* Page-scoped background glow (Task 1 removed the global glow; each page re-adds its own on
    a wrapper, never on body). Values are the cert-detail design's. */
 .cd-glow {
-  background:
-    radial-gradient(1200px 560px at 12% -8%, rgba(233, 180, 76, 0.05), transparent 60%),
-    radial-gradient(1000px 560px at 100% -4%, rgba(90, 169, 240, 0.055), transparent 55%),
-    var(--ink);
+  background: var(--glow-page), var(--ink);
   min-height: 100vh;
 }
 

@@ -1,9 +1,7 @@
 /* Settings (app/settings) - ported from design/redesign/Settings.html. 720 wrap, shared TopNav.
    st- prefixed so the settings card/row/switch never collide with the global .card or engine styles. */
 .st-glow {
-  background:
-    radial-gradient(1200px 560px at 12% -8%, rgba(233, 180, 76, 0.05), transparent 60%),
-    radial-gradient(1000px 560px at 100% -4%, rgba(90, 169, 240, 0.055), transparent 55%);
+  background: var(--glow-page);
 }
 .st-wrap { max-width: 720px; margin: 0 auto; padding: 30px 34px 90px; }
 .st-eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); margin-bottom: 14px; }

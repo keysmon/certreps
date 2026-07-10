@@ -67,6 +67,110 @@
   /* elevation */
   --shadow-card: 0 22px 50px -30px rgba(0, 0, 0, 0.8);
   --shadow-gold: 0 8px 24px -10px rgba(233, 180, 76, 0.7);
+  /* Big overlay shadow color + the hero CTA glow, tokenized so light softens them. --shadow-color
+     unifies the three near-identical modal/drawer shadows (login card was .8, cmd was #000/1.0,
+     drawer was .7) onto one value - imperceptible at their large blur/spread. */
+  --shadow-color: rgba(0, 0, 0, 0.75);
+  --shadow-cta: 0 10px 28px -12px rgba(233, 180, 76, 0.75);
+
+  /* overlay scrim (modal/drawer backdrop) + a couple of tint tokens the light theme redefines.
+     --scrim unifies the catalog drawer backdrop (was .55) and the command overlay (.6) onto .6. */
+  --scrim: rgba(5, 8, 13, 0.6);
+  --emerald-line: rgba(63, 207, 142, 0.4);
+  --hover-soft: rgba(132, 170, 208, 0.03);
+
+  /* page ambient glows - tokenized so the light theme can redefine the whole wash. The dark
+     values are byte-identical to the originals that lived inline in each page's *-glow wrapper. */
+  --glow-hero:
+    radial-gradient(1300px 640px at 18% -12%, rgba(233, 180, 76, 0.09), transparent 60%),
+    radial-gradient(1100px 620px at 100% 4%, rgba(90, 169, 240, 0.07), transparent 55%);
+  --glow-page:
+    radial-gradient(1200px 560px at 12% -8%, rgba(233, 180, 76, 0.05), transparent 60%),
+    radial-gradient(1000px 560px at 100% -4%, rgba(90, 169, 240, 0.055), transparent 55%);
+  --glow-auth:
+    radial-gradient(1200px 620px at 20% -10%, rgba(233, 180, 76, 0.07), transparent 60%),
+    radial-gradient(1000px 620px at 100% 110%, rgba(90, 169, 240, 0.06), transparent 55%);
+}
+
+/* ============================================================
+   LIGHT THEME - opt-in via data-theme="light" on <html> (dark is the default and carries NO
+   attribute). A crafted palette, not an inversion: gold deepens to bronze so it clears WCAG AA as
+   TEXT on white / the ground / soft chips while staying gold-family as a button fill (--on-gold
+   flips to white); emerald and rose darken so verdict and error text clear AA; vendor hues deepen
+   to stay visible and distinguishable on white. Elevation flips - white cards float over a cool
+   grey ground, and higher surface tokens read as progressively deeper greys. All accent-as-text
+   pairs verified >= 4.5:1 at their worst-case background.
+   Uses :root[data-theme="light"] (specificity 0,2,0) so it always beats a bare :root token block.
+   ============================================================ */
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  /* ground + surfaces - cards white, ground a cool grey so cards pop; higher token = deeper grey */
+  --ink: #f0f3f8;
+  --ink-2: #ffffff;
+  --panel: #ffffff;
+  --panel-2: #e7edf5;
+  --panel-3: #d6dee9;
+  --ink-glass: rgba(240, 243, 248, 0.85);
+
+  /* lines - a low-alpha slate so borders read on white without going heavy */
+  --line: rgba(15, 23, 41, 0.1);
+  --line-strong: rgba(15, 23, 41, 0.17);
+
+  /* text */
+  --text: #1b2536;
+  --muted: #51617a;
+  --faint: #586778;
+
+  /* gold - bronze-deepened for AA as text; --gold-bright deepens further so button/link hover
+     darkens (the light-mode direction) and keeps white text legible on the fill. */
+  --gold: #7c590c;
+  --gold-bright: #5f4508;
+  --gold-dim: #7a5609;
+  --gold-soft: rgba(124, 89, 12, 0.14);
+  --on-gold: #ffffff;
+
+  /* semantic - darkened for AA as verdict/error text; on-* flip to white on the fills */
+  --emerald: #097040;
+  --emerald-soft: rgba(9, 112, 64, 0.13);
+  --on-emerald: #ffffff;
+  --rose: #b92c2c;
+  --rose-soft: rgba(185, 44, 44, 0.12);
+  --on-rose: #ffffff;
+  --sky: #2f7fd0;
+
+  /* vendor accents - deepened for the white ground, kept hue-recognizable and mutually distinct
+     (warm reds: aws / comptia / databricks; blues: azure / k8s / ms / cisco) */
+  --v-aws: #e0730e;
+  --v-azure: #1a6fd0;
+  --v-ms: #1479a8;
+  --v-gcp: #12945a;
+  --v-comptia: #d8443b;
+  --v-k8s: #4453d8;
+  --v-hashi: #8b39cf;
+  --v-cisco: #0e8f80;
+  --v-databricks: #cf3a1c;
+  --v-nvidia: #4e8a12;
+
+  /* elevation - softer slate-tinted shadows (pure black reads harsh on a light ground) */
+  --shadow-card: 0 18px 40px -24px rgba(15, 23, 41, 0.18);
+  --shadow-gold: 0 8px 24px -10px rgba(124, 89, 12, 0.3);
+  --shadow-cta: 0 10px 26px -14px rgba(124, 89, 12, 0.28);
+  --shadow-color: rgba(15, 23, 41, 0.22);
+  --scrim: rgba(15, 23, 41, 0.38);
+  --emerald-line: rgba(9, 112, 64, 0.35);
+  --hover-soft: rgba(15, 23, 41, 0.04);
+
+  /* page glows - soft warm/cool washes tuned for a light ground */
+  --glow-hero:
+    radial-gradient(1300px 640px at 18% -12%, rgba(201, 150, 40, 0.1), transparent 60%),
+    radial-gradient(1100px 620px at 100% 4%, rgba(74, 132, 204, 0.09), transparent 55%);
+  --glow-page:
+    radial-gradient(1200px 560px at 12% -8%, rgba(201, 150, 40, 0.07), transparent 60%),
+    radial-gradient(1000px 560px at 100% -4%, rgba(74, 132, 204, 0.07), transparent 55%);
+  --glow-auth:
+    radial-gradient(1200px 620px at 20% -10%, rgba(201, 150, 40, 0.08), transparent 60%),
+    radial-gradient(1000px 620px at 100% 110%, rgba(74, 132, 204, 0.07), transparent 55%);
 }
 
 /* base */
