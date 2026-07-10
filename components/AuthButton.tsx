@@ -9,7 +9,8 @@ import { VENDORS } from "@/components/ui/VendorDot";
 // surface, so this bare strip suppresses itself there. Anchoring to the known vendor slugs keeps
 // the match from ever catching /catalog, /account/..., /guides/... etc. VENDORS is a dependency-free
 // literal, so importing it here (root layout, every page) never pulls the cert registry/banks in.
-const VENDOR_SEG = Object.keys(VENDORS).join("|");
+const escapeRe = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const VENDOR_SEG = Object.keys(VENDORS).map(escapeRe).join("|");
 const CERT_DETAIL_RE = new RegExp(`^/(${VENDOR_SEG})/[^/]+$`);
 const CERT_PRACTICE_RE = new RegExp(`^/(${VENDOR_SEG})/[^/]+/practice$`);
 

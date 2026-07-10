@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { VENDORS } from "@/components/ui/VendorDot";
 import { listCerts, getCert } from "./certs";
 import { getBank, getMeta } from "./bank";
 
@@ -13,6 +14,16 @@ describe("cert registry", () => {
   it("routes every existing cert under the aws vendor slug", () => {
     for (const meta of listCerts()) {
       expect(meta.vendorSlug).toBe("aws");
+    }
+  });
+
+  // The [vendor] segment, the VENDORS accent/name map, and AuthButton's suppression
+  // regexes are coupled through vendorSlug: a cert whose slug is missing from VENDORS
+  // renders fine but silently un-suppresses the bare auth strip (route-refactor review).
+  it("every cert's vendorSlug is a registered VENDORS key in safe charset", () => {
+    for (const meta of listCerts()) {
+      expect(Object.keys(VENDORS)).toContain(meta.vendorSlug);
+      expect(meta.vendorSlug).toMatch(/^[a-z0-9-]+$/);
     }
   });
 

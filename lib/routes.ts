@@ -6,6 +6,8 @@ import type { CertMeta } from "./types";
 // Type-only CertMeta import: erased at build, so importing this adds zero runtime weight.
 type CertRef = Pick<CertMeta, "vendorSlug" | "certId">;
 
+// Segments are assumed URL-safe: vendorSlug/certId are controlled kebab-case (enforced
+// by the registry test); only appended query params (e.g. domain) need encoding at call sites.
 export function certPath(c: CertRef): string {
   return `/${c.vendorSlug}/${c.certId}`;
 }
