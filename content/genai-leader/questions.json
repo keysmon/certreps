@@ -823,5 +823,140 @@
     "difficulty": "medium",
     "docUrl": "https://cloud.google.com/discover/nucleus-sampling",
     "id": "gcpgl-0043"
+  },
+  {
+    "domain": "Business strategies for a successful gen AI solution",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "After launching a gen AI customer support assistant, a business wants to know whether the initiative is actually succeeding. Which approach BEST reflects Google Cloud-recommended practice for measuring the impact of a gen AI initiative?",
+    "options": [
+      "Define measurable business KPIs before launch, such as ticket deflection rate or resolution time, and track them against a baseline after deployment.",
+      "Assume success once the model is deployed to production, since deployment itself indicates business value.",
+      "Measure success only by the number of parameters in the underlying foundation model.",
+      "Skip measurement entirely, because gen AI outcomes cannot be quantified."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "Measuring the impact of a gen AI initiative starts with defining measurable business <b>KPIs</b>, such as ticket deflection rate, resolution time, or customer satisfaction, before launch, then tracking them against a baseline after deployment. Deployment alone does not prove business value. Parameter count is a model characteristic, not a business outcome metric. Gen AI outcomes can and should be quantified against business KPIs.",
+    "difficulty": "medium",
+    "docUrl": "https://cloud.google.com/discover/what-is-model-evaluation",
+    "id": "gcpgl-0044"
+  },
+  {
+    "domain": "Business strategies for a successful gen AI solution",
+    "tag": "Domain 4",
+    "type": "multi",
+    "stem": "An organization is deciding between a lightweight, open Gemma model it can run on modest infrastructure and a large, more capable Gemini model that requires more compute and cost. Which TWO factors should MOST directly influence this choice? (Select TWO.)",
+    "options": [
+      "The number of holidays observed by the company each year.",
+      "The font used in the company's marketing materials.",
+      "Business requirements, such as the required accuracy, latency, or quality of output for the use case.",
+      "The color scheme of the company's public website.",
+      "Technical constraints, such as available compute budget, infrastructure, and cost tolerance."
+    ],
+    "correct": [
+      2,
+      4
+    ],
+    "explanation": "Choosing between a lightweight open model and a larger, more capable model should be driven by <b>business requirements</b>, such as the accuracy or quality the use case demands, and <b>technical constraints</b>, such as available compute budget and infrastructure. Company holidays, marketing fonts, and website color schemes have no bearing on a model selection decision.",
+    "difficulty": "medium",
+    "docUrl": "https://cloud.google.com/discover/what-is-a-foundation-model",
+    "id": "gcpgl-0045"
+  },
+  {
+    "domain": "Business strategies for a successful gen AI solution",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A security leader wants a structured framework for thinking about risks specific to AI systems, such as data poisoning and model theft, rather than only traditional application security risks. Which Google framework is designed for this purpose?",
+    "options": [
+      "The shared responsibility model for general cloud infrastructure security.",
+      "Google's Secure AI Framework (SAIF), a conceptual framework for securing AI systems against AI-specific risks.",
+      "The machine learning lifecycle, which describes stages from data ingestion to model management.",
+      "Identity and Access Management (IAM), which controls who can access which cloud resources."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "Google's <b>Secure AI Framework (SAIF)</b> is a conceptual framework specifically designed to help organizations address security risks unique to AI systems, such as data poisoning, model theft, and prompt injection, beyond traditional application security. The general cloud shared responsibility model addresses infrastructure security broadly, not AI-specific risks. The ML lifecycle describes project stages, not a security framework. IAM controls resource access but is only one tool among several used to help implement a secure AI posture, not the overarching AI security framework itself.",
+    "difficulty": "easy",
+    "docUrl": "https://cloud.google.com/security/saif",
+    "id": "gcpgl-0046"
+  },
+  {
+    "domain": "Business strategies for a successful gen AI solution",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A security team wants a centralized tool to discover misconfigurations, vulnerabilities, and threats across their Google Cloud resources, including those supporting their gen AI workloads. Which Google Cloud tool is designed for this?",
+    "options": [
+      "Identity and Access Management (IAM), which manages who can access which resources but does not scan for vulnerabilities.",
+      "Cloud Billing, which tracks and reports on project spend.",
+      "Security Command Center, which provides centralized visibility into misconfigurations, vulnerabilities, and threats across Google Cloud resources.",
+      "Model Garden, which is a catalog for discovering and deploying foundation models."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Security Command Center</b> gives security teams centralized visibility into misconfigurations, vulnerabilities, and active threats across their Google Cloud resources, including infrastructure supporting gen AI workloads. IAM manages access permissions but does not itself scan for vulnerabilities or threats. Cloud Billing tracks spend, and Model Garden is a model catalog; neither provides security posture visibility.",
+    "difficulty": "easy",
+    "docUrl": "https://cloud.google.com/security/products/security-command-center",
+    "id": "gcpgl-0047"
+  },
+  {
+    "domain": "Business strategies for a successful gen AI solution",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A bank using a gen AI model to help evaluate loan applications needs to be able to explain, to a regulator, why the model favored one applicant's request over another's. Which responsible AI principle does this requirement primarily reflect?",
+    "options": [
+      "Data anonymization, the removal or masking of personally identifying details from a dataset.",
+      "Model compression, reducing a model's size to run more cheaply.",
+      "Prompt chaining, linking multiple prompts together to complete a task.",
+      "Explainability, the ability to describe and justify how and why a model produced a particular output."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Explainability</b> is the responsible AI principle concerned with the ability to describe and justify how and why a model arrived at a particular output, which is exactly what a regulator asking about a loan decision requires. Data anonymization is a privacy technique, not an explanation of model behavior. Model compression is an efficiency technique, and prompt chaining is a prompting technique; neither addresses justifying a model's decision to a regulator.",
+    "difficulty": "medium",
+    "docUrl": "https://cloud.google.com/discover/what-is-explainable-ai",
+    "id": "gcpgl-0048"
+  },
+  {
+    "domain": "Business strategies for a successful gen AI solution",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "Before using customer records to fine-tune a gen AI model, a privacy team replaces each customer's name with a reversible token that can be mapped back to the original identity only by an authorized process, while removing names entirely and irreversibly from a separate public dataset. Which two privacy techniques are being applied, respectively?",
+    "options": [
+      "Pseudonymization for the reversible token, and anonymization for the dataset where names are removed irreversibly.",
+      "Anonymization for both datasets, since any name replacement counts as anonymization.",
+      "Encryption for both datasets, since tokens and removed names are both forms of encryption.",
+      "Data labeling for both datasets, since both processes attach new values to records."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Pseudonymization</b> replaces identifying details with a token or reference that can be reversed back to the original identity under authorized conditions, while <b>anonymization</b> removes identifying details irreversibly so the original identity cannot be recovered. Calling both anonymization ignores that the token is reversible. Encryption is a distinct technique for protecting data confidentiality through cryptography, not the same as tokenized replacement or removal of identifiers. Data labeling refers to attaching target values for model training, unrelated to privacy protection.",
+    "difficulty": "hard",
+    "docUrl": "https://cloud.google.com/discover/what-is-data-anonymization",
+    "id": "gcpgl-0049"
+  },
+  {
+    "domain": "Business strategies for a successful gen AI solution",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A company piloting its first gen AI initiative wants to follow a Google Cloud-recommended path from idea to production. Which sequence BEST reflects a sound approach to integrating gen AI into an organization?",
+    "options": [
+      "Select a foundation model at random, deploy it to every business unit immediately, and evaluate results after two years.",
+      "Identify a specific business use case and requirements, select an appropriate foundation model and tools, pilot and evaluate the solution, then scale it with monitoring and governance in place.",
+      "Skip use-case identification and instead fine-tune a model on all available company data before deciding what problem to solve.",
+      "Deploy directly to production with no pilot phase, since gen AI models are guaranteed to work correctly on the first attempt."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "A sound approach to integrating gen AI starts with identifying a specific <b>business use case</b> and its requirements, selecting an appropriate model and tools, <b>piloting and evaluating</b> the solution against those requirements, and then scaling with monitoring and governance in place. Randomly selecting a model and deploying everywhere at once, skipping use-case identification, and skipping a pilot phase all skip the deliberate, staged approach that reduces risk and improves the odds of a successful rollout.",
+    "difficulty": "easy",
+    "docUrl": "https://cloud.google.com/discover/what-is-change-management",
+    "id": "gcpgl-0050"
   }
 ]
