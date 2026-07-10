@@ -1,0 +1,53 @@
+{
+  "certId": "genai-engineer",
+  "idPrefix": "dbxge",
+  "vendor": "Databricks",
+  "vendorSlug": "databricks",
+  "title": "Databricks Certified Generative AI Engineer Associate",
+  "examCode": "GenAI Engineer Associate",
+  "level": "Associate",
+  "mockQuestionCount": 45,
+  "mockMinutes": 90,
+  "passLinePct": 70,
+  "verified": "Q3 2026",
+  "seoTitle": "Free Databricks Generative AI Engineer Associate Practice Exam",
+  "seoDescription": "Free full-length Databricks Generative AI Engineer Associate practice exam with {n} original scenario questions, instant explanations, and a per-domain readiness read. No signup.",
+  "domains": [
+    {
+      "name": "Design Applications",
+      "tag": "Domain 1",
+      "weightPct": 14,
+      "mockCount": 6
+    },
+    {
+      "name": "Data Preparation",
+      "tag": "Domain 2",
+      "weightPct": 14,
+      "mockCount": 6
+    },
+    {
+      "name": "Application Development",
+      "tag": "Domain 3",
+      "weightPct": 30,
+      "mockCount": 14
+    },
+    {
+      "name": "Assembling and Deploying Applications",
+      "tag": "Domain 4",
+      "weightPct": 22,
+      "mockCount": 10
+    },
+    {
+      "name": "Governance",
+      "tag": "Domain 5",
+      "weightPct": 8,
+      "mockCount": 4
+    },
+    {
+      "name": "Evaluation and Monitoring",
+      "tag": "Domain 6",
+      "weightPct": 12,
+      "mockCount": 5
+    }
+  ]
+}
