@@ -67,8 +67,9 @@ export function TopNav({ active }: { active?: "catalog" | "progress" }) {
         </span>
         CertReps
       </Link>
-      {/* Global Cmd+K certification switcher (Task 9). Ships wherever TopNav lives - never on the
-          practice engine, whose slim bar carries a static placeholder and keeps its own keyboard. */}
+      {/* Global Cmd+K certification switcher (Task 9). Ships wherever TopNav lives, now including the
+          practice engine (v1h mounts TopNav on the exam page for reachable nav; the engine binds no
+          conflicting shortcut, so Cmd+K stays the switcher there too). */}
       <CommandSwitcher />
       <span className="tn-spacer" />
       <Link

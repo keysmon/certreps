@@ -29,7 +29,7 @@ export function ScoreRing({ pct = 0, size = 168, correct, total, label, stroke =
   return (
     <div style={{ width: size + "px", height: size + "px", position: "relative", display: "grid", placeItems: "center", textAlign: "center" }}>
       <svg width={size} height={size} aria-hidden="true" style={{ transform: "rotate(-90deg)", position: "absolute", inset: 0 }}>
-        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="rgba(132,170,208,.14)" strokeWidth={stroke} />
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--line)" strokeWidth={stroke} />
         <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={col} strokeWidth={stroke} strokeLinecap="round" strokeDasharray={`${dash.toFixed(0)} ${circ.toFixed(0)}`} />
       </svg>
       <div aria-hidden="true">

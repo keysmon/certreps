@@ -38,8 +38,8 @@ export function AuthButton() {
   if (pathname === "/account") return null;
   // Settings mounts TopNav too (Task 8) - it owns the auth surface there.
   if (pathname === "/settings") return null;
-  // The exam room is distraction-free chrome by design (Task 6): the practice surface has
-  // its own slim bar and no auth affordance - signing in mid-exam is not a real flow.
+  // The exam room mounts TopNav (v1h), which owns the auth surface - so this bare strip suppresses
+  // itself here for the same reason as /catalog, /account, /settings above. Code behavior unchanged.
   if (pathname && CERT_PRACTICE_RE.test(pathname)) return null;
   // The login page IS the sign-in call to action - a second "Sign in" strip above it is noise.
   if (pathname === "/login" && !session) return null;
