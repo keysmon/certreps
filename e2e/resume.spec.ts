@@ -36,7 +36,7 @@ test("resume: leave mid-drill, resume it, then discard removes only that attempt
   for (let i = 0; i < 2; i++) {
     await page.locator("button.option").first().click();
     await page.locator("div.footbar button.btn-primary").click();
-    await page.locator("div.footbar button.btn-primary").click();
+    await page.locator(".practicenav button.btn-primary").click();
   }
   await page.goto("/aws/aif-c01");
 

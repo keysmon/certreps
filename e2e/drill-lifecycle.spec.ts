@@ -14,7 +14,7 @@ test("drill lifecycle: finishing a 12-question drill reads In progress everywher
     await page.locator("button.option").first().click();
     await page.locator("div.footbar button.btn-primary").click(); // Submit answer
     await expect(page.locator(".explain")).toBeVisible();
-    await page.locator("div.footbar button.btn-primary").click(); // Next question / See results
+    await page.locator(".practicenav button.btn-primary").click(); // Next question / See results
   }
 
   // Results screen shows a readiness read.

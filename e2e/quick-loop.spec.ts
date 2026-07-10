@@ -17,7 +17,7 @@ test("quick loop: answer two questions, see vendor-correct doc links, then exit"
     await expect(doclink).toContainText("Read the NVIDIA docs");
     await expect(doclink).not.toContainText("AWS");
 
-    await page.locator("div.footbar button.btn-primary").click(); // Next question
+    await page.locator(".practicenav button.btn-primary").click(); // Next question
   }
 
   await page.locator("a.exit").click();
