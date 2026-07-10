@@ -863,5 +863,100 @@
     "difficulty": "hard",
     "docUrl": "https://developer.nvidia.com/blog/accelerated-data-analytics-a-guide-to-data-visualization-with-rapids/",
     "id": "ncagenl-0045"
+  },
+  {
+    "domain": "Trustworthy AI",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A team has deployed an LLM-powered customer-service application and wants to keep its outputs safe, on-topic, and secure without retraining the underlying model. Which statement about NVIDIA NeMo Guardrails correctly describes how it helps?",
+    "options": [
+      "NeMo Guardrails provides programmable guardrails that sit around an LLM application to help ensure its outputs stay safe, on-topic, and secure, without requiring the base model itself to be retrained.",
+      "NeMo Guardrails is a training-time-only technique that has no effect on a model already deployed in production.",
+      "NeMo Guardrails can only monitor input queries and has no way to intercept the LLM's generated output.",
+      "NeMo Guardrails replaces the LLM entirely, generating every response itself without calling the underlying model."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>NeMo Guardrails</b> adds a programmable safety layer around an existing LLM application, helping keep its outputs safe, on-topic, and secure, and it works with an already-trained, deployed model rather than requiring retraining. It can inspect both the incoming query and the model's generated response, not just one side, and it wraps the LLM rather than replacing it as the source of responses.",
+    "difficulty": "easy",
+    "docUrl": "https://developer.nvidia.com/blog/how-to-safeguard-ai-agents-for-customer-service-with-nvidia-nemo-guardrails/",
+    "id": "ncagenl-0046"
+  },
+  {
+    "domain": "Trustworthy AI",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A RAG application needs to reject unsafe user queries before they ever reach the LLM, and separately catch any unsafe content the LLM might generate before it reaches the user. Which statement about NeMo Guardrails' rail types is correct?",
+    "options": [
+      "Input rails and output rails are two names for exactly the same checkpoint, applied twice for redundancy.",
+      "Input rails inspect incoming user queries, for example using a model such as LlamaGuard to flag violence or hate speech, before the LLM processes them, while output rails inspect the LLM's generated response, for example blocking an unsafe answer, before it reaches the user.",
+      "Only output rails exist in NeMo Guardrails; there is no mechanism to inspect a query before it reaches the LLM.",
+      "Dialogue rails and output rails both run strictly after the user has already received the final response, so neither can block unsafe content."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Input rails</b> screen the user's query before the LLM ever sees it, and <b>output rails</b> screen the LLM's generated response before it reaches the user, giving two distinct checkpoints rather than one duplicated check. NeMo Guardrails supports both directions, so input-only monitoring is incomplete, and rails are checkpoints that run before a response is delivered, not strictly after, which is exactly how they are able to block unsafe content.",
+    "difficulty": "medium",
+    "docUrl": "https://developer.nvidia.com/blog/content-moderation-and-safety-checks-with-nvidia-nemo-guardrails/",
+    "id": "ncagenl-0047"
+  },
+  {
+    "domain": "Trustworthy AI",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A team wants users of a deployed LLM to be able to request more or less of a specific attribute, such as helpfulness or reduced toxicity, at inference time, without standing up a full reinforcement-learning-from-human-feedback (RLHF) pipeline. Which technique fits, and how does it work?",
+    "options": [
+      "SteerLM requires a full reinforcement-learning-from-human-feedback pipeline and cannot be implemented with standard supervised fine-tuning.",
+      "SteerLM permanently fixes a single style and tone for the model, with no way for a user to request a different attribute combination at inference time.",
+      "SteerLM trains an attribute-prediction model to score responses on dimensions such as helpfulness or toxicity, uses it to annotate a training set, then fine-tunes the LLM with standard supervised learning so a user can specify desired attribute values at inference time, without RLHF's reinforcement-learning infrastructure.",
+      "SteerLM can only be applied to image-generation models and has no application to text-based LLMs."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>SteerLM</b> trains an attribute-prediction model on human-annotated data, uses it to label a broader dataset with attribute scores, and then fine-tunes the LLM through standard supervised learning to condition its output on requested attribute values, letting a user steer traits like helpfulness or toxicity at inference time without RLHF's more complex reinforcement-learning setup. This is the opposite of requiring RLHF, it explicitly supports different attribute combinations per request rather than one fixed style, and it is a text-LLM alignment technique, not an image-generation method.",
+    "difficulty": "hard",
+    "docUrl": "https://developer.nvidia.com/blog/announcing-steerlm-a-simple-and-practical-technique-to-customize-llms-during-inference/",
+    "id": "ncagenl-0048"
+  },
+  {
+    "domain": "Trustworthy AI",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "Several hospitals want to jointly train a brain-tumor segmentation model without any hospital sharing its raw, identifiable patient imaging data with the others or a central party. Which combination of techniques addresses this, and what does it provide?",
+    "options": [
+      "Centralize all patient imaging data from every hospital onto one shared server, since federated learning and differential privacy add unnecessary complexity.",
+      "Federated learning requires every hospital to publish its raw training data publicly so all participants can verify it.",
+      "Differential privacy guarantees a model with zero measurable accuracy loss compared to training on centralized, unprotected data.",
+      "Combine federated learning, which trains a shared model across sites without moving raw patient data off-premises, with differential privacy, which adds calibrated noise to protect individual patient records, letting the hospitals collaborate while keeping data local and formally bounding what an attacker could infer about any single patient."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Federated learning</b> trains a shared model by exchanging model updates rather than raw data, keeping each hospital's imaging data on-site, and <b>differential privacy</b> adds calibrated noise to bound how much any single patient's record could be inferred from the shared updates. NVIDIA and King's College London reported this combination achieving segmentation performance comparable to a centralized, data-sharing approach. This is the opposite of centralizing raw data, federated learning does not require publishing raw training data, and differential privacy trades a small, bounded amount of accuracy for its privacy guarantee rather than promising zero accuracy loss.",
+    "difficulty": "medium",
+    "docUrl": "https://developer.nvidia.com/blog/first-privacy-preserving-federated-learning-system/",
+    "id": "ncagenl-0049"
+  },
+  {
+    "domain": "Trustworthy AI",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A team adds retrieval-augmented generation (RAG) to their chatbot so it answers using passages retrieved from a trusted knowledge base instead of relying purely on the LLM's parametric memory. Which statement correctly describes what this does and does not guarantee about hallucination?",
+    "options": [
+      "RAG has no effect on hallucination rates and only changes the LLM's response latency.",
+      "RAG completely eliminates hallucination with a mathematical guarantee, so no further verification of LLM outputs is ever needed.",
+      "RAG works by fine-tuning the LLM's weights on the retrieved documents before every single response.",
+      "RAG grounds the model's response in retrieved, relevant source content, which reduces the likelihood of hallucination and improves factual accuracy, but it does not guarantee the model will never hallucinate."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>RAG</b> grounds a response in retrieved, relevant content, which reduces the likelihood of hallucination and improves factual accuracy, but grounding is not an ironclad guarantee, so verification and other safeguards, such as guardrails and evaluation, still matter for a trustworthy deployment. RAG changes what the model conditions its answer on, not merely its latency; it does not offer a mathematical zero-hallucination guarantee; and it retrieves and conditions on documents at inference time rather than fine-tuning the model's weights on them before each response.",
+    "difficulty": "hard",
+    "docUrl": "https://developer.nvidia.com/blog/rag-101-retrieval-augmented-generation-questions-answered/",
+    "id": "ncagenl-0050"
   }
 ]
