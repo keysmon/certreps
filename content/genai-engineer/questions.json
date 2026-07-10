@@ -768,5 +768,100 @@
     "difficulty": "easy",
     "docUrl": "https://docs.databricks.com/aws/en/agents/tutorials/ai-cookbook/quality-data-pipeline-rag",
     "id": "dbxge-0040"
+  },
+  {
+    "domain": "Evaluation and Monitoring",
+    "tag": "Domain 6",
+    "type": "single",
+    "stem": "A team is assembling an evaluation suite for a RAG agent with mlflow.genai.evaluate(). Their evaluation dataset contains user questions only, with no expected answers or labeled facts. Which built-in judge can they NOT use until they add ground truth to the dataset?",
+    "options": [
+      "Correctness",
+      "RetrievalGroundedness",
+      "RelevanceToQuery",
+      "Safety"
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Correctness compares the agent's response against provided expectations such as expected facts or an expected response, so it requires ground truth</b> in the evaluation dataset. RetrievalGroundedness checks whether the response is supported by the retrieved context, RelevanceToQuery checks whether the response addresses the user's question, and Safety checks for harmful content; all three judge the response against the request and trace alone, so they run reference-free without labeled answers.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.databricks.com/aws/en/mlflow3/genai/eval-monitor/concepts/judges/",
+    "id": "dbxge-0041"
+  },
+  {
+    "domain": "Evaluation and Monitoring",
+    "tag": "Domain 6",
+    "type": "single",
+    "stem": "A fine-tuned LLM is served on a provisioned throughput endpoint that internal analysts use only during business hours for occasional testing. Finance flags that the endpoint bills for compute around the clock. Occasional cold-start delays are acceptable to the analysts. Which change MOST directly reduces the cost?",
+    "options": [
+      "Increase the provisioned throughput band so requests finish faster.",
+      "Move the fine-tuned model to pay-per-token Foundation Model APIs.",
+      "Add a per-user rate limit in queries per minute on the endpoint.",
+      "Enable scale-to-zero so the endpoint releases compute after it sits idle."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Scale-to-zero lets a serving endpoint scale down to zero compute after a period of no traffic</b>, so an endpoint that is idle outside business hours stops accruing compute charges, at the price of a cold start on the next request, which this team accepts. Increasing the throughput band raises the hourly cost. Pay-per-token serves Databricks-hosted foundation models on shared infrastructure; a custom fine-tuned model needs provisioned throughput, so that move is not available. Rate limits cap traffic but the provisioned capacity still bills while idle.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.databricks.com/aws/en/machine-learning/model-serving/create-manage-serving-endpoints",
+    "id": "dbxge-0042"
+  },
+  {
+    "domain": "Evaluation and Monitoring",
+    "tag": "Domain 6",
+    "type": "single",
+    "stem": "An agent deployed with databricks.agents.deploy() is now serving real user traffic. The team wants groundedness and safety automatically scored on a fraction of live production traces, with results attached to the traces for review, and without pausing the endpoint. How should they set this up?",
+    "options": [
+      "Export the inference table to CSV each week and manually rerun the judges in a notebook.",
+      "Register the scorers and start production monitoring with a sampling configuration so they run on sampled live traces.",
+      "Watch the endpoint's 5xx error count metric, since quality failures surface as server errors.",
+      "Set a tokens-per-minute rate limit so low-quality responses are throttled automatically."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "Production monitoring for agents runs <b>registered scorers on sampled live traces: register each scorer, then start it with a sampling configuration such as a sample rate</b>, and the results attach to traces as feedback with no endpoint downtime. A weekly manual CSV rerun adds lag and toil that the managed sampling path removes. 5xx counts capture infrastructure failures; an ungrounded or unsafe answer still returns HTTP 200. Rate limiting controls request volume and has no view of response quality.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.databricks.com/aws/en/mlflow3/genai/eval-monitor/production-monitoring",
+    "id": "dbxge-0043"
+  },
+  {
+    "domain": "Evaluation and Monitoring",
+    "tag": "Domain 6",
+    "type": "single",
+    "stem": "After a RAG application's answer quality regressed in production, a Generative AI Engineer needs to inspect the exact prompts users sent, the responses the endpoint returned, and per-request latency over the past week, using SQL. Which Databricks feature provides this?",
+    "options": [
+      "Prometheus metrics export from the serving endpoint.",
+      "The model signature recorded when the model was logged.",
+      "AI Gateway inference tables enabled on the serving endpoint.",
+      "A Review App labeling session with subject matter experts."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Inference tables log each request and response payload to a governed Unity Catalog Delta table</b>, including fields such as the request and response JSON, status code, and latency, so the engineer can query a week of real traffic with SQL and pinpoint the regression. Prometheus export carries aggregate health metrics like latency percentiles and error counts, not message payloads. The model signature only describes the model's input and output schema. The Review App collects human labels on selected traces; it is not a queryable log of all production traffic.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.databricks.com/aws/en/ai-gateway/inference-tables",
+    "id": "dbxge-0044"
+  },
+  {
+    "domain": "Evaluation and Monitoring",
+    "tag": "Domain 6",
+    "type": "single",
+    "stem": "A compliance team requires that every response from an insurance claims agent cite a policy clause identifier in the exact format 'POL-NNNN'. No built-in MLflow judge checks this rule. The team wants the check to run automatically inside mlflow.genai.evaluate() over their evaluation dataset. What should they build?",
+    "options": [
+      "A Guidelines judge configured with the phrase 'be accurate and helpful'.",
+      "A ROUGE metric comparing each response against a reference summary.",
+      "A larger evaluation dataset so the built-in judges learn the citation rule.",
+      "A custom scorer function, decorated with @scorer, that validates the citation format and is passed to the evaluation's scorers list."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "Databricks supports <b>custom scorers: Python functions decorated with @scorer (or Scorer subclasses) that receive the evaluation inputs, outputs, expectations, or trace and return a score or Feedback</b>, and they plug directly into mlflow.genai.evaluate() through the scorers argument, which is exactly how to enforce a deterministic domain-specific format rule. A vague Guidelines instruction does not deterministically validate a regex-style format. ROUGE measures n-gram overlap with a reference text, not format compliance. Built-in judges do not learn new rules from a larger dataset; dataset size changes coverage, not judge behavior.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.databricks.com/aws/en/mlflow3/genai/eval-monitor/custom-scorers",
+    "id": "dbxge-0045"
   }
 ]
