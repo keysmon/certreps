@@ -287,5 +287,235 @@
     "difficulty": "medium",
     "docUrl": "https://docs.nvidia.com/cuda/cuda-programming-guide/01-introduction/programming-model.html",
     "id": "ncagenl-0015"
+  },
+  {
+    "domain": "Software Development",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A team wants to run the same PyTorch training job identically on a laptop, an on-prem GPU server, and a cloud VM, without hitting library-version mismatches. Which practice BEST achieves this, and why?",
+    "options": [
+      "Use an NVIDIA NGC deep learning framework container, since a container bundles the framework with its CUDA, cuDNN, and library dependencies so the execution environment is the same on any Linux host that runs it.",
+      "Install PyTorch directly on each host's system Python, since system installs are always identical across machines.",
+      "Avoid GPUs on the cloud VM entirely, since CPU-only execution removes the need to match library versions.",
+      "Recompile PyTorch from source on every machine before every run to guarantee a fresh build."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "An <b>NGC deep learning framework container</b> bundles the framework together with matched CUDA, cuDNN, and other library versions, so, in NVIDIA's own words, the execution environment is the same on whatever Linux system runs it, which is exactly the reproducibility a multi-host workflow needs. System Python installs are not guaranteed identical across hosts and are a common source of the version drift the question describes. Dropping GPUs does not solve a library-version problem, and recompiling from source on every machine adds effort without guaranteeing the same result as a shared, pre-built container image.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.nvidia.com/deeplearning/frameworks/user-guide/index.html",
+    "id": "ncagenl-0016"
+  },
+  {
+    "domain": "Software Development",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A developer needs a pre-tuned, containerized PyTorch image plus curated pretrained models for a new project, without hand-building and validating the environment from scratch. Which NVIDIA resource is designed for exactly this?",
+    "options": [
+      "AWS Glue DataBrew, a no-code visual data-cleaning tool unrelated to GPU container distribution.",
+      "The NGC Catalog, a curated registry of GPU-optimized containers, pretrained models, and Helm charts that are tuned, tested, and containerized for direct use.",
+      "A Glue crawler, which only infers schema from files in object storage.",
+      "Amazon Athena, a serverless SQL query engine with no container registry."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "The <b>NGC Catalog</b> (served from the nvcr.io registry) is NVIDIA's curated set of GPU-optimized containers, pretrained models, and Helm charts, tuned and tested so teams can pull a ready-to-use image instead of assembling one by hand. The other three options are AWS data-cataloging and querying services with no role in distributing GPU-optimized containers or pretrained models.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.nvidia.com/ngc/latest/ngc-catalog-user-guide.html",
+    "id": "ncagenl-0017"
+  },
+  {
+    "domain": "Software Development",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A team has trained models in three different frameworks (TensorRT, PyTorch, and ONNX) and wants to serve all three from one inference platform without writing a separate server for each. Which NVIDIA product fits this requirement?",
+    "options": [
+      "AWS Glue, an ETL service with no model-serving role.",
+      "SageMaker Ground Truth, a data-labeling service unrelated to inference serving.",
+      "Triton Inference Server, which serves models from multiple frameworks such as TensorRT, PyTorch, and ONNX from a single model repository, routing requests to the right backend.",
+      "Amazon Athena, a SQL query engine over data in S3."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Triton Inference Server</b> is built to serve models from multiple deep learning and machine learning frameworks, including TensorRT, PyTorch, ONNX, and others, from a single, file-system-based model repository, dispatching each incoming request to the appropriate per-model backend and scheduler. The remaining options are unrelated AWS data or labeling services, none of which serve multi-framework inference requests.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.nvidia.com/deeplearning/triton-inference-server/user-guide/docs/index.html",
+    "id": "ncagenl-0018"
+  },
+  {
+    "domain": "Software Development",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A production model on Triton Inference Server receives many small, independent inference requests per second. Which Triton scheduling feature groups compatible incoming requests together before running them, to raise GPU utilization and throughput?",
+    "options": [
+      "The model repository, which only stores model files on disk and performs no request scheduling.",
+      "The C API backend extensibility mechanism, which lets Triton add new frameworks but does not batch requests.",
+      "HTTP/REST versus gRPC protocol selection, which affects transport only, not request grouping.",
+      "Dynamic batching, a per-model scheduler feature that groups compatible individual inference requests into batches before execution."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Dynamic batching</b> is the per-model scheduler behavior that groups compatible individual requests into a batch before they run through the backend, which raises GPU utilization and throughput for workloads made of many small requests. The model repository is just the on-disk store of model files and configuration, the backend C API is about extending Triton to new frameworks, and choosing HTTP/REST versus gRPC only changes the transport protocol, not whether requests are grouped.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.nvidia.com/deeplearning/triton-inference-server/user-guide/docs/index.html",
+    "id": "ncagenl-0019"
+  },
+  {
+    "domain": "Software Development",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A team wants to move a foundation model into production quickly, with a validated container, curated weights, and a standard API, instead of hand-building a serving stack, choosing a quantization profile, and writing their own request-handling layer. Which NVIDIA offering is designed for this?",
+    "options": [
+      "NVIDIA NIM, which packages a foundation model as a validated container with curated weights, a validated quantization profile, and a standard inference API.",
+      "AWS Lambda, a general-purpose serverless compute service with no LLM-specific packaging.",
+      "SageMaker Ground Truth, a data-labeling workflow tool unrelated to model serving.",
+      "AWS Glue DataBrew, a visual data-cleaning tool with no inference-serving role."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>NVIDIA NIM</b> for large language models packages a foundation model as a validated, model-specific container with curated weights, a validated quantization profile, and optimal runtime configuration behind a standard inference API, giving the fastest path to production for supported models. The other three options are general-purpose or unrelated AWS services with no purpose-built LLM packaging or curated weight validation.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.nvidia.com/nim/large-language-models/latest/introduction.html",
+    "id": "ncagenl-0020"
+  },
+  {
+    "domain": "Software Development",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A team needs to deploy a model that is not one of NIM's pre-validated, model-specific containers; instead they want to point a single flexible NIM container at a model of their choice stored in their own Hugging Face repository. Which NIM deployment mode fits this?",
+    "options": [
+      "A model-specific NIM container, since those are the only containers NIM offers and none support custom model sources.",
+      "A model-free NIM container, a flexible container that serves a model configured dynamically at runtime and can pull from remote repositories such as NGC, Hugging Face, Amazon S3, or Google Cloud Storage.",
+      "The NGC Catalog by itself, since NIM does not run inference and only stores container images.",
+      "Triton Inference Server's C API, since NIM cannot serve custom models under any configuration."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "A <b>model-free NIM container</b> is the flexible option: it serves a model configured dynamically at runtime rather than a fixed, pre-curated model, and it can pull weights from remote sources including NGC, Hugging Face, Amazon S3, Google Cloud Storage, or a local directory. Model-specific containers are the fastest path only for NIM's pre-validated models, not the only container type NIM offers. NIM itself runs the inference server; the NGC Catalog is a separate container/model registry, and this scenario does not require dropping to Triton's backend C API.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.nvidia.com/nim/large-language-models/latest/introduction.html",
+    "id": "ncagenl-0021"
+  },
+  {
+    "domain": "Software Development",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A team wants to take a trained LLM and generate an optimized inference engine for NVIDIA GPUs, taking advantage of features such as in-flight batching, paged attention, and quantization. Which NVIDIA library is purpose-built for this?",
+    "options": [
+      "AWS Glue DataBrew, a visual data-cleaning tool with no model-compilation role.",
+      "SageMaker Feature Store, a feature-serving store unrelated to inference-engine compilation.",
+      "TensorRT-LLM, which provides a Python API to define LLMs and build TensorRT engines with optimizations such as in-flight batching, paged attention, and quantization for efficient GPU inference.",
+      "Amazon Athena, a SQL query engine with no GPU inference-engine role."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>TensorRT-LLM</b> is the NVIDIA library purpose-built to define LLMs through a Python API and compile them into optimized TensorRT engines, bundling inference-time features such as in-flight batching, paged attention, and quantization to run efficiently on NVIDIA GPUs. The remaining options are unrelated AWS data-preparation or feature-serving services with no role in compiling GPU inference engines.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.nvidia.com/tensorrt-llm/index.html",
+    "id": "ncagenl-0022"
+  },
+  {
+    "domain": "Software Development",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "During autoregressive decoding, an LLM must attend back over every previously generated token to produce each new token. Recomputing the Key and Value projections for all prior tokens at every step would be wasteful. Which inference optimization addresses this, and what tradeoff does it introduce?",
+    "options": [
+      "Quantization, which lowers numeric precision and has no relationship to repeated Key/Value computation.",
+      "Dynamic batching, which groups unrelated requests together but does not avoid recomputing a single request's own past Key/Value tensors.",
+      "Positional encoding, which injects order information into embeddings but does not cache any intermediate tensors.",
+      "KV caching, which stores each token's Key and Value tensors in GPU memory after they are computed once, avoiding recomputation on later steps, at the cost of memory usage that grows with batch size and sequence length."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>KV caching</b> stores each token's Key and Value tensors in GPU memory the first time they are computed, so later decoding steps reuse them instead of recomputing attention over the whole prefix again, but the cache's memory footprint grows with batch size and sequence length, which becomes the new bottleneck other techniques (such as paged attention) target. Quantization addresses numeric precision, dynamic batching addresses request grouping, and positional encoding addresses token order, none of which is what removes redundant Key/Value recomputation.",
+    "difficulty": "hard",
+    "docUrl": "https://developer.nvidia.com/blog/mastering-llm-techniques-inference-optimization/",
+    "id": "ncagenl-0023"
+  },
+  {
+    "domain": "Software Development",
+    "tag": "Domain 2",
+    "type": "multi",
+    "stem": "Which TWO statements correctly describe LLM inference-serving optimizations used to raise GPU throughput? (Select TWO.)",
+    "options": [
+      "In-flight (continuous) batching evicts finished sequences from a running batch immediately and admits new requests without waiting for the whole batch to complete, reducing idle GPU cycles caused by requests that finish at very different lengths.",
+      "Traditional static batching already maximizes GPU utilization when request output lengths vary widely, so in-flight batching provides no benefit over it.",
+      "In-flight batching requires every request in a batch to generate exactly the same number of output tokens before any request can be evicted.",
+      "Paged attention stores the KV cache in fixed-size, non-contiguous memory blocks (similar to OS memory paging), reducing the memory fragmentation caused by statically over-provisioning the cache for a worst-case sequence length.",
+      "Paged attention eliminates the KV cache entirely, so no GPU memory is used to store past Key and Value tensors."
+    ],
+    "correct": [
+      0,
+      3
+    ],
+    "explanation": "<b>In-flight batching</b> evicts finished sequences from a running batch as soon as they finish and admits new requests immediately, instead of waiting for the slowest sequence in the batch, which removes the idle GPU cycles that static batching suffers when output lengths vary widely (so static batching does not already solve this; that option is backwards). <b>Paged attention</b> borrows the idea of OS memory paging, storing the KV cache in fixed-size, non-contiguous blocks so memory is allocated as tokens are generated rather than reserved up front for a worst-case length, cutting fragmentation. It reduces KV cache waste, it does not eliminate the KV cache. In-flight batching evicts sequences as soon as they finish, not only once every request reaches the same length.",
+    "difficulty": "hard",
+    "docUrl": "https://developer.nvidia.com/blog/mastering-llm-techniques-inference-optimization/",
+    "id": "ncagenl-0024"
+  },
+  {
+    "domain": "Software Development",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A team is deciding how to reduce an LLM's memory footprint and inference cost before deployment. They compare quantizing an already-trained model after training completes against simulating low-precision effects throughout training itself. Which statement correctly distinguishes these two approaches?",
+    "options": [
+      "Post-training quantization (PTQ) is applied after training completes and can be weight-only (no extra data needed) or include activations (needing calibration data), while quantization-aware training (QAT) simulates quantization effects with 'fake quantization' during training so the model adapts to the resulting errors.",
+      "QAT can only be applied after training completes, while PTQ must be run before training starts.",
+      "PTQ and QAT are two names for the same procedure with no practical difference.",
+      "Quantization only reduces energy use and has no effect on model memory footprint or inference speed."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>PTQ</b> is applied to an already-trained model, and can be weight-only (no additional data required) or extend to activations (which needs representative calibration data), while <b>QAT</b> simulates low-precision arithmetic during training itself through 'fake quantization' so the model learns to compensate for quantization error before it is ever deployed. Converting a model such as a 7B-parameter Llama2 from FP16 to FP8, for example, roughly halves its memory footprint, so quantization does affect both memory and inference speed, not only energy. The timing description in option two is reversed, and PTQ/QAT are distinct procedures, not the same thing.",
+    "difficulty": "medium",
+    "docUrl": "https://developer.nvidia.com/blog/model-quantization-concepts-methods-and-why-it-matters/",
+    "id": "ncagenl-0025"
+  },
+  {
+    "domain": "Software Development",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A developer is building an NLP pipeline and needs to pick the right task type for three separate requirements: (1) label an entire product review as positive or negative, (2) pull out every person, organization, and location mentioned in a news article, and (3) return a specific answer extracted from a passage in response to a question. Which task-to-requirement mapping is correct?",
+    "options": [
+      "All three requirements are solved by the same single task type, so no distinction is needed.",
+      "(1) Text classification, (2) named-entity recognition (NER), (3) question answering.",
+      "(1) Named-entity recognition, (2) question answering, (3) text classification.",
+      "(1) Question answering, (2) text classification, (3) named-entity recognition."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Text classification</b> answers 'which category does this bit of text belong in,' which fits labeling a whole review as positive or negative. <b>Named-entity recognition</b> identifies and labels spans in text as entity types such as person, organization, or location, which fits pulling names out of a news article. <b>Question answering</b> returns a specific answer given a question and supporting context, which fits extracting an answer from a passage. The other option pairings scramble these three distinct, well-defined NLP tasks, and they are not interchangeable.",
+    "difficulty": "medium",
+    "docUrl": "https://developer.nvidia.com/blog/get-started-on-nlp-and-conversational-ai-with-free-courses-from-nvidia-dli/",
+    "id": "ncagenl-0026"
+  },
+  {
+    "domain": "Software Development",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A developer already has application code written against the OpenAI Chat Completions API and wants to redirect it to a self-hosted NVIDIA NIM deployment with minimal code changes. Which fact about NIM makes this practical?",
+    "options": [
+      "NIM only accepts requests formatted as raw TensorRT engine files, so all client code must be rewritten from scratch.",
+      "NIM requires every client to be rewritten in C++ regardless of the client's original language.",
+      "NIM exposes OpenAI-compatible REST endpoints, such as /v1/chat/completions, so existing client code built for that API shape can call a NIM deployment by pointing it at the NIM server's URL.",
+      "NIM has no HTTP API at all and can only be called through a proprietary binary protocol."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "NIM for LLMs serves requests over <b>OpenAI-compatible REST endpoints</b> such as /v1/chat/completions and /v1/completions, so application code already written against the OpenAI Chat Completions API shape can typically be pointed at a self-hosted NIM URL with minimal changes rather than a full rewrite. NIM does not require raw engine files or a proprietary binary protocol as its client-facing interface, and it does not force a rewrite into any specific client language.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.nvidia.com/nim/large-language-models/latest/get-started/quickstart.html",
+    "id": "ncagenl-0027"
   }
 ]
