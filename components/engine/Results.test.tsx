@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Results } from "./Results";
+import { Results, answerLine } from "./Results";
 import { getMeta } from "@/lib/bank";
 import { HEAVY_PAUSE_THRESHOLD } from "@/lib/readiness";
 import type { Attempt, Question } from "@/lib/types";
@@ -78,5 +78,22 @@ describe("Results recap explanations", () => {
     expect(correctOpt).toHaveClass("correct");
     const wrongOpt = within(details).getByText("beta opt").closest(".option") as HTMLElement;
     expect(wrongOpt).toHaveClass("incorrect");
+  });
+});
+
+describe("answerLine view-order sort", () => {
+  // The reviewer-witnessed scenario: canonical picks [0,3] under perm [1,3,4,0,2]
+  // (perm[view]=canonical): canonical 3 displays at B, canonical 0 at D - so the
+  // line lists B before D (view order), letters matching the seen positions.
+  it("sorts multi-select entries by displayed position with view letters", () => {
+    const options = ["opt0", "opt1", "opt2", "opt3", "opt4"];
+    const perm = [1, 3, 4, 0, 2];
+    const line = answerLine([0, 3], options, perm);
+    expect(line.indexOf("B")).toBeLessThan(line.indexOf("D"));
+    expect(line).toMatch(/^B .* opt3, D .* opt0$/);
+  });
+
+  it("reads Not answered for empty picks", () => {
+    expect(answerLine([], ["a", "b"], [0, 1])).toBe("Not answered");
   });
 });

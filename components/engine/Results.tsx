@@ -34,7 +34,7 @@ function formatTotal(sec: number): string {
 // "L / text, L / text" for an index list (multi-select safe); empty picks read "Not answered".
 // `indices` are canonical; `perm` maps them to the order the user actually saw, so the letters match
 // the recap's displayed positions (and entries list top-to-bottom in that seen order).
-function answerLine(indices: number[], options: string[], perm: number[]): string {
+export function answerLine(indices: number[], options: string[], perm: number[]): string {
   if (!indices.length) return "Not answered";
   return [...indices]
     .sort((a, b) => viewIndex(perm, a) - viewIndex(perm, b))
