@@ -1,0 +1,105 @@
+[
+  {
+    "domain": "Design Applications",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A retail company wants to automatically route incoming support emails into one of three fixed categories, Billing, Shipping, or Product Defect, so each email lands in the right team's queue. Which task-specific approach should the Generative AI Engineer select to accomplish this business requirement?",
+    "options": [
+      "Classify each email against the three fixed labels, such as with Databricks' ai_classify function.",
+      "Summarize each email into a one-sentence recap before it reaches the queue.",
+      "Extract every named entity (people, dates, products) mentioned in each email.",
+      "Generate a free-form reply to each email and route based on the reply's wording."
+    ],
+    "correct": [0],
+    "explanation": "Routing to one of a small, fixed set of labels is a <b>classification</b> task, which Databricks AI Functions expose directly through <b>ai_classify</b>. Summarization condenses text but produces no label. Named entity extraction tags entities inside the email but does not choose a queue. Generating a free-form reply and parsing its wording is unreliable and far more expensive than classifying the original email directly.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.databricks.com/aws/en/sql/language-manual/functions/ai_classify",
+    "id": "dbxge-0001"
+  },
+  {
+    "domain": "Design Applications",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A Generative AI Engineer is building an application where a Foundation Model API chat endpoint must always return output that a downstream service can parse into three fixed fields: customer_name (string), issue_category (string), and urgency (integer 1-5). Which prompt design approach BEST guarantees this specifically formatted response?",
+    "options": [
+      "Set response_format to a json_schema that defines the three fields and their types, and mark it strict.",
+      "Set response_format to json_object and ask in the system prompt for the three field names.",
+      "Add a sentence to the prompt asking the model to \"please respond in JSON\" with no response_format set.",
+      "Leave the prompt as free text and use a downstream regex to pull the three fields out of the reply."
+    ],
+    "correct": [0],
+    "explanation": "A <b>json_schema</b> response_format, especially in strict mode, constrains the model to the exact field names and types requested, which is what a fixed three-field contract needs. json_object only guarantees the reply is valid JSON, not that it matches this particular schema. Asking in plain language for JSON with no response_format set is not enforced and can drift. Regex-parsing free text is fragile and breaks whenever the model rephrases its output.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.databricks.com/aws/en/machine-learning/model-serving/structured-outputs",
+    "id": "dbxge-0002"
+  },
+  {
+    "domain": "Design Applications",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A Generative AI Engineer is assembling a LangChain application on Databricks. The application must take a user's question, retrieve relevant passages from a Databricks Vector Search index, generate an answer grounded in those passages, and return the answer as a Python object with a validated schema rather than raw text. In which order should the engineer connect the chain components?",
+    "options": [
+      "Output parser, then retriever, then prompt template, then LLM",
+      "Retriever, then prompt template, then LLM, then output parser",
+      "LLM, then retriever, then prompt template, then output parser",
+      "Prompt template, then LLM, then retriever, then output parser"
+    ],
+    "correct": [1],
+    "explanation": "The <b>retriever</b> must run first to fetch grounding passages, which are inserted into a <b>prompt template</b>, sent to the <b>LLM</b> to generate the grounded answer, and finally passed through an <b>output parser</b> that converts the raw text into the validated schema object. Running the output parser first leaves nothing to parse yet. Running the LLM before retrieval means it answers without the grounding context. Running the prompt template before retrieval leaves no passages to insert into it.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.databricks.com/aws/en/agents/agent-framework/author-agent",
+    "id": "dbxge-0003"
+  },
+  {
+    "domain": "Design Applications",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A legal team asks a Generative AI Engineer for a tool that lets a reviewer paste in a single contract clause and immediately see a plain-English explanation of what the clause means along with a risk score from 1 (low risk) to 5 (high risk). Which description of the AI pipeline's inputs and outputs BEST matches this business requirement?",
+    "options": [
+      "Input: the full contract PDF and the contract type. Output: a one-paragraph summary of the entire contract.",
+      "Input: the clause text. Output: a structured object containing a plain-English explanation string and an integer risk_score from 1 to 5.",
+      "Input: the clause text. Output: only the integer risk_score, with no explanation.",
+      "Input: a scanned image of the clause. Output: a transcription of the clause with no risk assessment."
+    ],
+    "correct": [1],
+    "explanation": "The request is explicit: a single clause goes in, and both a plain-English explanation and a 1-5 risk score come out, which is exactly what the structured input/output description captures. Summarizing the whole contract ignores that the reviewer works clause by clause. Returning only the risk score drops the explanation the reviewer asked for. Treating the input as a scanned image and returning only a transcription ignores the risk-scoring requirement entirely.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.databricks.com/aws/en/sql/language-manual/functions/ai_extract",
+    "id": "dbxge-0004"
+  },
+  {
+    "domain": "Design Applications",
+    "tag": "Domain 1",
+    "type": "multi",
+    "stem": "A Generative AI Engineer is building an agent that must answer \"Is this customer eligible for a loyalty upgrade?\" To answer, the agent needs the customer's current account balance from a live billing API and the eligibility rules from a policy document indexed in Vector Search, then it must combine both pieces to reach a conclusion. Which TWO practices reflect correct tool definition and ordering for this multi-stage reasoning task? (Select TWO.)",
+    "options": [
+      "Give the balance-lookup tool and the policy-retrieval tool distinct names and descriptions so the agent can choose the right one for each sub-task.",
+      "Call the balance-lookup tool and the policy-retrieval tool before asking the LLM to compute the eligibility conclusion, since the conclusion depends on both results.",
+      "Hardcode a single fixed tool-call order for every incoming question, regardless of what the question actually asks.",
+      "Let the LLM estimate the customer's account balance from general knowledge instead of calling the billing API, to save a tool call.",
+      "Merge the balance lookup and the policy retrieval into one combined tool so the agent only ever has one tool to choose from."
+    ],
+    "correct": [0, 1],
+    "explanation": "Multi-stage reasoning requires <b>clearly named, distinct tools</b> so the model can pick the right one per sub-task, and the results those tools return must be <b>gathered before the final reasoning step</b> that depends on them, here the eligibility conclusion. Hardcoding one fixed order for every question ignores that different questions need different tools or none at all. Letting the LLM guess a live account balance instead of calling the billing API risks a fabricated, stale number. Merging two unrelated data sources into a single tool removes the agent's ability to call only the one it actually needs, which hurts the flexibility and interpretability of its tool choices.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.databricks.com/aws/en/agents/agent-framework/structured-retrieval-tools",
+    "id": "dbxge-0005"
+  },
+  {
+    "domain": "Design Applications",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A finance team receives thousands of vendor invoice PDFs each month and wants vendor_name, invoice_amount, and due_date pulled out of every invoice into a Delta table for downstream analytics. No chat interface is needed, and the team wants to avoid building and maintaining a custom extraction pipeline. Which Databricks Agent Bricks capability BEST fits this requirement?",
+    "options": [
+      "Knowledge Assistant, configured over the invoice PDFs stored in a Unity Catalog volume.",
+      "Multi-Agent Supervisor, orchestrating a team of specialized agents over the invoices.",
+      "Information Extraction, configured with a schema for vendor_name, invoice_amount, and due_date.",
+      "A fully custom RAG chatbot built and maintained in-house on top of Vector Search."
+    ],
+    "correct": [2],
+    "explanation": "<b>Information Extraction</b> is the Agent Bricks capability purpose-built to turn unstructured documents like invoices into structured fields against a defined schema, exactly the vendor_name, invoice_amount, and due_date requirement, with no custom pipeline to maintain. Knowledge Assistant builds a citation-backed chatbot over documents, which is the wrong shape for a no-chat, structured-output need. Multi-Agent Supervisor orchestrates multiple existing agents and tools into one workflow, which is unnecessary overhead when there is only one extraction task. Building a custom RAG chatbot both misses the point, since no chat is needed, and reintroduces exactly the maintenance burden the team wants to avoid.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.databricks.com/aws/en/agents/agent-bricks/info-extraction",
+    "id": "dbxge-0006"
+  }
+]
