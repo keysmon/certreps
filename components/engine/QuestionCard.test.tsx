@@ -62,4 +62,12 @@ describe("QuestionCard", () => {
     await userEvent.click(btn);
     expect(onSubmit).toHaveBeenCalledWith([2]); // still canonical
   });
+  it("multi-select re-record: editing a pre-filled choice keeps both canonical indices", async () => {
+    const onSubmit = vi.fn();
+    render(<QuestionCard question={multi} graded={null} onSubmit={onSubmit} attemptId={SHUFFLE_ID} vendorName="AWS" initialChosen={[0]} />);
+    expect(screen.getByText("A opt").closest("button")!.className).toContain("selected"); // pre-filled
+    await userEvent.click(screen.getByText("C opt")); // add a second choice
+    await userEvent.click(screen.getByRole("button", { name: /update answer/i }));
+    expect(onSubmit).toHaveBeenCalledWith([0, 2]);
+  });
 });
