@@ -1759,13 +1759,13 @@
     "options": [
       "Add the account ID to the system prompt on every turn",
       "Append the account ID to the user message text on every turn",
-      "Pass the account ID to the tool through the agent's runtime session and identity context, so it reaches the backend tool out of band and is never placed in the model prompt",
+      "Pass the account ID to the tool through the agent's runtime session context, so it reaches the backend tool out of band and is never placed in the model prompt",
       "Put the account ID in the agent's instructions so the model always includes it"
     ],
     "correct": [
       2
     ],
-    "explanation": "Passing the account ID through the agent's <b>runtime session and identity context</b> delivers it to the backend tool out of band, so the tool can scope queries while the value never enters the model prompt or influences generation. Adding it to the <b>system prompt</b>, the <b>user message</b>, or the <b>agent instructions</b> all expose the ID to the model, which the requirement forbids.",
+    "explanation": "Passing the account ID through the agent's <b>runtime session context</b> delivers it to the backend tool out of band, so the tool can scope queries while the value never enters the model prompt or influences generation. Adding it to the <b>system prompt</b>, the <b>user message</b>, or the <b>agent instructions</b> all expose the ID to the model, which the requirement forbids.",
     "difficulty": "hard",
     "docUrl": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-sessions.html",
     "id": "aipc01-0091"
