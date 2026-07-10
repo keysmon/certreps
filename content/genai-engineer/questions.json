@@ -3,171 +3,116 @@
     "domain": "Design Applications",
     "tag": "Domain 1",
     "type": "single",
-    "stem": "A retail company wants to automatically route incoming support emails into one of three fixed categories, Billing, Shipping, or Product Defect, so each email lands in the right team's queue. Which task-specific approach should the Generative AI Engineer select to accomplish this business requirement?",
+    "stem": "A Generative AI Engineer is designing an application that calls a chat model on Databricks Foundation Model APIs. A downstream service parses each response programmatically, so every response must be valid JSON that conforms to a fixed schema with fields for category, priority, and summary. Which approach MOST reliably produces the required output?",
     "options": [
-      "Classify each email against the three fixed labels, such as with Databricks' ai_classify function.",
-      "Summarize each email into a one-sentence recap before it reaches the queue.",
-      "Extract every named entity (people, dates, products) mentioned in each email.",
-      "Generate a free-form reply to each email and route based on the reply's wording."
+      "Raise the temperature so the model explores more response formats until one matches.",
+      "Add the sentence 'please respond in JSON' to the end of each user message.",
+      "Set the response_format parameter to json_schema and supply the required schema in the request.",
+      "Let the model answer in free text and extract the fields with regular expressions."
     ],
-    "correct": [0],
-    "explanation": "Routing to one of a small, fixed set of labels is a <b>classification</b> task, which Databricks AI Functions expose directly through <b>ai_classify</b>. Summarization condenses text but produces no label. Named entity extraction tags entities inside the email but does not choose a queue. Generating a free-form reply and parsing its wording is unreliable and far more expensive than classifying the original email directly.",
-    "difficulty": "easy",
-    "docUrl": "https://docs.databricks.com/aws/en/sql/language-manual/functions/ai_classify",
+    "correct": [
+      2
+    ],
+    "explanation": "Foundation Model APIs support <b>structured outputs</b>: setting <b>response_format to json_schema</b> with a supplied JSON schema constrains generation so the response adheres to that schema, which is the reliable way to guarantee parseable output. Raising temperature increases randomness and makes format drift more likely, not less. A polite instruction in the prompt often works but is not enforced, so occasional malformed responses will still break the parser. Regex extraction from free text is brittle because the surrounding prose can change from call to call.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.databricks.com/aws/en/machine-learning/model-serving/structured-outputs",
     "id": "dbxge-0001"
   },
   {
     "domain": "Design Applications",
     "tag": "Domain 1",
     "type": "single",
-    "stem": "A Generative AI Engineer is building an application where a Foundation Model API chat endpoint must always return output that a downstream service can parse into three fixed fields: customer_name (string), issue_category (string), and urgency (integer 1-5). Which prompt design approach BEST guarantees this specifically formatted response?",
+    "stem": "A support team receives thousands of chat transcripts per day in a Delta table. The business requirement is to assign each transcript one of six predefined intent categories inside an existing SQL pipeline, with no custom model development. Which Databricks AI Function BEST matches this requirement?",
     "options": [
-      "Set response_format to a json_schema that defines the three fields and their types, and mark it strict.",
-      "Set response_format to json_object and ask in the system prompt for the three field names.",
-      "Add a sentence to the prompt asking the model to \"please respond in JSON\" with no response_format set.",
-      "Leave the prompt as free text and use a downstream regex to pull the three fields out of the reply."
+      "ai_summarize",
+      "ai_classify",
+      "ai_translate",
+      "ai_gen"
     ],
-    "correct": [0],
-    "explanation": "A <b>json_schema</b> response_format, especially in strict mode, constrains the model to the exact field names and types requested, which is what a fixed three-field contract needs. json_object only guarantees the reply is valid JSON, not that it matches this particular schema. Asking in plain language for JSON with no response_format set is not enforced and can drift. Regex-parsing free text is fragile and breaks whenever the model rephrases its output.",
+    "correct": [
+      1
+    ],
+    "explanation": "Assigning each record one label from a fixed set of categories is a <b>text classification</b> task, and <b>ai_classify</b> is the task-specific AI Function built for exactly that: it takes the text and the list of candidate labels directly in SQL. ai_summarize condenses text rather than labeling it. ai_translate converts text between languages. ai_gen is a general free-form generation function, which would need prompt engineering and output parsing to imitate what ai_classify already does natively.",
     "difficulty": "easy",
-    "docUrl": "https://docs.databricks.com/aws/en/machine-learning/model-serving/structured-outputs",
+    "docUrl": "https://docs.databricks.com/aws/en/large-language-models/ai-functions",
     "id": "dbxge-0002"
   },
   {
     "domain": "Design Applications",
     "tag": "Domain 1",
     "type": "single",
-    "stem": "A Generative AI Engineer is assembling a LangChain application on Databricks. The application must take a user's question, retrieve relevant passages from a Databricks Vector Search index, generate an answer grounded in those passages, and return the answer as a Python object with a validated schema rather than raw text. In which order should the engineer connect the chain components?",
+    "stem": "A Generative AI Engineer is designing a chain whose input is an employee's question and whose output is an answer grounded in the company's internal benefits documents. Which ordered sequence of chain components correctly implements this as a RAG chain?",
     "options": [
-      "Output parser, then retriever, then prompt template, then LLM",
-      "Retriever, then prompt template, then LLM, then output parser",
-      "LLM, then retriever, then prompt template, then output parser",
-      "Prompt template, then LLM, then retriever, then output parser"
+      "Query a vector search index with the question, insert the retrieved chunks and the question into a prompt template, then send the prompt to the LLM.",
+      "Send the question directly to the LLM, then use the generated answer to query the vector search index for supporting documents.",
+      "Insert the question into a prompt template, send it to the LLM, then filter the response against the document corpus.",
+      "Fine-tune the LLM on the benefits documents, then answer questions without any retrieval step."
     ],
-    "correct": [1],
-    "explanation": "The <b>retriever</b> must run first to fetch grounding passages, which are inserted into a <b>prompt template</b>, sent to the <b>LLM</b> to generate the grounded answer, and finally passed through an <b>output parser</b> that converts the raw text into the validated schema object. Running the output parser first leaves nothing to parse yet. Running the LLM before retrieval means it answers without the grounding context. Running the prompt template before retrieval leaves no passages to insert into it.",
-    "difficulty": "medium",
-    "docUrl": "https://docs.databricks.com/aws/en/agents/agent-framework/author-agent",
+    "correct": [
+      0
+    ],
+    "explanation": "A RAG chain runs <b>retrieval, then augmentation, then generation</b>: the user's request queries a knowledge source such as a vector store, the retrieved data is combined with the request in a prompt template with instructions for the LLM, and the assembled prompt goes to the model. Generating first and retrieving afterward means the answer was produced without grounding, so the retrieval cannot fix hallucinations. Filtering a finished response against the corpus also leaves generation ungrounded. Fine-tuning bakes a snapshot of the documents into weights, losing the up-to-date, citable retrieval the requirement implies.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.databricks.com/aws/en/agents/retrieval-augmented-generation",
     "id": "dbxge-0003"
   },
   {
     "domain": "Design Applications",
     "tag": "Domain 1",
-    "type": "single",
-    "stem": "A legal team asks a Generative AI Engineer for a tool that lets a reviewer paste in a single contract clause and immediately see a plain-English explanation of what the clause means along with a risk score from 1 (low risk) to 5 (high risk). Which description of the AI pipeline's inputs and outputs BEST matches this business requirement?",
+    "type": "multi",
+    "stem": "An agent being designed on Databricks must answer two kinds of requests: look up a customer's current order total, which requires a parameterized SQL query against a Unity Catalog table with a known, fixed query shape, and answer free-form questions about return policies stored as unstructured documents in a vector search index. Which TWO tools should the engineer define for this agent? (Select TWO.)",
     "options": [
-      "Input: the full contract PDF and the contract type. Output: a one-paragraph summary of the entire contract.",
-      "Input: the clause text. Output: a structured object containing a plain-English explanation string and an integer risk_score from 1 to 5.",
-      "Input: the clause text. Output: only the integer risk_score, with no explanation.",
-      "Input: a scanned image of the clause. Output: a transcription of the clause with no risk assessment."
+      "A Unity Catalog function that executes the parameterized order-total query.",
+      "An ai_forecast call that predicts future order totals from historical data.",
+      "An unstructured retrieval tool that queries the policy document vector search index.",
+      "A custom code tool that re-implements both lookups inside a single Python function.",
+      "A dashboard subscription that emails order reports to the agent on a schedule."
     ],
-    "correct": [1],
-    "explanation": "The request is explicit: a single clause goes in, and both a plain-English explanation and a 1-5 risk score come out, which is exactly what the structured input/output description captures. Summarizing the whole contract ignores that the reviewer works clause by clause. Returning only the risk score drops the explanation the reviewer asked for. Treating the input as a scanned image and returning only a transcription ignores the risk-scoring requirement entirely.",
+    "correct": [
+      0,
+      2
+    ],
+    "explanation": "Databricks recommends <b>Unity Catalog functions for structured-data retrieval when the query shape is known</b> and the agent only supplies parameters, which fits the order-total lookup, and <b>unstructured retrieval tools for querying vector search indexes</b>, which fits the policy questions. ai_forecast predicts future values, but the requirement is a current lookup, not a forecast. One monolithic custom tool discards the governance, reuse, and tracing benefits of purpose-built tools and forces the LLM to disambiguate intent inside a single function. A scheduled email dashboard is not a tool an agent can call during reasoning.",
     "difficulty": "medium",
-    "docUrl": "https://docs.databricks.com/aws/en/sql/language-manual/functions/ai_extract",
+    "docUrl": "https://docs.databricks.com/aws/en/agents/agent-framework/agent-tool",
     "id": "dbxge-0004"
   },
   {
     "domain": "Design Applications",
     "tag": "Domain 1",
-    "type": "multi",
-    "stem": "A Generative AI Engineer is building an agent that must answer \"Is this customer eligible for a loyalty upgrade?\" To answer, the agent needs the customer's current account balance from a live billing API and the eligibility rules from a policy document indexed in Vector Search, then it must combine both pieces to reach a conclusion. Which TWO practices reflect correct tool definition and ordering for this multi-stage reasoning task? (Select TWO.)",
+    "type": "single",
+    "stem": "A legal operations team has thousands of vendor contracts stored as PDFs in a Unity Catalog volume. They need each contract converted into structured JSON with fields for the parties, effective date, and renewal terms. The team has no ML engineers and wants a solution that can be improved with natural-language feedback rather than code. Which Agent Bricks offering fits this requirement?",
     "options": [
-      "Give the balance-lookup tool and the policy-retrieval tool distinct names and descriptions so the agent can choose the right one for each sub-task.",
-      "Call the balance-lookup tool and the policy-retrieval tool before asking the LLM to compute the eligibility conclusion, since the conclusion depends on both results.",
-      "Hardcode a single fixed tool-call order for every incoming question, regardless of what the question actually asks.",
-      "Let the LLM estimate the customer's account balance from general knowledge instead of calling the billing API, to save a tool call.",
-      "Merge the balance lookup and the policy retrieval into one combined tool so the agent only ever has one tool to choose from."
+      "Knowledge Assistant",
+      "Multi-Agent Supervisor",
+      "A custom agent built from scratch with the Agent Framework",
+      "Information Extraction"
     ],
-    "correct": [0, 1],
-    "explanation": "Multi-stage reasoning requires <b>clearly named, distinct tools</b> so the model can pick the right one per sub-task, and the results those tools return must be <b>gathered before the final reasoning step</b> that depends on them, here the eligibility conclusion. Hardcoding one fixed order for every question ignores that different questions need different tools or none at all. Letting the LLM guess a live account balance instead of calling the billing API risks a fabricated, stale number. Merging two unrelated data sources into a single tool removes the agent's ability to call only the one it actually needs, which hurts the flexibility and interpretability of its tool choices.",
-    "difficulty": "medium",
-    "docUrl": "https://docs.databricks.com/aws/en/agents/agent-framework/structured-retrieval-tools",
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Agent Bricks Information Extraction</b> turns unstructured documents into structured JSON that follows a user-defined schema, and it auto-tunes from natural-language feedback, so a team without ML engineers can build and refine the extractor declaratively. Knowledge Assistant builds a question-answering chatbot with citations, not a document-to-JSON pipeline. Multi-Agent Supervisor coordinates multiple existing agents and tools rather than performing extraction itself. A hand-built Agent Framework agent could work but requires exactly the engineering investment the team wants to avoid.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.databricks.com/aws/en/agents/agent-bricks/info-extraction",
     "id": "dbxge-0005"
   },
   {
     "domain": "Design Applications",
     "tag": "Domain 1",
     "type": "single",
-    "stem": "A finance team receives thousands of vendor invoice PDFs each month and wants vendor_name, invoice_amount, and due_date pulled out of every invoice into a Delta table for downstream analytics. No chat interface is needed, and the team wants to avoid building and maintaining a custom extraction pipeline. Which Databricks Agent Bricks capability BEST fits this requirement?",
+    "stem": "A company already runs a Genie space that answers questions over sales tables and an Agent Bricks Knowledge Assistant that answers questions over HR policy documents. Leadership wants a single conversational interface that decides which system should handle each incoming question and combines results when a question spans both. What is the MOST direct way to deliver this on Databricks?",
     "options": [
-      "Knowledge Assistant, configured over the invoice PDFs stored in a Unity Catalog volume.",
-      "Multi-Agent Supervisor, orchestrating a team of specialized agents over the invoices.",
-      "Information Extraction, configured with a schema for vendor_name, invoice_amount, and due_date.",
-      "A fully custom RAG chatbot built and maintained in-house on top of Vector Search."
+      "Replace both systems with one large custom RAG chain over all sales data and HR documents.",
+      "Create an Agent Bricks Multi-Agent Supervisor that registers the Genie space and the Knowledge Assistant as its agents.",
+      "Schedule ai_query batch jobs that run each question against both systems and store the answers.",
+      "Use Information Extraction to convert the sales tables into documents for the Knowledge Assistant."
     ],
-    "correct": [2],
-    "explanation": "<b>Information Extraction</b> is the Agent Bricks capability purpose-built to turn unstructured documents like invoices into structured fields against a defined schema, exactly the vendor_name, invoice_amount, and due_date requirement, with no custom pipeline to maintain. Knowledge Assistant builds a citation-backed chatbot over documents, which is the wrong shape for a no-chat, structured-output need. Multi-Agent Supervisor orchestrates multiple existing agents and tools into one workflow, which is unnecessary overhead when there is only one extraction task. Building a custom RAG chatbot both misses the point, since no chat is needed, and reintroduces exactly the maintenance burden the team wants to avoid.",
+    "correct": [
+      1
+    ],
+    "explanation": "The <b>Multi-Agent Supervisor</b> exists for exactly this pattern: it coordinates existing components such as Genie spaces, Knowledge Assistants, agent endpoints, and Unity Catalog functions into one system, handling task delegation and result synthesis. Rebuilding everything as one custom RAG chain throws away two working, governed systems and handles structured sales queries poorly. ai_query batch jobs are for offline inference over tables, not an interactive conversational interface. Information Extraction produces structured JSON from documents; converting tables into documents to force them through a document assistant inverts that purpose and degrades structured query quality.",
     "difficulty": "hard",
-    "docUrl": "https://docs.databricks.com/aws/en/agents/agent-bricks/info-extraction",
+    "docUrl": "https://docs.databricks.com/aws/en/agents/agent-bricks/multi-agent-supervisor",
     "id": "dbxge-0006"
-  },
-  {
-    "domain": "Governance",
-    "tag": "Domain 5",
-    "type": "single",
-    "stem": "A healthcare company's RAG application answers patient questions from Unity Catalog tables that include SSN and diagnosis-code columns. Compliance requires that PII columns be redacted before the LLM ever sees them, without maintaining a duplicate copy of each table for every consumer group. Which approach meets this requirement with the least additional infrastructure?",
-    "options": [
-      "Create a full copy of each table with the PII columns removed, and grant access only to the redacted copy.",
-      "Apply a Unity Catalog column mask, a SQL function invoked at query time, directly on the PII columns so queries return redacted values without a duplicate table.",
-      "Store the PII columns in a separate Delta table with different access grants, joined back in only when needed.",
-      "Encrypt the PII columns at rest with a customer-managed key and decrypt them in the application layer before sending to the LLM."
-    ],
-    "correct": [1],
-    "explanation": "A <b>Unity Catalog column mask</b> applies a SQL function to a column at query time, for example redacting a value unless the caller belongs to a permitted group, so every query (including one built for an LLM prompt) returns the redacted value with no second table to build or keep in sync. A full-copy table (A) means maintaining and syncing a duplicate dataset. A separate joined table (C) still exposes the raw values wherever the join happens and adds schema-management overhead. Encrypting at rest and decrypting in the application (D) hands the app a fully decrypted value before the LLM call, so it does not stop PII from reaching the model at all.",
-    "difficulty": "medium",
-    "docUrl": "https://docs.databricks.com/aws/en/data-governance/unity-catalog/filters-and-masks",
-    "id": "dbxge-0037"
-  },
-  {
-    "domain": "Governance",
-    "tag": "Domain 5",
-    "type": "single",
-    "stem": "A team deploys an agent behind Unity AI Gateway and wants every request that contains personally identifiable information to be rejected outright before it ever reaches the model, rather than merely redacted in the response. Which guardrail configuration accomplishes this?",
-    "options": [
-      "A PII guardrail on the Input phase with its action set to block, pointed at a shared evaluator (safety) endpoint.",
-      "A PII guardrail on the Output phase with its action set to redact.",
-      "The enable_safety_filter=True option on the endpoint's serving configuration.",
-      "A rate limit of 0 queries per minute configured on the endpoint."
-    ],
-    "correct": [0],
-    "explanation": "Unity AI Gateway guardrails let you choose a Phase, Input or Output, and an action, redact or block. Setting the guardrail's Phase to <b>Input</b> with action <b>block</b> rejects a request containing PII before it reaches the model at all. An Output-phase guardrail (B) only inspects the model's response, and its action here is redact, not block, so PII in the incoming request would still reach the model. enable_safety_filter (C) is a curated Foundation Model APIs option for stripping unsafe content at the model layer, not a PII-blocking gateway guardrail. Setting rate limits to 0 QPM (D) blocks all traffic indiscriminately, not just PII-bearing requests.",
-    "difficulty": "hard",
-    "docUrl": "https://docs.databricks.com/aws/en/ai-gateway/guardrails",
-    "id": "dbxge-0038"
-  },
-  {
-    "domain": "Governance",
-    "tag": "Domain 5",
-    "type": "single",
-    "stem": "An engineer wants to ingest a dataset listed on Databricks Marketplace into a RAG corpus that will power a customer-facing support bot. Independent of any Unity Catalog lineage or audit tooling already in place, what must the engineer verify before ingesting the dataset?",
-    "options": [
-      "That the dataset's file format is Delta rather than Parquet.",
-      "That the dataset provider's listed Consumer Terms permit the intended downstream use, since consumers are bound by those terms for anything built on the data.",
-      "That the dataset is stored in the same cloud region as the RAG application's compute.",
-      "That the dataset's Unity Catalog lineage graph shows fewer than five downstream tables."
-    ],
-    "correct": [1],
-    "explanation": "Every Databricks Marketplace listing carries Provider and <b>Consumer Terms</b> stating the license grant and restrictions, and a consumer is bound by those terms for anything built downstream, so feeding the dataset into a RAG corpus without honoring its stated usage restrictions is a legal-risk violation regardless of any lineage or audit tooling in place. File format (A) and compute region (C) are engineering and performance concerns, not legal risk. The size of a lineage graph (D) is an operational governance detail and does not establish that a use is licensed.",
-    "difficulty": "medium",
-    "docUrl": "https://docs.databricks.com/aws/en/marketplace/provider-policies",
-    "id": "dbxge-0039"
-  },
-  {
-    "domain": "Governance",
-    "tag": "Domain 5",
-    "type": "single",
-    "stem": "While building a RAG data pipeline, an engineer finds that some source documents mix toxic or low-quality passages in with otherwise useful content. Deleting every flagged document entirely would also remove the valuable knowledge those documents contain. What does Databricks' RAG data-pipeline guidance recommend instead?",
-    "options": [
-      "Manually review and hand-edit every document before ingestion.",
-      "Run a toxicity or quality classifier, for example via the ai_classify() SQL function, over each document as a pipeline step, and use its prediction to filter or flag only the offending content rather than discarding whole documents.",
-      "Reduce the chunk size so toxic passages land in their own chunks and are ignored at query time.",
-      "Disable the retriever's re-ranking step so toxic chunks are never surfaced regardless of relevance score."
-    ],
-    "correct": [1],
-    "explanation": "Databricks' documented RAG data-pipeline guidance runs a <b>toxicity or quality classifier</b>, such as one invoked with <b>ai_classify()</b>, as a pipeline step and uses its prediction to filter or flag only the problematic content, avoiding the all-or-nothing choice of discarding an entire document. Hand-editing every document (A) does not scale to a real corpus. Shrinking chunk size (C) only changes chunk boundaries; it does not classify or remove low-quality content, and a toxic chunk on its own could still be retrieved. Disabling re-ranking (D) changes result ordering and does nothing to filter content quality.",
-    "difficulty": "easy",
-    "docUrl": "https://docs.databricks.com/aws/en/agents/tutorials/ai-cookbook/quality-data-pipeline-rag",
-    "id": "dbxge-0040"
   }
 ]
