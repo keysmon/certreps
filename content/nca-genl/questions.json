@@ -728,5 +728,140 @@
     "difficulty": "hard",
     "docUrl": "https://developer.nvidia.com/blog/streamline-evaluation-of-llms-for-accuracy-with-nvidia-nemo-evaluator/",
     "id": "ncagenl-0038"
+  },
+  {
+    "domain": "Data Analysis and Visualization",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A data scientist has an existing pandas data-preparation script for an LLM training corpus that takes hours to run on CPU as the dataset grows. They want a large speedup without rewriting the script. Which RAPIDS capability directly fits this need?",
+    "options": [
+      "cuDF's pandas accelerator mode, which can run existing pandas code on the GPU with zero code changes, reported at up to a 150x speedup.",
+      "AWS Glue DataBrew, a visual, no-code cleaning tool that requires rebuilding the pipeline outside pandas entirely.",
+      "SageMaker Ground Truth, a data-labeling workflow tool unrelated to accelerating an existing pandas script.",
+      "Amazon Athena, a serverless SQL query engine that does not execute pandas code at all."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>cuDF's pandas accelerator mode</b> runs existing pandas code on the GPU with zero code changes, with NVIDIA reporting speedups up to 150x, which directly matches wanting a large speedup without a rewrite. DataBrew requires moving off pandas into a separate visual tool, Ground Truth is for data labeling, and Athena is a SQL query engine, none of which accelerates an existing pandas script in place.",
+    "difficulty": "easy",
+    "docUrl": "https://developer.nvidia.com/blog/rapids-cudf-accelerates-pandas-nearly-150x-with-zero-code-changes/",
+    "id": "ncagenl-0039"
+  },
+  {
+    "domain": "Data Analysis and Visualization",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "An analyst is building an interactive dashboard to explore a 300-million-row dataset before it feeds an LLM's training pipeline, filtering and re-rendering plots as they explore. Standard pandas plus matplotlib feels sluggish and breaks their train of thought. Which statement about addressing this with GPU acceleration is correct?",
+    "options": [
+      "Interactive visualization speed does not matter for exploratory data analysis, since only the final trained model's accuracy matters.",
+      "Interactions such as filtering or re-rendering that take longer than 7 to 10 seconds disrupt a user's short-term memory and train of thought, and GPU-accelerated libraries such as cuDF paired with tools like cuxfilter can bring large-dataset interactions down to subsecond, interactive speeds.",
+      "GPU acceleration can only speed up model training, never data visualization or exploration workflows.",
+      "Any dataset above 1 million rows is too large to visualize interactively under any circumstances, on CPU or GPU."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "Interactions slower than about <b>7 to 10 seconds break a user's short-term memory and train of thought</b> during exploratory analysis, and NVIDIA's own case study demonstrates subsecond interaction across 300 million or more Census data points once cuDF replaces pandas underneath a visualization tool such as cuxfilter with Plotly Dash. Visualization speed matters well before final model training, GPU acceleration is not limited to training, and large row counts are exactly the case where GPU acceleration, not an inherent ceiling, restores interactivity.",
+    "difficulty": "medium",
+    "docUrl": "https://developer.nvidia.com/blog/accelerated-data-analytics-a-guide-to-data-visualization-with-rapids/",
+    "id": "ncagenl-0040"
+  },
+  {
+    "domain": "Data Analysis and Visualization",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A team preparing a large text corpus for LLM pretraining finds many documents that are byte-for-byte identical, others that are near-duplicates with minor edits, and others that are conceptually redundant despite different wording. Which combination of deduplication techniques addresses all three cases?",
+    "options": [
+      "A single exact-hash deduplication pass, since hash signatures also catch near-duplicates and conceptually similar text.",
+      "Exact deduplication (hash signatures) for identical documents, fuzzy deduplication (MinHash and locality-sensitive hashing) for near-duplicates, and semantic deduplication (embeddings and clustering) for conceptually similar content.",
+      "Fuzzy deduplication alone, since MinHash can already detect byte-for-byte identical documents and conceptual duplicates equally well.",
+      "Manual human review of every document pair, since no automated technique can detect any of these three duplicate types."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "Each duplicate type calls for a different technique: <b>exact deduplication</b> with hash signatures catches identical documents, <b>fuzzy deduplication</b> with MinHash and locality-sensitive hashing catches near-duplicates with minor variations, and <b>semantic deduplication</b> with embedding models and clustering catches conceptually similar content despite different wording. A single hash pass only catches exact matches, MinHash targets near-duplicates rather than exact or purely semantic ones, and all three cases have established automated techniques, so manual review of every pair is not required.",
+    "difficulty": "medium",
+    "docUrl": "https://developer.nvidia.com/blog/mastering-llm-techniques-data-preprocessing/",
+    "id": "ncagenl-0041"
+  },
+  {
+    "domain": "Data Analysis and Visualization",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A team is choosing a quality-filtering method for a massive web-scraped text corpus before LLM pretraining, and must balance filtering accuracy against compute cost across an enormous number of documents. Which statement correctly ranks the tradeoff among the filtering approaches?",
+    "options": [
+      "There is no compute-cost difference between an n-gram classifier and using a full LLM to filter every document.",
+      "BERT-style filtering models are always slower and less accurate than lightweight n-gram classifiers in every scenario.",
+      "Lightweight n-gram based classifiers such as fastText are cheaper to run at scale but generally less discerning than BERT-style models, while using an LLM for filtering can give the most nuanced judgment at the highest compute cost.",
+      "Quality filtering has no effect on downstream model performance, so the cheapest method should always be chosen regardless of accuracy."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "Quality filtering spans a real cost-versus-nuance spectrum: <b>lightweight n-gram classifiers</b> like fastText are efficient enough for enormous corpora but less discerning, <b>BERT-style models</b> offer a more balanced middle ground, and <b>LLM-based filtering</b> gives the most nuanced assessment at the highest computational cost. There is a real compute-cost difference across these tiers, BERT-style models are not universally worse than n-gram classifiers (they trade some efficiency for better judgment), and poor data quality is explicitly called out as reducing model accuracy, so filtering choice is not compute-cost-only.",
+    "difficulty": "medium",
+    "docUrl": "https://developer.nvidia.com/blog/mastering-llm-techniques-data-preprocessing/",
+    "id": "ncagenl-0042"
+  },
+  {
+    "domain": "Data Analysis and Visualization",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A team lacks enough real-world labeled examples for a specialized task, so they generate additional training examples with an LLM using a generate-critique-filter pipeline. What is a key risk of relying on this synthetic data approach that the team must guard against?",
+    "options": [
+      "Synthetic data pipelines are risk-free and always improve model quality regardless of how the outputs are checked.",
+      "Synthetic data generation is only possible for image data and cannot be applied to text-based LLM training at all.",
+      "Hallucinations in the generated content and a distribution mismatch between synthetic and real-world data can undermine the strategy if generated examples are not adequately critiqued and filtered.",
+      "The critique step in this pipeline is purely optional cosmetic labeling with no effect on data quality."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "Even with a generate-critique-filter pipeline, <b>hallucinated content</b> from the generating model and a <b>distribution mismatch</b> between synthetic and real-world examples can undermine the strategy, which is exactly why the critique and filter stages (for example, LLM evaluation, reward models, and deduplication or PII redaction) matter rather than being cosmetic. The approach is not risk-free, and it is applied to text data in this context, not restricted to images.",
+    "difficulty": "hard",
+    "docUrl": "https://developer.nvidia.com/blog/mastering-llm-techniques-data-preprocessing/",
+    "id": "ncagenl-0043"
+  },
+  {
+    "domain": "Data Analysis and Visualization",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A team generates a large volume of synthetic instruction-tuning data with an LLM but skips the reward-model filtering step to save time, keeping every generated example. Based on NVIDIA's synthetic data generation guidance, what is the most likely consequence?",
+    "options": [
+      "No consequence, since raw generation volume is what determines downstream LLM accuracy, not the quality of individual examples.",
+      "Skipping filtering will only affect training speed, never the resulting model's task accuracy.",
+      "Reward-model filtering exists purely to reduce storage costs and has no connection to model accuracy.",
+      "Model accuracy is likely to suffer, since accuracy is often determined more by the quality of training data than by its quantity, and filtering (for example, with a reward model that ranks and keeps only high-quality synthetic outputs) is described as crucial in synthetic data generation recipes."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "NVIDIA's synthetic data generation guidance states that <b>LLM accuracy is often determined more by training-data quality than by quantity</b>, and describes quality filtering, such as ranking synthetic outputs with a reward model and keeping only the high-quality subset, as crucial in SDG recipes; skipping that step risks feeding lower-quality synthetic examples into training and hurting accuracy. Raw volume alone is explicitly not the deciding factor, and the consequence is about model quality, not merely training speed or storage.",
+    "difficulty": "medium",
+    "docUrl": "https://developer.nvidia.com/blog/leverage-our-latest-open-models-for-synthetic-data-generation-with-nvidia-nemotron-4-340b/",
+    "id": "ncagenl-0044"
+  },
+  {
+    "domain": "Data Analysis and Visualization",
+    "tag": "Domain 4",
+    "type": "multi",
+    "stem": "Which TWO statements about preparing and visualizing data for LLM training are correct? (Select TWO.)",
+    "options": [
+      "GPU-accelerated dataframe libraries such as cuDF can bring large-dataset visual exploration down to subsecond, interactive speeds on datasets with hundreds of millions of rows.",
+      "Semantic deduplication using embeddings and clustering can catch conceptually redundant documents that differ in wording, which exact hash-based deduplication would miss.",
+      "Exact hash-based deduplication is sufficient on its own to catch every form of duplication, including documents that are conceptually similar but worded differently.",
+      "Once a dataset exceeds roughly 2 GB, CPU-based pandas workflows always visualize just as fast as GPU-accelerated ones, so GPU acceleration provides no benefit.",
+      "Fuzzy deduplication using MinHash is designed to catch documents that are conceptually similar but use completely different wording, making semantic deduplication redundant."
+    ],
+    "correct": [
+      0,
+      1
+    ],
+    "explanation": "<b>GPU-accelerated dataframes</b> such as cuDF are exactly what let interactive visualization stay at subsecond speeds even across hundreds of millions of rows, avoiding the delays that disrupt exploratory analysis. <b>Semantic deduplication</b> specifically targets conceptually similar content that differs in wording, something exact hash-based deduplication cannot catch since it only matches byte-identical documents. Exact deduplication alone therefore is not sufficient for near-duplicate or semantically similar content, and NVIDIA's own case studies show CPU-based pandas becoming a bottleneck well before GPU-accelerated equivalents do as datasets grow past a couple of gigabytes. Fuzzy deduplication with MinHash targets near-duplicates with minor edits, not documents that are conceptually similar but worded completely differently, so it does not make semantic deduplication redundant.",
+    "difficulty": "hard",
+    "docUrl": "https://developer.nvidia.com/blog/accelerated-data-analytics-a-guide-to-data-visualization-with-rapids/",
+    "id": "ncagenl-0045"
   }
 ]
