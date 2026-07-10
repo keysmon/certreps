@@ -631,5 +631,197 @@
     "difficulty": "medium",
     "docUrl": "https://cloud.google.com/speech-to-text",
     "id": "gcpgl-0033"
+  },
+  {
+    "domain": "Techniques to improve gen AI model output",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A legal assistant tool built on a foundation model confidently cites a court case that does not exist. Which foundation model limitation does this illustrate?",
+    "options": [
+      "Hallucination, where a model generates plausible-sounding but factually incorrect or fabricated content.",
+      "Overfitting, where a model memorizes its training data too precisely to generalize.",
+      "Latency, the delay between sending a request and receiving a response.",
+      "Quantization, a technique that reduces a model's numeric precision to save memory."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Hallucination</b> is when a foundation model produces content that sounds plausible and confident but is factually incorrect or entirely fabricated, such as citing a court case that does not exist. Overfitting describes a training-time problem with generalization, not a runtime output limitation. Latency is about response speed. Quantization is a model-compression technique unrelated to factual accuracy.",
+    "difficulty": "easy",
+    "docUrl": "https://cloud.google.com/discover/what-is-hallucination-ai",
+    "id": "gcpgl-0034"
+  },
+  {
+    "domain": "Techniques to improve gen AI model output",
+    "tag": "Domain 3",
+    "type": "multi",
+    "stem": "A team's gen AI assistant sometimes gives outdated or ungrounded answers about company policy. Which TWO Google Cloud-recommended practices directly help address this kind of limitation? (Select TWO.)",
+    "options": [
+      "Increasing the model's image generation resolution.",
+      "Grounding the model's responses in the company's own current policy documents, such as through retrieval-augmented generation (RAG).",
+      "Disabling all safety settings to let the model respond faster.",
+      "Adding a human-in-the-loop (HITL) review step for high-stakes or uncertain answers before they reach the end user.",
+      "Switching the billing account to a higher spending tier."
+    ],
+    "correct": [
+      1,
+      3
+    ],
+    "explanation": "<b>Grounding</b> responses in current, authoritative source documents through <b>RAG</b>, and adding <b>human-in-the-loop (HITL)</b> review for high-stakes or uncertain outputs, are both Google Cloud-recommended practices for addressing foundation model limitations such as outdated or ungrounded answers. Image resolution is irrelevant to a text policy assistant. Disabling safety settings would increase risk, not accuracy. Changing a billing tier has no effect on model grounding or accuracy.",
+    "difficulty": "hard",
+    "docUrl": "https://cloud.google.com/discover/what-is-rag",
+    "id": "gcpgl-0035"
+  },
+  {
+    "domain": "Techniques to improve gen AI model output",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "Months after deployment, a gen AI model's output quality quietly degrades as real-world inputs shift away from the patterns seen during training. Which Google-recommended practice is designed to catch this kind of change over time?",
+    "options": [
+      "Prompt chaining, which links multiple prompts together to complete a multi-step task.",
+      "Drift monitoring, which tracks how incoming data or model performance shifts away from the patterns observed at training time.",
+      "Prompt tuning, which trains additional numeric parameters to steer a model's behavior.",
+      "Data labeling, which attaches target answers to training examples before training begins."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Drift monitoring</b> specifically tracks how incoming data, or the model's performance on it, shifts over time away from the patterns present during training, which is exactly the kind of gradual degradation described. Prompt chaining and prompt tuning are techniques for shaping model behavior at request time or through light training, not monitoring practices. Data labeling happens before training, not as an ongoing production monitoring practice.",
+    "difficulty": "medium",
+    "docUrl": "https://cloud.google.com/discover/what-is-model-monitoring",
+    "id": "gcpgl-0036"
+  },
+  {
+    "domain": "Techniques to improve gen AI model output",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A prompt asks a model to classify a customer message as 'billing', 'technical', or 'other' without providing any worked examples in the prompt. Which prompting technique is being used?",
+    "options": [
+      "Few-shot prompting, which provides several worked examples in the prompt before the actual task.",
+      "Fine-tuning, which retrains part of the model on labeled examples.",
+      "Zero-shot prompting, asking the model to perform a task with no examples provided in the prompt.",
+      "Chain-of-thought prompting, which asks the model to show intermediate reasoning steps."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Zero-shot prompting</b> asks a model to complete a task, such as classifying a message into a category, using only an instruction and no worked examples in the prompt. Few-shot prompting would include several labeled examples in the prompt itself, which is not described here. Fine-tuning changes the model through additional training rather than through the prompt alone. Chain-of-thought prompting asks for visible intermediate reasoning steps, a separate technique from providing zero, one, or a few examples.",
+    "difficulty": "easy",
+    "docUrl": "https://cloud.google.com/discover/what-is-zero-shot-learning",
+    "id": "gcpgl-0037"
+  },
+  {
+    "domain": "Techniques to improve gen AI model output",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "To improve accuracy on a multi-step word problem, a prompt engineer adds the instruction 'think step by step and show your reasoning before giving the final answer.' Which prompting technique is this?",
+    "options": [
+      "Role prompting, which asks the model to respond as if it were a specific persona or expert.",
+      "Prompt chaining, which feeds the output of one prompt as the input to a following prompt.",
+      "Grounding, which connects a model's response to an external, authoritative data source.",
+      "Chain-of-thought prompting, which asks the model to generate intermediate reasoning steps before producing a final answer."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Chain-of-thought prompting</b> explicitly asks a model to show its intermediate reasoning steps before the final answer, which tends to improve accuracy on multi-step problems. Role prompting asks the model to adopt a persona, not to show reasoning steps. Prompt chaining links separate prompts in sequence, feeding one's output into the next, a different technique from reasoning inside a single prompt. Grounding ties output to an external data source and is unrelated to visible step-by-step reasoning.",
+    "difficulty": "medium",
+    "docUrl": "https://cloud.google.com/discover/what-is-chain-of-thought-prompting",
+    "id": "gcpgl-0038"
+  },
+  {
+    "domain": "Techniques to improve gen AI model output",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "An agent needs to alternate between reasoning about what to do next and actually calling external tools, such as a search API, before producing a final answer. Which prompting technique combines reasoning steps with tool-use actions in this way?",
+    "options": [
+      "ReAct prompting, which interleaves reasoning steps with actions, such as external tool calls, in a repeating loop.",
+      "One-shot prompting, which provides exactly one worked example before the task.",
+      "Zero-shot prompting, which provides no worked examples before the task.",
+      "Role prompting, which assigns the model a persona to respond from."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>ReAct</b> (reason plus act) prompting interleaves explicit reasoning steps with actions, such as calling external tools or APIs, in a loop until the task is complete, which matches an agent that alternates between thinking and taking action. One-shot and zero-shot prompting describe how many examples are given, not whether the model takes external actions. Role prompting shapes tone and persona, not the reasoning-action loop.",
+    "difficulty": "hard",
+    "docUrl": "https://cloud.google.com/discover/what-is-react-prompting",
+    "id": "gcpgl-0039"
+  },
+  {
+    "domain": "Techniques to improve gen AI model output",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A retailer wants its gen AI assistant's answers about current inventory levels to be based on the retailer's own live inventory database, rather than the general knowledge baked into the model during training. Which concept describes connecting the model's output to this specific, current, first-party data source?",
+    "options": [
+      "Quantization, which reduces the numeric precision of a model to save memory.",
+      "Grounding, which connects a model's generated output to a specific, verifiable data source rather than relying only on its trained-in knowledge.",
+      "Tokenization, which splits text into smaller units for the model to process.",
+      "Distillation, which trains a smaller model to mimic a larger one."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Grounding</b> connects a model's output to a specific, verifiable data source, such as the retailer's own first-party inventory database, rather than relying solely on the general knowledge the model learned during training. Grounding can use first-party enterprise data, third-party data, or broader world data, depending on the use case. Quantization and distillation are model-compression techniques, and tokenization is how text is broken into processable units; none of these connects output to a live data source.",
+    "difficulty": "easy",
+    "docUrl": "https://cloud.google.com/discover/what-is-grounding-in-ai",
+    "id": "gcpgl-0040"
+  },
+  {
+    "domain": "Techniques to improve gen AI model output",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A gen AI application needs its answers about very recent, publicly available news events to be grounded in up-to-date web results, rather than the model's fixed training data. Which Google Cloud grounding offering is designed for this?",
+    "options": [
+      "Prebuilt RAG with Agent Search, which grounds responses in a business's own indexed data, not the public web.",
+      "RAG APIs used only for internal HR documents.",
+      "Grounding with Google Search, which connects a model's responses to current, publicly available information from Google Search results.",
+      "Agent Development Kit, a code-first framework for building custom agents."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Grounding with Google Search</b> connects a model's output to current, public information available through Google Search, which fits a need for up-to-date public news grounding. Prebuilt RAG with Agent Search and RAG APIs are designed to ground responses in a business's own indexed or internal data, not live public search results. The Agent Development Kit is a framework for building agents, not a grounding data source.",
+    "difficulty": "medium",
+    "docUrl": "https://cloud.google.com/discover/grounding-with-google-search",
+    "id": "gcpgl-0041"
+  },
+  {
+    "domain": "Techniques to improve gen AI model output",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A team wants a gen AI model's responses to be more deterministic and focused, choosing the highest-probability next word more consistently, rather than more varied and creative. Which sampling parameter should they lower?",
+    "options": [
+      "Token count, the maximum number of tokens the model can process or generate.",
+      "Top-p (nucleus sampling), which restricts the candidate pool of next tokens to a cumulative probability threshold, a different lever from temperature.",
+      "Context window, the amount of input text the model can consider at once.",
+      "Temperature, which controls how random or deterministic the model's word choices are; lowering it makes output more focused and predictable."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Temperature</b> controls how randomly the model samples from its probability distribution over possible next tokens; lowering temperature toward zero makes the model choose the highest-probability token more consistently, producing more focused, deterministic output. Token count limits length, not randomness. Top-p restricts the candidate pool by cumulative probability, a related but distinct sampling lever from temperature. Context window is about how much input the model can consider, not about output randomness.",
+    "difficulty": "easy",
+    "docUrl": "https://cloud.google.com/discover/what-is-temperature-in-ai",
+    "id": "gcpgl-0042"
+  },
+  {
+    "domain": "Techniques to improve gen AI model output",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A model's sampling settings include a parameter that restricts word choice to the smallest set of next-word candidates whose combined probability crosses a threshold, such as 0.9, rather than considering every possible token. Which parameter is this?",
+    "options": [
+      "Temperature, which reshapes how sharply the probability distribution favors the most likely token.",
+      "Output length, which caps the number of tokens generated in the response.",
+      "Top-p (nucleus sampling), which selects from the smallest set of candidate tokens whose cumulative probability meets a chosen threshold.",
+      "Safety settings, which filter or block certain categories of harmful content."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Top-p</b>, or nucleus sampling, restricts token selection to the smallest set of candidates whose cumulative probability meets a chosen threshold, such as 0.9, which is exactly the mechanism described. Temperature reshapes the sharpness of the probability distribution itself rather than restricting the candidate set by cumulative probability. Output length caps how many tokens are generated, and safety settings filter harmful content categories; neither controls the candidate token pool by cumulative probability.",
+    "difficulty": "medium",
+    "docUrl": "https://cloud.google.com/discover/nucleus-sampling",
+    "id": "gcpgl-0043"
   }
 ]
