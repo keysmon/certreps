@@ -54,6 +54,13 @@ qualifier the stem asks for. Underline it mentally before you read option A.
 | Cross-lingual text embeddings from one model | Cohere Embed Multilingual | maps many languages into one shared vector space |
 | Image-plus-text embeddings | Amazon Titan Multimodal Embeddings | shared space for text-to-image and image-to-image search |
 
+### Q Business vs. Q Developer
+
+| Need | Service |
+|---|---|
+| Non-technical employees ask natural-language questions over enterprise content (SharePoint, Salesforce, Slack) and want cited answers with minimal build effort | Amazon Q Business |
+| Developers want an IDE assistant that explains and refactors code, implements features from prompts, and automates AWS config and language-version upgrades | Amazon Q Developer |
+
 ### The customization ladder
 
 Climb only as far as the requirement forces you: **prompt engineering, then RAG, then
@@ -87,6 +94,18 @@ fine-tuning, then continued pre-training.**
 | Provisioned Throughput | high, steady, predictable utilization; still required to serve a Claude fine-tune |
 | Batch inference | large, non-urgent, asynchronous jobs at a discounted price; never the answer for interactive chat |
 
+On-demand invocation also takes a `service_tier` request parameter, independent of the modes above:
+
+| service_tier | Best for |
+|---|---|
+| priority | customer-facing, latency-critical traffic; served ahead of standard and flex |
+| standard (default) | routine traffic with no special latency or cost need |
+| flex | large, delay-tolerant jobs (bulk summarization, non-urgent generation); discounted price for longer processing, still a synchronous call |
+| reserved | mission-critical, always-on capacity backed by a token-per-minute capacity reservation |
+
+Swapping priority and flex is the classic trap: it slows the latency-critical workload and pays a
+premium for the delay-tolerant one.
+
 ### AgentCore primitives
 
 | Primitive | Job |
@@ -96,6 +115,7 @@ fine-tuning, then continued pre-training.**
 | Policy | evaluates every tool call at the Gateway boundary against Cedar or natural-language rules, regardless of how the agent is prompted |
 | Memory | short-term memory holds turn-by-turn context within a session; long-term memory extracts and persists facts across separate sessions |
 | Identity | gives each agent its own identity, integrates with your IdP (Cognito, Okta, Entra ID), and authenticates outbound to third-party services |
+| Built-in tools | Code Interpreter runs agent-written code in a secure sandbox (numeric analysis, chart generation from CSVs); Browser gives the agent a managed cloud browser to log in, navigate, and fill forms on sites with no API |
 | Observability | emits OpenTelemetry traces to CloudWatch showing reasoning, tool calls, and step inputs/outputs |
 
 One date to remember: the original Bedrock Agents (now **Agents Classic**) is **closed to new
@@ -119,21 +139,29 @@ matching domain guide.
 4. **Knowledge Bases vs. AgentCore Memory** - Knowledge Bases retrieve external document facts
    for RAG; AgentCore Memory holds conversation and user state (short-term within a session,
    long-term across sessions).
-5. **Geography-scoped inference profiles** - an EU-scoped (or other geography-scoped) inference
-   profile keeps cross-Region routing inside that geography for data-residency requirements;
-   disabling cross-Region routing entirely is the other lever.
+5. **Geo-scoped vs. Global cross-Region profiles** - a system-defined cross-Region profile absorbs
+   traffic bursts by auto-routing across Regions with no app-side failover; a Geo-scoped profile
+   (for example EU) confines that routing to one geography for residency (verify its destination
+   Regions via the model's Regional table or GetInferenceProfile), while a Global-scoped profile
+   spans all commercial Regions and fails a residency requirement.
 6. **Prompt caching placement** - the checkpoint goes after the static prefix and before the
    variable question; content before the checkpoint is what gets cached and discounted.
 7. **Guardrail versions** - iterate on the working draft, publish and test a numbered version,
    point production at a specific version, and roll back instantly by repointing.
-8. **Prompt Management** - stores and versions prompts, but does not itself evaluate quality or
-   block a regression; that requires a golden-dataset CI gate.
+8. **Prompt Management versions vs. Flows aliases** - Prompt Management has no alias concept:
+   publish an immutable numbered version and point production at that version, not the
+   ever-changing draft. Bedrock Flows, one level up, does have aliases - a stable endpoint you
+   repoint across published flow versions with no app-code change. Neither evaluates quality;
+   that still needs a golden-dataset CI gate.
 9. **Automatic vs. LLM-judge vs. human evaluation** - automatic reference-based metrics
    (BERTScore, F1) need gold answers and miss nuance; LLM-as-a-judge scores nuanced dimensions
    automatically at scale on every release; human evaluation is for subjective, high-stakes,
    regulated sign-off (brand voice, legal tone).
-10. **Lexical vs. semantic retrieval** - BM25 is lexical (keyword) matching, not semantic;
-    Knowledge Bases embedding-based retrieval is semantic.
+10. **Lexical vs. semantic vs. hybrid retrieval** - BM25 is lexical (keyword) matching, not
+    semantic; Knowledge Bases embedding-based retrieval is semantic; hybrid search blends both by
+    adding a keyword/BM25-capable index (for example on OpenSearch Serverless) alongside the
+    vector field and setting the query's search type to hybrid, needed when exact terms like SKUs
+    must count too.
 11. **Interface VPC endpoint vs. the public path** - an interface VPC endpoint (PrivateLink)
     keeps Bedrock traffic off the public internet; a NAT gateway still uses the public path.
 12. **SCP vs. IAM condition key for model governance** - an Organizations SCP enforces an
@@ -166,6 +194,24 @@ matching domain guide.
 20. **ValidationException vs. ThrottlingException** - Validation is a fixed constraint (for
     example a prompt that exceeds the context window) that retries will never fix; Throttling is
     transient and calls for exponential backoff with jitter.
+21. **ToolChoice forcing** - the `tool` member forces one named tool every turn, but AWS documents
+    specific-tool forcing as supported only by Anthropic Claude 3 and Amazon Nova models, so
+    confirm the model family first; `any` only guarantees some tool is called, not a specific one,
+    and `auto` (the default) leaves the choice to the model.
+22. **GuardDuty's Bedrock-specific findings** - foundational threat detection reads CloudTrail
+    management events with no custom rules needed, surfacing a "suspicious Bedrock model
+    invocation" finding (a credential calling models it has no reason to) and a "disabled Bedrock
+    invocation logging" finding (an attacker covering tracks); neither needs VPC Flow Logs or S3
+    access logging.
+23. **Guardrails PII: inputAction vs. outputAction** - a single sensitive-information entity type
+    can be configured independently per direction, for example BLOCK on input and ANONYMIZE (mask)
+    on output for the same phone-number entity type; that is a different lever from discriminator
+    3's ApplyGuardrail-on-input-plus-guardrailConfig-on-output pattern, which is about which API
+    screens which direction, not per-entity action.
+24. **Q Business vs. Q Developer** - Q Business is the managed assistant for non-technical
+    employees asking over enterprise content (SharePoint, Salesforce, Slack) with citations; Q
+    Developer is the IDE-embedded assistant for engineers who explain, refactor, and upgrade code.
+    Same "Amazon Q" family, opposite audience - do not swap them.
 
 ## Common traps
 
