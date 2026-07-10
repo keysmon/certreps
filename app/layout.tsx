@@ -28,9 +28,18 @@ export const metadata: Metadata = {
     "Free, original, deeply-explained practice exams for IT certifications. No signup required.",
 };
 
+// Applied before first paint so a light-theme device never flashes dark. Inert for the default
+// (dark) case - dark carries no attribute, so an empty/absent preference does nothing. Mirrors
+// lib/theme.applyTheme exactly (only "light" sets the attribute). suppressHydrationWarning on
+// <html> below covers the attribute this adds ahead of React hydrating the element.
+const NO_FLASH_THEME = `try{if(localStorage.getItem('certreps.theme')==='light')document.documentElement.setAttribute('data-theme','light')}catch(e){}`;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${bricolage.variable} ${jetbrainsMono.variable}`}>
+    <html lang="en" className={`${bricolage.variable} ${jetbrainsMono.variable}`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: NO_FLASH_THEME }} />
+      </head>
       <body>
         <AuthButton />
         {children}
