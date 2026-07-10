@@ -7,6 +7,15 @@ describe("cert registry", () => {
     expect(listCerts().map((c) => c.certId)).toEqual(["aip-c01", "mla-c01", "saa-c03", "clf-c02", "dva-c02", "sap-c02", "dea-c01", "soa-c03", "dop-c02", "scs-c03", "aif-c01", "ans-c01"]);
   });
 
+  // URL-compat invariant: every existing cert routes under /aws/* (vendorSlug "aws"). The
+  // vendor route refactor (v1g Task A) keys routing + VENDORS lookups off vendorSlug, so a
+  // drift here would silently move an indexed /aws/<cert> URL to a new vendor segment.
+  it("routes every existing cert under the aws vendor slug", () => {
+    for (const meta of listCerts()) {
+      expect(meta.vendorSlug).toBe("aws");
+    }
+  });
+
   it("getCert returns the entry for a known cert", () => {
     const entry = getCert("aip-c01");
     expect(entry).not.toBeNull();

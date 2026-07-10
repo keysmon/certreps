@@ -2,6 +2,7 @@
   "certId": "dva-c02",
   "idPrefix": "dvac02",
   "vendor": "AWS",
+  "vendorSlug": "aws",
   "title": "AWS Certified Developer - Associate",
   "examCode": "DVA-C02",
   "level": "Associate",

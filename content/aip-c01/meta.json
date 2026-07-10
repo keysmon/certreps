@@ -2,6 +2,7 @@
   "certId": "aip-c01",
   "idPrefix": "aipc01",
   "vendor": "AWS",
+  "vendorSlug": "aws",
   "title": "AWS Certified Generative AI Developer - Professional",
   "examCode": "AIP-C01",
   "level": "Professional",

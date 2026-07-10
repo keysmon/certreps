@@ -2,6 +2,7 @@
   "certId": "mla-c01",
   "idPrefix": "mlac01",
   "vendor": "AWS",
+  "vendorSlug": "aws",
   "title": "AWS Certified Machine Learning Engineer - Associate",
   "examCode": "MLA-C01",
   "level": "Associate",

@@ -2,6 +2,7 @@
   "certId": "ans-c01",
   "idPrefix": "ansc01",
   "vendor": "AWS",
+  "vendorSlug": "aws",
   "title": "AWS Certified Advanced Networking - Specialty",
   "examCode": "ANS-C01",
   "level": "Specialty",

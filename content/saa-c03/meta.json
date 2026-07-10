@@ -2,6 +2,7 @@
   "certId": "saa-c03",
   "idPrefix": "saac03",
   "vendor": "AWS",
+  "vendorSlug": "aws",
   "title": "AWS Certified Solutions Architect - Associate",
   "examCode": "SAA-C03",
   "level": "Associate",

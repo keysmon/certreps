@@ -2,6 +2,7 @@
   "certId": "dea-c01",
   "idPrefix": "deac01",
   "vendor": "AWS",
+  "vendorSlug": "aws",
   "title": "AWS Certified Data Engineer - Associate",
   "examCode": "DEA-C01",
   "level": "Associate",

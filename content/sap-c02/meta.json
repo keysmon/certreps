@@ -2,6 +2,7 @@
   "certId": "sap-c02",
   "idPrefix": "sapc02",
   "vendor": "AWS",
+  "vendorSlug": "aws",
   "title": "AWS Certified Solutions Architect - Professional",
   "examCode": "SAP-C02",
   "level": "Professional",

@@ -2,6 +2,7 @@
   "certId": "soa-c03",
   "idPrefix": "soac03",
   "vendor": "AWS",
+  "vendorSlug": "aws",
   "title": "AWS Certified CloudOps Engineer - Associate",
   "examCode": "SOA-C03",
   "level": "Associate",

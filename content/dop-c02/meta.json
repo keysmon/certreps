@@ -2,6 +2,7 @@
   "certId": "dop-c02",
   "idPrefix": "dopc02",
   "vendor": "AWS",
+  "vendorSlug": "aws",
   "title": "AWS Certified DevOps Engineer - Professional",
   "examCode": "DOP-C02",
   "level": "Professional",

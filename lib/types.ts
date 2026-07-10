@@ -24,7 +24,11 @@ export interface DomainMeta {
 
 export interface CertMeta {
   certId: string;
+  // Display name ("AWS", "Google Cloud") - kept for display/back-compat fallback.
   vendor: string;
+  // Routing segment AND VENDORS lookup key (lowercase slug, e.g. "aws"). The cert's
+  // canonical URL is /[vendorSlug]/[certId]; every VENDORS color/name lookup keys off this.
+  vendorSlug: string;
   title: string;
   examCode: string;
   level: string;

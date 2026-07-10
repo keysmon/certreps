@@ -2,6 +2,7 @@
   "certId": "scs-c03",
   "idPrefix": "scsc03",
   "vendor": "AWS",
+  "vendorSlug": "aws",
   "title": "AWS Certified Security - Specialty",
   "examCode": "SCS-C03",
   "level": "Specialty",

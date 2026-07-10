@@ -2,6 +2,7 @@
   "certId": "clf-c02",
   "idPrefix": "clfc02",
   "vendor": "AWS",
+  "vendorSlug": "aws",
   "title": "AWS Certified Cloud Practitioner",
   "examCode": "CLF-C02",
   "level": "Foundational",

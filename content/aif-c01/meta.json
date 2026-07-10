@@ -2,6 +2,7 @@
   "certId": "aif-c01",
   "idPrefix": "aifc01",
   "vendor": "AWS",
+  "vendorSlug": "aws",
   "title": "AWS Certified AI Practitioner",
   "examCode": "AIF-C01",
   "level": "Foundational",
