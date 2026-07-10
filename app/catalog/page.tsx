@@ -16,6 +16,7 @@ export default function CatalogPage() {
   const certs: CatalogCert[] = listCerts().map((m) => ({
     certId: m.certId,
     vendor: m.vendor,
+    vendorSlug: m.vendorSlug,
     title: m.title,
     examCode: m.examCode,
     level: m.level,

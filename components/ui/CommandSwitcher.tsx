@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { listCerts } from "@/lib/certs";
+import { certPath } from "@/lib/routes";
 import { VENDORS } from "@/components/ui/VendorDot";
 import { progressView } from "@/lib/progress-view";
 import { listAttempts } from "@/lib/storage";
@@ -15,6 +16,7 @@ const RETURN = String.fromCharCode(8629); // U+21B5 carriage return arrow
 
 interface SwitcherItem {
   certId: string;
+  vendorSlug: string;
   title: string;
   vendorLabel: string;
   examCode: string;
@@ -28,11 +30,11 @@ interface ProgressEntry {
   hasProgress: boolean;
 }
 
-function vendorColor(vendor: string): string {
-  return VENDORS[vendor.toLowerCase()]?.c ?? "var(--gold)";
+function vendorColor(slug: string): string {
+  return VENDORS[slug]?.c ?? "var(--gold)";
 }
-function vendorLabel(vendor: string): string {
-  return VENDORS[vendor.toLowerCase()]?.n ?? vendor;
+function vendorLabel(slug: string): string {
+  return VENDORS[slug]?.n ?? slug;
 }
 
 /**
@@ -133,10 +135,11 @@ export function CommandSwitcher() {
   const items = useMemo<SwitcherItem[]>(() => {
     const all: SwitcherItem[] = registry.map((m) => ({
       certId: m.certId,
+      vendorSlug: m.vendorSlug,
       title: m.title,
-      vendorLabel: vendorLabel(m.vendor),
+      vendorLabel: vendorLabel(m.vendorSlug),
       examCode: m.examCode,
-      color: vendorColor(m.vendor),
+      color: vendorColor(m.vendorSlug),
       pct: progressByCert[m.certId]?.pct ?? 0,
       hasProgress: progressByCert[m.certId]?.hasProgress ?? false,
     }));
@@ -170,7 +173,7 @@ export function CommandSwitcher() {
       const it = rows[i];
       if (!it) return;
       closeSwitcher();
-      router.push(`/aws/${it.certId}`);
+      router.push(certPath(it));
     },
     [rows, router, closeSwitcher],
   );
@@ -228,7 +231,7 @@ export function CommandSwitcher() {
       >
         <span className="sw-sr">Switch certification</span>
         {triggerCert && (
-          <span className="sw-vd" style={{ background: vendorColor(triggerCert.vendor) }} aria-hidden="true" />
+          <span className="sw-vd" style={{ background: vendorColor(triggerCert.vendorSlug) }} aria-hidden="true" />
         )}
         <span className="sw-trigger-text">
           <span className="sw-tname">{triggerCert?.title ?? "Certifications"}</span>

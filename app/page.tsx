@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { listCerts, getCert } from "@/lib/certs";
+import { certPath } from "@/lib/routes";
 import { CertCard } from "@/components/ui/CertCard";
 import { TopNav } from "@/components/ui/TopNav";
 import "./landing.css";
@@ -97,7 +98,7 @@ export default function Home() {
               <CertCard
                 key={meta.certId}
                 meta={meta}
-                href={`/aws/${meta.certId}`}
+                href={certPath(meta)}
                 questions={getCert(meta.certId)?.bank.length}
                 style={{ height: "100%" }}
               />

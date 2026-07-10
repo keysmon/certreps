@@ -9,7 +9,7 @@ const ARROW = String.fromCharCode(8594); // U+2192 rightwards arrow
 
 export interface CertCardProps {
   /** The card is typed against OUR CertMeta, not the prototype's cert shape. */
-  meta: Pick<CertMeta, "certId" | "vendor" | "examCode" | "title" | "level">;
+  meta: Pick<CertMeta, "certId" | "vendor" | "vendorSlug" | "examCode" | "title" | "level">;
   /** Real navigation target - the card is an anchor, not a clickable div. */
   href: string;
   /** Readiness percent from local progress; > 0 flips the footer to Resume. */
@@ -20,10 +20,9 @@ export interface CertCardProps {
 }
 
 export function CertCard({ meta, href, progress = 0, questions, style = {} }: CertCardProps) {
-  // vendor values are human-readable ("AWS"); the VENDORS map is keyed by lowercase
-  // slug. Normalize to look up the accent, falling back to gold + the raw string for
-  // vendors not yet in the map (only AWS ships live content today).
-  const vendor = VENDORS[meta.vendor.toLowerCase()];
+  // VENDORS is keyed by vendorSlug (the routing key); the display name comes from the map,
+  // falling back to gold + the human-readable meta.vendor for a slug not yet in the map.
+  const vendor = VENDORS[meta.vendorSlug];
   const accent = vendor?.c ?? "var(--gold)";
   const vendorName = vendor?.n ?? meta.vendor;
 

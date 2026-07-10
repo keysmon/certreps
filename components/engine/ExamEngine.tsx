@@ -10,6 +10,7 @@ import { Timer } from "./Timer";
 import { Results } from "./Results";
 import { ReviewMap } from "./ReviewMap";
 import { VendorDot, VENDORS } from "@/components/ui/VendorDot";
+import { certPath } from "@/lib/routes";
 import "./engine.css";
 
 const QUICK_N = 10;
@@ -200,7 +201,7 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId }: { certId?:
       <div className="stage">
         <div className="card">
           <p>{mode === "retry" ? "No missed questions yet - take a practice run first." : "No questions available."}</p>
-          <a className="btn btn-ghost" href={`/aws/${meta.certId}`}>Back to {meta.examCode}</a>
+          <a className="btn btn-ghost" href={certPath(meta)}>Back to {meta.examCode}</a>
         </div>
       </div>
     );
@@ -238,7 +239,7 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId }: { certId?:
       streak = res.correct ? streak + 1 : 0;
     }
   }
-  const vendorColor = VENDORS[meta.vendor.toLowerCase()]?.c ?? "var(--gold)";
+  const vendorColor = VENDORS[meta.vendorSlug]?.c ?? "var(--gold)";
   // Honest mode descriptions (design idiom) - the mock note names the blueprint bias + late reveal.
   const modeNote = isMock
     ? `Mock exam ${MIDDOT} mix follows the exam blueprint ${MIDDOT} explanations at the end`
@@ -273,7 +274,7 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId }: { certId?:
             onPause={handlePause}
           />
         </span>
-        <a className="exit" href={`/aws/${meta.certId}`}>Exit {TIMES}</a>
+        <a className="exit" href={certPath(meta)}>Exit {TIMES}</a>
       </div>
 
       <div className="stage">

@@ -5,6 +5,7 @@ import type { Attempt } from "@/lib/types";
 import { getAttempt } from "@/lib/storage";
 import { getMeta } from "@/lib/bank";
 import { getCert } from "@/lib/certs";
+import { certPath, practicePath } from "@/lib/routes";
 import { questionsByIds } from "@/lib/sampler";
 import { Results } from "@/components/engine/Results";
 
@@ -38,7 +39,7 @@ export function ReviewPastClient({ id }: { id: string }) {
           <Link className="btn btn-primary" href="/account">
             Your account
           </Link>
-          <Link className="btn btn-ghost" href={`/aws/${meta.certId}`}>
+          <Link className="btn btn-ghost" href={certPath(meta)}>
             Back to {meta.examCode}
           </Link>
         </div>
@@ -69,7 +70,7 @@ export function ReviewPastClient({ id }: { id: string }) {
     // from another device renders the "not on this device" card above, never this resume link.
     const params = new URLSearchParams({ mode: attempt.mode, resume: attempt.attemptId });
     if (attempt.domain) params.set("domain", attempt.domain);
-    const resumeHref = `/aws/${meta.certId}/practice?${params.toString()}`;
+    const resumeHref = `${practicePath(meta)}?${params.toString()}`;
     return (
       <div className="card">
         <p style={{ margin: "0 0 14px" }}>This attempt is still in progress.</p>

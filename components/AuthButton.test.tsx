@@ -131,4 +131,29 @@ describe("AuthButton", () => {
     const { container } = render(<AuthButton />);
     expect(container).toBeEmptyDOMElement();
   });
+
+  // Post-vendor-refactor: suppression is generic over the known vendor slugs, not hardcoded to /aws.
+  it("suppresses itself on a non-AWS vendor cert detail /<vendor>/<certId> (TopNav owns it)", () => {
+    mockedAvailable.mockReturnValue(true);
+    mockedGetSupabase.mockReturnValue(fakeClient(sessionWith("ada@example.com")));
+    mockedPathname.mockReturnValue("/databricks/genai-engineer");
+    const { container } = render(<AuthButton />);
+    expect(container).toBeEmptyDOMElement();
+  });
+
+  it("suppresses itself in a non-AWS vendor exam room /<vendor>/<certId>/practice", () => {
+    mockedAvailable.mockReturnValue(true);
+    mockedGetSupabase.mockReturnValue(fakeClient(sessionWith("ada@example.com")));
+    mockedPathname.mockReturnValue("/nvidia/nca-genl/practice");
+    const { container } = render(<AuthButton />);
+    expect(container).toBeEmptyDOMElement();
+  });
+
+  it("still renders on a non-vendor two-segment path (suppression is anchored to real vendor slugs)", async () => {
+    mockedAvailable.mockReturnValue(true);
+    mockedGetSupabase.mockReturnValue(fakeClient(sessionWith("ada@example.com")));
+    mockedPathname.mockReturnValue("/guides/aip-c01");
+    render(<AuthButton />);
+    expect(await screen.findByText("ada@example.com")).toBeInTheDocument();
+  });
 });

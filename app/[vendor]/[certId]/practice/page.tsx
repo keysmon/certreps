@@ -5,23 +5,23 @@ import { getCert, listCerts } from "@/lib/certs";
 import { PracticeClient } from "./PracticeClient";
 
 export function generateStaticParams() {
-  return listCerts().map((c) => ({ certId: c.certId }));
+  return listCerts().map((c) => ({ vendor: c.vendorSlug, certId: c.certId }));
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ certId: string }> }): Promise<Metadata> {
-  const { certId } = await params;
+export async function generateMetadata({ params }: { params: Promise<{ vendor: string; certId: string }> }): Promise<Metadata> {
+  const { vendor, certId } = await params;
   const cert = getCert(certId);
-  if (!cert) return {};
+  if (!cert || cert.meta.vendorSlug !== vendor) return {};
   return {
     title: `${cert.meta.examCode} Practice Session`,
     robots: { index: false }, // interactive question pages are not indexed (spec)
   };
 }
 
-export default async function PracticePage({ params }: { params: Promise<{ certId: string }> }) {
-  const { certId } = await params;
+export default async function PracticePage({ params }: { params: Promise<{ vendor: string; certId: string }> }) {
+  const { vendor, certId } = await params;
   const cert = getCert(certId);
-  if (!cert) notFound();
+  if (!cert || cert.meta.vendorSlug !== vendor) notFound();
   // No .container width clamp here: the practice surface owns its chrome - a full-bleed sticky exam
   // bar plus a self-centering 860px stage (see ExamEngine / engine.css). The narrow container would
   // fight both.

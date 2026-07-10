@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { ScoreRing } from "@/components/ui/ScoreRing";
 import { domainReadiness, progressView } from "@/lib/progress-view";
+import { practicePath } from "@/lib/routes";
 import type { Verdict } from "@/lib/readiness";
 import { getInProgress } from "@/lib/storage";
 import type { Attempt } from "@/lib/types";
@@ -44,13 +45,13 @@ export interface HeroDomain {
  * that mirrors the design's own primary+ghost-share-a-mode emphasis pattern (its
  * cta-practice and cta-drill both point at mode=drill). When resuming, the two diverge.
  */
-export function HeroCtas({ certId, mockMinutes }: { certId: string; mockMinutes: number }) {
+export function HeroCtas({ certId, vendorSlug, mockMinutes }: { certId: string; vendorSlug: string; mockMinutes: number }) {
   const [attempt, setAttempt] = useState<Attempt | null>(null);
   useEffect(() => {
     setAttempt(getInProgress(certId));
   }, [certId]);
 
-  const base = `/aws/${certId}/practice`;
+  const base = practicePath({ vendorSlug, certId });
   let primaryHref = `${base}?mode=quick`;
   let primaryLabel = "Start practicing";
   let resumeLine: string | null = null;
@@ -91,10 +92,12 @@ export function HeroCtas({ certId, mockMinutes }: { certId: string; mockMinutes:
  */
 export function DomainRows({
   certId,
+  vendorSlug,
   passLinePct,
   domains,
 }: {
   certId: string;
+  vendorSlug: string;
   passLinePct: number;
   domains: HeroDomain[];
 }) {
@@ -110,7 +113,7 @@ export function DomainRows({
         const pct = read?.pct ?? 0;
         const color = read ? VERDICT_COLOR[read.verdict] : "var(--faint)";
         const word = read ? VERDICT_WORD[read.verdict] : "Not started";
-        const href = `/aws/${certId}/practice?mode=drill&domain=${encodeURIComponent(d.name)}`;
+        const href = `${practicePath({ vendorSlug, certId })}?mode=drill&domain=${encodeURIComponent(d.name)}`;
         return (
           <Link key={d.name} href={href} className="cd-domain" aria-label={`Drill ${d.name}`}>
             <span className="cd-domain-idx">{i + 1}</span>

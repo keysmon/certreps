@@ -4,6 +4,7 @@ import type { Attempt, CertMeta } from "@/lib/types";
 import { getBank } from "@/lib/bank";
 import { gradeAttempt } from "@/lib/scoring";
 import { questionsByIds } from "@/lib/sampler";
+import { practicePath } from "@/lib/routes";
 
 const MODE_LABEL: Record<string, string> = {
   mock: "Full mock",
@@ -44,7 +45,7 @@ export function AttemptsList({ attempts, meta }: { attempts: Attempt[]; meta: Ce
         <p className="muted" style={{ margin: "0 0 14px" }}>
           No practice history yet - take a quick 10 to get started.
         </p>
-        <Link className="btn btn-primary" href={`/aws/${meta.certId}/practice?mode=quick`}>
+        <Link className="btn btn-primary" href={`${practicePath(meta)}?mode=quick`}>
           Quick 10
         </Link>
       </div>

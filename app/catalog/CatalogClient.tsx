@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { CertCard } from "@/components/ui/CertCard";
 import { VENDORS } from "@/components/ui/VendorDot";
+import { certPath } from "@/lib/routes";
 import { progressView, type CertStatus } from "@/lib/progress-view";
 import "./catalog.css";
 
@@ -18,6 +19,7 @@ const ENDASH = String.fromCharCode(8211); // U+2013 en dash (the "A-Z" range das
 export interface CatalogCert {
   certId: string;
   vendor: string;
+  vendorSlug: string;
   title: string;
   examCode: string;
   level: string;
@@ -38,11 +40,13 @@ const SORTS: { key: SortKey; label: string }[] = [
   { key: "new", label: "Newest" },
 ];
 
-function vendorName(vendor: string): string {
-  return VENDORS[vendor.toLowerCase()]?.n ?? vendor;
+// Keyed by vendorSlug (the facet identity + VENDORS key); the human display name comes from
+// the map, falling back to the slug for a vendor not yet registered in VENDORS.
+function vendorName(slug: string): string {
+  return VENDORS[slug]?.n ?? slug;
 }
-function vendorColor(vendor: string): string {
-  return VENDORS[vendor.toLowerCase()]?.c ?? "var(--gold)";
+function vendorColor(slug: string): string {
+  return VENDORS[slug]?.c ?? "var(--gold)";
 }
 function uniqueInOrder(values: string[]): string[] {
   return [...new Set(values)];
@@ -158,11 +162,11 @@ export function CatalogClient({ certs }: { certs: CatalogCert[] }) {
 
   const statusOf = (certId: string): Status => status[certId] ?? "Not started";
 
-  const vendorValues = useMemo(() => uniqueInOrder(certs.map((c) => c.vendor)), [certs]);
+  const vendorValues = useMemo(() => uniqueInOrder(certs.map((c) => c.vendorSlug)), [certs]);
   const levelValues = useMemo(() => uniqueInOrder(certs.map((c) => c.level)), [certs]);
 
   function valueOf(c: CatalogCert, dim: Dim): string {
-    if (dim === "vendor") return c.vendor;
+    if (dim === "vendor") return c.vendorSlug;
     if (dim === "level") return c.level;
     return statusOf(c.certId);
   }
@@ -175,11 +179,11 @@ export function CatalogClient({ certs }: { certs: CatalogCert[] }) {
   const filtered = useMemo(() => {
     const q = query.toLowerCase().trim();
     const base = certs.filter((c) => {
-      if (filters.vendor.length && !filters.vendor.includes(c.vendor)) return false;
+      if (filters.vendor.length && !filters.vendor.includes(c.vendorSlug)) return false;
       if (filters.level.length && !filters.level.includes(c.level)) return false;
       if (filters.status.length && !filters.status.includes(statusOf(c.certId))) return false;
       if (q) {
-        const hay = `${c.title} ${vendorName(c.vendor)} ${c.examCode}`.toLowerCase();
+        const hay = `${c.title} ${vendorName(c.vendorSlug)} ${c.examCode}`.toLowerCase();
         if (!hay.includes(q)) return false;
       }
       return true;
@@ -339,8 +343,8 @@ export function CatalogClient({ certs }: { certs: CatalogCert[] }) {
             {filtered.map((c, i) => (
               <div key={c.certId} className="ds-rise" style={{ animationDelay: `${Math.min(i * 28, 320)}ms` }}>
                 <CertCard
-                  meta={{ certId: c.certId, vendor: c.vendor, examCode: c.examCode, title: c.title, level: c.level }}
-                  href={`/aws/${c.certId}`}
+                  meta={{ certId: c.certId, vendor: c.vendor, vendorSlug: c.vendorSlug, examCode: c.examCode, title: c.title, level: c.level }}
+                  href={certPath(c)}
                   questions={c.questions}
                   progress={progress[c.certId] ?? 0}
                   style={{ height: "100%" }}

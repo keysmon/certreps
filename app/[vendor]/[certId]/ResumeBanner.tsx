@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { Attempt } from "@/lib/types";
 import { getInProgress } from "@/lib/storage";
 import { getMeta } from "@/lib/bank";
+import { practicePath } from "@/lib/routes";
 
 const MODE_LABEL: Record<string, string> = {
   quick: "Quick Practice",
@@ -33,7 +34,7 @@ export function ResumeBanner({ certId }: { certId?: string }) {
   const label = MODE_LABEL[attempt.mode] ?? attempt.mode;
   const params = new URLSearchParams({ mode: attempt.mode, resume: attempt.attemptId });
   if (attempt.domain) params.set("domain", attempt.domain); // drill carries its domain
-  const href = `/aws/${meta.certId}/practice?${params.toString()}`;
+  const href = `${practicePath(meta)}?${params.toString()}`;
 
   return (
     <div

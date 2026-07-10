@@ -8,6 +8,7 @@ import { getSupabase, supabaseAvailable } from "@/lib/supabase/client";
 import { fullSync } from "@/lib/sync-runtime";
 import { readAll, getInProgress } from "@/lib/storage";
 import { listCerts, getCert } from "@/lib/certs";
+import { certPath, practicePath } from "@/lib/routes";
 import { gradeAttempt } from "@/lib/scoring";
 import { questionsByIds } from "@/lib/sampler";
 import { progressView, domainReadiness } from "@/lib/progress-view";
@@ -26,11 +27,11 @@ const MODE_LABEL: Record<string, string> = {
   retry: "Retry missed",
 };
 
-function vendorColor(vendor: string): string {
-  return VENDORS[vendor.toLowerCase()]?.c ?? "var(--gold)";
+function vendorColor(slug: string): string {
+  return VENDORS[slug]?.c ?? "var(--gold)";
 }
-function vendorName(vendor: string): string {
-  return VENDORS[vendor.toLowerCase()]?.n ?? vendor;
+function vendorName(slug: string): string {
+  return VENDORS[slug]?.n ?? slug;
 }
 
 // Relative day/week stamp (matches the design's coarse buckets - exact times live on the replay page).
@@ -126,10 +127,10 @@ function computeView(attempts: Attempt[]): DashboardView {
 
     const inProg = getInProgress(certId);
     const resumeHref = inProg
-      ? `/aws/${certId}/practice?${resumeParams(inProg)}`
-      : `/aws/${certId}/practice?mode=quick`;
+      ? `${practicePath(meta)}?${resumeParams(inProg)}`
+      : `${practicePath(meta)}?mode=quick`;
     const drillHref = weakest
-      ? `/aws/${certId}/practice?mode=drill&domain=${encodeURIComponent(weakest.name)}`
+      ? `${practicePath(meta)}?mode=drill&domain=${encodeURIComponent(weakest.name)}`
       : null;
 
     cards.push({
@@ -182,7 +183,7 @@ function Stat({ v, l }: { v: string | number; l: string }) {
 }
 
 function ContinueCard({ card }: { card: CardView }) {
-  const accent = vendorColor(card.meta.vendor);
+  const accent = vendorColor(card.meta.vendorSlug);
   return (
     <div className="pg-ccard">
       <span className="accent" style={{ background: accent }} aria-hidden="true" />
@@ -190,7 +191,7 @@ function ContinueCard({ card }: { card: CardView }) {
       <div className="info">
         <div className="vn">
           <VendorDot color={accent} size={8} />
-          {vendorName(card.meta.vendor)} {MIDDOT} {card.meta.examCode}
+          {vendorName(card.meta.vendorSlug)} {MIDDOT} {card.meta.examCode}
         </div>
         <h3>{card.meta.title}</h3>
         <div className="sub">
@@ -205,7 +206,7 @@ function ContinueCard({ card }: { card: CardView }) {
               Drill weakest
             </Link>
           )}
-          <Link className="btn btn-ghost btn-sm" href={`/aws/${card.certId}`}>
+          <Link className="btn btn-ghost btn-sm" href={certPath(card.meta)}>
             Details
           </Link>
         </div>
@@ -215,7 +216,7 @@ function ContinueCard({ card }: { card: CardView }) {
 }
 
 function ActivityItem({ row }: { row: RecentRow }) {
-  const accent = vendorColor(row.meta.vendor);
+  const accent = vendorColor(row.meta.vendorSlug);
   const col = row.pct >= row.passLine ? "var(--emerald)" : row.pct >= 50 ? "var(--gold)" : "var(--rose)";
   return (
     <Link className="pg-act" href={`/account/attempts/${row.attemptId}`}>

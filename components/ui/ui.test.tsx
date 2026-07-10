@@ -15,11 +15,12 @@ import { OptionRow } from "./OptionRow";
 const CHECK = String.fromCharCode(10003); // U+2713
 const CROSS = String.fromCharCode(10007); // U+2717
 
-// A minimal CertMeta slice - the fields CertCard actually consumes. Real vendor
-// values are human-readable ("AWS"), not the lowercase VENDORS slug.
-const meta: Pick<CertMeta, "certId" | "vendor" | "examCode" | "title" | "level"> = {
+// A minimal CertMeta slice - the fields CertCard actually consumes. vendor is the
+// human-readable display name ("AWS"); vendorSlug ("aws") is the VENDORS lookup key.
+const meta: Pick<CertMeta, "certId" | "vendor" | "vendorSlug" | "examCode" | "title" | "level"> = {
   certId: "aip-c01",
   vendor: "AWS",
+  vendorSlug: "aws",
   examCode: "AIP-C01",
   title: "AWS Certified Generative AI Developer - Professional",
   level: "Professional",

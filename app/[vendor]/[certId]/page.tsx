@@ -5,6 +5,7 @@ import { Pill } from "@/components/ui/Pill";
 import { TopNav } from "@/components/ui/TopNav";
 import { VendorDot, VENDORS } from "@/components/ui/VendorDot";
 import { getCert, listCerts } from "@/lib/certs";
+import { certPath } from "@/lib/routes";
 import { listGuides } from "@/lib/guides";
 import { DomainRows, HeroCtas, ReadinessPanel } from "./CertDetailClient";
 import "./cert-detail.css";
@@ -15,13 +16,14 @@ const DOT = String.fromCharCode(183); // U+00B7 middle dot
 const EMDASH = String.fromCharCode(8212); // U+2014 em dash (verbatim in the design's section header)
 
 export function generateStaticParams() {
-  return listCerts().map((c) => ({ certId: c.certId }));
+  return listCerts().map((c) => ({ vendor: c.vendorSlug, certId: c.certId }));
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ certId: string }> }): Promise<Metadata> {
-  const { certId } = await params;
+export async function generateMetadata({ params }: { params: Promise<{ vendor: string; certId: string }> }): Promise<Metadata> {
+  const { vendor, certId } = await params;
   const cert = getCert(certId);
-  if (!cert) return {};
+  // One canonical URL per cert: a mismatched vendor segment yields no metadata (the page notFounds).
+  if (!cert || cert.meta.vendorSlug !== vendor) return {};
   const { meta } = cert;
   return {
     title: { absolute: meta.seoTitle },
@@ -36,20 +38,22 @@ const HOW = [
   { n: `03 ${DOT} Read your gaps`, p: "An honest readiness report that tells you exactly what to drill next." },
 ];
 
-export default async function CertPage({ params }: { params: Promise<{ certId: string }> }) {
-  const { certId } = await params;
+export default async function CertPage({ params }: { params: Promise<{ vendor: string; certId: string }> }) {
+  const { vendor, certId } = await params;
   const cert = getCert(certId);
-  if (!cert) notFound();
+  // One canonical URL per cert: /[vendor]/[certId] only serves when the segment matches the
+  // cert's own vendorSlug, so /gcp/aip-c01 (an alias to an AWS cert) 404s instead of duplicating.
+  if (!cert || cert.meta.vendorSlug !== vendor) notFound();
   const meta = cert.meta;
   const bankSize = cert.bank.length;
   const guides = listGuides(certId);
 
-  const vendor = VENDORS[meta.vendor.toLowerCase()];
-  const accent = vendor?.c ?? "var(--gold)";
-  const vendorName = vendor?.n ?? meta.vendor;
+  const vendorInfo = VENDORS[meta.vendorSlug];
+  const accent = vendorInfo?.c ?? "var(--gold)";
+  const vendorName = vendorInfo?.n ?? meta.vendor;
 
   // Same vendor, other certs -> compact "More in this track" rows to their detail pages.
-  const related = listCerts().filter((c) => c.vendor === meta.vendor && c.certId !== meta.certId);
+  const related = listCerts().filter((c) => c.vendorSlug === meta.vendorSlug && c.certId !== meta.certId);
 
   return (
     <div className="cd-glow">
@@ -76,7 +80,7 @@ export default async function CertPage({ params }: { params: Promise<{ certId: s
             Original scenario questions with real explanations, mapped to the official {meta.examCode} exam
             guide. Practice one domain at a time, or sit the full mock under exam timing.
           </p>
-          <HeroCtas certId={certId} mockMinutes={meta.mockMinutes} />
+          <HeroCtas certId={certId} vendorSlug={meta.vendorSlug} mockMinutes={meta.mockMinutes} />
         </header>
 
         <div className="cd-grid">
@@ -84,6 +88,7 @@ export default async function CertPage({ params }: { params: Promise<{ certId: s
             <h2 className="cd-section-h">Domains {EMDASH} practice any</h2>
             <DomainRows
               certId={certId}
+              vendorSlug={meta.vendorSlug}
               passLinePct={meta.passLinePct}
               domains={meta.domains.map((d) => ({ name: d.name, weightPct: d.weightPct }))}
             />
@@ -140,11 +145,11 @@ export default async function CertPage({ params }: { params: Promise<{ certId: s
             <h2 className="cd-section-h cd-related-h">More in this track</h2>
             <div className="cd-related">
               {related.map((c) => {
-                const rv = VENDORS[c.vendor.toLowerCase()];
+                const rv = VENDORS[c.vendorSlug];
                 const rAccent = rv?.c ?? "var(--gold)";
                 const rName = rv?.n ?? c.vendor;
                 return (
-                  <Link key={c.certId} href={`/aws/${c.certId}`} className="cd-related-row" aria-label={c.title}>
+                  <Link key={c.certId} href={certPath(c)} className="cd-related-row" aria-label={c.title}>
                     <VendorDot color={rAccent} size={9} />
                     <div className="cd-related-main">
                       <div className="cd-related-name">{c.title}</div>

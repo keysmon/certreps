@@ -5,6 +5,7 @@ import { HEAVY_PAUSE_THRESHOLD, domainVerdict, type Verdict } from "@/lib/readin
 import { ScoreRing } from "@/components/ui/ScoreRing";
 import { DomainBars } from "@/components/ui/DomainBars";
 import { optionPermutation, viewIndex } from "@/lib/permute";
+import { certPath, practicePath } from "@/lib/routes";
 import "./engine.css";
 
 const LETTERS = ["A", "B", "C", "D", "E"];
@@ -75,8 +76,8 @@ export function Results({ attempt, questions, meta }: { attempt: Attempt; questi
     null,
   );
   const drillHref = weakest
-    ? `/aws/${meta.certId}/practice?mode=drill&domain=${encodeURIComponent(weakest.name)}`
-    : `/aws/${meta.certId}/practice?mode=drill`;
+    ? `${practicePath(meta)}?mode=drill&domain=${encodeURIComponent(weakest.name)}`
+    : `${practicePath(meta)}?mode=drill`;
 
   // Verdict headline + subcopy, banded by OUR pass line (top boundary = passLinePct; the lower
   // boundary is 50 = "half correct"). Plain dashes only - no em dashes (craft rule).
@@ -126,8 +127,8 @@ export function Results({ attempt, questions, meta }: { attempt: Attempt; questi
           <div className="r-next-h">Do this next</div>
           <div className="r-next-list">
             <a className="btn btn-primary btn-sm" href={drillHref}>Drill weakest domain</a>
-            <a className="btn btn-ghost btn-sm" href={`/aws/${meta.certId}/practice?mode=retry`}>Retry my missed questions</a>
-            <a className="btn btn-ghost btn-sm" href={`/aws/${meta.certId}`}>Back to certification</a>
+            <a className="btn btn-ghost btn-sm" href={`${practicePath(meta)}?mode=retry`}>Retry my missed questions</a>
+            <a className="btn btn-ghost btn-sm" href={certPath(meta)}>Back to certification</a>
           </div>
         </div>
       </div>

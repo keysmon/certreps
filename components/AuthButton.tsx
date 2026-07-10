@@ -3,6 +3,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { getSupabase } from "@/lib/supabase/client";
 import { useSession } from "@/lib/supabase/useSession";
+import { VENDORS } from "@/components/ui/VendorDot";
+
+// Cert routes (/[vendor]/[certId] and its /practice child) mount TopNav, which owns the auth
+// surface, so this bare strip suppresses itself there. Anchoring to the known vendor slugs keeps
+// the match from ever catching /catalog, /account/..., /guides/... etc. VENDORS is a dependency-free
+// literal, so importing it here (root layout, every page) never pulls the cert registry/banks in.
+const VENDOR_SEG = Object.keys(VENDORS).join("|");
+const CERT_DETAIL_RE = new RegExp(`^/(${VENDOR_SEG})/[^/]+$`);
+const CERT_PRACTICE_RE = new RegExp(`^/(${VENDOR_SEG})/[^/]+/practice$`);
 
 /**
  * Header session control for interior pages. Renders NOTHING when Supabase is
@@ -21,8 +30,8 @@ export function AuthButton() {
   // TopNav owns the auth surface on pages that mount it (landing, catalog) - a second bare
   // strip above it is noise. As later tasks migrate interior pages to TopNav, they join this list.
   if (pathname === "/" || pathname === "/catalog") return null;
-  // Cert detail (/aws/<certId>) mounts TopNav too (Task 5).
-  if (pathname && /^\/aws\/[^/]+$/.test(pathname)) return null;
+  // Cert detail (/<vendor>/<certId>) mounts TopNav too (Task 5).
+  if (pathname && CERT_DETAIL_RE.test(pathname)) return null;
   // The My progress dashboard mounts TopNav (Task 8) - it owns the auth surface there.
   // Scoped to the exact page: /account/attempts/<id> (review-past) has no TopNav and keeps this strip.
   if (pathname === "/account") return null;
@@ -30,7 +39,7 @@ export function AuthButton() {
   if (pathname === "/settings") return null;
   // The exam room is distraction-free chrome by design (Task 6): the practice surface has
   // its own slim bar and no auth affordance - signing in mid-exam is not a real flow.
-  if (pathname && /^\/aws\/[^/]+\/practice$/.test(pathname)) return null;
+  if (pathname && CERT_PRACTICE_RE.test(pathname)) return null;
   // The login page IS the sign-in call to action - a second "Sign in" strip above it is noise.
   if (pathname === "/login" && !session) return null;
 

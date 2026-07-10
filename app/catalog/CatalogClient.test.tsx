@@ -13,6 +13,7 @@ import type { Attempt, QuestionResult } from "@/lib/types";
 const CERTS: CatalogCert[] = listCerts().map((m) => ({
   certId: m.certId,
   vendor: m.vendor,
+  vendorSlug: m.vendorSlug,
   title: m.title,
   examCode: m.examCode,
   level: m.level,

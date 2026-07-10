@@ -36,7 +36,7 @@ beforeEach(() => localStorage.clear());
 
 describe("HeroCtas", () => {
   it("shows Start practicing (-> quick) plus the mock and quick-drill ghosts by default", () => {
-    render(<HeroCtas certId={AIP} mockMinutes={156} />);
+    render(<HeroCtas certId={AIP} vendorSlug="aws" mockMinutes={156} />);
     expect(screen.getByRole("link", { name: /start practicing/i })).toHaveAttribute(
       "href",
       `/aws/${AIP}/practice?mode=quick`,
@@ -60,7 +60,7 @@ describe("HeroCtas", () => {
     recordResult(a.attemptId, { questionId: ids[0], chosen: [0], correct: false, flagged: false });
     recordResult(a.attemptId, { questionId: ids[1], chosen: [0], correct: false, flagged: false });
 
-    render(<HeroCtas certId={AIP} mockMinutes={156} />);
+    render(<HeroCtas certId={AIP} vendorSlug="aws" mockMinutes={156} />);
     const resume = await screen.findByRole("link", { name: /resume practicing/i });
     const href = resume.getAttribute("href") ?? "";
     expect(href).toContain(`/aws/${AIP}/practice`);
@@ -79,7 +79,7 @@ describe("DomainRows", () => {
   ];
 
   it("renders a keyboard-operable drill link per domain, Not started with no history", () => {
-    render(<DomainRows certId={AIP} passLinePct={75} domains={DOMAINS} />);
+    render(<DomainRows certId={AIP} vendorSlug="aws" passLinePct={75} domains={DOMAINS} />);
     const first = screen.getByRole("link", { name: /Drill Foundation Model Integration/i });
     expect(first).toHaveAttribute(
       "href",
@@ -98,7 +98,7 @@ describe("DomainRows", () => {
     for (const id of ids) results[id] = { questionId: id, chosen: [], correct: true, flagged: false };
     writeAll([attempt({ mode: "mock", questionIds: ids, results, finishedAt: 1_700_000_100_000 })]);
 
-    render(<DomainRows certId={AIP} passLinePct={75} domains={[{ name: domain, weightPct: 31 }]} />);
+    render(<DomainRows certId={AIP} vendorSlug="aws" passLinePct={75} domains={[{ name: domain, weightPct: 31 }]} />);
     expect(await screen.findByText("Above")).toBeInTheDocument();
   });
 });
