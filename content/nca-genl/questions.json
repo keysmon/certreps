@@ -541,18 +541,18 @@
     "domain": "Experimentation",
     "tag": "Domain 3",
     "type": "single",
-    "stem": "A team is evaluating a machine-translation model and wants a metric that scores the model's output translations against human reference translations, ranging from 0 (no match) to 1 (a perfect match). Which metric fits?",
+    "stem": "A team is evaluating the retrieval stage of a RAG pipeline against a labeled set that marks which documents are relevant for each test query. They want to quantify how well the embedding-based retriever ranks relevant documents into its top-K results. Which pair of metrics is designed for this retrieval-quality measurement?",
     "options": [
-      "ROUGE, which is designed to score overlap between a generated summary and reference summaries, not translation output specifically.",
-      "BLEU (Bilingual Evaluation Understudy), which compares model translations to reference translations and scores from 0 (no match, low quality) to 1 (perfect match, high quality).",
-      "Perplexity, which measures a model's uncertainty over token sequences rather than comparing output text to a reference translation.",
-      "F1 score, which balances precision and recall over classification labels rather than comparing generated text to a reference translation."
+      "Perplexity and BLEU, which would score the retriever by comparing its returned passages token-by-token against a reference translation.",
+      "Precision@K, the fraction of the top-K retrieved documents that are relevant, and Recall@K, the fraction of all relevant documents that appear in the top-K results.",
+      "Time-to-first-token and tokens-per-second, which capture how quickly the retriever returns results rather than whether those results are relevant.",
+      "ROUGE recall, which measures the n-gram overlap between the retrieved passages and the user's query wording."
     ],
     "correct": [
       1
     ],
-    "explanation": "<b>BLEU</b> is exactly this kind of reference-comparison metric for translation, scored from 0 (no match, low quality) to 1 (a perfect match, high quality). ROUGE targets summarization overlap rather than translation, perplexity measures the model's own predictive uncertainty rather than comparing to a reference, and F1 balances precision and recall for classification, none of which is what the scenario calls for.",
-    "difficulty": "easy",
+    "explanation": "<b>Precision@K</b> measures the fraction of the top-K retrieved documents that are actually relevant, and <b>Recall@K</b> measures the fraction of all known relevant documents the retriever placed in its top-K, which together answer exactly the retrieval-quality question the team posed. Perplexity and BLEU are generation-side metrics (model uncertainty and translation overlap) and say nothing about which documents a retriever returns. Time-to-first-token and tokens-per-second measure serving speed, not retrieval relevance. ROUGE measures summary n-gram overlap, which does not capture whether the retrieved documents are the relevant ones for the query.",
+    "difficulty": "medium",
     "docUrl": "https://developer.nvidia.com/blog/mastering-llm-techniques-evaluation/",
     "id": "ncagenl-0029"
   },
@@ -560,18 +560,18 @@
     "domain": "Experimentation",
     "tag": "Domain 3",
     "type": "single",
-    "stem": "A team is evaluating an automatic summarization model and wants a metric that measures the overlap between the model's generated summary and one or more human-written reference summaries. Which metric fits?",
+    "stem": "A team running a RAG chatbot wants two automated metrics for the generated answer: one that checks whether the answer's claims are actually supported by the retrieved context, and a separate one that checks whether the answer actually addresses the user's question. Which pairing measures these two properties?",
     "options": [
-      "Perplexity, which measures a model's uncertainty over token sequences rather than overlap between two pieces of text.",
-      "F1 score, which balances precision and recall over classification labels rather than text-overlap between a summary and its references.",
-      "ROUGE (Recall-Oriented Understudy for Gisting Evaluation), which measures overlap between machine-generated and human-generated summaries, scored between 0 and 1 with higher scores indicating higher similarity.",
-      "BLEU, a metric historically developed for scoring machine translation against reference translations, not summarization overlap."
+      "Perplexity for the first and ROUGE for the second, both computed from the model's next-token probabilities over the retrieved passages.",
+      "Load testing for the first and performance benchmarking for the second, treating grounding and relevance as server-throughput measurements.",
+      "Faithfulness (groundedness), which measures whether the answer's claims are supported by the retrieved context, and answer relevancy, which measures whether the answer addresses the user's question.",
+      "Exact match against a single gold answer for both, requiring the generated answer to be character-identical to one reference response."
     ],
     "correct": [
       2
     ],
-    "explanation": "<b>ROUGE</b> is built to measure the overlap between a machine-generated summary and one or more human reference summaries, scored between 0 and 1 where higher means more similar. Perplexity and F1 measure unrelated things (token-prediction uncertainty and classification precision/recall), and BLEU was developed for translation, not summarization, even though both are reference-comparison metrics.",
-    "difficulty": "easy",
+    "explanation": "<b>Faithfulness</b> (also called groundedness) checks whether the claims in the generated answer are supported by the retrieved context, catching answers that invent facts beyond what was retrieved, while <b>answer relevancy</b> (also called response relevancy) checks whether the answer actually addresses the user's question. The two are independent: an answer can be faithful to the context yet off-topic, or on-topic yet unfaithful, so a RAG system is typically scored on both. Perplexity and ROUGE measure model uncertainty and summary overlap, not grounding in retrieved context or relevance to the query. Load testing and performance benchmarking measure serving capacity and speed, not answer quality. Exact match against one gold answer is impractical for open-ended generative answers and measures neither grounding nor relevance.",
+    "difficulty": "medium",
     "docUrl": "https://developer.nvidia.com/blog/mastering-llm-techniques-evaluation/",
     "id": "ncagenl-0030"
   },
