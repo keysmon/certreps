@@ -170,7 +170,15 @@ export function DomainRows({
  * >= passLinePct). The note names the weakest domain from the C10 read. SSR / no-data shows
  * 0% + "Not started yet".
  */
-export function ReadinessPanel({ certId, passLinePct }: { certId: string; passLinePct: number }) {
+export function ReadinessPanel({
+  certId,
+  passLinePct,
+  passLineOfficial,
+}: {
+  certId: string;
+  passLinePct: number;
+  passLineOfficial?: boolean;
+}) {
   const [pct, setPct] = useState(0);
   const [weakest, setWeakest] = useState<string | null>(null);
   useEffect(() => {
@@ -185,12 +193,15 @@ export function ReadinessPanel({ certId, passLinePct }: { certId: string; passLi
   }, [certId, passLinePct]);
 
   const label = pct === 0 ? "Not started yet" : pct >= passLinePct ? "Ready to book" : "Getting there";
+  // Vendors that publish no official passing score: passLinePct is OUR study target, so the note
+  // says "Study target" instead of asserting an official "Pass line" (absent/true stays "Pass line").
+  const passLabel = passLineOfficial === false ? "Study target" : "Pass line";
   const note =
     pct === 0
       ? "Do a quick drill to get your first read."
       : weakest
-        ? `Pass line ${passLinePct}%. Weakest: ${weakest}.`
-        : `Pass line ${passLinePct}%.`;
+        ? `${passLabel} ${passLinePct}%. Weakest: ${weakest}.`
+        : `${passLabel} ${passLinePct}%.`;
 
   return (
     <div className="cd-panel">

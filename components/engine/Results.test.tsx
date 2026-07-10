@@ -28,6 +28,20 @@ function makeAttempt(pauseCount: number): Attempt {
   };
 }
 
+// All four correct -> 100%, above any pass line -> the "passed" verdict branch.
+function passedAttempt(): Attempt {
+  return {
+    attemptId: "t2", certId: "aip-c01", mode: "mock", questionIds: qs.map((q) => q.id),
+    results: {
+      q0: { questionId: "q0", chosen: [0], correct: true, flagged: false },
+      q1: { questionId: "q1", chosen: [0], correct: true, flagged: false },
+      q2: { questionId: "q2", chosen: [0], correct: true, flagged: false },
+      q3: { questionId: "q3", chosen: [0], correct: true, flagged: false },
+    },
+    startedAt: 1, finishedAt: 2, elapsedSec: 400, pauseCount: 0,
+  };
+}
+
 describe("Results", () => {
   it("shows score, per-domain rows, and question recap", () => {
     render(<Results attempt={makeAttempt(0)} questions={qs} meta={getMeta()} />);
@@ -78,6 +92,44 @@ describe("Results recap explanations", () => {
     expect(correctOpt).toHaveClass("correct");
     const wrongOpt = within(details).getByText("beta opt").closest(".option") as HTMLElement;
     expect(wrongOpt).toHaveClass("incorrect");
+  });
+});
+
+describe("Results verdict copy (official vs unofficial pass line)", () => {
+  const PASS = getMeta().passLinePct; // aip-c01 = 75
+
+  it("official passed: keeps the pass-line headline and the ~ subcopy byte-for-byte", () => {
+    render(<Results attempt={passedAttempt()} questions={qs} meta={getMeta()} />);
+    expect(screen.getByText("Above the pass line - keep it up.")).toBeInTheDocument();
+    expect(
+      screen.getByText(`Pass line is ~${PASS}%. Two clean runs above this and you are ready to book.`),
+    ).toBeInTheDocument();
+  });
+
+  it("official not-passed: keeps the ~ pass-line subcopy byte-for-byte", () => {
+    render(<Results attempt={makeAttempt(0)} questions={qs} meta={getMeta()} />);
+    expect(
+      screen.getByText(`Pass line is ~${PASS}%. Drill your weakest domain below, then run it again.`),
+    ).toBeInTheDocument();
+  });
+
+  it("unofficial passed: uses the study-target headline and subcopy, never 'Pass line'", () => {
+    const meta = { ...getMeta(), passLineOfficial: false };
+    render(<Results attempt={passedAttempt()} questions={qs} meta={meta} />);
+    expect(screen.getByText("Above your study target - keep it up.")).toBeInTheDocument();
+    expect(
+      screen.getByText(`Study target is ${PASS}%. Two clean runs above this and you are ready to book.`),
+    ).toBeInTheDocument();
+    expect(screen.queryByText(/Pass line/i)).not.toBeInTheDocument();
+  });
+
+  it("unofficial not-passed: study-target subcopy; the non-pass-line headline is unchanged", () => {
+    const meta = { ...getMeta(), passLineOfficial: false };
+    render(<Results attempt={makeAttempt(0)} questions={qs} meta={meta} />);
+    expect(screen.getByText("Getting there - a couple of soft spots.")).toBeInTheDocument();
+    expect(
+      screen.getByText(`Study target is ${PASS}%. Drill your weakest domain below, then run it again.`),
+    ).toBeInTheDocument();
   });
 });
 

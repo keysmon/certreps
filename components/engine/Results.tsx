@@ -81,14 +81,22 @@ export function Results({ attempt, questions, meta }: { attempt: Attempt; questi
 
   // Verdict headline + subcopy, banded by OUR pass line (top boundary = passLinePct; the lower
   // boundary is 50 = "half correct"). Plain dashes only - no em dashes (craft rule).
+  // Vendors that publish no official passing score: passLinePct is OUR study target, so the copy
+  // says "study target" instead of asserting an official "pass line" (absent/true stays official).
+  const officialPassLine = meta.passLineOfficial !== false;
   const headline = passed
-    ? "Above the pass line - keep it up."
+    ? officialPassLine
+      ? "Above the pass line - keep it up."
+      : "Above your study target - keep it up."
     : g.pct >= 50
     ? "Getting there - a couple of soft spots."
     : "Early days - this is exactly what practice is for.";
+  const passSentence = officialPassLine
+    ? `Pass line is ~${meta.passLinePct}%.`
+    : `Study target is ${meta.passLinePct}%.`;
   const subcopy = passed
-    ? `Pass line is ~${meta.passLinePct}%. Two clean runs above this and you are ready to book.`
-    : `Pass line is ~${meta.passLinePct}%. Drill your weakest domain below, then run it again.`;
+    ? `${passSentence} Two clean runs above this and you are ready to book.`
+    : `${passSentence} Drill your weakest domain below, then run it again.`;
 
   return (
     <div className="results">

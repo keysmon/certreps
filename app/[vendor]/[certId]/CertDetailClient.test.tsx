@@ -136,12 +136,21 @@ describe("ReadinessPanel", () => {
     writeAll([gradedMock(20, 15)]); // 75% == pass line
     render(<ReadinessPanel certId={AIP} passLinePct={75} />);
     expect(await screen.findByText("Ready to book")).toBeInTheDocument();
+    // Official (flag absent): the note asserts a "Pass line", never a study target.
     expect(screen.getByText(/Pass line 75%/i)).toBeInTheDocument();
+    expect(screen.queryByText(/Study target/i)).not.toBeInTheDocument();
   });
 
   it("reads Getting there when the best mock is below the pass line", async () => {
     writeAll([gradedMock(20, 10)]); // 50% < pass line
     render(<ReadinessPanel certId={AIP} passLinePct={75} />);
     expect(await screen.findByText("Getting there")).toBeInTheDocument();
+  });
+
+  it("says Study target (not Pass line) when the score is unofficial", async () => {
+    writeAll([gradedMock(20, 15)]); // 75% >= pass line -> the note renders
+    render(<ReadinessPanel certId={AIP} passLinePct={70} passLineOfficial={false} />);
+    expect(await screen.findByText(/Study target 70%/i)).toBeInTheDocument();
+    expect(screen.queryByText(/Pass line/i)).not.toBeInTheDocument();
   });
 });

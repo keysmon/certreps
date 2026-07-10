@@ -35,6 +35,10 @@ export interface CertMeta {
   mockQuestionCount: number;
   mockMinutes: number;
   passLinePct: number;
+  // Whether the vendor publishes an OFFICIAL passing score. Absent or true: the vendor
+  // publishes one and passLinePct is our mapped approximation of it. false: the vendor
+  // publishes no official passing score, so passLinePct is OUR study target, not a claim.
+  passLineOfficial?: boolean;
   verified: string;
   // SERP-budget title/description for the cert landing page. The page is a pure
   // template over these: seoDescription carries a {n} placeholder for the mock

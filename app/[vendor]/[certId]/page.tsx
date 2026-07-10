@@ -120,7 +120,7 @@ export default async function CertPage({ params }: { params: Promise<{ vendor: s
           </div>
 
           <aside className="cd-list">
-            <ReadinessPanel certId={certId} passLinePct={meta.passLinePct} />
+            <ReadinessPanel certId={certId} passLinePct={meta.passLinePct} passLineOfficial={meta.passLineOfficial} />
 
             <div className="cd-panel">
               <h3 className="cd-panel-h">What&apos;s inside</h3>
@@ -128,6 +128,9 @@ export default async function CertPage({ params }: { params: Promise<{ vendor: s
               <div className="cd-kv"><span className="muted">Full mock</span><span className="cd-kv-v">Fresh mix every time</span></div>
               <div className="cd-kv"><span className="muted">Explanations w/ docs</span><span className="cd-kv-v">Every Q</span></div>
               <div className="cd-kv"><span className="muted">Mock length</span><span className="cd-kv-v">{meta.mockMinutes} min</span></div>
+              {meta.passLineOfficial === false && (
+                <div className="cd-kv"><span className="muted">Pass score</span><span className="cd-kv-v">Not published - {meta.passLinePct}% study target</span></div>
+              )}
               <div className="cd-kv"><span className="muted">Last verified</span><span className="cd-kv-v">{meta.verified}</span></div>
             </div>
 
