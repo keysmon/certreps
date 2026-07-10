@@ -1,0 +1,41 @@
+{
+  "certId": "genai-leader",
+  "idPrefix": "gcpgl",
+  "vendor": "Google Cloud",
+  "vendorSlug": "gcp",
+  "title": "Generative AI Leader",
+  "examCode": "GenAI Leader",
+  "level": "Foundational",
+  "mockQuestionCount": 50,
+  "mockMinutes": 90,
+  "passLinePct": 70,
+  "verified": "Q3 2026",
+  "seoTitle": "Free Google Cloud Generative AI Leader Practice Exam",
+  "seoDescription": "Free full-length GenAI Leader practice exam with {n} original scenario questions, instant explanations, and a per-domain readiness read. No signup.",
+  "domains": [
+    {
+      "name": "Fundamentals of gen AI",
+      "tag": "Domain 1",
+      "weightPct": 30,
+      "mockCount": 15
+    },
+    {
+      "name": "Google Cloud's gen AI offerings",
+      "tag": "Domain 2",
+      "weightPct": 35,
+      "mockCount": 18
+    },
+    {
+      "name": "Techniques to improve gen AI model output",
+      "tag": "Domain 3",
+      "weightPct": 20,
+      "mockCount": 10
+    },
+    {
+      "name": "Business strategies for a successful gen AI solution",
+      "tag": "Domain 4",
+      "weightPct": 15,
+      "mockCount": 7
+    }
+  ]
+}
