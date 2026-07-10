@@ -1,0 +1,289 @@
+[
+  {
+    "domain": "Fundamentals of gen AI",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A business analyst new to AI asks how generative AI differs from the type of machine learning used in a traditional fraud-detection or spam-filtering model. Which statement BEST describes the difference?",
+    "options": [
+      "Generative AI models create new content, such as text, images, or code, while traditional ML models like fraud or spam classifiers typically predict a label or a number from existing input data.",
+      "Generative AI models can only run on Google Cloud, while traditional ML models can run anywhere.",
+      "Generative AI models never require training data, while traditional ML models always require millions of labeled examples.",
+      "Generative AI models are only used for image recognition, while traditional ML models are only used for text tasks."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Generative AI</b> models learn patterns from large datasets and use those patterns to generate new, original content (text, images, audio, code), while traditional (discriminative) ML models such as fraud detectors or spam filters are trained to predict a label or score for a given input. The cloud-provider option is false: gen AI runs across many providers, not only Google Cloud. The no-training-data option is false: gen AI models require extensive training data. The image-only option reverses the tasks and is false; both types of models can be applied to many data types.",
+    "difficulty": "easy",
+    "docUrl": "https://cloud.google.com/discover/what-is-generative-ai",
+    "id": "gcpgl-0001"
+  },
+  {
+    "domain": "Fundamentals of gen AI",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A company wants to understand why 'foundation models' are considered a major shift in how AI systems are built. Which statement BEST defines a foundation model?",
+    "options": [
+      "A small, single-purpose model trained from scratch for one narrow task, such as detecting one type of defect.",
+      "A large model pretrained on a broad range of data that can be adapted, through prompting or fine-tuning, to many different downstream tasks.",
+      "A rule-based expert system that encodes if-then business logic written by engineers.",
+      "A database schema used to store structured customer records."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "A <b>foundation model</b> is trained on a broad, diverse dataset at scale and can be adapted to a wide variety of downstream tasks through techniques like prompting, prompt tuning, or fine-tuning, rather than being built for one narrow purpose. A narrow single-task model is the opposite of a foundation model. Expert systems encode explicit rules rather than learning from data. A database schema is a data structure, not a model.",
+    "difficulty": "easy",
+    "docUrl": "https://cloud.google.com/discover/what-is-a-foundation-model",
+    "id": "gcpgl-0002"
+  },
+  {
+    "domain": "Fundamentals of gen AI",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A retail company wants a single model that can take a product photo and a text description as input and generate a marketing caption. Which type of foundation model is required?",
+    "options": [
+      "A unimodal text-only model that ignores the photo.",
+      "A diffusion model that only outputs images, never text.",
+      "A multimodal foundation model that can accept and reason over multiple input types, such as images and text, in a single model.",
+      "A traditional supervised classifier trained only on structured tabular data."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "A <b>multimodal foundation model</b> is trained to understand and reason across more than one data type, such as text, images, audio, or video, in the same request, which is exactly what is needed to combine a product photo and text description into one output. A text-only model cannot use the photo. A diffusion model limited to image output cannot produce the text caption. A tabular classifier is not designed for images or free text.",
+    "difficulty": "medium",
+    "docUrl": "https://cloud.google.com/discover/what-is-multimodal-ai",
+    "id": "gcpgl-0003"
+  },
+  {
+    "domain": "Fundamentals of gen AI",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A designer asks how an image-generation model such as those behind Imagen actually produces a picture from a text prompt. Which explanation matches how a diffusion model works?",
+    "options": [
+      "It searches a database of existing stock photos and returns the closest match.",
+      "It starts from random noise and iteratively removes noise, guided by the prompt, until a coherent image emerges.",
+      "It converts the text prompt into a spreadsheet of pixel coordinates and plots them directly.",
+      "It requires a human artist to draw a rough sketch before the model can proceed."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "A <b>diffusion model</b> is trained to reverse a noise-adding process: at generation time it starts from random noise and progressively denoises it in steps guided by the text prompt, until a coherent image results. It does not retrieve stock photos, does not plot literal pixel coordinates from a spreadsheet, and does not require a human-drawn sketch as an input.",
+    "difficulty": "medium",
+    "docUrl": "https://cloud.google.com/discover/what-is-a-diffusion-model",
+    "id": "gcpgl-0004"
+  },
+  {
+    "domain": "Fundamentals of gen AI",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "Which statement BEST describes a large language model (LLM)?",
+    "options": [
+      "A foundation model trained on massive amounts of text that can understand and generate human language for tasks such as writing, summarizing, and answering questions.",
+      "A model that only translates numbers between currencies.",
+      "A fixed lookup table that stores every possible sentence a user might type.",
+      "A tool that exclusively generates images from a numeric seed."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "An <b>LLM</b> is a type of foundation model trained on vast amounts of text so it can understand and generate natural language for tasks like writing, summarizing, translating, and answering questions. It is not a currency conversion tool, not a static lookup table (since it generates novel text rather than storing every possible sentence), and not an image-only generator.",
+    "difficulty": "easy",
+    "docUrl": "https://cloud.google.com/discover/what-are-large-language-models",
+    "id": "gcpgl-0005"
+  },
+  {
+    "domain": "Fundamentals of gen AI",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A team lead wants to clarify to stakeholders the difference between 'prompt engineering' and 'prompt tuning' when adapting a foundation model to a business task. Which statement correctly distinguishes the two?",
+    "options": [
+      "Both terms mean the same thing: manually rewriting the words in a prompt.",
+      "Prompt engineering crafts and refines the natural-language instructions given to a model, while prompt tuning uses training to learn a set of numeric prompt parameters that steer the model, without editing the visible prompt text.",
+      "Prompt engineering changes the model's underlying weights, while prompt tuning never touches the model at all.",
+      "Prompt tuning is only used in image generation, and prompt engineering is only used in text generation."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Prompt engineering</b> is the practice of writing and iterating on the natural-language instructions (the visible prompt) to get better output from a model. <b>Prompt tuning</b> is a lighter-weight adaptation technique that learns additional numeric parameters prepended to the prompt through training, without editing the human-readable prompt text and without retraining the full model. Treating them as identical collapses two distinct concepts. The weights-vs-untouched option has it backwards: prompt engineering does not change model weights, and prompt tuning does involve some training. Restricting each technique to one modality is a false restriction; both concepts apply broadly across modalities.",
+    "difficulty": "hard",
+    "docUrl": "https://cloud.google.com/discover/what-is-prompt-engineering",
+    "id": "gcpgl-0006"
+  },
+  {
+    "domain": "Fundamentals of gen AI",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A company has a large dataset of customer support tickets with no labels indicating category, and wants to discover natural groupings of similar tickets without predefining categories. Which machine learning approach fits this goal?",
+    "options": [
+      "Supervised learning, because it requires a labeled category for every ticket.",
+      "Reinforcement learning, because an agent must be rewarded for correct categorization.",
+      "Unsupervised learning, which finds patterns and groupings, such as clusters, in unlabeled data.",
+      "Prompt engineering, because it replaces the need for any machine learning approach."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Unsupervised learning</b> finds structure, such as clusters or groupings, in data that has no labels, which matches the goal of discovering natural ticket groupings without predefined categories. Supervised learning needs labeled examples, which are not available here. Reinforcement learning learns from rewards for sequential actions, not from static ticket data. Prompt engineering is a technique for interacting with a generative model, not a machine learning training approach.",
+    "difficulty": "medium",
+    "docUrl": "https://cloud.google.com/discover/what-is-unsupervised-learning",
+    "id": "gcpgl-0007"
+  },
+  {
+    "domain": "Fundamentals of gen AI",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "An organization is mapping out its first machine learning project and wants to place 'model training' correctly among the lifecycle stages. Which sequence correctly orders the machine learning lifecycle stages?",
+    "options": [
+      "Model deployment, data ingestion, model training, data preparation, model management.",
+      "Data preparation, data ingestion, model management, model training, model deployment.",
+      "Model management, model training, data ingestion, data preparation, model deployment.",
+      "Data ingestion, data preparation, model training, model deployment, model management."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "The typical machine learning lifecycle flows from <b>data ingestion</b> (bringing raw data in), to <b>data preparation</b> (cleaning and transforming it), to <b>model training</b>, to <b>model deployment</b> (serving the trained model), and finally to <b>model management</b> (monitoring, versioning, and maintaining the model over time). The other orderings place later stages, such as deployment or management, before the data and training stages they depend on.",
+    "difficulty": "easy",
+    "docUrl": "https://cloud.google.com/discover/what-is-model-training",
+    "id": "gcpgl-0008"
+  },
+  {
+    "domain": "Fundamentals of gen AI",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A legal team wants a foundation model that can analyze an entire 400-page contract in a single request without splitting it into chunks. Which factor in choosing a foundation model is MOST directly relevant to this requirement?",
+    "options": [
+      "Context window, the amount of text (or tokens) the model can consider at once in a single prompt.",
+      "The model's image generation resolution.",
+      "The number of supported human languages for translation.",
+      "The model's video frame rate for generated clips."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Context window</b> describes how much input (measured in tokens) a model can take into account in one request; a large enough context window lets a model process an entire long document at once instead of splitting it into pieces. Image resolution and video frame rate apply to generation of images or video, not to reading a long text contract. Supported languages affects translation coverage, not the amount of text the model can process at once.",
+    "difficulty": "hard",
+    "docUrl": "https://cloud.google.com/discover/what-is-context-window",
+    "id": "gcpgl-0009"
+  },
+  {
+    "domain": "Fundamentals of gen AI",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A marketing team feeds hundreds of long customer research reports into a gen AI tool and asks it to produce a one-page digest of the key findings for executives. Which gen AI business capability does this represent?",
+    "options": [
+      "Automation of a repetitive manual workflow.",
+      "Summarization, condensing long content into a shorter, more digestible form.",
+      "Personalization of a user experience based on individual behavior.",
+      "Code generation for a software application."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "Turning long reports into a short digest of key findings is <b>summarization</b>, one of the core categories of gen AI business value alongside creation, discovery, and automation. It is not automation of a multi-step workflow, not personalization to an individual user, and clearly not code generation.",
+    "difficulty": "medium",
+    "docUrl": "https://cloud.google.com/discover/gen-ai-use-cases",
+    "id": "gcpgl-0010"
+  },
+  {
+    "domain": "Fundamentals of gen AI",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A data team reviewing a training dataset for a gen AI project finds records with missing fields, inconsistent date formats, and outdated entries. Which data quality characteristics are they evaluating?",
+    "options": [
+      "Encryption strength and network latency.",
+      "Model architecture and parameter count.",
+      "Completeness, consistency, and relevance of the data.",
+      "Billing tier and storage region."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Completeness</b> (are fields missing), <b>consistency</b> (are formats uniform), and <b>relevance</b> (is the data current and applicable) are core data quality characteristics that directly affect how well a gen AI model can learn from or use a dataset. Encryption and latency, model architecture, and billing or region are infrastructure or model concerns, not data quality characteristics.",
+    "difficulty": "medium",
+    "docUrl": "https://cloud.google.com/discover/what-is-data-quality",
+    "id": "gcpgl-0011"
+  },
+  {
+    "domain": "Fundamentals of gen AI",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "Which pairing correctly matches a real-world example to its data type?",
+    "options": [
+      "A folder of customer emails and support call recordings is structured data, and a relational sales database is unstructured data.",
+      "All data stored in Google Cloud is automatically structured data, regardless of its original format.",
+      "A spreadsheet of customer orders with fixed columns is unstructured data, and a folder of scanned PDF invoices is structured data.",
+      "A relational database of customer orders with defined rows and columns is structured data, and a collection of emails, PDFs, and audio recordings is unstructured data."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Structured data</b> fits a predefined schema, such as rows and columns in a relational database, while <b>unstructured data</b>, such as emails, PDF documents, images, and audio recordings, has no fixed schema. The other pairings reverse the definitions, and storing data in the cloud does not change whether its original format is structured or unstructured.",
+    "difficulty": "easy",
+    "docUrl": "https://cloud.google.com/discover/structured-vs-unstructured-data",
+    "id": "gcpgl-0012"
+  },
+  {
+    "domain": "Fundamentals of gen AI",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A dataset of product photos has a 'defective' or 'not defective' tag attached to every image. Which term describes this dataset?",
+    "options": [
+      "Labeled data, because each example includes the target answer or category alongside the input.",
+      "Unlabeled data, because photos are always considered unlabeled regardless of tags.",
+      "Structured data, because images are stored in a structured format.",
+      "Synthetic data, because the labels were added after collection."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Labeled data</b> pairs each input example with the correct answer or category, such as a 'defective' or 'not defective' tag on a photo, which is exactly what is described. Unlabeled data lacks these tags entirely. The image files themselves are unstructured data regardless of tagging. Having labels does not by itself make data synthetic, meaning artificially generated rather than real.",
+    "difficulty": "easy",
+    "docUrl": "https://cloud.google.com/discover/what-is-data-labeling",
+    "id": "gcpgl-0013"
+  },
+  {
+    "domain": "Fundamentals of gen AI",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "An executive is being briefed on the layers of the gen AI technology stack: infrastructure, models, platforms, agents, and applications. Which layer is BEST described as systems that use models, tools, and reasoning to autonomously plan and execute multi-step tasks, rather than simply returning one response to one prompt?",
+    "options": [
+      "Infrastructure, the physical compute layer such as TPUs and data centers.",
+      "Models, the foundation models that generate raw output.",
+      "Platforms, the tools used to build and deploy models.",
+      "Agents, which combine a model with tools and reasoning to autonomously complete multi-step tasks."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "In the gen AI landscape, <b>agents</b> sit above the platforms layer and combine a foundation model with tools, memory, and reasoning to autonomously plan and execute multi-step tasks, rather than returning a single response to a single prompt. Infrastructure is the compute layer at the base of the stack. Models generate output but do not by themselves plan multi-step tasks. Platforms provide the build and deployment tooling that agents and applications are built on, but are not the agents themselves.",
+    "difficulty": "medium",
+    "docUrl": "https://cloud.google.com/discover/what-are-ai-agents",
+    "id": "gcpgl-0014"
+  },
+  {
+    "domain": "Fundamentals of gen AI",
+    "tag": "Domain 1",
+    "type": "multi",
+    "stem": "A team is choosing among Google's foundation models for two different needs: (1) a lightweight, openly available model they can download and run on their own infrastructure, and (2) a model purpose-built to generate short video clips from a text prompt. Which TWO statements correctly match a Google model family to its use case? (Select TWO.)",
+    "options": [
+      "Gemma is a family of lightweight, open models that can be downloaded and run outside Google Cloud, making it a fit for the first need.",
+      "Gemini is an open-weights-only model family that cannot be accessed through an API.",
+      "Veo is Google's model family purpose-built for generating video from text or image prompts, making it a fit for the second need.",
+      "Imagen is Google's foundation model family for generating video clips from text prompts.",
+      "Gemma can only be used for generating images, never text."
+    ],
+    "correct": [
+      0,
+      2
+    ],
+    "explanation": "<b>Gemma</b> is Google's family of lightweight, open models, which can be downloaded and run outside Google Cloud, fitting the first need. <b>Veo</b> is Google's model family purpose-built for text-to-video and image-to-video generation, fitting the second need. Gemini is Google's flagship multimodal model family and is available through APIs, not open-weights-only. Imagen, not Veo, is Google's image-generation model family, so labeling Imagen as the video model mislabels its purpose. Gemma supports text and other tasks, not only image generation.",
+    "difficulty": "medium",
+    "docUrl": "https://cloud.google.com/discover/gemini-vs-gemma",
+    "id": "gcpgl-0015"
+  }
+]
