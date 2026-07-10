@@ -112,6 +112,23 @@ describe("AccountClient dashboard", () => {
     expect(screen.getByText(/1 attempt from certifications no longer available/i)).toBeInTheDocument();
   });
 
+  it("keeps the newest unfinished attempt on the primary CTA and lists older ones as resume links", async () => {
+    // Two unfinished sessions for the same cert: an older quick session and a newer mock.
+    const older = attempt({ attemptId: "aip-quick", mode: "quick", questionIds: ["q1", "q2", "q3"], startedAt: 1_700_000_000_000 });
+    const newer = attempt({ attemptId: "aip-mock", mode: "mock", questionIds: ["q1", "q2", "q3", "q4", "q5"], startedAt: 1_700_000_500_000 });
+    writeAll([older, newer]);
+    const { container } = render(<AccountClient welcome={false} />);
+    await screen.findByRole("heading", { level: 3, name: getMeta().title });
+
+    // The newest (mock) holds the card's primary Resume CTA.
+    const primary = container.querySelector("a.btn-primary");
+    expect(primary?.getAttribute("href")).toContain("resume=aip-mock");
+
+    // The older quick session surfaces as its own small resume link (all unfinished attempts shown).
+    const olderLink = screen.getByRole("link", { name: /resume quick 10/i });
+    expect(olderLink.getAttribute("href")).toContain("resume=aip-quick");
+  });
+
   it("renders the signed-in sync banner and Synced-as eyebrow when signed in", async () => {
     mockedAvailable.mockReturnValue(true);
     mockedGetSupabase.mockReturnValue(fakeClient(sessionWith("ada@example.com")));

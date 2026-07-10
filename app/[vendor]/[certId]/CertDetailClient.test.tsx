@@ -70,6 +70,28 @@ describe("HeroCtas", () => {
     expect(screen.getByText(/Full Mock in progress/i)).toBeInTheDocument();
     expect(screen.getByText(/2 of 5 answered/i)).toBeInTheDocument();
   });
+
+  it("keeps the newest on the primary CTA and lists older unfinished attempts as resume links", async () => {
+    const ids = getBank(AIP).slice(0, 5).map((q) => q.id);
+    // Older quick drill (started earlier) + newer mock (started later) both unfinished.
+    const older = createAttempt(AIP, "quick", ids);
+    older.startedAt = 1_700_000_000_000;
+    saveAttempt(older);
+    const newer = createAttempt(AIP, "mock", ids);
+    newer.startedAt = 1_700_000_500_000;
+    saveAttempt(newer);
+    recordResult(newer.attemptId, { questionId: ids[0], chosen: [0], correct: false, flagged: false });
+
+    render(<HeroCtas certId={AIP} vendorSlug="aws" mockMinutes={156} />);
+
+    // Primary CTA resumes the newest (the mock).
+    const primary = await screen.findByRole("link", { name: /resume practicing/i });
+    expect(primary.getAttribute("href")).toContain(`resume=${newer.attemptId}`);
+
+    // The older quick drill surfaces as a small resume link.
+    const olderLink = screen.getByRole("link", { name: /Resume Quick Practice/i });
+    expect(olderLink.getAttribute("href")).toContain(`resume=${older.attemptId}`);
+  });
 });
 
 describe("DomainRows", () => {

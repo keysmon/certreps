@@ -117,6 +117,32 @@ export function getInProgress(certId: string): Attempt | null {
   return unfinished.length ? unfinished[unfinished.length - 1] : null;
 }
 
+/**
+ * Every LOCAL unfinished attempt for a cert, newest first (by startedAt descending). Powers the
+ * resume-everywhere surfaces (practice interstitial, multi-attempt detail links, dashboard rows).
+ * listInProgress(certId)[0] equals getInProgress(certId) - the same single-device-in-progress read,
+ * just widened from "the latest" to "all of them". Reads only localStorage (see getInProgress).
+ */
+export function listInProgress(certId: string): Attempt[] {
+  return listAttempts(certId)
+    .filter((a) => a.finishedAt === null)
+    .sort((x, y) => y.startedAt - x.startedAt);
+}
+
+/**
+ * Delete one attempt row from localStorage. Used by the resume-everywhere "Discard" controls.
+ *
+ * INVARIANT - only ever call this on an UNFINISHED attempt. A signed-in user's cloud row is left
+ * in place (this makes no sync-runtime call, by design): on the next fullSync, mergeAttempts SKIPS
+ * a cloud-only UNFINISHED row whose id is absent locally, so a discarded in-progress attempt stays
+ * gone. A FINISHED cloud row, by contrast, always merges back - so discarding a finished attempt
+ * here would resurrect it on the next pull. The discard UIs are wired to in-progress attempts only.
+ * Degrades silently if storage is blocked, matching the rest of this module.
+ */
+export function discardAttempt(attemptId: string): void {
+  writeAll(readAll().filter((a) => a.attemptId !== attemptId));
+}
+
 /** Latest verdict wins: a question is "missed" if its most recent recorded result is wrong. */
 export function missedQuestionIds(certId: string): string[] {
   const latest: Record<string, { at: number; correct: boolean }> = {};

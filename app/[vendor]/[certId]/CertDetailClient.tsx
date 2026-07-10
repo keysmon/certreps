@@ -6,7 +6,7 @@ import { ScoreRing } from "@/components/ui/ScoreRing";
 import { domainReadiness, progressView } from "@/lib/progress-view";
 import { practicePath } from "@/lib/routes";
 import type { Verdict } from "@/lib/readiness";
-import { getInProgress } from "@/lib/storage";
+import { listInProgress } from "@/lib/storage";
 import type { Attempt } from "@/lib/types";
 
 // ASCII-source convention (see app/page.tsx / CatalogClient.tsx): typographic glyphs from
@@ -43,22 +43,30 @@ export interface HeroDomain {
  * default), so the server shell and first client render match - progress reads happen only
  * in the effect. The primary and the "Quick 10-Q drill" ghost both target a quick session;
  * that mirrors the design's own primary+ghost-share-a-mode emphasis pattern (its
- * cta-practice and cta-drill both point at mode=drill). When resuming, the two diverge.
+ * cta-practice and cta-drill both point at mode=drill). When resuming, the two diverge. When MORE
+ * than one attempt is unfinished, the newest keeps the primary CTA and the rest surface as small
+ * resume links below it (listInProgress), so no in-progress session is hidden.
  */
+function resumeUrl(base: string, a: Attempt): string {
+  const params = new URLSearchParams({ mode: a.mode, resume: a.attemptId });
+  if (a.domain) params.set("domain", a.domain); // drill carries its domain
+  return `${base}?${params.toString()}`;
+}
+
 export function HeroCtas({ certId, vendorSlug, mockMinutes }: { certId: string; vendorSlug: string; mockMinutes: number }) {
-  const [attempt, setAttempt] = useState<Attempt | null>(null);
+  const [attempts, setAttempts] = useState<Attempt[]>([]);
   useEffect(() => {
-    setAttempt(getInProgress(certId));
+    setAttempts(listInProgress(certId)); // newest first
   }, [certId]);
 
   const base = practicePath({ vendorSlug, certId });
+  const attempt = attempts[0] ?? null; // the newest keeps the primary CTA
+  const extras = attempts.slice(1); // older unfinished sessions -> small resume links
   let primaryHref = `${base}?mode=quick`;
   let primaryLabel = "Start practicing";
   let resumeLine: string | null = null;
   if (attempt) {
-    const params = new URLSearchParams({ mode: attempt.mode, resume: attempt.attemptId });
-    if (attempt.domain) params.set("domain", attempt.domain); // drill carries its domain
-    primaryHref = `${base}?${params.toString()}`;
+    primaryHref = resumeUrl(base, attempt);
     primaryLabel = "Resume practicing";
     const answered = Object.keys(attempt.results).length;
     const total = attempt.questionIds.length;
@@ -80,6 +88,22 @@ export function HeroCtas({ certId, vendorSlug, mockMinutes }: { certId: string; 
         </Button>
       </div>
       {resumeLine && <p className="cd-resume-line">{resumeLine}</p>}
+      {extras.length > 0 && (
+        <ul className="cd-resume-more">
+          {extras.map((ex) => {
+            const answered = Object.keys(ex.results).length;
+            const total = ex.questionIds.length;
+            const label = MODE_LABEL[ex.mode] ?? ex.mode;
+            return (
+              <li key={ex.attemptId}>
+                <Link href={resumeUrl(base, ex)}>
+                  Resume {label} {DOT} {answered} of {total} answered{ex.domain ? ` ${DOT} ${ex.domain}` : ""}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      )}
     </>
   );
 }

@@ -6,7 +6,7 @@ import type { Session } from "@supabase/supabase-js";
 import type { Attempt, CertMeta } from "@/lib/types";
 import { getSupabase, supabaseAvailable } from "@/lib/supabase/client";
 import { fullSync } from "@/lib/sync-runtime";
-import { readAll, getInProgress } from "@/lib/storage";
+import { readAll, listInProgress } from "@/lib/storage";
 import { listCerts, getCert } from "@/lib/certs";
 import { certPath, practicePath } from "@/lib/routes";
 import { gradeAttempt } from "@/lib/scoring";
@@ -51,6 +51,9 @@ interface CardView {
   lastActivity: number;
   resumeHref: string;
   resumeLabel: string;
+  // Older unfinished sessions for this cert (newest keeps the primary CTA above). Empty for the
+  // common single-session case; each renders as a small resume link so no in-progress attempt hides.
+  resumeExtras: { href: string; text: string }[];
   drillHref: string | null;
 }
 
@@ -125,13 +128,21 @@ function computeView(attempts: Attempt[]): DashboardView {
       ? `Weakest: ${weakest.name.split(" ").slice(0, 3).join(" ")} ${MIDDOT} ${weakest.pct}%`
       : "Just getting started";
 
-    const inProg = getInProgress(certId);
-    const resumeHref = inProg
-      ? `${practicePath(meta)}?${resumeParams(inProg)}`
-      : `${practicePath(meta)}?mode=quick`;
-    const drillHref = weakest
-      ? `${practicePath(meta)}?mode=drill&domain=${encodeURIComponent(weakest.name)}`
-      : null;
+    const base = practicePath(meta);
+    // One read powers both the primary CTA (newest) and the older-session links (the rest), so the
+    // card can never contradict itself. listInProgress[0] is the same attempt getInProgress returned.
+    const inProgress = listInProgress(certId);
+    const inProg = inProgress[0] ?? null;
+    const resumeHref = inProg ? `${base}?${resumeParams(inProg)}` : `${base}?mode=quick`;
+    const resumeExtras = inProgress.slice(1).map((a) => {
+      const answered = Object.keys(a.results).length;
+      const label = MODE_LABEL[a.mode] ?? a.mode;
+      return {
+        href: `${base}?${resumeParams(a)}`,
+        text: `Resume ${label} ${MIDDOT} ${answered} of ${a.questionIds.length} answered${a.domain ? ` ${MIDDOT} ${a.domain}` : ""}`,
+      };
+    });
+    const drillHref = weakest ? `${base}?mode=drill&domain=${encodeURIComponent(weakest.name)}` : null;
 
     cards.push({
       certId,
@@ -141,6 +152,7 @@ function computeView(attempts: Attempt[]): DashboardView {
       lastActivity: Math.max(...certAttempts.map((a) => a.startedAt)),
       resumeHref,
       resumeLabel: inProg ? "Resume" : "Practice",
+      resumeExtras,
       drillHref,
     });
 
@@ -210,6 +222,15 @@ function ContinueCard({ card }: { card: CardView }) {
             Details
           </Link>
         </div>
+        {card.resumeExtras.length > 0 && (
+          <ul className="pg-resume-more">
+            {card.resumeExtras.map((ex) => (
+              <li key={ex.href}>
+                <Link href={ex.href}>{ex.text}</Link>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </div>
   );

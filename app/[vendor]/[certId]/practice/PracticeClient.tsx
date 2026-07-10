@@ -1,17 +1,157 @@
 "use client";
+import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { ExamEngine } from "@/components/engine/ExamEngine";
-import type { Mode } from "@/lib/types";
+import { getMeta } from "@/lib/bank";
+import { practicePath } from "@/lib/routes";
+import { listInProgress, discardAttempt } from "@/lib/storage";
+import type { Attempt, CertMeta, Mode } from "@/lib/types";
 
 const MODES: Mode[] = ["quick", "drill", "mock", "retry"];
+const MODE_LABEL: Record<string, string> = {
+  quick: "Quick Practice",
+  drill: "Domain Drill",
+  mock: "Full Mock",
+  retry: "Retry Missed",
+};
+// Glyph via fromCharCode (ASCII-source convention, see the engine + detail page).
+const DOT = String.fromCharCode(183); // U+00B7 middle dot
 
+/**
+ * Practice surface wrapper. It NEVER modifies the engine - it only decides, before the engine
+ * mounts, whether to interpose a resume chooser. When the URL carries an explicit ?resume=<id>
+ * (a resume link from the detail page or dashboard), the engine adopts that id exactly as today.
+ * When the URL has NO resume param but a same-mode unfinished attempt exists (for drills: same
+ * domain too), we render the chooser instead of a fresh engine, so starting a bare practice URL
+ * can no longer silently orphan an in-progress session. Resume re-navigates with resume=<id>;
+ * Start fresh mounts a fresh engine (new attempt, old one left intact); Discard deletes the row
+ * then starts fresh.
+ */
 export function PracticeClient({ certId }: { certId: string }) {
   const params = useSearchParams();
   const modeParam = params.get("mode") ?? "quick";
   const mode: Mode = (MODES as string[]).includes(modeParam) ? (modeParam as Mode) : "quick";
   const domain = params.get("domain") ?? undefined;
   const resume = params.get("resume") ?? undefined;
-  // Engine contract: key by mode+domain+resume - the engine samples/hydrates once per mount, so a
-  // changed resume id must force a clean remount.
-  return <ExamEngine key={`${mode}-${domain ?? ""}-${resume ?? ""}`} certId={certId} mode={mode} domain={domain} resumeAttemptId={resume} />;
+
+  // Interstitial gate (SSR-safe): the in-progress lookup reads localStorage, so it runs in an effect
+  // (never in render or a useState initializer - the hydration lesson) and the first paint is the
+  // loading shell. `checked` flips once the effect has resolved whether a resumable attempt exists.
+  const [checked, setChecked] = useState(false);
+  const [inProgress, setInProgress] = useState<Attempt | null>(null);
+  const [startFresh, setStartFresh] = useState(false);
+
+  useEffect(() => {
+    if (resume) return; // an explicit resume link bypasses the chooser; the engine adopts the id
+    const match = listInProgress(certId).find(
+      (a) => a.mode === mode && (mode !== "drill" || a.domain === domain),
+    );
+    setInProgress(match ?? null);
+    setChecked(true);
+  }, [certId, mode, domain, resume]);
+
+  // Engine contract preserved: key by mode+domain+resume so a changed resume id forces a clean remount.
+  const engine = (resumeId?: string) => (
+    <ExamEngine
+      key={`${mode}-${domain ?? ""}-${resumeId ?? ""}`}
+      certId={certId}
+      mode={mode}
+      domain={domain}
+      resumeAttemptId={resumeId}
+    />
+  );
+
+  // Explicit resume link -> mount the engine directly (today's adopt-by-id path).
+  if (resume) return engine(resume);
+  // Pre-check paint matches the page Suspense fallback + the engine's own shell (no hydration flash).
+  if (!checked) return <p className="stage">Loading...</p>;
+  // Nothing to resume, or the user chose to start fresh -> mount the engine fresh (new attempt).
+  if (startFresh || !inProgress) return engine();
+
+  return (
+    <PracticeInterstitial
+      attempt={inProgress}
+      meta={getMeta(certId)}
+      mode={mode}
+      domain={domain}
+      onFresh={() => setStartFresh(true)}
+      onDiscard={() => {
+        // Only ever an unfinished attempt (listInProgress) - discardAttempt's resurrection-safety
+        // invariant holds. Then fall through to a fresh engine mount.
+        discardAttempt(inProgress.attemptId);
+        setStartFresh(true);
+      }}
+    />
+  );
+}
+
+/**
+ * Pre-engine chooser shown when a resumable same-mode attempt exists. Resume is a Link to the same
+ * URL with resume=<id> (so the wrapper's resume branch adopts it); Start fresh / Discard are local
+ * flips that never navigate (a bare re-navigation would just re-surface this chooser). Discard is a
+ * two-step inline confirm - no blocking browser dialog. Reuses the engine's .stage/.card/.btn chrome.
+ */
+function PracticeInterstitial({
+  attempt,
+  meta,
+  mode,
+  domain,
+  onFresh,
+  onDiscard,
+}: {
+  attempt: Attempt;
+  meta: CertMeta;
+  mode: Mode;
+  domain?: string;
+  onFresh: () => void;
+  onDiscard: () => void;
+}) {
+  const [confirming, setConfirming] = useState(false);
+  const answered = Object.keys(attempt.results).length;
+  const total = attempt.questionIds.length;
+  const label = MODE_LABEL[attempt.mode] ?? attempt.mode;
+
+  const p = new URLSearchParams({ mode, resume: attempt.attemptId });
+  if (domain) p.set("domain", domain); // drill carries its domain into the resume URL
+  const resumeHref = `${practicePath(meta)}?${p.toString()}`;
+
+  return (
+    <div className="stage">
+      <div className="card" style={{ maxWidth: 520, margin: "48px auto", textAlign: "center" }}>
+        <h2 style={{ margin: "0 0 8px", fontSize: 20 }}>You have a {label} in progress</h2>
+        <p className="muted" style={{ margin: "0 0 22px" }}>
+          {answered} of {total} answered
+          {attempt.domain ? ` ${DOT} ${attempt.domain}` : ""}. Resume where you left off, or start a fresh session.
+        </p>
+        <div style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}>
+          <Link className="btn btn-primary" href={resumeHref}>
+            Resume
+          </Link>
+          <button type="button" className="btn btn-ghost" onClick={onFresh}>
+            Start fresh
+          </button>
+          {confirming ? (
+            <>
+              <button
+                type="button"
+                className="btn btn-danger"
+                onClick={onDiscard}
+                aria-label={`Discard this ${label} in progress`}
+              >
+                Discard it
+              </button>
+              <button type="button" className="btn btn-ghost" onClick={() => setConfirming(false)}>
+                Keep it
+              </button>
+            </>
+          ) : (
+            <button type="button" className="btn btn-ghost" onClick={() => setConfirming(true)}>
+              Discard
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 }

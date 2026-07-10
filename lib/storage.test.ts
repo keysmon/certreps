@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { createAttempt, saveAttempt, getAttempt, listAttempts, recordResult, finishAttempt, missedQuestionIds, getInProgress, saveProgress } from "./storage";
+import { createAttempt, saveAttempt, getAttempt, listAttempts, recordResult, finishAttempt, missedQuestionIds, getInProgress, listInProgress, discardAttempt, saveProgress } from "./storage";
 
 beforeEach(() => localStorage.clear());
 
@@ -48,6 +48,39 @@ describe("attempt store", () => {
     // Nothing unfinished -> null.
     finishAttempt(older.attemptId, 10, 0);
     expect(getInProgress("aip-c01")).toBeNull();
+  });
+  it("lists every unfinished attempt for a cert, newest first (any mode)", () => {
+    const a = createAttempt("aip-c01", "mock", ["q1"]);
+    a.startedAt = 1000;
+    saveAttempt(a);
+    const b = createAttempt("aip-c01", "quick", ["q2"]);
+    b.startedAt = 3000;
+    saveAttempt(b);
+    const c = createAttempt("aip-c01", "drill", ["q3"], "Domain 2");
+    c.startedAt = 2000;
+    saveAttempt(c);
+    // Newest first, all three unfinished.
+    expect(listInProgress("aip-c01").map((x) => x.attemptId)).toEqual([b.attemptId, c.attemptId, a.attemptId]);
+    // A finished attempt drops out of the list.
+    finishAttempt(b.attemptId, 10, 0);
+    expect(listInProgress("aip-c01").map((x) => x.attemptId)).toEqual([c.attemptId, a.attemptId]);
+    // Head of the list agrees with getInProgress (the dashboard's primary-resume target).
+    expect(listInProgress("aip-c01")[0].attemptId).toBe(getInProgress("aip-c01")!.attemptId);
+    // Other certs are not included.
+    expect(listInProgress("other-c01")).toEqual([]);
+  });
+  it("discards a single attempt row, leaving the others intact", () => {
+    const a = createAttempt("aip-c01", "mock", ["q1"]);
+    saveAttempt(a);
+    const b = createAttempt("aip-c01", "quick", ["q2"]);
+    saveAttempt(b);
+    discardAttempt(a.attemptId);
+    expect(getAttempt(a.attemptId)).toBeNull();
+    expect(getAttempt(b.attemptId)).not.toBeNull();
+    expect(listAttempts("aip-c01").map((x) => x.attemptId)).toEqual([b.attemptId]);
+    // Discarding an unknown id is a harmless no-op (does not corrupt the store).
+    discardAttempt("does-not-exist");
+    expect(listAttempts("aip-c01").length).toBe(1);
   });
   it("saveProgress snapshots elapsed + pauses on an unfinished attempt, never on a sealed one", () => {
     const a = createAttempt("aip-c01", "mock", ["q1", "q2"]);
