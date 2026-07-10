@@ -1,0 +1,47 @@
+{
+  "certId": "nca-genl",
+  "idPrefix": "ncagenl",
+  "vendor": "NVIDIA",
+  "vendorSlug": "nvidia",
+  "title": "NVIDIA-Certified Associate: Generative AI LLM",
+  "examCode": "NCA-GENL",
+  "level": "Associate",
+  "mockQuestionCount": 50,
+  "mockMinutes": 60,
+  "passLinePct": 70,
+  "verified": "Q3 2026",
+  "seoTitle": "Free NCA-GENL Practice Exam - NVIDIA Generative AI LLMs",
+  "seoDescription": "Free full-length NCA-GENL practice exam with {n} original scenario questions, instant explanations, and a per-domain readiness read. No signup.",
+  "domains": [
+    {
+      "name": "Core Machine Learning and AI Knowledge",
+      "tag": "Domain 1",
+      "weightPct": 30,
+      "mockCount": 15
+    },
+    {
+      "name": "Software Development",
+      "tag": "Domain 2",
+      "weightPct": 24,
+      "mockCount": 12
+    },
+    {
+      "name": "Experimentation",
+      "tag": "Domain 3",
+      "weightPct": 22,
+      "mockCount": 11
+    },
+    {
+      "name": "Data Analysis and Visualization",
+      "tag": "Domain 4",
+      "weightPct": 14,
+      "mockCount": 7
+    },
+    {
+      "name": "Trustworthy AI",
+      "tag": "Domain 5",
+      "weightPct": 10,
+      "mockCount": 5
+    }
+  ]
+}
