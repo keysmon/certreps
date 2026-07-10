@@ -692,5 +692,81 @@
     "difficulty": "medium",
     "docUrl": "https://docs.databricks.com/aws/en/agents/mcp/managed-mcp",
     "id": "dbxge-0036"
+  },
+  {
+    "domain": "Governance",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A healthcare company's RAG application answers patient questions from Unity Catalog tables that include SSN and diagnosis-code columns. Compliance requires that PII columns be redacted before the LLM ever sees them, without maintaining a duplicate copy of each table for every consumer group. Which approach meets this requirement with the least additional infrastructure?",
+    "options": [
+      "Create a full copy of each table with the PII columns removed, and grant access only to the redacted copy.",
+      "Apply a Unity Catalog column mask, a SQL function invoked at query time, directly on the PII columns so queries return redacted values without a duplicate table.",
+      "Store the PII columns in a separate Delta table with different access grants, joined back in only when needed.",
+      "Encrypt the PII columns at rest with a customer-managed key and decrypt them in the application layer before sending to the LLM."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "A <b>Unity Catalog column mask</b> applies a SQL function to a column at query time, for example redacting a value unless the caller belongs to a permitted group, so every query (including one built for an LLM prompt) returns the redacted value with no second table to build or keep in sync. A full-copy table (A) means maintaining and syncing a duplicate dataset. A separate joined table (C) still exposes the raw values wherever the join happens and adds schema-management overhead. Encrypting at rest and decrypting in the application (D) hands the app a fully decrypted value before the LLM call, so it does not stop PII from reaching the model at all.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.databricks.com/aws/en/data-governance/unity-catalog/filters-and-masks",
+    "id": "dbxge-0037"
+  },
+  {
+    "domain": "Governance",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A team deploys an agent behind Unity AI Gateway and wants every request that contains personally identifiable information to be rejected outright before it ever reaches the model, rather than merely redacted in the response. Which guardrail configuration accomplishes this?",
+    "options": [
+      "A PII guardrail on the Input phase with its action set to block, pointed at a shared evaluator (safety) endpoint.",
+      "A PII guardrail on the Output phase with its action set to redact.",
+      "The enable_safety_filter=True option on the endpoint's serving configuration.",
+      "A rate limit of 0 queries per minute configured on the endpoint."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "Unity AI Gateway guardrails let you choose a Phase, Input or Output, and an action, redact or block. Setting the guardrail's Phase to <b>Input</b> with action <b>block</b> rejects a request containing PII before it reaches the model at all. An Output-phase guardrail (B) only inspects the model's response, and its action here is redact, not block, so PII in the incoming request would still reach the model. enable_safety_filter (C) is a curated Foundation Model APIs option for stripping unsafe content at the model layer, not a PII-blocking gateway guardrail. Setting rate limits to 0 QPM (D) blocks all traffic indiscriminately, not just PII-bearing requests.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.databricks.com/aws/en/ai-gateway/guardrails",
+    "id": "dbxge-0038"
+  },
+  {
+    "domain": "Governance",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "An engineer wants to ingest a dataset listed on Databricks Marketplace into a RAG corpus that will power a customer-facing support bot. Independent of any Unity Catalog lineage or audit tooling already in place, what must the engineer verify before ingesting the dataset?",
+    "options": [
+      "That the dataset's file format is Delta rather than Parquet.",
+      "That the dataset provider's listed Consumer Terms permit the intended downstream use, since consumers are bound by those terms for anything built on the data.",
+      "That the dataset is stored in the same cloud region as the RAG application's compute.",
+      "That the dataset's Unity Catalog lineage graph shows fewer than five downstream tables."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "Every Databricks Marketplace listing carries Provider and <b>Consumer Terms</b> stating the license grant and restrictions, and a consumer is bound by those terms for anything built downstream, so feeding the dataset into a RAG corpus without honoring its stated usage restrictions is a legal-risk violation regardless of any lineage or audit tooling in place. File format (A) and compute region (C) are engineering and performance concerns, not legal risk. The size of a lineage graph (D) is an operational governance detail and does not establish that a use is licensed.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.databricks.com/aws/en/marketplace/provider-policies",
+    "id": "dbxge-0039"
+  },
+  {
+    "domain": "Governance",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "While building a RAG data pipeline, an engineer finds that some source documents mix toxic or low-quality passages in with otherwise useful content. Deleting every flagged document entirely would also remove the valuable knowledge those documents contain. What does Databricks' RAG data-pipeline guidance recommend instead?",
+    "options": [
+      "Manually review and hand-edit every document before ingestion.",
+      "Run a toxicity or quality classifier, for example via the ai_classify() SQL function, over each document as a pipeline step, and use its prediction to filter or flag only the offending content rather than discarding whole documents.",
+      "Reduce the chunk size so toxic passages land in their own chunks and are ignored at query time.",
+      "Disable the retriever's re-ranking step so toxic chunks are never surfaced regardless of relevance score."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "Databricks' documented RAG data-pipeline guidance runs a <b>toxicity or quality classifier</b>, such as one invoked with <b>ai_classify()</b>, as a pipeline step and uses its prediction to filter or flag only the problematic content, avoiding the all-or-nothing choice of discarding an entire document. Hand-editing every document (A) does not scale to a real corpus. Shrinking chunk size (C) only changes chunk boundaries; it does not classify or remove low-quality content, and a toxic chunk on its own could still be retrieved. Disabling re-ranking (D) changes result ordering and does nothing to filter content quality.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.databricks.com/aws/en/agents/tutorials/ai-cookbook/quality-data-pipeline-rag",
+    "id": "dbxge-0040"
   }
 ]
