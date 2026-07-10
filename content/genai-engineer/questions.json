@@ -114,5 +114,121 @@
     "difficulty": "hard",
     "docUrl": "https://docs.databricks.com/aws/en/agents/agent-bricks/multi-agent-supervisor",
     "id": "dbxge-0006"
+  },
+  {
+    "domain": "Data Preparation",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A Generative AI Engineer is preparing a large set of engineering runbooks written in Markdown, each organized under a clear hierarchy of section headers, for a RAG application. The embedding model has a limited context window, and retrieved chunks should stay topically coherent. Which chunking strategy takes BEST advantage of these documents' structure?",
+    "options": [
+      "Split every document into fixed 100-character chunks regardless of content.",
+      "Embed each full runbook as a single chunk so no section is separated from its document.",
+      "Chunk each runbook at random offsets so chunk boundaries do not correlate with any pattern.",
+      "Use a format-specific splitter that breaks documents on the Markdown header boundaries."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "Markdown has inherent structure, and Databricks guidance calls out <b>format-specific chunking</b>, such as a Markdown header splitter, so chunk boundaries follow the document's own sections and each chunk stays topically coherent. Fixed 100-character chunks cut sentences and sections arbitrarily. Embedding a whole runbook as one chunk exceeds the embedding model's context limit and buries specific answers in unrelated text. Random offsets are strictly worse than any deliberate strategy because boundaries land mid-thought by design.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.databricks.com/aws/en/agents/tutorials/ai-cookbook/quality-data-pipeline-rag",
+    "id": "dbxge-0007"
+  },
+  {
+    "domain": "Data Preparation",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A RAG application built over scraped HTML pages from a support site keeps producing answers that quote navigation menus, cookie banners, and page footers instead of article content. Where in the data pipeline should the engineer fix this?",
+    "options": [
+      "In preprocessing, by removing the navigation, footer, and other boilerplate from the parsed documents before chunking.",
+      "At query time, by raising the number of retrieved chunks so real content eventually outranks the boilerplate.",
+      "At generation time, by switching to a larger LLM that can ignore irrelevant context on its own.",
+      "At indexing time, by lowering the embedding dimension so boilerplate text carries less weight."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "Databricks guidance is to clean parsed text by <b>removing irrelevant or noisy information such as headers and footers before chunking</b>; boilerplate that never enters the Delta table can never be retrieved or quoted. Retrieving more chunks adds more noise along with more content and does not remove the polluted chunks. A larger LLM still receives the same junk context, and grounded generation will keep citing it. Embedding dimension controls vector size, not which text gets indexed, so it cannot filter boilerplate.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.databricks.com/aws/en/agents/tutorials/ai-cookbook/quality-data-pipeline-rag",
+    "id": "dbxge-0008"
+  },
+  {
+    "domain": "Data Preparation",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A Generative AI Engineer must extract clean article text from thousands of HTML pages exported from an internal wiki to feed a RAG data pipeline. Which Python package is the appropriate choice for parsing this source format?",
+    "options": [
+      "PyPDF2, which reads pages and extracts text from PDF files.",
+      "BeautifulSoup, which parses HTML and extracts text from markup elements.",
+      "pytesseract, which runs OCR to pull text out of scanned images.",
+      "python-pptx, which reads slide content from PowerPoint files."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "The sources are HTML documents, and Databricks' RAG pipeline guidance names <b>BeautifulSoup</b> (with lxml) as the tool for parsing HTML and stripping markup to get clean text. PyPDF2 targets PDF files, not HTML markup. pytesseract is an OCR library for scanned images such as .png or .jpeg files, which these wiki exports are not. python-pptx reads PowerPoint slides and cannot parse HTML pages.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.databricks.com/aws/en/agents/tutorials/ai-cookbook/quality-data-pipeline-rag",
+    "id": "dbxge-0009"
+  },
+  {
+    "domain": "Data Preparation",
+    "tag": "Domain 2",
+    "type": "multi",
+    "stem": "A Generative AI Engineer has chunked a document corpus and must now store the chunks in a Delta table in Unity Catalog that will back a Databricks AI Search delta-sync index on a standard endpoint, using Databricks-managed embeddings, so that new chunks flow into the index automatically. Which TWO actions are required for this setup? (Select TWO.)",
+    "options": [
+      "Write each chunk's text into its own row along with a primary key column and useful metadata columns.",
+      "Concatenate all chunks from each source document back into a single row so the index stays small.",
+      "Precompute embedding vectors for every chunk in the table, because delta-sync indexes cannot call an embedding model.",
+      "Store the chunks as JSON files in a Unity Catalog volume, because Vector Search cannot read Delta tables.",
+      "Enable Change Data Feed on the source Delta table so the index can sync incrementally as chunks are added."
+    ],
+    "correct": [
+      0,
+      4
+    ],
+    "explanation": "A delta-sync index reads from a source Delta table that has one <b>row per chunk with a primary key</b> plus the text and metadata columns, and on standard endpoints the table must have <b>Change Data Feed enabled</b> (delta.enableChangeDataFeed = true) so inserts and updates sync into the index incrementally. Concatenating chunks back into one row destroys the chunking and makes retrieval return whole documents. Precomputed vectors are only needed for self-managed embeddings; with Databricks-managed embeddings the index calls the embedding endpoint itself. Delta-sync indexes read Delta tables directly, so exporting to JSON files in a volume is backwards.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.databricks.com/aws/en/ai-search/create-ai-search",
+    "id": "dbxge-0010"
+  },
+  {
+    "domain": "Data Preparation",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A team is evaluating retriever quality for a RAG application whose LLM prompt only ever uses the single top retrieved chunk. They want a metric that directly reflects how high the FIRST relevant document appears in the ranked results across their evaluation set. Which metric matches this need?",
+    "options": [
+      "recall@k, which measures the fraction of all known relevant documents that appear in the top k results.",
+      "precision@k, which measures the fraction of the top k results that are relevant.",
+      "Index build time, which measures how long the vector index takes to refresh.",
+      "Mean reciprocal rank (MRR), which averages one divided by the rank of the first relevant result."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>MRR</b> is computed from the rank position of the first relevant document for each query, so it directly rewards retrievers that place a relevant chunk at or near position one, which is what matters when only the top chunk reaches the prompt. recall@k measures coverage of all relevant documents anywhere in the top k, without caring whether the first hit is ranked first or tenth. precision@k measures how clean the whole top-k set is, not where the first relevant result sits. Index build time is an operational measure and says nothing about ranking quality.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.databricks.com/aws/en/ai-search/retrieval-quality-eval",
+    "id": "dbxge-0011"
+  },
+  {
+    "domain": "Data Preparation",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A Generative AI Engineer's RAG chatbot retrieves 50 candidate chunks per query from a Databricks AI Search index, but relevant chunks often sit in the middle of the ranking, and answer quality suffers. The team cares most about answer quality and can tolerate some added response latency. How does adding a reranker to this pipeline address the problem?",
+    "options": [
+      "It replaces the vector index entirely, so queries no longer need an embedding-based first pass.",
+      "It caches previous answers so repeat questions skip retrieval and generation altogether.",
+      "It runs a cross-encoder over the retrieved candidates to re-score each one against the query, reordering the results at the cost of a small latency increase.",
+      "It compresses the stored embeddings so all 50 candidates fit into the LLM's context window."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "A reranker is a <b>second pass after first-stage retrieval</b>: a cross-encoder model scores each candidate chunk jointly with the query and reorders the list so the most relevant chunks rise to the top, trading a modest latency increase for a meaningful quality lift, which suits this quality-first chatbot. It does not replace the vector index; it depends on the first-pass candidates the index returns. It is not a cache and does nothing for repeat questions. It also does not compress embeddings or change what fits in the LLM context; it changes the ordering of candidates.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.databricks.com/aws/en/ai-search/retrieval-quality",
+    "id": "dbxge-0012"
   }
 ]
