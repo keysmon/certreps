@@ -152,8 +152,9 @@ export function CommandSwitcher() {
   }, [registry, progressByCert, query]);
 
   const hasQuery = query.trim().length > 0;
-  // Empty-query cap covers the full 12-cert AWS roster; revisit if the registry outgrows a scrollable list.
-  const rows = useMemo(() => items.slice(0, hasQuery ? 40 : 12), [items, hasQuery]);
+  // Empty-query cap covers the full 15-cert roster with headroom (the list scrolls);
+  // raise again when the registry outgrows 20 - the paired test asserts Math.min(length, 20).
+  const rows = useMemo(() => items.slice(0, hasQuery ? 40 : 20), [items, hasQuery]);
   const sectionLabel = hasQuery ? `${items.length} MATCHES` : "CONTINUE";
 
   // Keep the active index in range as the filtered rows change.

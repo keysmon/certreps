@@ -54,11 +54,14 @@ function passingMock(certId: string): Attempt {
 }
 
 // The card grid: each CertCard is an anchor whose accessible name is the cert title.
+// Filter by registry titles, not a vendor phrase: an /AWS Certified/ filter silently
+// dropped every non-AWS card when the registry gained new vendors (v1g).
+const CARD_TITLES = listCerts().map((m) => m.title);
 function gridTitles(): string[] {
   return screen
     .queryAllByRole("link")
     .map((a) => a.getAttribute("aria-label") ?? "")
-    .filter((t) => /AWS Certified/i.test(t));
+    .filter((t) => CARD_TITLES.some((title) => t.includes(title)));
 }
 
 beforeEach(() => localStorage.clear());
@@ -154,9 +157,11 @@ describe("CatalogClient", () => {
     writeAll([passingMock(MLA)]);
     render(<CatalogClient certs={CERTS} />);
 
-    // Vendor AWS covers both certs regardless of history.
+    // Vendor chips count their own certs regardless of history (registry-derived:
+    // the AWS chip stopped equaling N when non-AWS vendors landed in v1g).
+    const awsCount = CERTS.filter((c) => c.vendorSlug === "aws").length;
     const aws = await screen.findByRole("button", { name: /^AWS/i });
-    expect(within(aws).getByText(String(N))).toBeInTheDocument();
+    expect(within(aws).getByText(String(awsCount))).toBeInTheDocument();
 
     // One cert is Ready, one is Not started after hydration.
     expect(within(screen.getByRole("button", { name: /^Ready/i })).getByText("1")).toBeInTheDocument();

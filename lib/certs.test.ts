@@ -5,15 +5,21 @@ import { getBank, getMeta } from "./bank";
 
 describe("cert registry", () => {
   it("lists every registered cert in registry order", () => {
-    expect(listCerts().map((c) => c.certId)).toEqual(["aip-c01", "mla-c01", "saa-c03", "clf-c02", "dva-c02", "sap-c02", "dea-c01", "soa-c03", "dop-c02", "scs-c03", "aif-c01", "ans-c01"]);
+    expect(listCerts().map((c) => c.certId)).toEqual(["aip-c01", "mla-c01", "saa-c03", "clf-c02", "dva-c02", "sap-c02", "dea-c01", "soa-c03", "dop-c02", "scs-c03", "aif-c01", "ans-c01", "genai-engineer", "nca-genl", "genai-leader"]);
   });
 
-  // URL-compat invariant: every existing cert routes under /aws/* (vendorSlug "aws"). The
-  // vendor route refactor (v1g Task A) keys routing + VENDORS lookups off vendorSlug, so a
-  // drift here would silently move an indexed /aws/<cert> URL to a new vendor segment.
-  it("routes every existing cert under the aws vendor slug", () => {
+  // URL-compat invariant: routing keys off vendorSlug, so slug drift silently moves an
+  // indexed URL to a new vendor segment. AWS certs must stay under /aws/* forever; a
+  // cert absent from this map is expected to be AWS (new non-AWS certs must be added
+  // here consciously, in the same commit that registers them).
+  it("pins every cert's vendor slug (AWS certs never move off /aws/*)", () => {
+    const nonAws: Record<string, string> = {
+      "genai-engineer": "databricks",
+      "nca-genl": "nvidia",
+      "genai-leader": "gcp",
+    };
     for (const meta of listCerts()) {
-      expect(meta.vendorSlug).toBe("aws");
+      expect(`${meta.certId}:${meta.vendorSlug}`).toBe(`${meta.certId}:${nonAws[meta.certId] ?? "aws"}`);
     }
   });
 
