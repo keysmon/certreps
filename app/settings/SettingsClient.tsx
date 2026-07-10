@@ -6,6 +6,7 @@ import { getSupabase } from "@/lib/supabase/client";
 import { useSession } from "@/lib/supabase/useSession";
 import { readAll, clearAll } from "@/lib/storage";
 import { readPrefs, setPref, clearPrefs, type Prefs } from "@/lib/prefs";
+import { getTheme, toggleTheme, type Theme } from "@/lib/theme";
 import { initials } from "@/lib/initials";
 import "./settings.css";
 
@@ -43,12 +44,18 @@ export function SettingsClient() {
   // value, and React does not patch hydrated attributes, so the first click flips storage with no
   // visible change. Load the stored prefs in an effect instead (mirrors AccountClient's attempts load).
   const [prefs, setPrefs] = useState<Prefs>({ reminders: false, newCerts: false, weekly: false });
+  // Theme follows the same SSR-safe rule: dark default on the server/first render, real value after
+  // mount. The no-flash script already applied the theme visually; this only syncs the switch.
+  const [theme, setThemeState] = useState<Theme>("dark");
   const [toast, setToast] = useState("");
   const toastTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const email = session?.user.email ?? undefined;
 
-  // Load stored prefs after hydration (see the SSR-safe note on the useState above).
-  useEffect(() => setPrefs(readPrefs()), []);
+  // Load stored prefs + theme after hydration (see the SSR-safe note on the useState above).
+  useEffect(() => {
+    setPrefs(readPrefs());
+    setThemeState(getTheme());
+  }, []);
 
   function showToast(msg: string) {
     setToast(msg);
@@ -60,6 +67,12 @@ export function SettingsClient() {
     const next = setPref(key, !prefs[key]);
     setPrefs(next);
     showToast(next[key] ? "Turned on" : "Turned off");
+  }
+
+  function onToggleTheme() {
+    const next = toggleTheme();
+    setThemeState(next);
+    showToast(next === "light" ? "Light theme on" : "Dark theme on");
   }
 
   // Moved verbatim from the old account page: local store -> pretty JSON -> download.
@@ -144,6 +157,25 @@ export function SettingsClient() {
             </div>
           </>
         )}
+      </section>
+
+      <section className="st-card">
+        <h2>Appearance</h2>
+        <p className="cd">Choose how CertReps looks on this device.</p>
+        <div className="st-row">
+          <div className="rt">
+            <div className="rl">Light theme</div>
+            <div className="rs">Dark is the default. Your choice is remembered on this device.</div>
+          </div>
+          <button
+            type="button"
+            role="switch"
+            aria-checked={theme === "light" ? "true" : "false"}
+            aria-label="Light theme"
+            className={`st-switch${theme === "light" ? " on" : ""}`}
+            onClick={onToggleTheme}
+          />
+        </div>
       </section>
 
       <section className="st-card">

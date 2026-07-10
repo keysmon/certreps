@@ -102,6 +102,40 @@ describe("SettingsClient", () => {
     expect(await screen.findByText("Turned on")).toBeInTheDocument();
   });
 
+  it("renders the theme switch off in the SSR pass even when light is stored (hydration-safe)", () => {
+    mockedAvailable.mockReturnValue(false);
+    // Dark is the deterministic SSR default; the real stored theme loads only after mount, so the
+    // prerendered switch is off and matches the client's first render even for a light-theme device.
+    localStorage.setItem("certreps.theme", "light");
+    const html = renderToString(<SettingsClient />);
+    const btn = html.match(/<button[^>]*aria-label="Light theme"[^>]*>/)?.[0] ?? "";
+    expect(btn).toContain('aria-checked="false"');
+  });
+
+  it("loads a stored light theme via effect after mount", async () => {
+    mockedAvailable.mockReturnValue(false);
+    document.documentElement.removeAttribute("data-theme");
+    localStorage.setItem("certreps.theme", "light");
+    render(<SettingsClient />);
+    const themeSwitch = screen.getByRole("switch", { name: "Light theme" });
+    await waitFor(() => expect(themeSwitch).toHaveAttribute("aria-checked", "true"));
+  });
+
+  it("toggles the theme: applies the html attribute, persists it, and toasts", async () => {
+    mockedAvailable.mockReturnValue(false);
+    document.documentElement.removeAttribute("data-theme");
+    render(<SettingsClient />);
+
+    const themeSwitch = screen.getByRole("switch", { name: "Light theme" });
+    expect(themeSwitch).toHaveAttribute("aria-checked", "false");
+    await userEvent.click(themeSwitch);
+
+    expect(themeSwitch).toHaveAttribute("aria-checked", "true");
+    expect(document.documentElement.getAttribute("data-theme")).toBe("light");
+    expect(localStorage.getItem("certreps.theme")).toBe("light");
+    expect(await screen.findByText("Light theme on")).toBeInTheDocument();
+  });
+
   it("shows the sync row as a disabled, off switch requiring an account when signed out", () => {
     mockedAvailable.mockReturnValue(false);
     render(<SettingsClient />);
