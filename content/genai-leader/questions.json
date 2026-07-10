@@ -15,7 +15,7 @@
     ],
     "explanation": "<b>Generative AI</b> models learn patterns from large datasets and use those patterns to generate new, original content (text, images, audio, code), while traditional (discriminative) ML models such as fraud detectors or spam filters are trained to predict a label or score for a given input. The cloud-provider option is false: gen AI runs across many providers, not only Google Cloud. The no-training-data option is false: gen AI models require extensive training data. The image-only option reverses the tasks and is false; both types of models can be applied to many data types.",
     "difficulty": "easy",
-    "docUrl": "https://cloud.google.com/discover/what-is-generative-ai",
+    "docUrl": "https://cloud.google.com/ai/generative-ai",
     "id": "gcpgl-0001"
   },
   {
@@ -34,7 +34,7 @@
     ],
     "explanation": "A <b>foundation model</b> is trained on a broad, diverse dataset at scale and can be adapted to a wide variety of downstream tasks through techniques like prompting, prompt tuning, or fine-tuning, rather than being built for one narrow purpose. A narrow single-task model is the opposite of a foundation model. Expert systems encode explicit rules rather than learning from data. A database schema is a data structure, not a model.",
     "difficulty": "easy",
-    "docUrl": "https://cloud.google.com/discover/what-is-a-foundation-model",
+    "docUrl": "https://cloud.google.com/discover/what-are-foundation-models",
     "id": "gcpgl-0002"
   },
   {
@@ -53,7 +53,7 @@
     ],
     "explanation": "A <b>multimodal foundation model</b> is trained to understand and reason across more than one data type, such as text, images, audio, or video, in the same request, which is exactly what is needed to combine a product photo and text description into one output. A text-only model cannot use the photo. A diffusion model limited to image output cannot produce the text caption. A tabular classifier is not designed for images or free text.",
     "difficulty": "medium",
-    "docUrl": "https://cloud.google.com/discover/what-is-multimodal-ai",
+    "docUrl": "https://cloud.google.com/use-cases/multimodal-ai",
     "id": "gcpgl-0003"
   },
   {
@@ -72,7 +72,7 @@
     ],
     "explanation": "A <b>diffusion model</b> is trained to reverse a noise-adding process: at generation time it starts from random noise and progressively denoises it in steps guided by the text prompt, until a coherent image results. It does not retrieve stock photos, does not plot literal pixel coordinates from a spreadsheet, and does not require a human-drawn sketch as an input.",
     "difficulty": "medium",
-    "docUrl": "https://cloud.google.com/discover/what-is-a-diffusion-model",
+    "docUrl": "https://cloud.google.com/ai/generative-ai",
     "id": "gcpgl-0004"
   },
   {
@@ -91,7 +91,7 @@
     ],
     "explanation": "An <b>LLM</b> is a type of foundation model trained on vast amounts of text so it can understand and generate natural language for tasks like writing, summarizing, translating, and answering questions. It is not a currency conversion tool, not a static lookup table (since it generates novel text rather than storing every possible sentence), and not an image-only generator.",
     "difficulty": "easy",
-    "docUrl": "https://cloud.google.com/discover/what-are-large-language-models",
+    "docUrl": "https://cloud.google.com/ai/llms",
     "id": "gcpgl-0005"
   },
   {
@@ -148,7 +148,7 @@
     ],
     "explanation": "The typical machine learning lifecycle flows from <b>data ingestion</b> (bringing raw data in), to <b>data preparation</b> (cleaning and transforming it), to <b>model training</b>, to <b>model deployment</b> (serving the trained model), and finally to <b>model management</b> (monitoring, versioning, and maintaining the model over time). The other orderings place later stages, such as deployment or management, before the data and training stages they depend on.",
     "difficulty": "easy",
-    "docUrl": "https://cloud.google.com/discover/what-is-model-training",
+    "docUrl": "https://cloud.google.com/learn/what-is-machine-learning",
     "id": "gcpgl-0008"
   },
   {
@@ -167,7 +167,7 @@
     ],
     "explanation": "<b>Context window</b> describes how much input (measured in tokens) a model can take into account in one request; a large enough context window lets a model process an entire long document at once instead of splitting it into pieces. Image resolution and video frame rate apply to generation of images or video, not to reading a long text contract. Supported languages affects translation coverage, not the amount of text the model can process at once.",
     "difficulty": "hard",
-    "docUrl": "https://cloud.google.com/discover/what-is-context-window",
+    "docUrl": "https://cloud.google.com/ai/llms",
     "id": "gcpgl-0009"
   },
   {
@@ -186,7 +186,7 @@
     ],
     "explanation": "Turning long reports into a short digest of key findings is <b>summarization</b>, one of the core categories of gen AI business value alongside creation, discovery, and automation. It is not automation of a multi-step workflow, not personalization to an individual user, and clearly not code generation.",
     "difficulty": "medium",
-    "docUrl": "https://cloud.google.com/discover/gen-ai-use-cases",
+    "docUrl": "https://cloud.google.com/transform/gen-ai-use-cases-across-industries",
     "id": "gcpgl-0010"
   },
   {
@@ -205,7 +205,7 @@
     ],
     "explanation": "<b>Completeness</b> (are fields missing), <b>consistency</b> (are formats uniform), and <b>relevance</b> (is the data current and applicable) are core data quality characteristics that directly affect how well a gen AI model can learn from or use a dataset. Encryption and latency, model architecture, and billing or region are infrastructure or model concerns, not data quality characteristics.",
     "difficulty": "medium",
-    "docUrl": "https://cloud.google.com/discover/what-is-data-quality",
+    "docUrl": "https://cloud.google.com/learn/what-is-data-governance",
     "id": "gcpgl-0011"
   },
   {
@@ -224,7 +224,7 @@
     ],
     "explanation": "<b>Structured data</b> fits a predefined schema, such as rows and columns in a relational database, while <b>unstructured data</b>, such as emails, PDF documents, images, and audio recordings, has no fixed schema. The other pairings reverse the definitions, and storing data in the cloud does not change whether its original format is structured or unstructured.",
     "difficulty": "easy",
-    "docUrl": "https://cloud.google.com/discover/structured-vs-unstructured-data",
+    "docUrl": "https://cloud.google.com/learn/what-is-big-data",
     "id": "gcpgl-0012"
   },
   {
@@ -243,7 +243,7 @@
     ],
     "explanation": "<b>Labeled data</b> pairs each input example with the correct answer or category, such as a 'defective' or 'not defective' tag on a photo, which is exactly what is described. Unlabeled data lacks these tags entirely. The image files themselves are unstructured data regardless of tagging. Having labels does not by itself make data synthetic, meaning artificially generated rather than real.",
     "difficulty": "easy",
-    "docUrl": "https://cloud.google.com/discover/what-is-data-labeling",
+    "docUrl": "https://cloud.google.com/discover/what-is-supervised-learning",
     "id": "gcpgl-0013"
   },
   {
@@ -283,7 +283,7 @@
     ],
     "explanation": "<b>Gemma</b> is Google's family of lightweight, open models, which can be downloaded and run outside Google Cloud, fitting the first need. <b>Veo</b> is Google's model family purpose-built for text-to-video and image-to-video generation, fitting the second need. Gemini is Google's flagship multimodal model family and is available through APIs, not open-weights-only. Imagen, not Veo, is Google's image-generation model family, so labeling Imagen as the video model mislabels its purpose. Gemma supports text and other tasks, not only image generation.",
     "difficulty": "medium",
-    "docUrl": "https://cloud.google.com/discover/gemini-vs-gemma",
+    "docUrl": "https://cloud.google.com/model-garden",
     "id": "gcpgl-0015"
   },
   {
@@ -302,7 +302,7 @@
     ],
     "explanation": "<b>TPUs</b> are custom-designed chips that Google built specifically to accelerate the matrix-heavy computations behind machine learning and gen AI training and inference, letting Google Cloud train and serve large models efficiently at scale. Consumer laptops, a single mainframe process, and fax servers are not AI-optimized infrastructure and cannot deliver comparable performance.",
     "difficulty": "easy",
-    "docUrl": "https://cloud.google.com/discover/what-is-a-tpu",
+    "docUrl": "https://cloud.google.com/tpu",
     "id": "gcpgl-0016"
   },
   {
@@ -321,7 +321,7 @@
     ],
     "explanation": "<b>AI Hypercomputer</b> refers to Google Cloud's integrated supercomputing system, which brings together performance-optimized compute (TPUs and GPUs), storage, networking, and software so demanding AI training and serving workloads run efficiently at scale. It is not a single desktop machine, a pricing tool, or a code editor.",
     "difficulty": "medium",
-    "docUrl": "https://cloud.google.com/products/ai-hypercomputer",
+    "docUrl": "https://cloud.google.com/blog/products/compute/whats-new-with-google-clouds-ai-hypercomputer-architecture",
     "id": "gcpgl-0017"
   },
   {
@@ -359,7 +359,7 @@
     ],
     "explanation": "Google Cloud's <b>open approach</b> to gen AI includes offering choice across first-party models (Gemini, Gemma), open models, and third-party models within the same platform, rather than restricting customers to a single vendor's models. There is no such single-vendor restriction, no requirement to reformat third-party models, and no one-model-per-project limit.",
     "difficulty": "medium",
-    "docUrl": "https://cloud.google.com/discover/open-source-ai-models",
+    "docUrl": "https://cloud.google.com/products/gemini-enterprise-agent-platform",
     "id": "gcpgl-0019"
   },
   {
@@ -378,7 +378,7 @@
     ],
     "explanation": "<b>Gemini Advanced</b> is the premium subscription tier of the consumer Gemini app, giving access to Google's most capable models and letting users create custom <b>Gems</b>, saved AI personas configured for specific repeated tasks. Gemini for Google Workspace embeds Gemini into productivity apps rather than being the consumer app's premium tier. Agent Studio is a developer tool for building agents, not a consumer chat subscription. NotebookLM Enterprise is a research and writing tool, not the Gemini app's premium tier.",
     "difficulty": "easy",
-    "docUrl": "https://cloud.google.com/discover/what-are-gems-in-gemini",
+    "docUrl": "https://support.google.com/gemini/answer/15236321",
     "id": "gcpgl-0020"
   },
   {
@@ -435,7 +435,7 @@
     ],
     "explanation": "<b>Gemini for Google Workspace</b> embeds gen AI features, such as summarizing an email thread or drafting replies, directly inside familiar Workspace apps like Gmail, Docs, and Sheets. Agent Studio and Model Garden are developer- and platform-facing tools, not end-user Workspace features. Cloud Run is a compute service for running containers, unrelated to embedded Workspace AI assistance.",
     "difficulty": "easy",
-    "docUrl": "https://cloud.google.com/discover/what-is-gemini-for-google-workspace",
+    "docUrl": "https://cloud.google.com/ai/gemini-for-work",
     "id": "gcpgl-0023"
   },
   {
@@ -494,7 +494,7 @@
     ],
     "explanation": "<b>Conversational Insights</b> analyzes data from across contact center interactions to give operations managers and quality teams KPIs, categorized inquiry topics, and areas for improvement, which is exactly the described need. The Vision API analyzes images, the Agent Development Kit is a code-first agent-building framework, and the Document Translation API translates documents; none analyzes contact center interaction trends.",
     "difficulty": "hard",
-    "docUrl": "https://cloud.google.com/products/conversational-insights",
+    "docUrl": "https://cloud.google.com/gemini-enterprise-cx/cx-insights",
     "id": "gcpgl-0026"
   },
   {
@@ -532,7 +532,7 @@
     ],
     "explanation": "<b>Model Garden</b> is the model catalog within the Gemini Enterprise Agent Platform where developers discover, evaluate, and deploy first-party Gemini and Gemma models alongside open models like Llama and third-party models like Claude. Cloud Storage stores objects rather than models, Agent Assist supports contact center agents, and Cloud Billing manages spend; none serves as a model catalog.",
     "difficulty": "easy",
-    "docUrl": "https://cloud.google.com/products/gemini-enterprise-agent-platform/model-garden",
+    "docUrl": "https://cloud.google.com/model-garden",
     "id": "gcpgl-0028"
   },
   {
@@ -570,7 +570,7 @@
     ],
     "explanation": "The <b>Agent Development Kit (ADK)</b> is Google's framework for defining an agent's reasoning, tool use, and orchestration logic in code, giving developers full control over custom agent behavior instead of a no-code visual canvas. Conversational Insights is a contact center analytics tool, Cloud Storage stores objects, and Cloud Billing reports track spend; none is an agent development framework.",
     "difficulty": "medium",
-    "docUrl": "https://cloud.google.com/products/agent-development-kit",
+    "docUrl": "https://cloud.google.com/products/gemini-enterprise-agent-platform",
     "id": "gcpgl-0030"
   },
   {
@@ -589,7 +589,7 @@
     ],
     "explanation": "<b>Agent Studio</b> is the low-code, visual canvas within the Gemini Enterprise Agent Platform for designing, prototyping, and managing agents, matching a non-coder who wants a visual way to build agent flows. <b>Google AI Studio</b> is aimed at developers experimenting directly with Gemini model prompts and API calls, not a low-code agent canvas. Cloud Shell is a command-line environment, and BigQuery Studio is for SQL analytics; neither is an agent-design tool.",
     "difficulty": "easy",
-    "docUrl": "https://cloud.google.com/discover/what-is-agent-studio",
+    "docUrl": "https://cloud.google.com/products/gemini-enterprise-agent-platform",
     "id": "gcpgl-0031"
   },
   {
@@ -648,7 +648,7 @@
     ],
     "explanation": "<b>Hallucination</b> is when a foundation model produces content that sounds plausible and confident but is factually incorrect or entirely fabricated, such as citing a court case that does not exist. Overfitting describes a training-time problem with generalization, not a runtime output limitation. Latency is about response speed. Quantization is a model-compression technique unrelated to factual accuracy.",
     "difficulty": "easy",
-    "docUrl": "https://cloud.google.com/discover/what-is-hallucination-ai",
+    "docUrl": "https://cloud.google.com/discover/what-are-ai-hallucinations",
     "id": "gcpgl-0034"
   },
   {
@@ -669,7 +669,7 @@
     ],
     "explanation": "<b>Grounding</b> responses in current, authoritative source documents through <b>RAG</b>, and adding <b>human-in-the-loop (HITL)</b> review for high-stakes or uncertain outputs, are both Google Cloud-recommended practices for addressing foundation model limitations such as outdated or ungrounded answers. Image resolution is irrelevant to a text policy assistant. Disabling safety settings would increase risk, not accuracy. Changing a billing tier has no effect on model grounding or accuracy.",
     "difficulty": "hard",
-    "docUrl": "https://cloud.google.com/discover/what-is-rag",
+    "docUrl": "https://cloud.google.com/use-cases/retrieval-augmented-generation",
     "id": "gcpgl-0035"
   },
   {
@@ -688,7 +688,7 @@
     ],
     "explanation": "<b>Drift monitoring</b> specifically tracks how incoming data, or the model's performance on it, shifts over time away from the patterns present during training, which is exactly the kind of gradual degradation described. Prompt chaining and prompt tuning are techniques for shaping model behavior at request time or through light training, not monitoring practices. Data labeling happens before training, not as an ongoing production monitoring practice.",
     "difficulty": "medium",
-    "docUrl": "https://cloud.google.com/discover/what-is-model-monitoring",
+    "docUrl": "https://cloud.google.com/discover/what-is-mlops",
     "id": "gcpgl-0036"
   },
   {
@@ -707,7 +707,7 @@
     ],
     "explanation": "<b>Zero-shot prompting</b> asks a model to complete a task, such as classifying a message into a category, using only an instruction and no worked examples in the prompt. Few-shot prompting would include several labeled examples in the prompt itself, which is not described here. Fine-tuning changes the model through additional training rather than through the prompt alone. Chain-of-thought prompting asks for visible intermediate reasoning steps, a separate technique from providing zero, one, or a few examples.",
     "difficulty": "easy",
-    "docUrl": "https://cloud.google.com/discover/what-is-zero-shot-learning",
+    "docUrl": "https://cloud.google.com/discover/what-is-prompt-engineering",
     "id": "gcpgl-0037"
   },
   {
@@ -726,7 +726,7 @@
     ],
     "explanation": "<b>Chain-of-thought prompting</b> explicitly asks a model to show its intermediate reasoning steps before the final answer, which tends to improve accuracy on multi-step problems. Role prompting asks the model to adopt a persona, not to show reasoning steps. Prompt chaining links separate prompts in sequence, feeding one's output into the next, a different technique from reasoning inside a single prompt. Grounding ties output to an external data source and is unrelated to visible step-by-step reasoning.",
     "difficulty": "medium",
-    "docUrl": "https://cloud.google.com/discover/what-is-chain-of-thought-prompting",
+    "docUrl": "https://cloud.google.com/discover/what-is-prompt-engineering",
     "id": "gcpgl-0038"
   },
   {
@@ -745,7 +745,7 @@
     ],
     "explanation": "<b>ReAct</b> (reason plus act) prompting interleaves explicit reasoning steps with actions, such as calling external tools or APIs, in a loop until the task is complete, which matches an agent that alternates between thinking and taking action. One-shot and zero-shot prompting describe how many examples are given, not whether the model takes external actions. Role prompting shapes tone and persona, not the reasoning-action loop.",
     "difficulty": "hard",
-    "docUrl": "https://cloud.google.com/discover/what-is-react-prompting",
+    "docUrl": "https://cloud.google.com/discover/what-are-ai-agents",
     "id": "gcpgl-0039"
   },
   {
@@ -764,7 +764,7 @@
     ],
     "explanation": "<b>Grounding</b> connects a model's output to a specific, verifiable data source, such as the retailer's own first-party inventory database, rather than relying solely on the general knowledge the model learned during training. Grounding can use first-party enterprise data, third-party data, or broader world data, depending on the use case. Quantization and distillation are model-compression techniques, and tokenization is how text is broken into processable units; none of these connects output to a live data source.",
     "difficulty": "easy",
-    "docUrl": "https://cloud.google.com/discover/what-is-grounding-in-ai",
+    "docUrl": "https://cloud.google.com/blog/products/ai-machine-learning/grounding-gen-ai-in-enterprise-truth",
     "id": "gcpgl-0040"
   },
   {
@@ -783,7 +783,7 @@
     ],
     "explanation": "<b>Grounding with Google Search</b> connects a model's output to current, public information available through Google Search, which fits a need for up-to-date public news grounding. Prebuilt RAG with Agent Search and RAG APIs are designed to ground responses in a business's own indexed or internal data, not live public search results. The Agent Development Kit is a framework for building agents, not a grounding data source.",
     "difficulty": "medium",
-    "docUrl": "https://cloud.google.com/discover/grounding-with-google-search",
+    "docUrl": "https://cloud.google.com/blog/products/ai-machine-learning/grounding-gen-ai-in-enterprise-truth",
     "id": "gcpgl-0041"
   },
   {
@@ -802,7 +802,7 @@
     ],
     "explanation": "<b>Temperature</b> controls how randomly the model samples from its probability distribution over possible next tokens; lowering temperature toward zero makes the model choose the highest-probability token more consistently, producing more focused, deterministic output. Token count limits length, not randomness. Top-p restricts the candidate pool by cumulative probability, a related but distinct sampling lever from temperature. Context window is about how much input the model can consider, not about output randomness.",
     "difficulty": "easy",
-    "docUrl": "https://cloud.google.com/discover/what-is-temperature-in-ai",
+    "docUrl": "https://cloud.google.com/discover/what-is-prompt-engineering",
     "id": "gcpgl-0042"
   },
   {
@@ -821,7 +821,7 @@
     ],
     "explanation": "<b>Top-p</b>, or nucleus sampling, restricts token selection to the smallest set of candidates whose cumulative probability meets a chosen threshold, such as 0.9, which is exactly the mechanism described. Temperature reshapes the sharpness of the probability distribution itself rather than restricting the candidate set by cumulative probability. Output length caps how many tokens are generated, and safety settings filter harmful content categories; neither controls the candidate token pool by cumulative probability.",
     "difficulty": "medium",
-    "docUrl": "https://cloud.google.com/discover/nucleus-sampling",
+    "docUrl": "https://cloud.google.com/discover/what-is-prompt-engineering",
     "id": "gcpgl-0043"
   },
   {
@@ -840,7 +840,7 @@
     ],
     "explanation": "Measuring the impact of a gen AI initiative starts with defining measurable business <b>KPIs</b>, such as ticket deflection rate, resolution time, or customer satisfaction, before launch, then tracking them against a baseline after deployment. Deployment alone does not prove business value. Parameter count is a model characteristic, not a business outcome metric. Gen AI outcomes can and should be quantified against business KPIs.",
     "difficulty": "medium",
-    "docUrl": "https://cloud.google.com/discover/what-is-model-evaluation",
+    "docUrl": "https://cloud.google.com/ai/gemini-for-work",
     "id": "gcpgl-0044"
   },
   {
@@ -861,7 +861,7 @@
     ],
     "explanation": "Choosing between a lightweight open model and a larger, more capable model should be driven by <b>business requirements</b>, such as the accuracy or quality the use case demands, and <b>technical constraints</b>, such as available compute budget and infrastructure. Company holidays, marketing fonts, and website color schemes have no bearing on a model selection decision.",
     "difficulty": "medium",
-    "docUrl": "https://cloud.google.com/discover/what-is-a-foundation-model",
+    "docUrl": "https://cloud.google.com/discover/what-are-foundation-models",
     "id": "gcpgl-0045"
   },
   {
@@ -880,7 +880,7 @@
     ],
     "explanation": "Google's <b>Secure AI Framework (SAIF)</b> is a conceptual framework specifically designed to help organizations address security risks unique to AI systems, such as data poisoning, model theft, and prompt injection, beyond traditional application security. The general cloud shared responsibility model addresses infrastructure security broadly, not AI-specific risks. The ML lifecycle describes project stages, not a security framework. IAM controls resource access but is only one tool among several used to help implement a secure AI posture, not the overarching AI security framework itself.",
     "difficulty": "easy",
-    "docUrl": "https://cloud.google.com/security/saif",
+    "docUrl": "https://cloud.google.com/use-cases/secure-ai-framework",
     "id": "gcpgl-0046"
   },
   {
@@ -918,7 +918,7 @@
     ],
     "explanation": "<b>Explainability</b> is the responsible AI principle concerned with the ability to describe and justify how and why a model arrived at a particular output, which is exactly what a regulator asking about a loan decision requires. Data anonymization is a privacy technique, not an explanation of model behavior. Model compression is an efficiency technique, and prompt chaining is a prompting technique; neither addresses justifying a model's decision to a regulator.",
     "difficulty": "medium",
-    "docUrl": "https://cloud.google.com/discover/what-is-explainable-ai",
+    "docUrl": "https://cloud.google.com/responsible-ai",
     "id": "gcpgl-0048"
   },
   {
@@ -937,7 +937,7 @@
     ],
     "explanation": "<b>Pseudonymization</b> replaces identifying details with a token or reference that can be reversed back to the original identity under authorized conditions, while <b>anonymization</b> removes identifying details irreversibly so the original identity cannot be recovered. Calling both anonymization ignores that the token is reversible. Encryption is a distinct technique for protecting data confidentiality through cryptography, not the same as tokenized replacement or removal of identifiers. Data labeling refers to attaching target values for model training, unrelated to privacy protection.",
     "difficulty": "hard",
-    "docUrl": "https://cloud.google.com/discover/what-is-data-anonymization",
+    "docUrl": "https://cloud.google.com/security/products/sensitive-data-protection",
     "id": "gcpgl-0049"
   },
   {
@@ -956,7 +956,7 @@
     ],
     "explanation": "A sound approach to integrating gen AI starts with identifying a specific <b>business use case</b> and its requirements, selecting an appropriate model and tools, <b>piloting and evaluating</b> the solution against those requirements, and then scaling with monitoring and governance in place. Randomly selecting a model and deploying everywhere at once, skipping use-case identification, and skipping a pilot phase all skip the deliberate, staged approach that reduces risk and improves the odds of a successful rollout.",
     "difficulty": "easy",
-    "docUrl": "https://cloud.google.com/discover/what-is-change-management",
+    "docUrl": "https://cloud.google.com/ai/generative-ai",
     "id": "gcpgl-0050"
   }
 ]
