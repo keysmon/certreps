@@ -18,12 +18,12 @@ describe("ExamEngine mock mode", () => {
     // (/correct|not quite/i collides with stem/option copy AND queryByText throws on multi-match).
     // The feedback UI is exactly the .explain block.
     expect(document.querySelector(".explain")).toBeNull();
-    // Deviation D2 (approved): flag Q1 while it IS answered so the flag persists to storage.
-    // Guarded toggleFlag re-records only when an answer exists; the plan-shipped assertion targeted
-    // a flagged-but-unanswered Q2 whose flag never reaches storage (undefined.flagged throws). Q2
-    // below stays flagged-unanswered to prove the in-memory UI path via the review map (cells[1]).
+    // Flag Q1 while it IS answered - re-records the existing choice with flagged: true.
     await userEvent.click(screen.getByRole("button", { name: /flag for review/i }));
-    // Move to Q2, flag it (unanswered -> in-memory only), skip forward
+    // Move to Q2 and flag it while UNANSWERED. As of v1h this persists a legitimate empty-chosen
+    // row ({chosen:[], flagged:true}) - the only way to carry a flag on the frozen journal - which
+    // the palette reads as flagged-but-unanswered (cells[1] below). (The dedicated round-trip through
+    // resume is covered in ExamEngineResume.) Then skip forward.
     await userEvent.click(screen.getByRole("button", { name: /^next$/i }));
     await userEvent.click(screen.getByRole("button", { name: /flag for review/i }));
     await userEvent.click(screen.getByRole("button", { name: /^next$/i }));
@@ -34,6 +34,7 @@ describe("ExamEngine mock mode", () => {
     expect(cells.length).toBe(65);
     expect(cells[0].className).toContain("answered");
     expect(cells[1].className).toContain("flagged");
+    expect(cells[1].className).not.toContain("answered"); // flagged but unanswered
     // Jump back to Q2 from the map
     await userEvent.click(cells[1]);
     expect(screen.getByText(/question 2 of 65/i)).toBeInTheDocument();
@@ -45,6 +46,9 @@ describe("ExamEngine mock mode", () => {
     expect(a.mode).toBe("mock");
     expect(a.finishedAt).not.toBeNull();
     expect(a.results[a.questionIds[0]].flagged).toBe(true);
+    // Flagging an unanswered question persisted an empty-chosen row (v1h): flag carried, no choice.
+    expect(a.results[a.questionIds[1]].flagged).toBe(true);
+    expect(a.results[a.questionIds[1]].chosen).toEqual([]);
   });
 
   it("keeps the countdown running across review roundtrips and auto-submits on expiry", () => {

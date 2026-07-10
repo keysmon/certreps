@@ -106,7 +106,10 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId }: { certId?:
       const answers0: Record<string, number[]> = {};
       const flags0: Record<string, boolean> = {};
       for (const r of Object.values(resumed.results)) {
-        if (isMock) answers0[r.questionId] = r.chosen;
+        // A flagged-but-unanswered question carries a legitimate empty-chosen row. Keep it OUT of
+        // the answered map so "answered" everywhere means chosen.length > 0 (palette, recorded
+        // badge, review lists, resume position all key off this); its flag is still restored below.
+        if (isMock) { if (r.chosen.length) answers0[r.questionId] = r.chosen; }
         else graded0[r.questionId] = { chosen: r.chosen, correct: r.correct };
         if (r.flagged) flags0[r.questionId] = true;
       }
@@ -115,7 +118,9 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId }: { certId?:
       setFlags(flags0);
       elapsedRef.current = resumed.elapsedSec;
       pausesRef.current = resumed.pauseCount;
-      const i = sampled.findIndex((qq) => !resumed.results[qq.id]);
+      // Land on the first genuinely-unanswered question (chosen.length === 0), so a flagged-unanswered
+      // row - which now exists - is not skipped over as though it were answered.
+      const i = sampled.findIndex((qq) => !(resumed.results[qq.id]?.chosen.length));
       setIndex(i === -1 ? 0 : i);
     }
 
@@ -164,12 +169,14 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId }: { certId?:
     if (finishedRef.current || !q || !attemptRef.current) return;
     const next = !flags[q.id];
     setFlags((f) => ({ ...f, [q.id]: next }));
-    const chosen = answers[q.id];
-    if (chosen) {
-      recordResult(attemptRef.current.attemptId, {
-        questionId: q.id, chosen, correct: isCorrect(chosen, q.correct), flagged: next,
-      });
-    }
+    // Persist the flag onto the journal row. An UNANSWERED question gets a legitimate empty-chosen
+    // row (the frozen journal carries `flagged` only per-result), which gradeAttempt, the palette,
+    // and the interstitial all treat as unanswered/wrong (chosen.length === 0). An answered question
+    // re-records its existing choice with the new flag state - the journal overwrites by questionId.
+    const chosen = answers[q.id] ?? [];
+    recordResult(attemptRef.current.attemptId, {
+      questionId: q.id, chosen, correct: isCorrect(chosen, q.correct), flagged: next,
+    });
   }, [q, flags, answers]);
 
   // Persist the running clock every 10s and once more on unmount, so navigating away mid-exam and
@@ -225,7 +232,22 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId }: { certId?:
   // prop stays a plain string.
   const attemptId = attemptRef.current?.attemptId ?? "";
   const last = index === questions.length - 1;
-  const answeredThis = isMock && !!answers[q.id];
+  // "Answered" everywhere means a recorded CHOICE, never a bare result row: a flagged-unanswered
+  // question carries an empty-chosen row that must still read as unanswered.
+  const isAnswered = (qid: string) => (answers[qid]?.length ?? 0) > 0;
+
+  // Practice frontier: the first not-yet-graded index (= the length of the graded prefix, since
+  // practice answers strictly in order). You may revisit any graded question read-only and you may
+  // sit on the frontier, but cells beyond it are locked - the linear "no skipping ahead" discipline,
+  // made visible in the palette. Unused in mock (free navigation), computed cheaply either way.
+  let frontier = questions.findIndex((qq) => !graded[qq.id]);
+  if (frontier === -1) frontier = questions.length;
+
+  // Mock review-screen derivations: the answered tally plus the unanswered/flagged jump lists.
+  // Cheap over <=65 questions; only rendered in the review phase.
+  const answeredCount = questions.filter((qq) => isAnswered(qq.id)).length;
+  const unansweredQs = questions.map((qq, i) => ({ qq, i })).filter(({ qq }) => !isAnswered(qq.id));
+  const flaggedQs = questions.map((qq, i) => ({ qq, i })).filter(({ qq }) => flags[qq.id]);
 
   // Streak (drill/quick only, Task 6): consecutive-correct over the in-order answered prefix. A pure
   // render derivation from `graded` - it adds no state and never writes storage, so engine logic is
@@ -274,24 +296,68 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId }: { certId?:
             onPause={handlePause}
           />
         </span>
+        {/* Mock: the review-and-submit navigator is reachable any time from the sticky bar (Pearson-VUE
+            style), not only from the foot of a question. Hidden on the review screen itself. */}
+        {isMock && phase === "question" && (
+          <button
+            type="button"
+            className="btn btn-primary btn-sm exam-review"
+            onClick={() => { if (!finishedRef.current) setPhase("review"); }}
+          >
+            Review &amp; submit
+          </button>
+        )}
         <a className="exit" href={certPath(meta)}>Exit {TIMES}</a>
       </div>
 
       <div className="stage">
         {phase === "review" ? (
-          <div>
-            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 18 }}>
+          <div className="reviewscreen">
+            <div className="review-top">
               <h2 className="review-head">Review your answers</h2>
               {/* Contract C7 (Task 11 review): the Submit button precedes the map in DOM order so
-                  keyboard users are not forced to tab through 65 cells to reach it. */}
+                  keyboard users are not forced to tab through 65 cells to reach it. The review
+                  screen IS the submit confirmation (no extra dialog), and finish() fires ONLY here
+                  (plus the timer's auto-submit on expiry). */}
               <button className="btn btn-primary" style={{ marginLeft: "auto" }} onClick={finish}>Submit exam</button>
             </div>
+            <p className={`review-summary${unansweredQs.length ? " warn" : ""}`}>
+              {answeredCount} of {questions.length} answered.
+              {unansweredQs.length > 0 && ` ${unansweredQs.length} unanswered - they grade as incorrect.`}
+            </p>
+            {unansweredQs.length > 0 && (
+              <div className="review-list">
+                <h3>Unanswered ({unansweredQs.length})</h3>
+                <div className="review-jumps">
+                  {unansweredQs.map(({ qq, i }) => (
+                    <button key={qq.id} type="button" className="jumplink" onClick={() => goTo(i)}>
+                      Question {i + 1}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+            {flaggedQs.length > 0 && (
+              <div className="review-list">
+                <h3>Flagged for review ({flaggedQs.length})</h3>
+                <div className="review-jumps">
+                  {flaggedQs.map(({ qq, i }) => (
+                    <button key={qq.id} type="button" className="jumplink" onClick={() => goTo(i)}>
+                      Question {i + 1}{isAnswered(qq.id) ? "" : " (unanswered)"}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
             <div data-testid="reviewmap" className="review-panel">
               <ReviewMap
-                states={questions.map((qq) => ({ answered: !!answers[qq.id], flagged: !!flags[qq.id] }))}
+                states={questions.map((qq) => ({ answered: isAnswered(qq.id), flagged: !!flags[qq.id] }))}
                 current={index}
                 onJump={goTo}
               />
+            </div>
+            <div className="review-back">
+              <button type="button" className="btn btn-ghost btn-sm" onClick={() => goTo(index)}>Back to questions</button>
             </div>
           </div>
         ) : (
@@ -299,8 +365,12 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId }: { certId?:
             <p className="mode-note">{modeNote}</p>
             {/* Contract C2 (Task 9 review): QuestionCard renders in a bare div - never inside .card
                 (its .qnum text fails AA contrast on a --panel-background surface). */}
+            {/* Keyed by question.id only (both modes). Mock: a stable key keeps the card mounted
+                across a submit so the recorded choice stays visible and EDITABLE (initialChosen
+                pre-fills on a re-visit). Practice: the card re-renders into its read-only graded
+                state when `graded` is set - no remount needed. */}
             <QuestionCard
-              key={q.id + String(answeredThis)}
+              key={q.id}
               question={q}
               graded={g}
               onSubmit={submit}
@@ -308,6 +378,7 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId }: { certId?:
               index={index}
               total={questions.length}
               vendorName={VENDORS[meta.vendorSlug]?.n ?? meta.vendor}
+              initialChosen={isMock ? answers[q.id] : undefined}
             />
 
             {isMock && (
@@ -317,20 +388,34 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId }: { certId?:
                 </button>
                 <button className="btn btn-ghost btn-sm" disabled={index === 0} onClick={() => goTo(index - 1)}>Prev</button>
                 <button className="btn btn-ghost btn-sm" disabled={last} onClick={() => goTo(index + 1)}>Next</button>
-                {answers[q.id] && <span className="recorded">Answer recorded</span>}
-                <button className="btn btn-primary" style={{ marginLeft: "auto" }} onClick={() => { if (!finishedRef.current) setPhase("review"); }}>
-                  Review & submit
-                </button>
+                {isAnswered(q.id) && <span className="recorded">Answer recorded</span>}
               </div>
             )}
 
-            {!isMock && g && (
-              <div className="footbar">
-                {streak > 0 && <span className="streak">Streak: <b>{streak} correct</b></span>}
-                <button className="btn btn-primary" style={{ marginLeft: "auto" }} onClick={() => (last ? finish() : setIndex((i) => i + 1))}>
-                  {last ? "See results" : "Next question"}
-                </button>
-              </div>
+            {!isMock && (
+              <>
+                {/* Prev is always available (revisit a graded question read-only); the forward CTA
+                    appears only once the current question is graded, preserving the answer-then-advance
+                    pedagogy. Jumping ahead past the frontier is impossible - the palette locks it. */}
+                <div className={`practicenav${g ? " graded" : ""}`}>
+                  <button className="btn btn-ghost btn-sm" disabled={index === 0} onClick={() => goTo(index - 1)}>Prev</button>
+                  {g && streak > 0 && <span className="streak">Streak: <b>{streak} correct</b></span>}
+                  {g && (
+                    <button className="btn btn-primary" style={{ marginLeft: "auto" }} onClick={() => (last ? finish() : goTo(index + 1))}>
+                      {last ? "See results" : "Next question"}
+                    </button>
+                  )}
+                </div>
+                {/* Frontier-aware palette: graded cells jump read-only; cells beyond the frontier are
+                    locked (disabled) so linear discipline holds. Derives purely from `graded` + index. */}
+                <div className="practicemap">
+                  <ReviewMap
+                    states={questions.map((qq, i) => ({ answered: !!graded[qq.id], flagged: false, locked: i > frontier }))}
+                    current={index}
+                    onJump={goTo}
+                  />
+                </div>
+              </>
             )}
           </div>
         )}
