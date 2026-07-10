@@ -92,4 +92,25 @@ describe("TopNav", () => {
     await screen.findByRole("link", { name: /sign in/i });
     expect(screen.queryByRole("link", { name: /settings/i })).not.toBeInTheDocument();
   });
+
+  it("toggles the theme, flipping the html attribute and persisting the choice", async () => {
+    localStorage.clear();
+    document.documentElement.removeAttribute("data-theme");
+    mockedAvailable.mockReturnValue(false);
+    render(<TopNav />);
+
+    // Dark default: the button offers a switch to light and no attribute is set.
+    const toLight = screen.getByRole("button", { name: /switch to light theme/i });
+    expect(document.documentElement.getAttribute("data-theme")).toBeNull();
+
+    await userEvent.click(toLight);
+    expect(document.documentElement.getAttribute("data-theme")).toBe("light");
+    expect(localStorage.getItem("certreps.theme")).toBe("light");
+    // The button now offers switching back to dark.
+    const toDark = screen.getByRole("button", { name: /switch to dark theme/i });
+
+    await userEvent.click(toDark);
+    expect(document.documentElement.getAttribute("data-theme")).toBeNull();
+    expect(localStorage.getItem("certreps.theme")).toBe("dark");
+  });
 });
