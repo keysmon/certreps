@@ -500,5 +500,197 @@
     "difficulty": "hard",
     "docUrl": "https://docs.databricks.com/aws/en/genie/conversation-api",
     "id": "dbxge-0026"
+  },
+  {
+    "domain": "Assembling and Deploying Applications",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A Generative AI Engineer needs to deploy a custom Python inference pipeline that loads a large tokenizer artifact once and then applies custom pre-processing to each incoming request and custom post-processing to each model output before returning a response. Which MLflow authoring approach fits this requirement?",
+    "options": [
+      "Subclass mlflow.pyfunc.PythonModel, loading the tokenizer in load_context and implementing the pre/post-processing logic inside predict.",
+      "Subclass mlflow.pyfunc.PythonModel, loading the tokenizer inside predict on every call so it always reflects the latest version.",
+      "Skip MLflow entirely and deploy the tokenizer and model as two separate serverless SQL warehouses.",
+      "Store the pre/post-processing logic as a Delta Live Tables pipeline that runs before the serving endpoint is called."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>mlflow.pyfunc.PythonModel's load_context method runs once when the model is loaded, which is the right place for a heavy one-time artifact like a tokenizer, while predict runs per request and is where custom pre-processing of the input and post-processing of the raw model output belong</b>, matching Databricks' documented pattern for custom Python inference logic. Loading the tokenizer inside predict on every call adds needless per-request overhead for an artifact that does not change between requests. Splitting the pipeline across separate SQL warehouses abandons the single deployable model contract that Model Serving expects. A Delta Live Tables pipeline processes batch data on a schedule; it does not sit in the request path of a real-time serving endpoint.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.databricks.com/aws/en/machine-learning/model-serving/deploy-custom-python-code",
+    "id": "dbxge-0027"
+  },
+  {
+    "domain": "Assembling and Deploying Applications",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A served agent must call a third-party translation API using an API key. The Generative AI Engineer wants to avoid ever hard-coding the key in the model artifact or exposing it in visible endpoint configuration. Which approach is correct?",
+    "options": [
+      "Paste the key directly into the serving endpoint's YAML configuration since only workspace admins can view endpoint configs.",
+      "Embed the key as a Python string constant inside the pyfunc model's predict method before logging the model.",
+      "Store the key as a Databricks secret and reference it in the endpoint's environment variables using the {{secrets/scope/key}} syntax.",
+      "Store the key in a public Unity Catalog volume that the endpoint reads from at startup."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Databricks secrets referenced through the {{secrets/scope/key}} syntax in a serving endpoint's environment variables keep the raw key out of the model artifact and out of visible configuration</b>; the secret is resolved at serving time, and the endpoint creator must hold READ on the referenced secret. Endpoint configuration is not a secure secret store and can be visible to more principals than intended depending on granted permissions. Embedding the key in the model artifact's code bakes a credential into a versioned, shareable object. A public Unity Catalog volume is readable by anyone with access to the volume, which defeats the purpose of a secret.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.databricks.com/aws/en/machine-learning/model-serving/store-env-variable-model-serving",
+    "id": "dbxge-0028"
+  },
+  {
+    "domain": "Assembling and Deploying Applications",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A Generative AI Engineer packages a custom RAG chain as an MLflow pyfunc model. Registering a new version to Unity Catalog fails because the model has no signature, and the team is also unsure their exact runtime dependency versions will be reproduced when the endpoint deploys. What should the engineer add when logging the model to fix both problems?",
+    "options": [
+      "A README file describing the chain's behavior in plain English.",
+      "A larger cluster size for the training job that produced the chain.",
+      "A Delta table storing every historical version of the chain's outputs.",
+      "An input_example, which lets MLflow infer the signature automatically, plus explicit pip_requirements or extra_pip_requirements to pin the exact dependency versions."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Providing an input_example when logging a model lets MLflow auto-infer a model signature, which Unity Catalog requires for every registered version, and passing pip_requirements or extra_pip_requirements pins exact dependency versions</b> so the environment that built the chain is reproduced faithfully at serving time, since cloudpickle alone does not capture the full execution environment. A README is documentation, not something MLflow or Unity Catalog checks during registration or environment reproduction. Cluster size affects training compute, not model packaging or the registered signature. A table of historical outputs has no bearing on fixing a missing signature or pinning dependencies.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.databricks.com/aws/en/mlflow/log-model-dependencies",
+    "id": "dbxge-0029"
+  },
+  {
+    "domain": "Assembling and Deploying Applications",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A Generative AI Engineer wants to register a newly logged agent as a Unity Catalog model version so it can be governed with Unity Catalog permissions instead of the legacy workspace model registry. Which configuration correctly does this?",
+    "options": [
+      "Register the model under a single flat name such as support_agent with no catalog or schema.",
+      "Grant every workspace user CAN MANAGE on the workspace model registry.",
+      "Call mlflow.set_registry_uri(\"databricks-uc\") and register the model under a three-level name such as prod.ml_team.support_agent.",
+      "Copy the model's artifacts directly into a Unity Catalog volume using a shell command."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Setting the registry URI to databricks-uc points MLflow's model registry calls at Unity Catalog, and Unity Catalog model names must follow the three-level catalog.schema.model namespace</b>, which is what governs the model with Unity Catalog's permission model. A flat single-level name is a workspace-registry convention and is rejected by Unity Catalog's naming requirement. Copying artifacts into a volume with a shell command bypasses model registration entirely and produces no registered model version to govern. Granting broad workspace registry permissions still leaves the model in the legacy registry, not under Unity Catalog governance.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.databricks.com/aws/en/machine-learning/manage-model-lifecycle/",
+    "id": "dbxge-0030"
+  },
+  {
+    "domain": "Assembling and Deploying Applications",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A Generative AI Engineer has a corpus of chunks already sitting in a Delta table that is updated nightly by a pipeline, and wants a Databricks AI Search index that automatically reflects each night's changes with no manual write calls. Which index type fits this requirement?",
+    "options": [
+      "A Direct Vector Access index, since it gives full manual control over every write.",
+      "A local FAISS index built inside the notebook that produced the nightly pipeline.",
+      "A Unity Catalog view that recomputes embeddings on every query.",
+      "A Delta Sync index, which is created from the Delta table and syncs automatically as the table changes."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>A Delta Sync index is created directly from a source Delta table and keeps itself updated as that table changes</b>, whether continuously or on a trigger, which is exactly the hands-off nightly-refresh behavior this pipeline needs. A Direct Vector Access index requires the application to write and update vectors manually through the REST API or SDK, the opposite of automatic syncing. A local FAISS index inside a notebook is not a governed, queryable Databricks-managed index and would not survive beyond the notebook session. A view that recomputes embeddings per query would redo expensive embedding calls on every request instead of maintaining a precomputed index.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.databricks.com/aws/en/ai-search/create-ai-search",
+    "id": "dbxge-0031"
+  },
+  {
+    "domain": "Assembling and Deploying Applications",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A team is prototyping a new feature against a Databricks-hosted open model and wants to start querying it within minutes with no endpoint to provision, accepting that throughput and latency guarantees are not needed yet at this stage. Which Foundation Model APIs serving mode fits this stage of the project?",
+    "options": [
+      "Pay-per-token, which gives instant access to supported models billed per token with no endpoint to provision.",
+      "Provisioned throughput, since dedicating capacity up front is required for any use of Foundation Model APIs.",
+      "External models, which proxy a third-party provider and always require the longest setup of the three modes.",
+      "A custom fine-tuned deployment, since only fine-tuned models can be queried through Foundation Model APIs."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Pay-per-token mode gives instant access to supported foundation models, billed per token, with no dedicated endpoint to provision</b>, which matches a prototyping stage that wants to start querying immediately without committing to guaranteed capacity. Provisioned throughput requires allocating dedicated model units and is the recommended path for production or fine-tuned models, not quick prototyping. External models route to third-party providers like OpenAI or Anthropic through a governed endpoint, and setup there means centrally managed credentials, not an inherently slower path than the other two. Foundation Model APIs serve pretrained hosted models via pay-per-token or provisioned throughput; a fine-tuned model is only one case that requires provisioned throughput, not the only thing the APIs can serve.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.databricks.com/aws/en/machine-learning/foundation-model-apis/",
+    "id": "dbxge-0032"
+  },
+  {
+    "domain": "Assembling and Deploying Applications",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A Generative AI Engineer wants to use ai_query() to summarize every row of a 50-million-row Delta table with a hosted foundation model, running the job on a classic (non-serverless) SQL warehouse the team already has provisioned, and wants partial failures on individual rows to not abort the entire job. Which statement is correct?",
+    "options": [
+      "The job will run as described; ai_query() runs on any SQL warehouse type, and failOnError defaults to stopping the whole query on any row's error.",
+      "ai_query() only supports real-time single-row inference, so a 50-million-row batch job is not possible with this function.",
+      "ai_query() requires serverless compute, so the classic SQL warehouse must be swapped for a serverless one, and setting failOnError => false lets the job skip failed rows instead of aborting.",
+      "Partial row failures are impossible with ai_query() because Databricks retries every failed row indefinitely until it succeeds."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>AI Functions such as ai_query() require serverless compute and are not available on classic or Pro SQL warehouses, and setting failOnError => false lets a large batch job skip rows that error out instead of aborting the entire run</b>, which is exactly what a 50-million-row job with expected partial failures needs. Running on the team's existing classic warehouse would not work at all, and the default failOnError behavior does stop on error, contrary to the first option's claim. ai_query() explicitly supports batch inference over full tables in addition to real-time single calls. Databricks does not retry failed rows indefinitely; failOnError controls whether a row's failure blocks the rest of the job, not automatic infinite retry.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.databricks.com/aws/en/sql/language-manual/functions/ai_query",
+    "id": "dbxge-0033"
+  },
+  {
+    "domain": "Assembling and Deploying Applications",
+    "tag": "Domain 4",
+    "type": "multi",
+    "stem": "A Generative AI Engineer is choosing an endpoint type for a Databricks AI Search index that will eventually hold roughly 900 million 768-dimension embeddings, refreshed a few times per day, where the team is willing to accept somewhat higher per-query latency in exchange for materially lower cost per vector. Which TWO facts about storage-optimized endpoints support choosing one for this workload? (Select TWO.)",
+    "options": [
+      "Storage-optimized endpoints scale to roughly 1 billion or more vectors, well beyond what standard endpoints are built to hold efficiently.",
+      "Storage-optimized endpoints are meaningfully cheaper per vector than standard endpoints at large scale.",
+      "Storage-optimized endpoints support continuous sync, so every table write appears in the index within seconds.",
+      "Storage-optimized endpoints always return results faster than standard endpoints, regardless of corpus size.",
+      "Storage-optimized endpoints require the source table to be stored outside Unity Catalog for cost efficiency."
+    ],
+    "correct": [
+      0,
+      1
+    ],
+    "explanation": "<b>Storage-optimized endpoints are built to scale to roughly 1 billion or more vectors, well past standard endpoints' practical ceiling, and they cost materially less per vector at that scale</b>, which is exactly the combination this near-billion-vector, cost-sensitive workload needs. Storage-optimized endpoints support only triggered sync, not continuous sync, so that option reverses the actual limitation. They add query latency compared to standard endpoints rather than being faster, which is the accepted tradeoff the team is willing to make, so that option is also backwards. Both endpoint types read from Delta tables governed by Unity Catalog; storage-optimized does not require moving data outside Unity Catalog.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.databricks.com/aws/en/ai-search/best-practices",
+    "id": "dbxge-0034"
+  },
+  {
+    "domain": "Assembling and Deploying Applications",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A Generative AI Engineer is building a multi-turn support agent that must remember details a customer mentioned earlier in the same conversation, and also recall summarized facts about that customer across separate conversations weeks apart. The team wants a managed, serverless, transactional datastore rather than building their own state-management service. Which Databricks capability is designed for this?",
+    "options": [
+      "A Delta Live Tables streaming pipeline that appends every message to a table with no read-back path for the agent.",
+      "A Databricks SQL warehouse dashboard that visualizes conversation counts per day.",
+      "The model serving endpoint's internal request logs, which the agent queries directly during inference.",
+      "Lakebase, a fully managed serverless Postgres engine integrated with Databricks auth, used as the backend for agent session and long-term memory."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Lakebase is a fully managed, serverless Postgres OLTP engine natively integrated with Databricks authentication, and it is the recommended backend for agent memory, letting an agent persist and retrieve both short-term session context and long-term facts across conversations</b>. A one-way streaming append pipeline with no read path cannot serve memory back to the agent at inference time. A dashboard visualizes data for humans; it is not a datastore an agent queries during a conversation. Serving endpoint request logs capture traffic for observability, not a structured, queryable memory store designed for an agent to read and write during reasoning.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.databricks.com/aws/en/agents/agent-framework/stateful-agents",
+    "id": "dbxge-0035"
+  },
+  {
+    "domain": "Assembling and Deploying Applications",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A Generative AI Engineer needs an agent to call three different capabilities: a Unity Catalog function through Databricks' own managed integration, a partner company's existing MCP-compliant tool server reached through a governed Unity Catalog connection, and an in-house MCP server the team wrote and wants to host as a Databricks App. Which statement correctly matches each capability to its MCP server category?",
+    "options": [
+      "All three are the same category, since every MCP server on Databricks is fully managed by Databricks regardless of who hosts it.",
+      "The Unity Catalog function is a managed MCP server, the partner's tool server is an external MCP server accessed via a Unity Catalog connection, and the in-house server is a custom MCP server.",
+      "The Unity Catalog function is a custom MCP server, the partner's tool server is a managed MCP server, and the in-house server is an external MCP server.",
+      "MCP servers cannot expose Unity Catalog functions, so the first capability is not possible on Databricks at all."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Databricks distinguishes managed MCP servers that Databricks operates for you, such as ones exposing Unity Catalog functions or AI Search indexes, from external MCP servers reached through a governed Unity Catalog connection, and custom MCP servers that a team builds and hosts itself, for example on Databricks Apps</b>, which is exactly the managed/external/custom mapping in the second option. Treating all three as identical erases a real distinction in who builds, hosts, and secures each server. The third option simply swaps the correct categories. Databricks' managed MCP servers explicitly support Unity Catalog functions as one of their core capabilities, so the claim that this is impossible is false.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.databricks.com/aws/en/agents/mcp/managed-mcp",
+    "id": "dbxge-0036"
   }
 ]
