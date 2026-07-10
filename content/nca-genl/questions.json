@@ -1,0 +1,291 @@
+[
+  {
+    "domain": "Core Machine Learning and AI Knowledge",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "Which pairing of transformer architecture type and primary use case is correct?",
+    "options": [
+      "Encoder-only (for example, BERT) for language-understanding tasks such as classification; decoder-only (for example, GPT) for open-ended text generation; encoder-decoder (for example, T5) for sequence-to-sequence tasks such as translation and summarization.",
+      "Encoder-only models generate open-ended text, while decoder-only models can only classify text.",
+      "Encoder-decoder models cannot be used for summarization because they lack a decoder.",
+      "Decoder-only models require a paired encoder network to generate any text."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Encoder-only</b> models such as BERT build a bidirectional representation suited to understanding tasks like classification. <b>Decoder-only</b> models such as GPT generate text autoregressively, one token at a time. <b>Encoder-decoder</b> models such as T5 pair an encoder with a decoder for sequence-to-sequence tasks like translation and summarization. The other options invert or misstate these pairings: decoder-only models generate text without a separate encoder, and encoder-decoder models are well suited to (not incapable of) summarization.",
+    "difficulty": "easy",
+    "docUrl": "https://developer.nvidia.com/blog/mastering-llm-techniques-training/",
+    "id": "ncagenl-0001"
+  },
+  {
+    "domain": "Core Machine Learning and AI Knowledge",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "In a transformer's self-attention layer, each input token is projected into Query (Q), Key (K), and Value (V) vectors using learned weight matrices. What does this projection ultimately produce for the layer's output?",
+    "options": [
+      "A single pooled vector that discards all individual token positions before the next layer.",
+      "An attention-weighted representation of each token that incorporates the other tokens in the sequence as context.",
+      "A random permutation of the input tokens used only for data augmentation.",
+      "A fixed, context-independent embedding for each token that never changes regardless of the surrounding sequence."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "Self-attention uses each token's <b>Query</b> vector against every token's <b>Key</b> vector to compute attention weights, then combines the <b>Value</b> vectors with those weights, producing an <b>attention-weighted representation of each token that uses every other token in the sequence as context</b>. This is what makes the representation contextual rather than a static, context-independent embedding. Nothing about self-attention pools all positions into one vector or randomly permutes tokens; those describe unrelated operations.",
+    "difficulty": "medium",
+    "docUrl": "https://developer.nvidia.com/blog/mastering-llm-techniques-training/",
+    "id": "ncagenl-0002"
+  },
+  {
+    "domain": "Core Machine Learning and AI Knowledge",
+    "tag": "Domain 1",
+    "type": "multi",
+    "stem": "Which TWO statements correctly describe multi-head attention in a transformer? (Select TWO.)",
+    "options": [
+      "Multi-head attention requires the model to process the sequence one head after another, increasing latency linearly with the number of heads.",
+      "Using more than one attention head prevents the model from being trained in parallel across GPUs.",
+      "Multiple attention heads let the layer attend to different parts of the sequence in parallel, similar to how multiple kernels in a CNN learn different features.",
+      "Multi-head attention was introduced to replace embeddings entirely, so tokenization is no longer needed.",
+      "Each head can specialize in different kinds of dependencies, such as shorter-term versus longer-term relationships between tokens."
+    ],
+    "correct": [
+      2,
+      4
+    ],
+    "explanation": "Multiple heads run <b>in parallel, not sequentially</b>, each learning to attend to a different part of the sequence, much like multiple kernels in a CNN learn different features. Because heads run in parallel, they let <b>different heads specialize</b> in different dependency ranges, for example some heads capturing short-range relationships and others longer-range ones. Multi-head attention does not process heads one at a time (that would not match how the mechanism is computed), does not block parallel GPU training, and has nothing to do with removing embeddings or tokenization.",
+    "difficulty": "medium",
+    "docUrl": "https://developer.nvidia.com/blog/mastering-llm-techniques-training/",
+    "id": "ncagenl-0003"
+  },
+  {
+    "domain": "Core Machine Learning and AI Knowledge",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "Because self-attention treats a sequence as an unordered set of token representations, transformers must inject positional information. Which statement about positional encoding techniques is correct?",
+    "options": [
+      "Positional encoding is only needed in the decoder and is never applied in encoder-only models such as BERT.",
+      "Positional encoding is optional and has no measurable effect on a transformer's ability to model word order.",
+      "RoPE (Rotary Position Embedding) combines absolute and relative position information and introduces a decaying dependency between tokens as their distance grows, which helps the model extrapolate to longer sequences.",
+      "ALiBi encodes position by concatenating a one-hot position vector to every token embedding before the first layer."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>RoPE</b> blends absolute and relative position signals and makes attention between distant tokens decay as distance increases, which helps models generalize to sequence lengths beyond what they were trained on. <b>ALiBi</b> does not concatenate a one-hot position vector; instead it biases the query-key attention scores directly with a penalty proportional to token distance. Positional encoding is not optional (self-attention alone is permutation-invariant and cannot represent order without it), and encoder-only models such as BERT also require positional information, not just decoders.",
+    "difficulty": "hard",
+    "docUrl": "https://developer.nvidia.com/blog/mastering-llm-techniques-training/",
+    "id": "ncagenl-0004"
+  },
+  {
+    "domain": "Core Machine Learning and AI Knowledge",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A team is choosing a tokenization scheme for a new LLM and wants a method that keeps vocabulary size manageable while still handling rare and out-of-vocabulary words gracefully. Which description matches how Byte-Pair Encoding (BPE) tokenization works?",
+    "options": [
+      "BPE assigns a unique token to every distinct word ever seen in training, growing the vocabulary without bound.",
+      "BPE requires a manually curated dictionary for every supported language before training can begin.",
+      "BPE discards all subword information and can only tokenize whole sentences as a single token.",
+      "BPE starts from a vocabulary of individual characters and iteratively merges the most frequent adjacent pairs into new subword vocabulary entries."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>BPE starts with individual characters and iteratively merges the most frequent adjacent pairs</b> into larger subword units, which keeps the vocabulary compact while still letting rare or unseen words be represented as a sequence of known subwords. It does not assign an unbounded unique token per word, does not require per-language hand-built dictionaries, and operates below the sentence level, not on whole sentences as single tokens.",
+    "difficulty": "easy",
+    "docUrl": "https://developer.nvidia.com/blog/mastering-llm-techniques-training/",
+    "id": "ncagenl-0005"
+  },
+  {
+    "domain": "Core Machine Learning and AI Knowledge",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "In a retrieval-augmented generation (RAG) pipeline, documents and queries are converted into embeddings before a similarity search. What does a token or document embedding represent?",
+    "options": [
+      "A dense numerical vector that encodes semantic meaning, positioned so that related pieces of text land near each other in vector space.",
+      "The exact byte offset of the text within its original source document.",
+      "A binary flag indicating only whether the text appeared anywhere in the training data.",
+      "A lookup key used purely for logging that has no effect on model computation or retrieval."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "An <b>embedding</b> is a dense, high-dimensional numerical vector that captures semantic meaning, so that texts with related meaning are placed close together in vector space and can be compared with similarity search. It is not a byte offset, a simple seen/unseen flag, or an inert logging key; the embedding is exactly what a vector database indexes and searches over.",
+    "difficulty": "easy",
+    "docUrl": "https://developer.nvidia.com/blog/rag-101-demystifying-retrieval-augmented-generation-pipelines/",
+    "id": "ncagenl-0006"
+  },
+  {
+    "domain": "Core Machine Learning and AI Knowledge",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "BERT and GPT are both pretrained with self-supervised objectives on unlabeled text, but the objectives differ. Which statement correctly contrasts them?",
+    "options": [
+      "Both models require manually labeled next-sentence pairs for every pretraining example.",
+      "BERT is pretrained with a masked-language-modeling objective that predicts randomly masked tokens using both left and right context, while GPT is pretrained with a causal (autoregressive) objective that predicts the next token using only left context.",
+      "GPT is pretrained with masked language modeling, while BERT is pretrained to predict only the next token.",
+      "BERT and GPT use an identical pretraining objective, and the only difference between the models is parameter count."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>BERT's masked language modeling</b> objective hides random tokens and predicts them using context on both sides, which is why BERT is well suited to understanding tasks. <b>GPT's causal language modeling</b> objective predicts each next token from only the preceding tokens, which is why GPT is well suited to open-ended generation. The other options swap or flatten this distinction: the objectives are not identical, and it is BERT (not GPT) that uses masking, while GPT (not BERT) is trained to predict the next token.",
+    "difficulty": "medium",
+    "docUrl": "https://developer.nvidia.com/blog/training-bert-with-gpus/",
+    "id": "ncagenl-0007"
+  },
+  {
+    "domain": "Core Machine Learning and AI Knowledge",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A team wants to pretrain a transformer with more parameters than fit in a single GPU's memory. NVIDIA Megatron addresses this by splitting individual layers' computation across multiple GPUs. Which statement correctly describes this approach?",
+    "options": [
+      "Megatron only supports training on a single GPU and cannot scale to a multi-GPU cluster.",
+      "Megatron requires every GPU to hold an identical full copy of the model with no work split, which is the definition of data parallelism, not model parallelism.",
+      "Megatron uses model (tensor) parallelism to split the matrix multiplications within individual transformer layers across multiple GPUs, so one layer's computation runs cooperatively across devices instead of fitting on a single one.",
+      "Megatron replaces GPU training entirely with CPU-only distributed training."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "Megatron's <b>model (tensor) parallelism</b> splits the matrix multiplications inside individual transformer layers across multiple GPUs (NVIDIA reports configurations from four-way up to eight-way model parallelism), so a layer too large for one GPU still runs cooperatively across several. That is the opposite of data parallelism, which duplicates the full model on every GPU and splits the data instead. Megatron scales across multi-GPU clusters, and the acceleration it targets is GPU training, not a CPU-only alternative.",
+    "difficulty": "hard",
+    "docUrl": "https://developer.nvidia.com/blog/language-modeling-using-megatron-a100-gpu/",
+    "id": "ncagenl-0008"
+  },
+  {
+    "domain": "Core Machine Learning and AI Knowledge",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A team wants to adapt a pretrained LLM into a customer-support chatbot without the cost of training a model from scratch. Which approach reflects transfer learning?",
+    "options": [
+      "Train an entirely new architecture from scratch using only the customer-support dataset, discarding the pretrained model.",
+      "Reinitialize every weight in the network randomly before training on the task-specific dataset.",
+      "Use the pretrained model only for evaluation and never update any of its weights or apply it to the new task.",
+      "Start from the pretrained model's weights and continue adapting it on the smaller, task-specific dataset, reusing the general language knowledge learned during pretraining."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Transfer learning</b> reuses the general knowledge a model already learned during large-scale pretraining as the starting point, then adapts that starting point to the new, smaller task-specific dataset, which is far cheaper than starting over. Discarding the pretrained model, randomly reinitializing its weights, or never applying it to the new task all throw away exactly the knowledge transfer learning is meant to reuse.",
+    "difficulty": "easy",
+    "docUrl": "https://developer.nvidia.com/blog/selecting-large-language-model-customization-techniques/",
+    "id": "ncagenl-0009"
+  },
+  {
+    "domain": "Core Machine Learning and AI Knowledge",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A team must customize a large pretrained LLM for a new task but has limited GPU memory and wants to avoid updating all of the model's parameters. Which customization approach BEST fits this constraint, and why?",
+    "options": [
+      "Parameter-efficient fine-tuning (PEFT), because it introduces a small number of trainable parameters, such as LoRA adapters, while freezing the pretrained weights, sharply reducing trainable-parameter count and memory versus full fine-tuning.",
+      "Full fine-tuning, because it always uses less GPU memory than any other customization method.",
+      "Prompt engineering, because it permanently updates the model's weights to memorize the new task.",
+      "Data augmentation, because it removes the need for any pretrained model at all."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>PEFT</b> methods such as LoRA freeze the pretrained weights and train only a small set of additional parameters, cutting trainable parameters and GPU memory dramatically compared to full fine-tuning, which is why PEFT fits a memory-constrained customization job. Full fine-tuning is the most memory- and compute-hungry option, not the least. Prompt engineering never updates model weights at all, and data augmentation addresses dataset quality, not model customization or GPU memory.",
+    "difficulty": "medium",
+    "docUrl": "https://developer.nvidia.com/blog/selecting-large-language-model-customization-techniques/",
+    "id": "ncagenl-0010"
+  },
+  {
+    "domain": "Core Machine Learning and AI Knowledge",
+    "tag": "Domain 1",
+    "type": "multi",
+    "stem": "Which TWO statements correctly describe LoRA (Low-Rank Adaptation) as a fine-tuning technique? (Select TWO.)",
+    "options": [
+      "LoRA always requires more trainable parameters than fine-tuning every weight in the full model.",
+      "LoRA freezes the pretrained weight matrices and trains small low-rank matrices that approximate the weight update, instead of updating the full weight matrix directly.",
+      "LoRA can only be applied to computer-vision models and has no application to transformer-based LLMs.",
+      "LoRA's trained low-rank matrices can be merged back into the original weights after training, so LoRA fine-tuning adds no extra inference latency compared to the base model.",
+      "LoRA permanently overwrites and replaces the original pretrained weight files before any training begins."
+    ],
+    "correct": [
+      1,
+      3
+    ],
+    "explanation": "<b>LoRA freezes the pretrained weights</b> and trains only small low-rank matrices that approximate the needed weight update, which is why it uses far fewer trainable parameters than full fine-tuning, not more. Because those low-rank matrices can be <b>merged back into the original weights after training</b>, a LoRA-adapted model runs at the same inference latency as the base model. LoRA is widely applied to transformer-based LLMs (not limited to vision models), and it does not touch or overwrite the original weight files until that optional merge step.",
+    "difficulty": "hard",
+    "docUrl": "https://developer.nvidia.com/blog/introducing-dora-a-high-performing-alternative-to-lora-for-fine-tuning/",
+    "id": "ncagenl-0011"
+  },
+  {
+    "domain": "Core Machine Learning and AI Knowledge",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "DoRA (Weight-Decomposed Low-Rank Adaptation) is presented as an alternative to plain LoRA. What is the key mechanical difference DoRA introduces?",
+    "options": [
+      "DoRA increases inference latency permanently because its components cannot be merged back into the base weights.",
+      "DoRA decomposes each pretrained weight into a magnitude component and a directional component, and fine-tunes both, using a LoRA-style low-rank update for the more expensive directional adaptation.",
+      "DoRA can only be used at inference time and cannot be trained.",
+      "DoRA removes the low-rank decomposition entirely and instead performs full fine-tuning of every parameter."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>DoRA splits each pretrained weight into a magnitude and a direction</b>, then fine-tunes both components, applying a LoRA-style low-rank update to the costlier directional part. Like LoRA, DoRA's trained components merge back into the base weights after training, so it adds no extra inference overhead, contradicting the 'permanent latency' option. DoRA is a trainable fine-tuning method, not an inference-only technique, and it keeps the low-rank idea rather than reverting to full fine-tuning.",
+    "difficulty": "medium",
+    "docUrl": "https://developer.nvidia.com/blog/introducing-dora-a-high-performing-alternative-to-lora-for-fine-tuning/",
+    "id": "ncagenl-0012"
+  },
+  {
+    "domain": "Core Machine Learning and AI Knowledge",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A model architecture activates only 2 of its 8 expert subnetworks for any given token, using a learned router to choose which experts process that token. Compared to an equivalently capable dense transformer that uses all of its parameters for every token, what is the main advantage of this sparse Mixture-of-Experts (MoE) design?",
+    "options": [
+      "It guarantees higher accuracy than any dense model regardless of routing quality.",
+      "It always uses less total GPU memory than a dense model of any size, since unused experts are deleted after training.",
+      "It removes the need for a router entirely, because every expert always processes every token identically.",
+      "It can carry a much larger total parameter count while keeping the compute cost per token low, since only the selected experts run for each token."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "Sparse MoE lets a model hold a <b>large total parameter count while activating only a fraction of it per token</b> (for example, an 8-expert model activating 2 experts per token), keeping per-token compute low even as total capacity grows. The router is essential, not optional, since it decides which experts run. Unused experts are not deleted; all experts are kept in memory because different tokens may route to any of them, so total memory is typically higher, not lower, than a same-quality dense model. Routing quality directly affects accuracy, so no accuracy guarantee follows from the architecture alone.",
+    "difficulty": "medium",
+    "docUrl": "https://developer.nvidia.com/blog/applying-mixture-of-experts-in-llm-architectures/",
+    "id": "ncagenl-0013"
+  },
+  {
+    "domain": "Core Machine Learning and AI Knowledge",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A team is choosing between XGBoost (gradient-boosted decision trees) and a deep transformer model for a structured, tabular dataset with a modest number of rows. Which statement reflects a widely observed practical tradeoff between these approaches?",
+    "options": [
+      "Deep transformer models always train faster than XGBoost on small tabular datasets.",
+      "XGBoost cannot be GPU-accelerated and must always run on CPU.",
+      "XGBoost is a transformer variant that uses self-attention layers instead of decision trees.",
+      "XGBoost is a gradient-boosted ensemble of decision trees that often performs very well on structured, tabular data and can be GPU-accelerated for faster training, while deep transformer models typically need much larger datasets to show a similar advantage."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>XGBoost builds an ensemble of decision trees through gradient boosting</b> and is a strong, GPU-accelerable baseline for structured, tabular data, especially when the row count is modest; NVIDIA's CUDA-accelerated XGBoost work reports multi-x speedups over CPU training. Deep transformer models generally need much larger datasets before they outperform tree ensembles on tabular problems, which is the opposite of always training faster on small tabular data. XGBoost is a tree-based method, not a transformer variant, and GPU acceleration is exactly what NVIDIA's XGBoost work provides.",
+    "difficulty": "medium",
+    "docUrl": "https://developer.nvidia.com/blog/gradient-boosting-decision-trees-xgboost-cuda/",
+    "id": "ncagenl-0014"
+  },
+  {
+    "domain": "Core Machine Learning and AI Knowledge",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A newcomer to GPU computing asks why training a transformer is so much faster on a GPU than on a CPU. In the CUDA programming model, which statement correctly describes the host/device relationship that enables this speedup?",
+    "options": [
+      "CUDA only supports single-threaded execution on the GPU, offering no parallelism advantage over a CPU.",
+      "In the CUDA programming model, the GPU is called the host and the CPU is called the device.",
+      "The CPU (host) and its memory orchestrate the program and launch parallel work onto the GPU (device), which executes many lightweight threads concurrently, a good match for the dense matrix multiplications in transformer layers.",
+      "CUDA requires the GPU to run its own independent operating system separate from the CPU."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "In CUDA's <b>heterogeneous programming model</b>, the CPU and its memory are the <b>host</b>, which orchestrates the program and launches parallel work onto the GPU, the <b>device</b>, which executes many lightweight threads concurrently. That massive thread-level parallelism is a strong match for the dense matrix multiplications that dominate transformer training, which is why GPUs outperform CPUs on this workload. The host/device naming is not reversed, CUDA is fundamentally about parallel (not single-threaded) execution, and the GPU does not run its own separate operating system under this model.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.nvidia.com/cuda/cuda-programming-guide/01-introduction/programming-model.html",
+    "id": "ncagenl-0015"
+  }
+]
