@@ -50,4 +50,16 @@ describe("QuestionCard", () => {
     expect(screen.getByRole("link", { name: /read the databricks docs/i })).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: /read the aws docs/i })).not.toBeInTheDocument();
   });
+  it("mock re-visit: initialChosen pre-fills the selection and the submit control reads Update answer", async () => {
+    const onSubmit = vi.fn();
+    render(<QuestionCard question={single} graded={null} onSubmit={onSubmit} attemptId={SHUFFLE_ID} vendorName="AWS" initialChosen={[2]} />);
+    // Canonical index 2 ("C opt") shows pre-selected and editable (not graded/locked).
+    const c = screen.getByText("C opt").closest("button")!;
+    expect(c.className).toContain("selected");
+    expect(c).toHaveAttribute("aria-pressed", "true");
+    const btn = screen.getByRole("button", { name: /update answer/i });
+    expect(btn).toBeEnabled();
+    await userEvent.click(btn);
+    expect(onSubmit).toHaveBeenCalledWith([2]); // still canonical
+  });
 });

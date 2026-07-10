@@ -22,6 +22,7 @@ export function QuestionCard({
   index,
   total,
   vendorName,
+  initialChosen,
 }: {
   question: Question;
   graded: GradedView | null;
@@ -32,8 +33,13 @@ export function QuestionCard({
   /** Vendor display name for the doc-link label ("Read the {vendorName} docs"). A
    *  hardcoded "AWS" here shipped on every non-AWS question when v1g added vendors. */
   vendorName: string;
+  /** Mock only: seeds the selection so a re-visited question shows the choice already recorded
+   *  (answers stay EDITABLE until final submit). The engine keys this card by question.id and
+   *  passes the stored answer here, so navigating back pre-fills; changing + re-submitting
+   *  overwrites the journal row. Undefined/empty in practice (graded questions are read-only). */
+  initialChosen?: number[];
 }) {
-  const [chosen, setChosen] = useState<number[]>([]);
+  const [chosen, setChosen] = useState<number[]>(initialChosen ?? []);
   const [lastQid, setLastQid] = useState(question.id);
   // Attempt-seeded display order (view layer only). perm[viewPos] = canonicalIndex; every value we
   // read/write below (chosen, question.correct, onSubmit) stays canonical - only render order and the
@@ -45,8 +51,9 @@ export function QuestionCard({
   );
   if (lastQid !== question.id) {
     // Reset selection when the question changes so a reused instance cannot submit stale choices.
+    // Seeds from initialChosen (mock re-visit), else empty (a fresh/practice question).
     setLastQid(question.id);
-    setChosen([]);
+    setChosen(initialChosen ?? []);
   }
   const isMulti = question.type === "multi";
   const view = graded ? graded.chosen : chosen;
@@ -103,7 +110,7 @@ export function QuestionCard({
       {!graded && (
         <div className="footbar">
           <button className="btn btn-primary" style={{ marginLeft: "auto" }} disabled={chosen.length === 0} onClick={() => onSubmit(chosen)}>
-            Submit answer
+            {initialChosen?.length ? "Update answer" : "Submit answer"}
           </button>
         </div>
       )}

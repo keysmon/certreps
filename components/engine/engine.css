@@ -66,10 +66,35 @@
 .reviewmap { margin: 20px 0; }
 .reviewmap .summary { font-family: var(--font-mono); font-size: 12px; color: var(--muted); margin-bottom: 10px; }
 .mapgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 6px; }
-.mapcell { height: 34px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); color: var(--muted); font-family: var(--font-mono); font-size: 12px; cursor: pointer; }
+.mapcell { position: relative; height: 34px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); color: var(--muted); font-family: var(--font-mono); font-size: 12px; cursor: pointer; display: grid; place-items: center; }
 .mapcell.answered { border-color: var(--emerald); color: var(--emerald); background: var(--emerald-soft); }
 .mapcell.flagged { border-color: var(--gold); color: var(--gold); background: var(--gold-soft); }
 .mapcell.current { outline: 2px solid var(--gold); outline-offset: -3px; font-weight: 700; }
+/* Frontier-locked practice cells: dimmed + non-interactive so "can't skip ahead" reads without color. */
+.mapcell.locked { opacity: 0.4; cursor: not-allowed; }
+/* Non-color state glyphs (a11y): a check for answered, a corner triangle for flagged. Both are
+   shape/mark cues that survive a grayscale or colorblind view; the number stays centered. */
+.mc-check { position: absolute; right: 3px; bottom: 1px; font-size: 9px; line-height: 1; color: var(--emerald); pointer-events: none; }
+.mc-flag { position: absolute; top: 0; right: 0; width: 0; height: 0; border-style: solid; border-width: 0 7px 7px 0; border-color: transparent var(--gold) transparent transparent; border-top-right-radius: 8px; pointer-events: none; }
+
+/* ---- v1h exam navigation: practice Prev + frontier palette, mock review screen ---- */
+/* Practice nav sits under the QuestionCard: a light row while answering (just Prev), gaining a
+   divider + forward CTA once the question is graded (mirrors the old single-button footbar). */
+.practicenav { display: flex; align-items: center; gap: 12px; margin-top: 14px; }
+.practicenav.graded { border-top: 1px solid var(--line); padding-top: 18px; margin-top: 22px; }
+.practicemap { margin-top: 8px; }
+/* Exam-bar review affordance: keep it whole (never wrap mid-label) inside the sticky bar. */
+.exam-review { white-space: nowrap; }
+.review-top { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.review-summary { font-family: var(--font-mono); font-size: 12.5px; color: var(--muted); margin: 0 0 18px; }
+/* Unanswered present: warn tone so "they grade as incorrect" is not missed. */
+.review-summary.warn { color: var(--gold); }
+.review-list { margin: 0 0 18px; }
+.review-list h3 { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--faint); font-weight: 500; margin: 0 0 9px; }
+.review-jumps { display: flex; flex-wrap: wrap; gap: 8px; }
+.jumplink { font-family: var(--font-mono); font-size: 12px; color: var(--text); background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 5px 12px; cursor: pointer; transition: 0.12s; }
+.jumplink:hover { border-color: var(--gold); color: var(--gold); }
+.review-back { margin-top: 16px; }
 /* ---- v1d results readiness report (Task 7) ---- */
 /* The results phase early-returns before the exam bar, so its wrapper stays the shared .stage
    (860px). Widen ONLY that stage to the design's 940px by matching the one holding a .results
