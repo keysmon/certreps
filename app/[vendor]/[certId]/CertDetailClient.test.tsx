@@ -71,6 +71,19 @@ describe("HeroCtas", () => {
     expect(screen.getByText(/2 of 5 answered/i)).toBeInTheDocument();
   });
 
+  it("counts only recorded choices in the resume line - a flagged-unanswered empty row does not inflate it", async () => {
+    const ids = getBank(AIP).slice(0, 5).map((q) => q.id);
+    const a = createAttempt(AIP, "mock", ids);
+    saveAttempt(a);
+    recordResult(a.attemptId, { questionId: ids[0], chosen: [0], correct: false, flagged: false });
+    recordResult(a.attemptId, { questionId: ids[1], chosen: [0], correct: false, flagged: false });
+    // Flagging an unanswered question persists an empty-chosen row (v1h) - it must NOT count.
+    recordResult(a.attemptId, { questionId: ids[2], chosen: [], correct: false, flagged: true });
+
+    render(<HeroCtas certId={AIP} vendorSlug="aws" mockMinutes={156} />);
+    expect(await screen.findByText(/2 of 5 answered/i)).toBeInTheDocument();
+  });
+
   it("keeps the newest on the primary CTA and lists older unfinished attempts as resume links", async () => {
     const ids = getBank(AIP).slice(0, 5).map((q) => q.id);
     // Older quick drill (started earlier) + newer mock (started later) both unfinished.

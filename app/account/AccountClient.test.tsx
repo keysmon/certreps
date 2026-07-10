@@ -93,6 +93,19 @@ describe("AccountClient dashboard", () => {
     expect(replay).toBeDefined();
   });
 
+  it("Questions practiced counts only recorded choices, not flagged-unanswered empty rows", async () => {
+    // Two answered (chosen recorded) + one flagged-but-unanswered empty-chosen row (v1h) => 2, not 3.
+    const results = {
+      q1: { questionId: "q1", chosen: [0], correct: false, flagged: false },
+      q2: { questionId: "q2", chosen: [1], correct: false, flagged: false },
+      q3: { questionId: "q3", chosen: [] as number[], correct: false, flagged: true },
+    };
+    writeAll([attempt({ attemptId: "aip-x", questionIds: ["q1", "q2", "q3"], results })]);
+    render(<AccountClient welcome={false} />);
+    const label = await screen.findByText("Questions practiced");
+    expect(label.previousElementSibling?.textContent).toBe("2"); // .sv value precedes the .sl label
+  });
+
   it("renders a removed-cert footnote without crashing, never the empty state", async () => {
     writeAll([attempt({ certId: UNKNOWN, attemptId: "unk-1", finishedAt: 1_700_000_100_000 })]);
     render(<AccountClient welcome={false} />);

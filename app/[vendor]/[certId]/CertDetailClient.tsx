@@ -53,6 +53,12 @@ function resumeUrl(base: string, a: Attempt): string {
   return `${base}?${params.toString()}`;
 }
 
+// A question is answered only when a choice was recorded. A flagged-but-unanswered mock question
+// carries a legitimate empty-chosen result row (v1h), which must NOT inflate the "n of m answered"
+// resume line - count recorded choices (chosen.length > 0), not bare result rows.
+const answeredCount = (a: Attempt): number =>
+  Object.values(a.results).filter((r) => r.chosen.length > 0).length;
+
 export function HeroCtas({ certId, vendorSlug, mockMinutes }: { certId: string; vendorSlug: string; mockMinutes: number }) {
   const [attempts, setAttempts] = useState<Attempt[]>([]);
   useEffect(() => {
@@ -68,7 +74,7 @@ export function HeroCtas({ certId, vendorSlug, mockMinutes }: { certId: string; 
   if (attempt) {
     primaryHref = resumeUrl(base, attempt);
     primaryLabel = "Resume practicing";
-    const answered = Object.keys(attempt.results).length;
+    const answered = answeredCount(attempt);
     const total = attempt.questionIds.length;
     const label = MODE_LABEL[attempt.mode] ?? attempt.mode;
     resumeLine = `${label} in progress ${DOT} ${answered} of ${total} answered`;
@@ -91,7 +97,7 @@ export function HeroCtas({ certId, vendorSlug, mockMinutes }: { certId: string; 
       {extras.length > 0 && (
         <ul className="cd-resume-more">
           {extras.map((ex) => {
-            const answered = Object.keys(ex.results).length;
+            const answered = answeredCount(ex);
             const total = ex.questionIds.length;
             const label = MODE_LABEL[ex.mode] ?? ex.mode;
             return (

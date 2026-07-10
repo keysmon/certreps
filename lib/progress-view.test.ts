@@ -4,7 +4,7 @@ import { getBank } from "./bank";
 import { writeAll } from "./storage";
 import type { Attempt, QuestionResult } from "./types";
 
-// Seed the same way ResumeBanner/Catalog tests do: real bank ids so grading is honest.
+// Seed the same way the Catalog tests do: real bank ids so grading is honest.
 const AIP = "aip-c01"; // passLine 75
 const MLA = "mla-c01"; // passLine 72
 

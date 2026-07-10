@@ -90,6 +90,12 @@ function resumeParams(a: Attempt): string {
  * dashboard can never contradict them. Best score spans every finished attempt (any mode); questions
  * practiced counts answered questions. Called only client-side (progress-view reads localStorage).
  */
+// A question is answered only when a choice was recorded. A flagged-but-unanswered mock question
+// carries a legitimate empty-chosen result row (v1h), which must NOT inflate the practiced tally or
+// the "n of m answered" resume links - count recorded choices (chosen.length > 0), not bare rows.
+const answeredCount = (a: Attempt): number =>
+  Object.values(a.results).filter((r) => r.chosen.length > 0).length;
+
 function computeView(attempts: Attempt[]): DashboardView {
   const byCert = new Map<string, Attempt[]>();
   for (const a of attempts) {
@@ -100,7 +106,7 @@ function computeView(attempts: Attempt[]): DashboardView {
   const registryOrder = listCerts().map((m) => m.certId);
   const knownIds = registryOrder.filter((id) => byCert.has(id));
   const orphanCount = attempts.reduce((n, a) => (getCert(a.certId) ? n : n + 1), 0);
-  const practiced = attempts.reduce((n, a) => n + Object.keys(a.results).length, 0);
+  const practiced = attempts.reduce((n, a) => n + answeredCount(a), 0);
 
   const cards: CardView[] = [];
   const activity: RecentRow[] = [];
@@ -135,7 +141,7 @@ function computeView(attempts: Attempt[]): DashboardView {
     const inProg = inProgress[0] ?? null;
     const resumeHref = inProg ? `${base}?${resumeParams(inProg)}` : `${base}?mode=quick`;
     const resumeExtras = inProgress.slice(1).map((a) => {
-      const answered = Object.keys(a.results).length;
+      const answered = answeredCount(a);
       const label = MODE_LABEL[a.mode] ?? a.mode;
       return {
         href: `${base}?${resumeParams(a)}`,
