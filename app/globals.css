@@ -213,7 +213,10 @@ a:hover { color: var(--gold-bright); }
    login.css so every route gets them, not just the one that imported the owning stylesheet). */
 .btn { font-family: var(--font-sans); font-size: 14.5px; font-weight: 600; border: none; border-radius: var(--radius-sm); padding: 12px 20px; cursor: pointer; display: inline-flex; align-items: center; gap: 9px; text-decoration: none; transition: 0.14s; line-height: 1.2; }
 .btn-primary { background: var(--gold); color: var(--on-gold); box-shadow: var(--shadow-gold); }
-.btn-primary:hover { background: var(--gold-bright); }
+/* Pin the label color on hover: the filled CTA is often an <a> (hero, "Sign in to sync"), and the
+   global a:hover{color:var(--gold-bright)} would otherwise repaint the text to --gold-bright - the
+   same value the background becomes on hover - making the label vanish. Beats a:hover on specificity. */
+.btn-primary:hover { background: var(--gold-bright); color: var(--on-gold); }
 .btn-primary:disabled { background: var(--panel-3); color: var(--faint); cursor: not-allowed; box-shadow: none; }
 .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--line-strong); }
 .btn-danger { background: transparent; color: var(--rose); border: 1px solid var(--rose); }
