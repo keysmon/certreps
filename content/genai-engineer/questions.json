@@ -332,7 +332,7 @@
     "domain": "Application Development",
     "tag": "Domain 3",
     "type": "single",
-    "stem": "A team wants to add a PII-blocking guardrail to a production serving endpoint, but they are worried about false positives interrupting real users. They want to measure how often the guardrail WOULD trigger on live traffic for a week before it actually blocks anything. Which AI Gateway capability supports this rollout?",
+    "stem": "A team wants to add a PII-blocking guardrail to a production serving endpoint, but they are worried about false positives interrupting real users. They want to measure how often the guardrail WOULD trigger on live traffic for a week before it actually blocks anything. Which Unity AI Gateway capability supports this rollout?",
     "options": [
       "Enable the guardrail's Log mode (dry-run), so triggers are recorded without enforcing the block action.",
       "Set the guardrail's action to sanitize, since redaction is invisible to users.",
@@ -342,7 +342,7 @@
     "correct": [
       0
     ],
-    "explanation": "AI Gateway guardrails support a <b>Log mode (dry-run) in which the guardrail evaluates live traffic and records what it would have done without enforcing the action</b>, which gives the team a week of trigger data with zero user impact. Sanitize is not invisible: it actively rewrites request or response content by replacing detected PII with placeholders, changing what users and the model see. Rate limits count requests or tokens and cannot distinguish PII from anything else. Restricting the guardrail to one user's traffic measures nothing about real production behavior.",
+    "explanation": "Unity AI Gateway guardrails support a <b>Log mode (dry-run) in which the guardrail evaluates live traffic and records what it would have done without enforcing the action</b>, which gives the team a week of trigger data with zero user impact. Sanitize is not invisible: it actively rewrites request or response content by replacing detected PII with placeholders, changing what users and the model see. Rate limits count requests or tokens and cannot distinguish PII from anything else. Restricting the guardrail to one user's traffic measures nothing about real production behavior.",
     "difficulty": "hard",
     "docUrl": "https://docs.databricks.com/aws/en/ai-gateway/guardrails",
     "id": "dbxge-0018"
@@ -718,7 +718,7 @@
     "type": "single",
     "stem": "A team deploys an agent behind Unity AI Gateway and wants every request that contains personally identifiable information to be rejected outright before it ever reaches the model, rather than merely redacted in the response. Which guardrail configuration accomplishes this?",
     "options": [
-      "A PII guardrail on the Input phase with its action set to block, pointed at a shared evaluator (safety) endpoint.",
+      "A PII guardrail on the Input phase with its action set to block, pointed at an evaluator endpoint.",
       "A PII guardrail on the Output phase with its action set to redact.",
       "The enable_safety_filter=True option on the endpoint's serving configuration.",
       "A rate limit of 0 queries per minute configured on the endpoint."
@@ -834,7 +834,7 @@
     "options": [
       "Prometheus metrics export from the serving endpoint.",
       "The model signature recorded when the model was logged.",
-      "AI Gateway inference tables enabled on the serving endpoint.",
+      "Unity AI Gateway inference tables enabled on the serving endpoint.",
       "A Review App labeling session with subject matter experts."
     ],
     "correct": [

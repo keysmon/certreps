@@ -29,7 +29,7 @@ When comparing your own fine-tuned or prompted candidates, the right metric depe
 ## Guardrails and quality judges
 
 Two different mechanisms protect a GenAI application, and the exam expects you to know which one applies where.
-**AI Gateway guardrails** sit in front of or behind a serving endpoint and can block or sanitize requests and responses for categories such as PII, jailbreak attempts, and unsafe content; a guardrail's Log mode lets a team measure how often it would trigger on real traffic before ever enforcing an action, which is the safe way to roll one out without surprising real users.
+**Unity AI Gateway guardrails** sit in front of or behind a serving endpoint and can block or sanitize requests and responses for categories such as PII, jailbreak attempts, and unsafe content; a guardrail's Log mode lets a team measure how often it would trigger on real traffic before ever enforcing an action, which is the safe way to roll one out without surprising real users.
 Once a response comes back, **MLflow's built-in judges** assess it qualitatively: RetrievalGroundedness checks whether a response's claims are actually supported by the retrieved context, catching confident-sounding hallucinations that a relevance check alone would miss, RelevanceToQuery checks whether a response addresses what was actually asked, Safety screens for harmful content, and Correctness compares a response against a labeled expected answer or fact, which means Correctness is the one judge on this list that cannot run without ground truth in your evaluation dataset.
 
 ## Authoring and observing agents
