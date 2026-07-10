@@ -9,3 +9,5 @@ next-env.d.ts
 coverage/
 npm-debug.log*
 __pycache__/
+playwright-report/
+test-results/
