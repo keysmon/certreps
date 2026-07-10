@@ -517,5 +517,216 @@
     "difficulty": "easy",
     "docUrl": "https://docs.nvidia.com/nim/large-language-models/latest/get-started/quickstart.html",
     "id": "ncagenl-0027"
+  },
+  {
+    "domain": "Experimentation",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A team wants a single automatic metric that quantifies how well a language model predicts held-out text, where a lower value means the model assigned higher probability to the tokens that actually appeared. Which metric are they describing?",
+    "options": [
+      "Perplexity, which quantifies a language model's uncertainty when predicting a sequence of tokens; lower perplexity indicates better predictive performance.",
+      "BLEU, which compares machine translation output to human reference translations and is not a direct measure of next-token prediction uncertainty.",
+      "F1 score, which balances precision and recall for classification-style tasks rather than modeling a probability distribution over tokens.",
+      "ROUGE, which measures overlap between a generated summary and reference summaries rather than raw next-token probability."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Perplexity</b> quantifies a language model's uncertainty in predicting a sequence of tokens, and a lower perplexity means the model assigned higher probability to the tokens that actually occurred, indicating better predictive performance. BLEU and ROUGE are reference-comparison metrics for translation and summarization respectively, not measures of a model's own next-token uncertainty, and F1 is a classification metric that also does not model token-level probability.",
+    "difficulty": "easy",
+    "docUrl": "https://developer.nvidia.com/blog/mastering-llm-techniques-evaluation/",
+    "id": "ncagenl-0028"
+  },
+  {
+    "domain": "Experimentation",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A team is evaluating a machine-translation model and wants a metric that scores the model's output translations against human reference translations, ranging from 0 (no match) to 1 (a perfect match). Which metric fits?",
+    "options": [
+      "ROUGE, which is designed to score overlap between a generated summary and reference summaries, not translation output specifically.",
+      "BLEU (Bilingual Evaluation Understudy), which compares model translations to reference translations and scores from 0 (no match, low quality) to 1 (perfect match, high quality).",
+      "Perplexity, which measures a model's uncertainty over token sequences rather than comparing output text to a reference translation.",
+      "F1 score, which balances precision and recall over classification labels rather than comparing generated text to a reference translation."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>BLEU</b> is exactly this kind of reference-comparison metric for translation, scored from 0 (no match, low quality) to 1 (a perfect match, high quality). ROUGE targets summarization overlap rather than translation, perplexity measures the model's own predictive uncertainty rather than comparing to a reference, and F1 balances precision and recall for classification, none of which is what the scenario calls for.",
+    "difficulty": "easy",
+    "docUrl": "https://developer.nvidia.com/blog/mastering-llm-techniques-evaluation/",
+    "id": "ncagenl-0029"
+  },
+  {
+    "domain": "Experimentation",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A team is evaluating an automatic summarization model and wants a metric that measures the overlap between the model's generated summary and one or more human-written reference summaries. Which metric fits?",
+    "options": [
+      "Perplexity, which measures a model's uncertainty over token sequences rather than overlap between two pieces of text.",
+      "F1 score, which balances precision and recall over classification labels rather than text-overlap between a summary and its references.",
+      "ROUGE (Recall-Oriented Understudy for Gisting Evaluation), which measures overlap between machine-generated and human-generated summaries, scored between 0 and 1 with higher scores indicating higher similarity.",
+      "BLEU, a metric historically developed for scoring machine translation against reference translations, not summarization overlap."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>ROUGE</b> is built to measure the overlap between a machine-generated summary and one or more human reference summaries, scored between 0 and 1 where higher means more similar. Perplexity and F1 measure unrelated things (token-prediction uncertainty and classification precision/recall), and BLEU was developed for translation, not summarization, even though both are reference-comparison metrics.",
+    "difficulty": "easy",
+    "docUrl": "https://developer.nvidia.com/blog/mastering-llm-techniques-evaluation/",
+    "id": "ncagenl-0030"
+  },
+  {
+    "domain": "Experimentation",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "Before deploying a general-purpose LLM, a team wants to gauge its broad knowledge and reasoning ability using large, standardized, predefined test suites, rather than the team's own custom dataset. Which evaluation approach fits this need, and what is its main limitation?",
+    "options": [
+      "LLM-as-a-judge, which asks another LLM to score open-ended outputs and requires the team to write its own evaluation prompts and criteria rather than using a predefined suite.",
+      "Perplexity, which only measures next-token prediction uncertainty on a single corpus, not broad task coverage across many predefined tasks.",
+      "A/B testing in production, which compares user-facing outcomes between two live model versions rather than using a predefined offline test suite.",
+      "Academic benchmarks such as MMLU, HellaSwag, or BIG-bench, which test a model across hundreds of predefined tasks spanning knowledge, reasoning, and language understanding, though they may not reflect an enterprise's specific domain."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Academic benchmarks</b> such as MMLU, HellaSwag, and BIG-bench cover hundreds of predefined tasks and give a broad, standardized signal on knowledge and reasoning, which is exactly what a team wants before general-purpose deployment; their main limitation is that this broad coverage may not reflect an enterprise's specific domain. LLM-as-a-judge and A/B testing are valid evaluation approaches but are not predefined third-party test suites, and perplexity is a single-corpus, next-token metric rather than a broad-coverage benchmark.",
+    "difficulty": "medium",
+    "docUrl": "https://developer.nvidia.com/blog/streamline-evaluation-of-llms-for-accuracy-with-nvidia-nemo-evaluator/",
+    "id": "ncagenl-0031"
+  },
+  {
+    "domain": "Experimentation",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A team is evaluating an open-ended, generative chatbot task where there is no single correct reference answer, making exact-match or F1 scoring impractical. Which evaluation approach is well suited to this, and what is its key risk?",
+    "options": [
+      "LLM-as-a-judge, where another LLM scores or compares responses at scale, which is efficient for open-ended tasks lacking ground truth but can introduce the judge model's own bias or subjectivity into the scores.",
+      "Exact match scoring, which requires the generated text to be character-identical to a single reference answer, which is impractical for open-ended generation.",
+      "BLEU score, a reference-comparison metric best suited to translation-style tasks with a fixed reference text.",
+      "Perplexity, which scores next-token probability and does not compare one candidate response to another."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>LLM-as-a-judge</b> lets another LLM rapidly score or compare many open-ended responses, which fits tasks that lack a single ground-truth answer, but because the judge is itself a model, it can introduce the judge's own bias or subjectivity into the scores. Exact match and BLEU both require comparing against a fixed reference answer, which is exactly what this open-ended scenario lacks, and perplexity does not compare two candidate responses to each other at all.",
+    "difficulty": "medium",
+    "docUrl": "https://developer.nvidia.com/blog/streamline-evaluation-of-llms-for-accuracy-with-nvidia-nemo-evaluator/",
+    "id": "ncagenl-0032"
+  },
+  {
+    "domain": "Experimentation",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A team wants to systematically compare several learning rates and batch sizes for a NeMo Framework training job across multiple GPUs, without hand-editing the configuration and relaunching for every combination. Which NeMo capability supports this?",
+    "options": [
+      "PEFT adapters such as LoRA, which reduce trainable parameters during fine-tuning but do not themselves sweep hyperparameter values.",
+      "NeMo's Hydra multirun integration, which runs a grid search over the hyperparameter values defined in the configuration, launching a separate run per combination, optionally spread across multiple GPUs.",
+      "Dynamic batching in Triton Inference Server, which is an inference-serving feature and does not run training experiments.",
+      "The KV cache, which stores attention Key/Value tensors during inference and has no role in training-time hyperparameter search."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "NeMo's <b>Hydra multirun</b> integration runs a grid search over hyperparameter values defined in the configuration, such as a set of learning rates and batch sizes, launching one run per combination and optionally distributing runs across multiple GPUs, which removes the need to hand-edit configs and relaunch manually. The KV cache and Triton's dynamic batching are inference-time mechanisms unrelated to sweeping training hyperparameters, and PEFT adapters reduce trainable parameters but do not perform a hyperparameter sweep on their own.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.nvidia.com/nemo-framework/user-guide/latest/nemotoolkit/core/exp_manager.html",
+    "id": "ncagenl-0033"
+  },
+  {
+    "domain": "Experimentation",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "During a long NeMo Framework training run, a team wants automatic checkpointing based on validation loss, the ability to resume after an interruption, and metrics logged to their preferred dashboard, such as Weights and Biases or TensorBoard. Which NeMo component provides this?",
+    "options": [
+      "The tokenizer, which converts text into token IDs and has no role in checkpointing or experiment logging.",
+      "TensorRT-LLM, which builds optimized inference engines after training completes, not during training.",
+      "The NeMo Experiment Manager, built on PyTorch Lightning, which handles checkpointing (including monitoring a chosen metric), run resumption, and integrates with multiple logging backends such as TensorBoard, Weights and Biases, MLFlow, and others.",
+      "The NGC Catalog, which distributes containers and pretrained models rather than tracking a specific run's checkpoints and metrics."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "The <b>NeMo Experiment Manager</b>, built on PyTorch Lightning, automatically checkpoints training (optionally keyed to a monitored metric such as validation loss), supports resuming an interrupted run, and integrates with multiple logging backends including TensorBoard, Weights and Biases, MLFlow, DLLogger, ClearML, and NeptuneLogger. The tokenizer, TensorRT-LLM, and the NGC Catalog all serve different, unrelated purposes and none of them checkpoint or log a specific training run's metrics.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.nvidia.com/nemo-framework/user-guide/latest/nemotoolkit/core/exp_manager.html",
+    "id": "ncagenl-0034"
+  },
+  {
+    "domain": "Experimentation",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A team has an LLM deployment that scores well on offline benchmarks and wants to also validate it under realistic production conditions. One evaluation simulates many concurrent requests to check server capacity and resource utilization; another measures the model's own throughput and latency, such as tokens per second and time-to-first-token. Which pairing correctly labels these two evaluations?",
+    "options": [
+      "Performance benchmarking simulates concurrent request volume, while load testing measures throughput and latency metrics.",
+      "Both evaluations measure the identical thing, so running one makes the other redundant.",
+      "Load testing measures only accuracy metrics such as BLEU and ROUGE, and has nothing to do with concurrency.",
+      "Load testing simulates a large number of concurrent requests to assess capacity and resource utilization under real-world traffic, while performance benchmarking measures the model's own throughput, latency, and token-level metrics such as time-to-first-token and tokens per second."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Load testing</b> simulates concurrent request volume to surface server-capacity, networking, and resource-utilization issues under realistic traffic. <b>Performance benchmarking</b> instead measures the model's own efficiency, using metrics such as time-to-first-token, intertoken latency, tokens per second, and requests per second. The two approaches are complementary, not redundant or identical, and load testing is about traffic and capacity, not accuracy metrics such as BLEU or ROUGE.",
+    "difficulty": "hard",
+    "docUrl": "https://developer.nvidia.com/blog/llm-benchmarking-fundamental-concepts/",
+    "id": "ncagenl-0035"
+  },
+  {
+    "domain": "Experimentation",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A team is building a RAG chatbot and wants a framework that provides reusable abstractions for connecting a vector-store retriever, prompt templates, and one or more LLM calls into a single multi-step pipeline, without hand-writing that plumbing from scratch. Which framework fits this role?",
+    "options": [
+      "LangChain, which provides retriever, prompt-template, and chain abstractions that can be composed into multi-step LLM workflows, including chains that call more than one LLM in sequence.",
+      "TensorRT-LLM, which compiles a single model into an optimized inference engine and does not provide multi-step application-orchestration abstractions.",
+      "Triton Inference Server, which serves already-built models and does not provide retriever or prompt-template abstractions.",
+      "The NeMo Experiment Manager, which manages training checkpoints and logging, not application-level LLM orchestration."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>LangChain</b> supplies retriever, prompt-template, and chain abstractions that compose into multi-step LLM workflows, such as a conversational retrieval chain, and can even orchestrate multiple LLMs in a single chain (for example, one model generating a follow-up question and another producing the final answer). TensorRT-LLM and Triton operate at the model-compilation and model-serving layers, not application orchestration, and the NeMo Experiment Manager tracks training runs rather than orchestrating an application pipeline.",
+    "difficulty": "medium",
+    "docUrl": "https://developer.nvidia.com/blog/tips-for-building-a-rag-pipeline-with-nvidia-ai-langchain-ai-endpoints/",
+    "id": "ncagenl-0036"
+  },
+  {
+    "domain": "Experimentation",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A team wants one platform to evaluate an LLM using standardized academic benchmarks, LLM-as-a-judge scoring, and similarity metrics against their own custom dataset, instead of building three separate evaluation harnesses. Which NVIDIA offering is designed for this?",
+    "options": [
+      "NeMo Guardrails, which enforces runtime safety policies on LLM inputs and outputs, not benchmark-style evaluation.",
+      "TensorRT-LLM, which optimizes inference engines and has no benchmark-evaluation role.",
+      "The NGC Catalog, which distributes containers and pretrained models rather than running evaluation benchmarks.",
+      "NVIDIA NeMo Evaluator, which provides automated workflows for academic benchmarks, LLM-as-a-judge scoring, and similarity-metric evaluation against custom datasets in one platform."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>NeMo Evaluator</b> is built to run academic benchmarks, LLM-as-a-judge scoring, and similarity-metric evaluation against custom datasets from one platform, avoiding separate one-off harnesses for each evaluation style. NeMo Guardrails addresses runtime safety, not benchmark scoring; TensorRT-LLM optimizes inference engines; and the NGC Catalog distributes containers and models rather than running evaluations itself.",
+    "difficulty": "medium",
+    "docUrl": "https://developer.nvidia.com/blog/streamline-evaluation-of-llms-for-accuracy-with-nvidia-nemo-evaluator/",
+    "id": "ncagenl-0037"
+  },
+  {
+    "domain": "Experimentation",
+    "tag": "Domain 3",
+    "type": "multi",
+    "stem": "Which TWO statements correctly contrast LLM evaluation approaches? (Select TWO.)",
+    "options": [
+      "Perplexity directly measures translation quality by comparing output text to human reference translations.",
+      "Numeric similarity metrics such as F1 and ROUGE require ground-truth reference answers and work best for closed-ended tasks with a clear correct answer.",
+      "LLM-as-a-judge cannot be used for open-ended generative tasks because it always requires an exact-match reference answer.",
+      "LLM-as-a-judge introduces no bias or subjectivity, because the judge model always agrees with human raters.",
+      "Academic benchmarks such as MMLU test a model across many predefined tasks and give broad signal, but may not reflect an enterprise's specific domain or use case."
+    ],
+    "correct": [
+      1,
+      4
+    ],
+    "explanation": "<b>Numeric similarity metrics</b> such as F1 and ROUGE need a ground-truth reference to compare against, so they fit closed-ended tasks with a clear correct answer better than open-ended generation. <b>Academic benchmarks</b> such as MMLU give broad, standardized signal across many predefined tasks, but that breadth can miss an enterprise's specific domain. Perplexity does not compare output text to a reference translation (that is BLEU's job). LLM-as-a-judge is specifically useful for open-ended tasks that lack an exact-match reference, the opposite of the claim, and it can introduce bias precisely because the judge is itself a model, not a guaranteed match to human raters.",
+    "difficulty": "hard",
+    "docUrl": "https://developer.nvidia.com/blog/streamline-evaluation-of-llms-for-accuracy-with-nvidia-nemo-evaluator/",
+    "id": "ncagenl-0038"
   }
 ]
