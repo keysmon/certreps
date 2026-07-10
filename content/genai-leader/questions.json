@@ -285,5 +285,351 @@
     "difficulty": "medium",
     "docUrl": "https://cloud.google.com/discover/gemini-vs-gemma",
     "id": "gcpgl-0015"
+  },
+  {
+    "domain": "Google Cloud's gen AI offerings",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A CTO asks why Google Cloud can train and serve very large gen AI models efficiently at scale. Which infrastructure component, custom-designed by Google specifically to accelerate machine learning workloads, is a key part of the answer?",
+    "options": [
+      "Tensor Processing Units (TPUs), custom chips designed by Google to accelerate machine learning training and inference.",
+      "Standard consumer laptops networked together.",
+      "A single centralized mainframe running one process at a time.",
+      "Fax servers used for legacy document transfer."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>TPUs</b> are custom-designed chips that Google built specifically to accelerate the matrix-heavy computations behind machine learning and gen AI training and inference, letting Google Cloud train and serve large models efficiently at scale. Consumer laptops, a single mainframe process, and fax servers are not AI-optimized infrastructure and cannot deliver comparable performance.",
+    "difficulty": "easy",
+    "docUrl": "https://cloud.google.com/discover/what-is-a-tpu",
+    "id": "gcpgl-0016"
+  },
+  {
+    "domain": "Google Cloud's gen AI offerings",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "Google Cloud markets an 'AI Hypercomputer' as part of its AI-optimized infrastructure. Which description BEST matches what this term refers to?",
+    "options": [
+      "A single, extremely fast desktop computer sold to individual developers.",
+      "A supercomputing architecture that integrates performance-optimized hardware (like TPUs and GPUs), software, and flexible consumption models to run demanding AI workloads efficiently.",
+      "A pricing calculator that estimates the cost of a Google Cloud project.",
+      "A code editor optimized for writing Python machine learning scripts."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>AI Hypercomputer</b> refers to Google Cloud's integrated supercomputing system, which brings together performance-optimized compute (TPUs and GPUs), storage, networking, and software so demanding AI training and serving workloads run efficiently at scale. It is not a single desktop machine, a pricing tool, or a code editor.",
+    "difficulty": "medium",
+    "docUrl": "https://cloud.google.com/products/ai-hypercomputer",
+    "id": "gcpgl-0017"
+  },
+  {
+    "domain": "Google Cloud's gen AI offerings",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A CIO evaluating Google Cloud's gen AI platform for a regulated industry wants assurance about how the platform handles sensitive company data. Which set of qualities is Google Cloud's enterprise AI platform generally described as offering?",
+    "options": [
+      "Free of charge for all usage tiers, with no security controls needed.",
+      "Open to the public internet by default with no access controls.",
+      "Responsible, secure, private, reliable, and scalable.",
+      "Limited to a single fixed region with no redundancy."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "Google Cloud positions its enterprise AI platform around being <b>responsible, secure, private, reliable, and scalable</b>, which is exactly what a regulated industry evaluating data handling would look for. The platform is not free, is not open-access by default, and is not restricted to one region without redundancy; Google Cloud provides multi-region options and access controls.",
+    "difficulty": "easy",
+    "docUrl": "https://cloud.google.com/discover/what-is-enterprise-ai",
+    "id": "gcpgl-0018"
+  },
+  {
+    "domain": "Google Cloud's gen AI offerings",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A platform team wants the flexibility to mix Google's first-party Gemini models with open models like Llama, and third-party models like Anthropic's Claude, inside the same Google Cloud project. Which aspect of Google Cloud's gen AI strategy directly supports this?",
+    "options": [
+      "A policy that only Google-built models may ever run on Google Cloud infrastructure.",
+      "A requirement to rewrite every third-party model in a Google-proprietary format before use.",
+      "A rule limiting each Google Cloud project to exactly one foundation model for its lifetime.",
+      "Google Cloud's open approach, which includes offering a choice of first-party, open, and third-party models rather than locking customers into a single model provider."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "Google Cloud's <b>open approach</b> to gen AI includes offering choice across first-party models (Gemini, Gemma), open models, and third-party models within the same platform, rather than restricting customers to a single vendor's models. There is no such single-vendor restriction, no requirement to reformat third-party models, and no one-model-per-project limit.",
+    "difficulty": "medium",
+    "docUrl": "https://cloud.google.com/discover/open-source-ai-models",
+    "id": "gcpgl-0019"
+  },
+  {
+    "domain": "Google Cloud's gen AI offerings",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A knowledge worker subscribes to a premium tier of the Gemini app that unlocks access to Google's most capable models and the ability to create custom, saved AI personas called 'Gems' tailored to repeated tasks. Which product is being described?",
+    "options": [
+      "Gemini Advanced, the premium subscription tier of the Gemini app that includes access to top models and Gems.",
+      "Gemini for Google Workspace, which embeds Gemini into Docs and Gmail.",
+      "Agent Studio, a developer tool for building custom agents.",
+      "NotebookLM Enterprise, a research and writing tool for internal documents."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Gemini Advanced</b> is the premium subscription tier of the consumer Gemini app, giving access to Google's most capable models and letting users create custom <b>Gems</b>, saved AI personas configured for specific repeated tasks. Gemini for Google Workspace embeds Gemini into productivity apps rather than being the consumer app's premium tier. Agent Studio is a developer tool for building agents, not a consumer chat subscription. NotebookLM Enterprise is a research and writing tool, not the Gemini app's premium tier.",
+    "difficulty": "easy",
+    "docUrl": "https://cloud.google.com/discover/what-are-gems-in-gemini",
+    "id": "gcpgl-0020"
+  },
+  {
+    "domain": "Google Cloud's gen AI offerings",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "An enterprise wants one secure application where employees can search across Google Workspace, Confluence, and internal databases with permissions respected, converse with an AI assistant, and run custom agents built for their teams. Which Google Cloud product is designed for exactly this?",
+    "options": [
+      "Cloud Vision API, an API for analyzing images.",
+      "Gemini Enterprise, an intranet search, AI assistant, and agentic platform that connects to enterprise data sources with permissions-aware access.",
+      "Document AI API, an API for extracting structured data from documents.",
+      "Gemini for Google Workspace, which only adds Gemini features inside individual Workspace apps."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Gemini Enterprise</b> is built as an intranet search, AI assistant, and agentic platform that connects to data across an organization, including third-party sources like Confluence, with permissions-aware access, and hosts custom agents. Cloud Vision API and Document AI API are narrow, single-purpose APIs, not an enterprise search and agent platform. Gemini for Google Workspace adds Gemini into individual Workspace apps rather than providing a unified cross-source enterprise search and agent platform.",
+    "difficulty": "hard",
+    "docUrl": "https://cloud.google.com/gemini-enterprise",
+    "id": "gcpgl-0021"
+  },
+  {
+    "domain": "Google Cloud's gen AI offerings",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A research team uploads dozens of PDFs, internal reports, and slide decks into a tool that lets them ask questions grounded only in those uploaded sources, and generates a cited summary plus an audio overview. Which capability BEST matches this description?",
+    "options": [
+      "Cloud Video Intelligence API, which analyzes the content of video files.",
+      "Vertex AI's image generation model, Imagen.",
+      "NotebookLM, which summarizes and extracts information across a curated set of uploaded sources such as PDFs, Docs, and Slides.",
+      "Cloud Translation API, which translates text between languages."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>NotebookLM</b> (available in an enterprise edition accessible through Gemini Enterprise) is a research and writing tool that grounds its answers in a curated set of sources a user uploads, such as PDFs, Google Docs, and Slides, and can generate summaries and audio overviews from them. The Video Intelligence API analyzes video content, not curated document sets. Imagen generates images, and Cloud Translation API translates text; neither matches source-grounded document research.",
+    "difficulty": "medium",
+    "docUrl": "https://cloud.google.com/resources/notebooklm-enterprise",
+    "id": "gcpgl-0022"
+  },
+  {
+    "domain": "Google Cloud's gen AI offerings",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "An employee drafts an email in Gmail and asks an embedded AI assistant to summarize a long email thread and suggest three reply options, without leaving the Gmail interface. Which offering provides this experience?",
+    "options": [
+      "Agent Studio, a tool for developers to build custom agents.",
+      "Model Garden, a catalog of models available in Google Cloud.",
+      "Cloud Run, a service for deploying containerized applications.",
+      "Gemini for Google Workspace, which embeds Gemini's gen AI capabilities directly inside apps such as Gmail, Docs, and Sheets."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Gemini for Google Workspace</b> embeds gen AI features, such as summarizing an email thread or drafting replies, directly inside familiar Workspace apps like Gmail, Docs, and Sheets. Agent Studio and Model Garden are developer- and platform-facing tools, not end-user Workspace features. Cloud Run is a compute service for running containers, unrelated to embedded Workspace AI assistance.",
+    "difficulty": "easy",
+    "docUrl": "https://cloud.google.com/discover/what-is-gemini-for-google-workspace",
+    "id": "gcpgl-0023"
+  },
+  {
+    "domain": "Google Cloud's gen AI offerings",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A retailer wants a Google-Search-quality search experience embedded on its own e-commerce website, letting shoppers find products using natural-language queries against the retailer's own catalog data. Which Google Cloud offering is purpose-built for this external, customer-facing search use case?",
+    "options": [
+      "Agent Search on the Gemini Enterprise Agent Platform, which delivers Google-quality search and RAG over a business's own website and data.",
+      "Gemini for Google Workspace, which is designed for internal productivity apps.",
+      "Conversational Insights, which analyzes contact center call data.",
+      "Cloud Video Intelligence API, which extracts metadata from video files."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Agent Search</b> (the current name for what was Vertex AI Search) provides a Google-Search-quality retrieval and RAG experience that businesses can embed on their own websites or apps over their own catalog or content data, matching an external customer-facing search use case exactly. Gemini for Google Workspace targets internal productivity, not public-facing search. Conversational Insights analyzes contact center interactions rather than powering site search. The Video Intelligence API analyzes video, not text-based product search.",
+    "difficulty": "medium",
+    "docUrl": "https://cloud.google.com/products/gemini-enterprise-agent-platform/agent-search",
+    "id": "gcpgl-0024"
+  },
+  {
+    "domain": "Google Cloud's gen AI offerings",
+    "tag": "Domain 2",
+    "type": "multi",
+    "stem": "A contact center leader is evaluating Google Cloud's Customer Engagement Suite to modernize a call center. Which TWO products are core components of the Customer Engagement Suite? (Select TWO.)",
+    "options": [
+      "Conversational Agents, which helps build virtual agents for self-service customer interactions.",
+      "Cloud Spanner, a globally distributed relational database.",
+      "Agent Assist, which gives live human agents in-the-moment suggestions, summaries, and coaching during customer conversations.",
+      "Compute Engine, a virtual machine hosting service.",
+      "BigQuery, a serverless data warehouse for analytics."
+    ],
+    "correct": [
+      0,
+      2
+    ],
+    "explanation": "Google's <b>Customer Engagement Suite</b> combines <b>Conversational Agents</b> (for self-service virtual agents), <b>Agent Assist</b> (real-time help for human agents), Conversational Insights (analytics on interactions), and Contact Center as a Service (omnichannel CCaaS infrastructure). Cloud Spanner, Compute Engine, and BigQuery are general-purpose Google Cloud infrastructure and data products, not part of the Customer Engagement Suite itself.",
+    "difficulty": "medium",
+    "docUrl": "https://cloud.google.com/blog/products/ai-machine-learning/introducing-customer-engagement-suite-with-google-ai",
+    "id": "gcpgl-0025"
+  },
+  {
+    "domain": "Google Cloud's gen AI offerings",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A contact center operations manager wants a tool that analyzes historical and real-time customer interaction data across the contact center to surface KPIs, common inquiry topics, and areas where agents need coaching. Which product BEST fits this need?",
+    "options": [
+      "Cloud Vision API, used to analyze the content of images.",
+      "Agent Development Kit, a framework for coding custom agents.",
+      "Conversational Insights, which analyzes interaction data to surface KPIs, topic trends, and coaching opportunities for contact center operations.",
+      "Document Translation API, used to translate documents between languages."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Conversational Insights</b> analyzes data from across contact center interactions to give operations managers and quality teams KPIs, categorized inquiry topics, and areas for improvement, which is exactly the described need. The Vision API analyzes images, the Agent Development Kit is a code-first agent-building framework, and the Document Translation API translates documents; none analyzes contact center interaction trends.",
+    "difficulty": "hard",
+    "docUrl": "https://cloud.google.com/products/conversational-insights",
+    "id": "gcpgl-0026"
+  },
+  {
+    "domain": "Google Cloud's gen AI offerings",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A company wants to replace its aging, on-premises call center hardware with a fully managed, omnichannel contact center platform hosted by Google Cloud, rather than building and maintaining its own telephony infrastructure. Which offering matches this need?",
+    "options": [
+      "Cloud Storage, an object storage service for unstructured files.",
+      "Google Cloud Contact Center as a Service (CCaaS), a fully managed, omnichannel contact center platform.",
+      "Cloud Functions, a service for running small pieces of event-driven code.",
+      "Vertex AI Pipelines, a service for orchestrating ML training workflows."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "Google Cloud <b>Contact Center as a Service (CCaaS)</b> is a fully managed, omnichannel contact center platform, removing the need for a company to build and maintain its own telephony hardware, and is one of the four core Customer Engagement Suite products. Cloud Storage stores files, Cloud Functions runs event-driven code, and Vertex AI Pipelines orchestrates ML workflows; none of these is a contact center platform.",
+    "difficulty": "easy",
+    "docUrl": "https://cloud.google.com/solutions/contact-center-as-a-service",
+    "id": "gcpgl-0027"
+  },
+  {
+    "domain": "Google Cloud's gen AI offerings",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A developer wants to browse a single catalog of first-party Gemini and Gemma models, open models such as Llama, and third-party models such as Anthropic's Claude, then deploy a chosen model to their project. Which Google Cloud offering provides this catalog?",
+    "options": [
+      "Cloud Storage, an object storage service.",
+      "Agent Assist, a contact center support tool.",
+      "Cloud Billing, a service for managing Google Cloud spend.",
+      "Model Garden, a catalog within the Gemini Enterprise Agent Platform for discovering, testing, and deploying first-party, open, and third-party models."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Model Garden</b> is the model catalog within the Gemini Enterprise Agent Platform where developers discover, evaluate, and deploy first-party Gemini and Gemma models alongside open models like Llama and third-party models like Claude. Cloud Storage stores objects rather than models, Agent Assist supports contact center agents, and Cloud Billing manages spend; none serves as a model catalog.",
+    "difficulty": "easy",
+    "docUrl": "https://cloud.google.com/products/gemini-enterprise-agent-platform/model-garden",
+    "id": "gcpgl-0028"
+  },
+  {
+    "domain": "Google Cloud's gen AI offerings",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A developer wants to build a custom gen AI application that answers questions using the company's internal documents, and wants to choose the specific vector database, embedding model, and retrieval logic themselves rather than use a fully managed, prebuilt search solution. Which Google Cloud offering is the BEST fit?",
+    "options": [
+      "Vertex AI RAG Engine, a fully managed service for building and deploying custom RAG pipelines with a choice of models, vector databases, and data sources.",
+      "Gemini for Google Workspace, which embeds AI into Docs and Gmail.",
+      "Contact Center as a Service, an omnichannel customer service platform.",
+      "Cloud Video Intelligence API, an API for extracting metadata from video."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>Vertex AI RAG Engine</b> is a fully managed service specifically designed for building custom RAG implementations, letting a developer choose their preferred models, vector databases, and data sources, which fits a team that wants control over retrieval logic rather than a fully prebuilt search product. Gemini for Google Workspace and Contact Center as a Service are prebuilt end-user products, not customizable RAG infrastructure. The Video Intelligence API analyzes video, not text-based document retrieval.",
+    "difficulty": "hard",
+    "docUrl": "https://cloud.google.com/blog/products/ai-machine-learning/introducing-vertex-ai-rag-engine",
+    "id": "gcpgl-0029"
+  },
+  {
+    "domain": "Google Cloud's gen AI offerings",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A development team wants to write code that defines a custom agent's reasoning loop, tool use, and orchestration logic, rather than using a no-code visual builder. Which Google offering is designed for this code-first agent development approach?",
+    "options": [
+      "Conversational Insights, an analytics tool for contact center data.",
+      "Agent Development Kit (ADK), a framework for building, evaluating, and deploying custom AI agents in code.",
+      "Cloud Storage, an object storage service.",
+      "Cloud Billing reports, used to track project spend."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "The <b>Agent Development Kit (ADK)</b> is Google's framework for defining an agent's reasoning, tool use, and orchestration logic in code, giving developers full control over custom agent behavior instead of a no-code visual canvas. Conversational Insights is a contact center analytics tool, Cloud Storage stores objects, and Cloud Billing reports track spend; none is an agent development framework.",
+    "difficulty": "medium",
+    "docUrl": "https://cloud.google.com/products/agent-development-kit",
+    "id": "gcpgl-0030"
+  },
+  {
+    "domain": "Google Cloud's gen AI offerings",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A business user with no coding background wants to visually design and prototype an agent's conversation flow and reasoning steps using a low-code canvas inside the Gemini Enterprise Agent Platform. Which tool should they use?",
+    "options": [
+      "Google AI Studio, a lightweight tool mainly for developers to experiment with Gemini model prompts and API calls.",
+      "Cloud Shell, a browser-based command-line environment.",
+      "Agent Studio, a low-code visual canvas for designing, prototyping, and managing agents within the Gemini Enterprise Agent Platform.",
+      "BigQuery Studio, an interface for writing SQL analytics queries."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "<b>Agent Studio</b> is the low-code, visual canvas within the Gemini Enterprise Agent Platform for designing, prototyping, and managing agents, matching a non-coder who wants a visual way to build agent flows. <b>Google AI Studio</b> is aimed at developers experimenting directly with Gemini model prompts and API calls, not a low-code agent canvas. Cloud Shell is a command-line environment, and BigQuery Studio is for SQL analytics; neither is an agent-design tool.",
+    "difficulty": "easy",
+    "docUrl": "https://cloud.google.com/discover/what-is-agent-studio",
+    "id": "gcpgl-0031"
+  },
+  {
+    "domain": "Google Cloud's gen AI offerings",
+    "tag": "Domain 2",
+    "type": "multi",
+    "stem": "A developer explains that an agent needs 'tools' to interact with the world beyond generating text, such as calling a live weather API or querying a company database. Which TWO of the following are recognized categories of tools an agent can use to interact with its external environment? (Select TWO.)",
+    "options": [
+      "Firewalls, which block all outbound network traffic from an agent.",
+      "Extensions, which let an agent call external APIs to take real-world actions.",
+      "Load balancers, which distribute web traffic across servers.",
+      "Billing alerts, which notify a project owner when spend crosses a threshold.",
+      "Data stores, which let an agent retrieve information from a connected knowledge base or database."
+    ],
+    "correct": [
+      1,
+      4
+    ],
+    "explanation": "Agents use tools such as <b>extensions</b> (calling external APIs to take actions), functions (executing defined code), <b>data stores</b> (retrieving information from a knowledge base), and plugins (adding external capabilities) to interact with the world beyond generating text. Firewalls, load balancers, and billing alerts are general cloud infrastructure and operations features, not agent tool categories.",
+    "difficulty": "medium",
+    "docUrl": "https://cloud.google.com/discover/what-are-ai-agents",
+    "id": "gcpgl-0032"
+  },
+  {
+    "domain": "Google Cloud's gen AI offerings",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A team is building an agent that needs to convert a customer's spoken voicemail into text before an LLM can reason about the request. Which prebuilt Google Cloud AI API should the agent call as a tool for this step?",
+    "options": [
+      "Text-to-Speech API, which converts text into spoken audio.",
+      "Cloud Vision API, which analyzes the content of images.",
+      "Natural Language API, which analyzes the sentiment and structure of existing text.",
+      "Speech-to-Text API, which converts spoken audio into text."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "The <b>Speech-to-Text API</b> converts spoken audio, such as a customer's voicemail, into text that an LLM-based agent can then reason about, making it the right tool for this step. Text-to-Speech does the reverse, converting text to audio. Cloud Vision analyzes images, not audio. Natural Language API analyzes text that already exists rather than transcribing audio into text.",
+    "difficulty": "medium",
+    "docUrl": "https://cloud.google.com/speech-to-text",
+    "id": "gcpgl-0033"
   }
 ]
