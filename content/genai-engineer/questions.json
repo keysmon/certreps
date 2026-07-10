@@ -230,5 +230,275 @@
     "difficulty": "hard",
     "docUrl": "https://docs.databricks.com/aws/en/ai-search/retrieval-quality",
     "id": "dbxge-0012"
+  },
+  {
+    "domain": "Application Development",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A Generative AI Engineer is building a LangChain agent on Databricks. The agent's LLM must be able to decide on its own when to search an existing vector search index of product manuals during a conversation. Which approach from the databricks-langchain package implements this?",
+    "options": [
+      "Create a VectorSearchRetrieverTool for the index with a clear tool name and description, and attach it to the LLM with bind_tools.",
+      "Call DatabricksEmbeddings on every user message and paste the raw embedding vector into the prompt.",
+      "Use ChatDatabricks alone, since chat models retrieve documents natively without any retriever configuration.",
+      "Export the vector search index to a pandas DataFrame at startup and load it into the system prompt."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "<b>VectorSearchRetrieverTool wraps a vector search index as an agent tool, configured with the index name plus a tool name and description, and binding it with bind_tools lets the LLM decide when to invoke retrieval</b> during the conversation, which is the tool-calling agent pattern the requirement describes. DatabricksEmbeddings produces embedding vectors for indexing or querying; pasting raw vectors into a prompt gives the LLM nothing usable. ChatDatabricks is the chat model client and performs no retrieval by itself. Dumping an index into the system prompt does not scale and removes the on-demand retrieval decision entirely.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.databricks.com/aws/en/agents/agent-framework/unstructured-retrieval-tools",
+    "id": "dbxge-0013"
+  },
+  {
+    "domain": "Application Development",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "During qualitative review of a RAG assistant, an engineer notices that some answers contain confident product specifications that do not appear anywhere in the retrieved documents. The engineer wants an automated judge that flags exactly this failure mode across the evaluation set. Which built-in judge should they use?",
+    "options": [
+      "Safety, which detects harmful or offensive content in responses.",
+      "Correctness, which compares each response to an expected response.",
+      "RetrievalGroundedness, which checks whether the response is supported by the retrieved context.",
+      "RelevanceToQuery, which checks whether the response addresses the user's question."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "Fabricated details that are absent from the retrieved documents are a grounding failure, and <b>RetrievalGroundedness judges whether the response's claims are supported by the retrieved context</b>, so it flags exactly these hallucinated specifications. Safety looks for harmful or toxic content, which confident-but-wrong specs are not. Correctness requires ground truth expectations and measures agreement with an expected answer rather than support in retrieved context. RelevanceToQuery would pass these answers because they do address the user's question, just with unsupported content.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.databricks.com/aws/en/mlflow3/genai/eval-monitor/concepts/judges/",
+    "id": "dbxge-0014"
+  },
+  {
+    "domain": "Application Development",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "Retrieval evaluation of a technical support RAG application shows that small 512-token chunks retrieve the correct specific facts with high precision, but the LLM's answers are weak because each retrieved chunk lacks the surrounding procedure context. The team wants to keep the precise retrieval behavior while giving the LLM more complete context. Which chunking strategy addresses this directly?",
+    "options": [
+      "Switch to one fixed 4096-token chunk size for both indexing and generation.",
+      "Use parent-child chunking: index small child chunks for retrieval, and return each match's larger parent chunk to the LLM.",
+      "Remove chunk overlap so more distinct chunks fit into the index.",
+      "Reduce chunks to 128 tokens so retrieval precision increases further."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>Parent-child chunking indexes small child chunks, around 512 tokens, so search stays precise, and then returns the larger parent chunk, around 2048 tokens, that contains each match</b>, which is the documented 'search children, return parents' pattern for exactly this precision-versus-context tension. A single large chunk size degrades the retrieval precision the team wants to keep, because embeddings of long mixed-topic chunks are less discriminative. Overlap changes boundary continuity, not the amount of context returned per match. Shrinking chunks further worsens the identified problem by giving the LLM even less surrounding context.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.databricks.com/aws/en/ai-search/retrieval-quality",
+    "id": "dbxge-0015"
+  },
+  {
+    "domain": "Application Development",
+    "tag": "Domain 3",
+    "type": "multi",
+    "stem": "A travel company's RAG chatbot receives long chatty messages such as 'Hi there! Hope you are well. We are flying to Lisbon with two kids in August and wondering about your cancellation rules for family bookings. Thanks!' The engineer wants to use the content of each user message effectively so the final prompt gives the LLM the best chance of answering correctly. Which TWO techniques accomplish this? (Select TWO.)",
+    "options": [
+      "During query understanding, extract the key fields and intent, such as cancellation policy, family booking, and August travel, and use them to form the retrieval query.",
+      "Embed the entire raw message, including greetings and pleasantries, as the vector search query to preserve all information.",
+      "After retrieval, discard the user's original question and send only the retrieved chunks to the LLM.",
+      "Answer directly from the LLM's general knowledge first, retrieving documents only if the user complains.",
+      "Combine the retrieved policy chunks with the user's question in a prompt template that instructs the LLM to answer from the provided context."
+    ],
+    "correct": [
+      0,
+      4
+    ],
+    "explanation": "Databricks' RAG flow runs <b>query understanding, where the user's input is distilled into the key fields, terms, and intent that form an effective retrieval query</b>, and then <b>augmentation, where retrieved data and the user's question are combined in a prompt template with instructions for the LLM</b>. Embedding the raw chatty message dilutes the query with greetings and filler, which degrades retrieval relevance. Dropping the original question leaves the LLM with context but no task, so it cannot target an answer. Retrieving only after a complaint means the first answer is ungrounded, which defeats the purpose of RAG.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.databricks.com/aws/en/agents/retrieval-augmented-generation",
+    "id": "dbxge-0016"
+  },
+  {
+    "domain": "Application Development",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A deployed chat application on Foundation Model APIs gives answers that vary noticeably between identical runs and often ramble. The product owner wants short, consistent, repeatable answers without changing models. Which adjustment BEST achieves this?",
+    "options": [
+      "Raise temperature to 2.0 and remove the system prompt so the model finds its own style.",
+      "Increase max_tokens so the model has room to converge on a stable answer.",
+      "Ask users to phrase their questions more consistently.",
+      "Lower the temperature toward 0 and add a system message instructing the model to answer concisely."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>Temperature controls sampling randomness, so moving it toward 0 makes outputs far more deterministic across identical runs, and a system-role message sets persistent behavioral instructions such as answering concisely.</b> These are the two documented levers for exactly this steering problem. Raising temperature to 2.0 maximizes the run-to-run variation being complained about. max_tokens caps response length but does not reduce randomness, and raising it invites longer rambles. Changing user behavior is neither reliable nor the application's contract; the model parameters are under the engineer's control.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.databricks.com/aws/en/machine-learning/model-serving/query-chat-models",
+    "id": "dbxge-0017"
+  },
+  {
+    "domain": "Application Development",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A team wants to add a PII-blocking guardrail to a production serving endpoint, but they are worried about false positives interrupting real users. They want to measure how often the guardrail WOULD trigger on live traffic for a week before it actually blocks anything. Which AI Gateway capability supports this rollout?",
+    "options": [
+      "Enable the guardrail's Log mode (dry-run), so triggers are recorded without enforcing the block action.",
+      "Set the guardrail's action to sanitize, since redaction is invisible to users.",
+      "Apply a tokens-per-minute rate limit sized to block roughly the expected PII volume.",
+      "Enable the guardrail only for the endpoint owner's requests during the trial week."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "AI Gateway guardrails support a <b>Log mode (dry-run) in which the guardrail evaluates live traffic and records what it would have done without enforcing the action</b>, which gives the team a week of trigger data with zero user impact. Sanitize is not invisible: it actively rewrites request or response content by replacing detected PII with placeholders, changing what users and the model see. Rate limits count requests or tokens and cannot distinguish PII from anything else. Restricting the guardrail to one user's traffic measures nothing about real production behavior.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.databricks.com/aws/en/ai-gateway/guardrails",
+    "id": "dbxge-0018"
+  },
+  {
+    "domain": "Application Development",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "An application classifies short internal support tickets into four queues. Accuracy on this simple task is already near-identical between a small 8B-parameter model and a large 70B-parameter model in offline experiments. The application is latency-sensitive and runs millions of requests per month. Which choice follows from these attributes?",
+    "options": [
+      "The 70B model, because larger models are always more reliable in production.",
+      "The 8B model, because at equal task accuracy the smaller model delivers lower latency and lower cost per request.",
+      "Both models in sequence, letting the 70B model verify every 8B answer.",
+      "Neither model; simple classification always requires training a custom model from scratch."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "Model selection weighs task fit, latency, and cost together: <b>when a small model already matches the large model's accuracy on a simple, well-scoped task, the smaller model wins because it is faster and much cheaper at volume.</b> Choosing the 70B model buys no measured quality and multiplies cost and latency across millions of requests. Running both models in sequence doubles cost and adds latency to re-verify answers that are already accurate. Training a custom model from scratch is the most expensive path and unnecessary when hosted models already solve the task.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.databricks.com/aws/en/machine-learning/foundation-model-apis/supported-models",
+    "id": "dbxge-0019"
+  },
+  {
+    "domain": "Application Development",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A RAG corpus consists of dense legal sections that the team has decided must be kept whole as chunks of up to 4,000 tokens each. They are choosing between two Databricks-hosted embedding models: databricks-bge-large-en with a 512-token context window and databricks-gte-large-en with an 8,192-token context window, both producing 1,024-dimension embeddings. What should the team do?",
+    "options": [
+      "Choose bge-large-en, since both models produce the same embedding dimension.",
+      "Choose either model and raise the embedding endpoint's max_tokens setting to 4,000.",
+      "Choose gte-large-en, because each 4,000-token chunk fits inside its 8,192-token context window, while bge would truncate most of every chunk.",
+      "Choose bge-large-en and let it read the first 512 tokens, since legal sections summarize themselves early."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "An embedding model can only encode text that fits its context window, so <b>4,000-token chunks require gte-large-en's 8,192-token window; bge-large-en would silently represent only the first 512 tokens of each chunk</b>, leaving roughly seven-eighths of every legal section invisible to retrieval. Equal embedding dimensions say nothing about how much input each model can read. A serving parameter cannot extend a model's architectural context length. Assuming the first 512 tokens summarize a dense legal section is wishful thinking, and queries about later clauses would consistently fail to retrieve the right chunk.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.databricks.com/aws/en/machine-learning/foundation-model-apis/supported-models",
+    "id": "dbxge-0020"
+  },
+  {
+    "domain": "Application Development",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A Generative AI Engineer finds a promising specialized model on Databricks Marketplace for a document-processing task. Before adopting it, they want to confirm the model suits their task and understand how to run it. What does the Marketplace listing provide for this assessment?",
+    "options": [
+      "The provider's description and metadata for the listing, plus pre-built example notebooks, with the model itself delivered through a Unity Catalog share.",
+      "A Databricks certification that the model is the best available choice for every document task.",
+      "The model's full training dataset for independent re-verification.",
+      "A live A/B test automatically run against the team's production traffic."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "Marketplace model listings ship with <b>provider-supplied descriptions and metadata plus pre-built example notebooks, and the model assets are delivered through a Unity Catalog share</b>, so an engineer can read the intended use and run the examples to judge task fit before adopting it. Databricks does not certify listings as best-for-purpose; that judgment belongs to the consumer. Providers do not publish full training datasets through listings. Nothing in Marketplace touches a consumer's production traffic; any A/B testing is something the team would set up themselves after installing the model.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.databricks.com/aws/en/marketplace/",
+    "id": "dbxge-0021"
+  },
+  {
+    "domain": "Application Development",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A team fine-tuned three candidate models for a news summarization feature and logged evaluation runs for each in MLflow. Each summary in the evaluation set has a human-written reference summary. Which metric is the MOST appropriate primary signal for comparing how well each model's summaries capture the reference content?",
+    "options": [
+      "Perplexity of each model on a held-out corpus.",
+      "ROUGE, which measures recall-oriented overlap between generated and reference summaries.",
+      "GPU utilization of each model's serving endpoint.",
+      "The count of tokens generated per summary."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "<b>ROUGE is the recall-oriented overlap metric designed for summarization: it scores how much of the reference summary's content appears in the generated summary</b>, which directly matches the question being asked of these three models. Perplexity measures how well a model predicts text and says nothing about agreement with a specific reference summary. GPU utilization is an infrastructure metric unrelated to summary quality. Token counts measure verbosity, and a short summary can be either excellent or useless, so length alone carries no quality signal.",
+    "difficulty": "easy",
+    "docUrl": "https://www.databricks.com/blog/best-practices-and-methods-llm-evaluation",
+    "id": "dbxge-0022"
+  },
+  {
+    "domain": "Application Development",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A Generative AI Engineer is authoring a new tool-calling agent in Python that must be logged with MLflow, deployed with the Databricks Agent Framework, and kept aligned with current Databricks recommendations. Which authoring interface should they build on?",
+    "options": [
+      "mlflow.pyfunc.ChatAgent, because it is the newest interface in MLflow.",
+      "A bare Python function with no MLflow interface, since deployment wraps any callable.",
+      "mlflow.pyfunc.ResponsesAgent, the currently recommended agent authoring interface compatible with the OpenAI Responses schema.",
+      "A Spark UDF, because agents must run as distributed SQL functions."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "Databricks currently recommends authoring agents on <b>ResponsesAgent, which is compatible with the OpenAI Responses schema and integrates with MLflow logging and Agent Framework deployment</b>, including streaming and tool-calling support. ChatAgent is documented as a legacy schema rather than the newest option, so building new agents on it works against the recommendation in the question. A bare function lacks the input and output schema contract that serving and evaluation rely on. A Spark UDF is for distributed data processing in queries, not for serving a conversational agent endpoint.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.databricks.com/aws/en/agents/agent-framework/author-agent",
+    "id": "dbxge-0023"
+  },
+  {
+    "domain": "Application Development",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "While developing a multi-step LangChain RAG agent in a Databricks notebook, an engineer needs to see every intermediate step of each request, including the retriever call, the assembled prompt, and the LLM call, with inputs and outputs for each step. What is the lowest-effort way to capture this?",
+    "options": [
+      "Insert print statements around each chain component and read the notebook output.",
+      "Wrap the whole chain in a try/except block and log exceptions to a Delta table.",
+      "Manually construct span objects for each component and stitch them together per request.",
+      "Enable MLflow autologging for LangChain so each request produces a trace with spans for every step."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "<b>MLflow Tracing offers one-line autologging, such as mlflow.langchain.autolog(), which automatically captures each request as a trace whose spans record the inputs and outputs of every chain step</b>, including retriever calls, prompt assembly, and LLM calls. Print statements produce unstructured text that is painful to correlate per request and disappears outside the notebook. A try/except block only observes failures, not the step-by-step data flow of successful requests. Hand-building spans works but is exactly the boilerplate autologging exists to eliminate, so it is not the lowest-effort path.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.databricks.com/aws/en/mlflow3/genai/tracing/app-instrumentation/automatic",
+    "id": "dbxge-0024"
+  },
+  {
+    "domain": "Application Development",
+    "tag": "Domain 3",
+    "type": "multi",
+    "stem": "A Generative AI Engineer is explaining to their team how the evaluation phase and the monitoring phase of a GenAI application's life cycle relate on Databricks. Which TWO statements are correct? (Select TWO.)",
+    "options": [
+      "Monitoring requires a ground-truth label for every production request before any scorer can run.",
+      "Evaluation runs offline before deployment, scoring the application against a curated dataset that can include expectations.",
+      "Once monitoring is enabled, offline evaluation no longer serves any purpose.",
+      "Monitoring runs scorers on a sample of live production traces and attaches the results to those traces for review.",
+      "Evaluation and monitoring must use entirely different, incompatible scorer implementations."
+    ],
+    "correct": [
+      1,
+      3
+    ],
+    "explanation": "<b>Evaluation happens offline, typically pre-deployment, against a curated dataset that may carry expectations such as expected facts</b>, while <b>monitoring applies scorers to sampled live traces in production and attaches results as feedback on those traces</b>. Monitoring cannot demand per-request ground truth; that is why production monitoring leans on reference-free judges like groundedness and safety. Offline evaluation stays essential after launch for regression-testing changes to prompts, models, and retrieval before they ship. Far from being incompatible, Databricks' design lets the same scorers run in both phases, which is what makes offline and online results comparable.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.databricks.com/aws/en/mlflow3/genai/eval-monitor/production-monitoring",
+    "id": "dbxge-0025"
+  },
+  {
+    "domain": "Application Development",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A multi-agent system routes analytics questions to a Genie space over the sales schema. Users ask natural follow-up questions such as 'now break that down by region', so each follow-up must be interpreted in the context of the earlier exchanges in that session. Which integration correctly supports this?",
+    "options": [
+      "Use the Genie Conversation API, starting a conversation once and posting each follow-up as a new message in that same conversation.",
+      "Query the sales tables with static SQL templates, since Genie cannot answer follow-up questions.",
+      "Re-embed each follow-up question into a vector search index of past answers and retrieve the closest match.",
+      "Call the workspace SQL statement execution API directly with the user's raw natural-language text."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "The <b>Genie Conversation API is stateful: start-conversation opens a conversation, and each follow-up posted as a message to that conversation is interpreted with the accumulated context</b>, which is exactly what 'now break that down by region' needs; the API returns the generated SQL and results to the calling agent. Static SQL templates discard Genie's natural-language capability and cannot cover open-ended follow-ups. Similarity search over past answers retrieves old results rather than running the new aggregation the user asked for. The SQL execution API expects SQL, not natural language, so raw user text would simply fail.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.databricks.com/aws/en/genie/conversation-api",
+    "id": "dbxge-0026"
   }
 ]
