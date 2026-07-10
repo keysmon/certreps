@@ -707,7 +707,7 @@
     "correct": [
       1
     ],
-    "explanation": "A <b>Unity Catalog column mask</b> applies a SQL function to a column at query time, for example redacting a value unless the caller belongs to a permitted group, so every query (including one built for an LLM prompt) returns the redacted value with no second table to build or keep in sync. A full-copy table (A) means maintaining and syncing a duplicate dataset. A separate joined table (C) still exposes the raw values wherever the join happens and adds schema-management overhead. Encrypting at rest and decrypting in the application (D) hands the app a fully decrypted value before the LLM call, so it does not stop PII from reaching the model at all.",
+    "explanation": "A <b>Unity Catalog column mask</b> applies a SQL function to a column at query time, for example redacting a value unless the caller belongs to a permitted group, so every query (including one built for an LLM prompt) returns the redacted value with no second table to build or keep in sync. A full-copy table means maintaining and syncing a duplicate dataset. A separate joined table still exposes the raw values wherever the join happens and adds schema-management overhead. Encrypting at rest and decrypting in the application hands the app a fully decrypted value before the LLM call, so it does not stop PII from reaching the model at all.",
     "difficulty": "medium",
     "docUrl": "https://docs.databricks.com/aws/en/data-governance/unity-catalog/filters-and-masks",
     "id": "dbxge-0037"
@@ -726,7 +726,7 @@
     "correct": [
       0
     ],
-    "explanation": "Unity AI Gateway guardrails let you choose a Phase, Input or Output, and an action, redact or block. Setting the guardrail's Phase to <b>Input</b> with action <b>block</b> rejects a request containing PII before it reaches the model at all. An Output-phase guardrail (B) only inspects the model's response, and its action here is redact, not block, so PII in the incoming request would still reach the model. enable_safety_filter (C) is a curated Foundation Model APIs option for stripping unsafe content at the model layer, not a PII-blocking gateway guardrail. Setting rate limits to 0 QPM (D) blocks all traffic indiscriminately, not just PII-bearing requests.",
+    "explanation": "Unity AI Gateway guardrails let you choose a Phase, Input or Output, and an action, redact or block. Setting the guardrail's Phase to <b>Input</b> with action <b>block</b> rejects a request containing PII before it reaches the model at all. An Output-phase guardrail only inspects the model's response, and its action here is redact, not block, so PII in the incoming request would still reach the model. enable_safety_filter is a curated Foundation Model APIs option for stripping unsafe content at the model layer, not a PII-blocking gateway guardrail. Setting rate limits to 0 QPM blocks all traffic indiscriminately, not just PII-bearing requests.",
     "difficulty": "hard",
     "docUrl": "https://docs.databricks.com/aws/en/ai-gateway/guardrails",
     "id": "dbxge-0038"
@@ -745,7 +745,7 @@
     "correct": [
       1
     ],
-    "explanation": "Every Databricks Marketplace listing carries Provider and <b>Consumer Terms</b> stating the license grant and restrictions, and a consumer is bound by those terms for anything built downstream, so feeding the dataset into a RAG corpus without honoring its stated usage restrictions is a legal-risk violation regardless of any lineage or audit tooling in place. File format (A) and compute region (C) are engineering and performance concerns, not legal risk. The size of a lineage graph (D) is an operational governance detail and does not establish that a use is licensed.",
+    "explanation": "Every Databricks Marketplace listing carries Provider and <b>Consumer Terms</b> stating the license grant and restrictions, and a consumer is bound by those terms for anything built downstream, so feeding the dataset into a RAG corpus without honoring its stated usage restrictions is a legal-risk violation regardless of any lineage or audit tooling in place. File format and compute region are engineering and performance concerns, not legal risk. The size of a lineage graph is an operational governance detail and does not establish that a use is licensed.",
     "difficulty": "medium",
     "docUrl": "https://docs.databricks.com/aws/en/marketplace/provider-policies",
     "id": "dbxge-0039"
@@ -764,7 +764,7 @@
     "correct": [
       1
     ],
-    "explanation": "Databricks' documented RAG data-pipeline guidance runs a <b>toxicity or quality classifier</b>, such as one invoked with <b>ai_classify()</b>, as a pipeline step and uses its prediction to filter or flag only the problematic content, avoiding the all-or-nothing choice of discarding an entire document. Hand-editing every document (A) does not scale to a real corpus. Shrinking chunk size (C) only changes chunk boundaries; it does not classify or remove low-quality content, and a toxic chunk on its own could still be retrieved. Disabling re-ranking (D) changes result ordering and does nothing to filter content quality.",
+    "explanation": "Databricks' documented RAG data-pipeline guidance runs a <b>toxicity or quality classifier</b>, such as one invoked with <b>ai_classify()</b>, as a pipeline step and uses its prediction to filter or flag only the problematic content, avoiding the all-or-nothing choice of discarding an entire document. Hand-editing every document does not scale to a real corpus. Shrinking chunk size only changes chunk boundaries; it does not classify or remove low-quality content, and a toxic chunk on its own could still be retrieved. Disabling re-ranking changes result ordering and does nothing to filter content quality.",
     "difficulty": "easy",
     "docUrl": "https://docs.databricks.com/aws/en/agents/tutorials/ai-cookbook/quality-data-pipeline-rag",
     "id": "dbxge-0040"
