@@ -32,6 +32,13 @@
   --gold-dim: #b98c34;
   --gold-soft: rgba(233, 180, 76, 0.13);
   --on-gold: #23180a;
+  /* Vibrant gold FILL for the primary CTA + skip-link. Kept vibrant in BOTH themes (no light
+     override) so the button reads as the brand gold on light too, while --gold stays the AA-safe
+     text/accent gold (deepens to bronze on light). --on-gold-fill is the dark label that rides the
+     vibrant fill in either theme; --on-gold stays white-on-bronze for the smaller marker fills. */
+  --gold-fill: #e9b44c;
+  --gold-fill-hover: #f4c667;
+  --on-gold-fill: #23180a;
 
   /* semantic */
   --emerald: #3fcf8e;
@@ -190,7 +197,7 @@ a:hover { color: var(--gold-bright); }
 :focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; border-radius: 8px; }
 :focus:not(:focus-visible) { outline: none; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
-.skip-link { position: absolute; left: 12px; top: -64px; z-index: 200; background: var(--gold); color: var(--on-gold); padding: 10px 16px; border-radius: 10px; font-weight: 600; text-decoration: none; transition: top 0.15s; }
+.skip-link { position: absolute; left: 12px; top: -64px; z-index: 200; background: var(--gold-fill); color: var(--on-gold-fill); padding: 10px 16px; border-radius: 10px; font-weight: 600; text-decoration: none; transition: top 0.15s; }
 .skip-link:focus { top: 12px; outline: none; }
 @media (prefers-reduced-motion: no-preference) {
   @keyframes ds-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
@@ -212,11 +219,11 @@ a:hover { color: var(--gold-bright); }
    .btn-oauth are the small / destructive / oauth variants (moved here from engine.css / settings.css /
    login.css so every route gets them, not just the one that imported the owning stylesheet). */
 .btn { font-family: var(--font-sans); font-size: 14.5px; font-weight: 600; border: none; border-radius: var(--radius-sm); padding: 12px 20px; cursor: pointer; display: inline-flex; align-items: center; gap: 9px; text-decoration: none; transition: 0.14s; line-height: 1.2; }
-.btn-primary { background: var(--gold); color: var(--on-gold); box-shadow: var(--shadow-gold); }
+.btn-primary { background: var(--gold-fill); color: var(--on-gold-fill); box-shadow: var(--shadow-gold); }
 /* Pin the label color on hover: the filled CTA is often an <a> (hero, "Sign in to sync"), and the
-   global a:hover{color:var(--gold-bright)} would otherwise repaint the text to --gold-bright - the
-   same value the background becomes on hover - making the label vanish. Beats a:hover on specificity. */
-.btn-primary:hover { background: var(--gold-bright); color: var(--on-gold); }
+   global a:hover would otherwise repaint the text to the accent gold, making the dark label vanish
+   against the gold fill. Beats a:hover on specificity. */
+.btn-primary:hover { background: var(--gold-fill-hover); color: var(--on-gold-fill); }
 .btn-primary:disabled { background: var(--panel-3); color: var(--faint); cursor: not-allowed; box-shadow: none; }
 .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--line-strong); }
 .btn-danger { background: transparent; color: var(--rose); border: 1px solid var(--rose); }
