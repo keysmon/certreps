@@ -38,9 +38,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <div className="container">
             <p>
               CertReps is an independent study resource. Not affiliated with, endorsed by, or
-              sponsored by Amazon Web Services. AWS and AWS certification names are trademarks
-              of Amazon.com, Inc. or its affiliates. All questions are original - never actual
-              exam content.
+              sponsored by any certification vendor. AWS, Databricks, NVIDIA, Google Cloud, and
+              all certification names are trademarks of their respective owners. All questions
+              are original - never actual exam content.
             </p>
           </div>
         </footer>

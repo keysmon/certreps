@@ -2,7 +2,7 @@ import type { CSSProperties } from "react";
 
 /** Vendor color system - the heart of at-a-glance catalog scanning. Keyed by a
  *  lowercase slug; `c` resolves to the --v-* token in globals.css. The full map
- *  ships now (only AWS has live content) so future certs get their accent for free. */
+ *  ships ahead of content so future certs get their accent for free. */
 export const VENDORS: Record<string, { n: string; c: string }> = {
   aws: { n: "AWS", c: "var(--v-aws)" },
   azure: { n: "Azure", c: "var(--v-azure)" },

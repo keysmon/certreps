@@ -21,6 +21,7 @@ export function QuestionCard({
   attemptId,
   index,
   total,
+  vendorName,
 }: {
   question: Question;
   graded: GradedView | null;
@@ -28,6 +29,9 @@ export function QuestionCard({
   attemptId: string;
   index?: number;
   total?: number;
+  /** Vendor display name for the doc-link label ("Read the {vendorName} docs"). A
+   *  hardcoded "AWS" here shipped on every non-AWS question when v1g added vendors. */
+  vendorName: string;
 }) {
   const [chosen, setChosen] = useState<number[]>([]);
   const [lastQid, setLastQid] = useState(question.id);
@@ -89,7 +93,7 @@ export function QuestionCard({
           {/* Safe: trusted build-time content from our own pipeline (<b>/<em> only), never user input. */}
           <p dangerouslySetInnerHTML={{ __html: question.explanation }} />
           <a className="doclink" href={question.docUrl} target="_blank" rel="noopener noreferrer">
-            Read the AWS docs {String.fromCharCode(8594)}
+            Read the {vendorName} docs {String.fromCharCode(8594)}
           </a>
           <div style={{ marginTop: 12 }}>
             <ReportProblem questionId={question.id} />

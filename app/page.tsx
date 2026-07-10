@@ -2,6 +2,7 @@ import Link from "next/link";
 import { listCerts, getCert } from "@/lib/certs";
 import { certPath } from "@/lib/routes";
 import { CertCard } from "@/components/ui/CertCard";
+import { VENDORS } from "@/components/ui/VendorDot";
 import { TopNav } from "@/components/ui/TopNav";
 import "./landing.css";
 
@@ -29,7 +30,7 @@ const STEPS = [
   {
     n: `03 ${DOT} Read your gaps`,
     h: "Know when you're ready",
-    p: "A readiness report scores every domain against the pass line and tells you the two things to drill before you book.",
+    p: "A readiness report scores every domain against your target and tells you the two things to drill before you book.",
   },
 ];
 
@@ -62,14 +63,15 @@ export default function Home() {
             </Link>
             <a className="btn btn-ghost lp-hero-cta" href="#how">See how it works</a>
           </div>
-          {/* Honesty deviation (plan Task 3): the design renders a chip per vendor in the
-              VENDORS map, but only AWS has live content today - rendering 8 vendor chips
-              would fabricate breadth. Show the real vendor plus a "more coming" chip. */}
+          {/* Honesty rule (plan Task 3): chips render only vendors with LIVE content -
+              derived from the registry, never the full VENDORS map, so breadth is real. */}
           <div className="lp-trust">
-            <span className="lp-vchip">
-              <span className="lp-vd" style={{ background: "var(--v-aws)" }} />
-              AWS
-            </span>
+            {Array.from(new Set(listCerts().map((m) => m.vendorSlug))).map((slug) => (
+              <span key={slug} className="lp-vchip">
+                <span className="lp-vd" style={{ background: VENDORS[slug]?.c ?? "var(--gold)" }} />
+                {VENDORS[slug]?.n ?? slug}
+              </span>
+            ))}
             <span className="lp-vchip lp-vchip-more">+ more coming</span>
           </div>
         </section>

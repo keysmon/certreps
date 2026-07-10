@@ -22,7 +22,7 @@ const SHUFFLE_ID = "shuffled-attempt";
 describe("QuestionCard", () => {
   it("selecting an option enables submit; submit reports chosen indices", async () => {
     const onSubmit = vi.fn();
-    render(<QuestionCard question={single} graded={null} onSubmit={onSubmit} attemptId={SHUFFLE_ID} />);
+    render(<QuestionCard question={single} graded={null} onSubmit={onSubmit} attemptId={SHUFFLE_ID} vendorName="AWS" />);
     const submit = screen.getByRole("button", { name: /submit/i });
     expect(submit).toBeDisabled();
     await userEvent.click(screen.getByText("C opt"));
@@ -32,7 +32,7 @@ describe("QuestionCard", () => {
   });
   it("multi allows max two selections", async () => {
     const onSubmit = vi.fn();
-    render(<QuestionCard question={multi} graded={null} onSubmit={onSubmit} attemptId={SHUFFLE_ID} />);
+    render(<QuestionCard question={multi} graded={null} onSubmit={onSubmit} attemptId={SHUFFLE_ID} vendorName="AWS" />);
     await userEvent.click(screen.getByText("A opt"));
     await userEvent.click(screen.getByText("C opt"));
     await userEvent.click(screen.getByText("E opt")); // third click ignored
@@ -40,9 +40,14 @@ describe("QuestionCard", () => {
     expect(onSubmit).toHaveBeenCalledWith([0, 2]);
   });
   it("graded state shows explanation and doc link, hides submit", () => {
-    render(<QuestionCard question={single} graded={{ chosen: [1], correct: false }} onSubmit={() => {}} attemptId={SHUFFLE_ID} />);
+    render(<QuestionCard question={single} graded={{ chosen: [1], correct: false }} onSubmit={() => {}} attemptId={SHUFFLE_ID} vendorName="AWS" />);
     expect(screen.getByText(/not quite/i)).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /aws docs/i })).toHaveAttribute("href", single.docUrl);
+    expect(screen.getByRole("link", { name: /read the aws docs/i })).toHaveAttribute("href", single.docUrl);
     expect(screen.queryByRole("button", { name: /submit/i })).not.toBeInTheDocument();
+  });
+  it("doc-link label names the cert's vendor, not AWS (v1g wave-review regression)", () => {
+    render(<QuestionCard question={single} graded={{ chosen: [1], correct: false }} onSubmit={() => {}} attemptId={SHUFFLE_ID} vendorName="Databricks" />);
+    expect(screen.getByRole("link", { name: /read the databricks docs/i })).toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: /read the aws docs/i })).not.toBeInTheDocument();
   });
 });

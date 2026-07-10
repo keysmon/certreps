@@ -3,6 +3,7 @@ import type { Attempt, CertMeta, Question } from "@/lib/types";
 import { gradeAttempt } from "@/lib/scoring";
 import { HEAVY_PAUSE_THRESHOLD, domainVerdict, type Verdict } from "@/lib/readiness";
 import { ScoreRing } from "@/components/ui/ScoreRing";
+import { VENDORS } from "@/components/ui/VendorDot";
 import { DomainBars } from "@/components/ui/DomainBars";
 import { optionPermutation, viewIndex } from "@/lib/permute";
 import { certPath, practicePath } from "@/lib/routes";
@@ -191,7 +192,7 @@ export function Results({ attempt, questions, meta }: { attempt: Attempt; questi
                 {/* Safe: trusted build-time content from our own pipeline (<b>/<em> only), never user input. */}
                 <p className="recap-explain" dangerouslySetInnerHTML={{ __html: q.explanation }} />
                 <a className="doclink" href={q.docUrl} target="_blank" rel="noopener noreferrer">
-                  Read the AWS docs {ARROW}
+                  Read the {VENDORS[meta.vendorSlug]?.n ?? meta.vendor} docs {ARROW}
                 </a>
               </div>
             </details>

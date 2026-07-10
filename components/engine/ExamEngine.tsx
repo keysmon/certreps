@@ -307,6 +307,7 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId }: { certId?:
               attemptId={attemptId}
               index={index}
               total={questions.length}
+              vendorName={VENDORS[meta.vendorSlug]?.n ?? meta.vendor}
             />
 
             {isMock && (

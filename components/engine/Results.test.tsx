@@ -70,7 +70,7 @@ describe("Results recap explanations", () => {
     expect(screen.getByText(/Explanation 1/)).toBeVisible();
   });
 
-  it("expanding a recap row reveals its explanation and the AWS docs link", async () => {
+  it("expanding a recap row reveals its explanation and the vendor docs link", async () => {
     const user = userEvent.setup();
     render(<Results attempt={makeAttempt(0)} questions={qs} meta={getMeta()} />);
     const summary = screen.getByText(/Stem number 0/).closest("summary") as HTMLElement;
@@ -80,6 +80,14 @@ describe("Results recap explanations", () => {
     const doclink = within(details).getByRole("link", { name: /read the aws docs/i });
     expect(doclink).toBeVisible();
     expect(doclink).toHaveAttribute("href", "https://docs.aws.amazon.com/x0");
+  });
+
+  it("recap doc-link label names a non-AWS cert's vendor (v1g wave-review regression)", () => {
+    const meta = { ...getMeta(), vendorSlug: "databricks", vendor: "Databricks" };
+    render(<Results attempt={makeAttempt(0)} questions={qs} meta={meta} />);
+    // q1 is wrongly answered, so its row auto-opens - the doclink is queryable without a click.
+    expect(screen.getAllByRole("link", { name: /read the databricks docs/i }).length).toBeGreaterThan(0);
+    expect(screen.queryByRole("link", { name: /read the aws docs/i })).not.toBeInTheDocument();
   });
 
   it("marks the correct option emerald and a wrongly-chosen option rose in an expanded row", () => {
