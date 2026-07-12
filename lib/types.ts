@@ -13,6 +13,10 @@ export interface Question {
   explanation: string;
   difficulty: Difficulty;
   docUrl: string;
+  // Closed-vocabulary subtopic tag (see pipeline/concept_enums.json). Present on
+  // questions added during/after the 2026-07 bank expansion; absent on older ones.
+  // Additive: the app does not yet read it (Project B - adaptive frequency - will).
+  concept?: string;
 }
 
 export interface DomainMeta {
