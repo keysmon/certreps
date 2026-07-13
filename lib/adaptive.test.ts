@@ -59,4 +59,15 @@ describe("buildWeights", () => {
       expect(v).toBeGreaterThan(0);
     }
   });
+
+  it("recency damp applies only to the most-recent attempt, not older ones", () => {
+    const bank = [q("old"), q("recent")];
+    // 'old' correct in attempt 1 only (absent from the latest); 'recent' correct in attempt 2 (the latest).
+    const w = buildWeights([attempt(1, { old: true }), attempt(2, { recent: true })], bank);
+    // 'old': 1 consecutive correct, NOT in the most-recent attempt -> no RECENT_DAMP.
+    expect(w.get("old")!).toBeCloseTo(Math.max(ADAPTIVE.MASTERY_FLOOR, ADAPTIVE.MASTERY_BASE ** 1), 5);
+    // 'recent': 1 consecutive correct AND in the most-recent attempt -> damped.
+    expect(w.get("recent")!).toBeCloseTo(ADAPTIVE.MASTERY_BASE ** 1 * ADAPTIVE.RECENT_DAMP, 5);
+    expect(w.get("old")!).toBeGreaterThan(w.get("recent")!);
+  });
 });
