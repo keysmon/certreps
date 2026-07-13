@@ -3,7 +3,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { Attempt, Mode, Question } from "@/lib/types";
 import { getBank, getMeta } from "@/lib/bank";
 import { sampleDrill, sampleMock, sampleQuick, questionsByIds } from "@/lib/sampler";
-import { createAttempt, saveAttempt, recordResult, finishAttempt, missedQuestionIds, getAttempt, saveProgress } from "@/lib/storage";
+import { createAttempt, saveAttempt, recordResult, finishAttempt, missedQuestionIds, listAttempts, getAttempt, saveProgress } from "@/lib/storage";
+import { buildWeights } from "@/lib/adaptive";
 import { isCorrect } from "@/lib/scoring";
 import { QuestionCard } from "./QuestionCard";
 import { Timer } from "./Timer";
@@ -82,9 +83,9 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId }: { certId?:
     const sampled: Question[] = resumed
       ? questionsByIds(bank, resumed.questionIds)
       : mode === "quick"
-      ? sampleQuick(bank, QUICK_N)
+      ? sampleQuick(bank, QUICK_N, buildWeights(listAttempts(meta.certId), bank))
       : mode === "drill" && domain
-      ? sampleDrill(bank, domain, DRILL_N)
+      ? sampleDrill(bank, domain, DRILL_N, buildWeights(listAttempts(meta.certId), bank))
       : mode === "retry"
       ? questionsByIds(bank, missedQuestionIds(meta.certId))
       : mode === "mock"
