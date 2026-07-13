@@ -6,12 +6,23 @@ import { getSupabase } from "@/lib/supabase/client";
 import { useSession } from "@/lib/supabase/useSession";
 import { readAll, clearAll } from "@/lib/storage";
 import { readPrefs, setPref, clearPrefs, type Prefs } from "@/lib/prefs";
-import { getTheme, toggleTheme, type Theme } from "@/lib/theme";
+import { getTheme, setTheme, THEMES, THEME_LABELS, type Theme } from "@/lib/theme";
 import { initials } from "@/lib/initials";
 import "./settings.css";
 
 // Glyph via fromCharCode (craft convention) so the source stays ASCII-clean.
 const MIDDOT = String.fromCharCode(183);
+
+// Picker preview swatches (ground + accent) - a deliberate visual sample of each theme, mirroring the
+// grounds/accents in globals.css. Day keeps the vibrant gold CTA fill as its accent (bronze is only
+// its text gold), so its swatch reads as "the light form of Signal Gold".
+const THEME_SWATCH: Record<Theme, { bg: string; accent: string }> = {
+  signal: { bg: "#0a0e15", accent: "#e9b44c" },
+  ocean: { bg: "#08131c", accent: "#4aa8f0" },
+  violet: { bg: "#120e1c", accent: "#a78bff" },
+  graphite: { bg: "#0e0f11", accent: "#e9b44c" },
+  day: { bg: "#f0f3f8", accent: "#e9b44c" },
+};
 
 interface NotifRow {
   key: keyof Prefs;
@@ -44,9 +55,9 @@ export function SettingsClient() {
   // value, and React does not patch hydrated attributes, so the first click flips storage with no
   // visible change. Load the stored prefs in an effect instead (mirrors AccountClient's attempts load).
   const [prefs, setPrefs] = useState<Prefs>({ reminders: false, newCerts: false, weekly: false });
-  // Theme follows the same SSR-safe rule: dark default on the server/first render, real value after
-  // mount. The no-flash script already applied the theme visually; this only syncs the switch.
-  const [theme, setThemeState] = useState<Theme>("dark");
+  // Theme follows the same SSR-safe rule: Signal Gold (the default) on the server/first render, real
+  // value after mount. The no-flash script already applied the theme visually; this only syncs the picker.
+  const [theme, setThemeState] = useState<Theme>("signal");
   const [toast, setToast] = useState("");
   const toastTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const email = session?.user.email ?? undefined;
@@ -69,10 +80,10 @@ export function SettingsClient() {
     showToast(next[key] ? "Turned on" : "Turned off");
   }
 
-  function onToggleTheme() {
-    const next = toggleTheme();
+  function onPickTheme(next: Theme) {
+    setTheme(next);
     setThemeState(next);
-    showToast(next === "light" ? "Light theme on" : "Dark theme on");
+    showToast(`${THEME_LABELS[next]} theme on`);
   }
 
   // Moved verbatim from the old account page: local store -> pretty JSON -> download.
@@ -161,20 +172,24 @@ export function SettingsClient() {
 
       <section className="st-card">
         <h2>Appearance</h2>
-        <p className="cd">Choose how CertReps looks on this device.</p>
-        <div className="st-row">
-          <div className="rt">
-            <div className="rl">Light theme</div>
-            <div className="rs">Dark is the default. Your choice is remembered on this device.</div>
-          </div>
-          <button
-            type="button"
-            role="switch"
-            aria-checked={theme === "light" ? "true" : "false"}
-            aria-label="Light theme"
-            className={`st-switch${theme === "light" ? " on" : ""}`}
-            onClick={onToggleTheme}
-          />
+        <p className="cd">Pick a color theme. Signal Gold is the default; your choice is remembered on this device.</p>
+        <div className="st-themes" role="radiogroup" aria-label="Color theme">
+          {THEMES.map((t) => (
+            <button
+              key={t}
+              type="button"
+              role="radio"
+              aria-checked={theme === t ? "true" : "false"}
+              aria-label={THEME_LABELS[t]}
+              className={`st-theme${theme === t ? " on" : ""}`}
+              onClick={() => onPickTheme(t)}
+            >
+              <span className="st-theme-swatch" style={{ background: THEME_SWATCH[t].bg }}>
+                <span style={{ background: THEME_SWATCH[t].accent }} />
+              </span>
+              <span className="st-theme-name">{THEME_LABELS[t]}</span>
+            </button>
+          ))}
         </div>
       </section>
 

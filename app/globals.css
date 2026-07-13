@@ -100,16 +100,18 @@
 }
 
 /* ============================================================
-   LIGHT THEME - opt-in via data-theme="light" on <html> (dark is the default and carries NO
-   attribute). A crafted palette, not an inversion: gold deepens to bronze so it clears WCAG AA as
-   TEXT on white / the ground / soft chips while staying gold-family as a button fill (--on-gold
-   flips to white); emerald and rose darken so verdict and error text clear AA; vendor hues deepen
-   to stay visible and distinguishable on white. Elevation flips - white cards float over a cool
-   grey ground, and higher surface tokens read as progressively deeper greys. All accent-as-text
+   DAYLIGHT (light) THEME - opt-in via data-theme="day" on <html> (Signal Gold is the default and
+   carries NO attribute). A crafted palette, not an inversion: gold deepens to bronze so it clears
+   WCAG AA as TEXT on white / the ground / soft chips while staying gold-family as a button fill
+   (--on-gold flips to white); emerald and rose darken so verdict and error text clear AA; vendor
+   hues deepen to stay visible and distinguishable on white. Elevation flips - white cards float over
+   a cool grey ground, and higher surface tokens read as progressively deeper greys. All accent-as-text
    pairs verified >= 4.5:1 at their worst-case background.
-   Uses :root[data-theme="light"] (specificity 0,2,0) so it always beats a bare :root token block.
+   Kept as the AA-tuned bronze light (user's call) rather than the mock's blue Daylight - better
+   contrast + brand coherence (Daylight = the light form of Signal Gold; the blue lives in Deep Ocean).
+   Uses :root[data-theme="day"] (specificity 0,2,0) so it always beats a bare :root token block.
    ============================================================ */
-:root[data-theme="light"] {
+:root[data-theme="day"] {
   color-scheme: light;
 
   /* ground + surfaces - cards white, ground a cool grey so cards pop; higher token = deeper grey */
@@ -178,6 +180,69 @@
   --glow-auth:
     radial-gradient(1200px 620px at 20% -10%, rgba(201, 150, 40, 0.08), transparent 60%),
     radial-gradient(1000px 620px at 100% 110%, rgba(74, 132, 204, 0.07), transparent 55%);
+}
+
+/* ============================================================
+   ALTERNATE DARK THEMES (Deep Ocean / Ultraviolet / Graphite) - opt-in via data-theme, remap tokens
+   only. Signal Gold is the default (bare :root above, no attribute). These remap grounds/lines/text/
+   accent/CTA-fill/shadows/ambient-glows; the semantic (emerald/rose/sky) and vendor hues stay at the
+   :root dark values - all verified >= 4.5:1 on each theme's panels (emerald 8+, rose 5.4+, sky 6.3+).
+   --faint is lightened one shade from the mock's raw value so micro-labels clear AA on panel + ink
+   (mock ocean #5f8298 was 3.90:1 on panel; the base dark theme documents the same fix).
+   Because every page reads --glow-* + --ink-glass, remapping those here re-tints each theme's ambient
+   background and sticky bars with zero page changes.
+   ============================================================ */
+:root[data-theme="ocean"] {
+  color-scheme: dark;
+  --ink: #08131c; --ink-2: #0a1a25; --panel: #0f2431; --panel-2: #153543; --panel-3: #1e4a5c;
+  --ink-glass: rgba(8, 19, 28, 0.82);
+  --line: rgba(110, 180, 220, 0.14); --line-strong: rgba(110, 180, 220, 0.3);
+  --text: #e9f3f9; --muted: #8fb0c2; --faint: #6e90a5; /* AA-tuned from mock #5f8298 */
+  --gold: #4aa8f0; --gold-bright: #78c1f7; --gold-dim: #2c6d9e; --gold-soft: rgba(74, 168, 240, 0.14); --on-gold: #03151f;
+  --gold-fill: #4aa8f0; --gold-fill-hover: #78c1f7; --on-gold-fill: #03151f;
+  --shadow-gold: 0 8px 24px -10px rgba(74, 168, 240, 0.6);
+  --shadow-cta: 0 10px 28px -12px rgba(74, 168, 240, 0.6);
+  --glow-hero:
+    radial-gradient(1300px 640px at 18% -12%, rgba(74, 168, 240, 0.1), transparent 60%),
+    radial-gradient(1100px 620px at 100% 4%, rgba(63, 207, 142, 0.06), transparent 55%);
+  --glow-page:
+    radial-gradient(1200px 560px at 12% -8%, rgba(74, 168, 240, 0.08), transparent 60%),
+    radial-gradient(1000px 560px at 100% -4%, rgba(63, 207, 142, 0.05), transparent 55%);
+  --glow-auth:
+    radial-gradient(1200px 620px at 20% -10%, rgba(74, 168, 240, 0.08), transparent 60%),
+    radial-gradient(1000px 620px at 100% 110%, rgba(63, 207, 142, 0.06), transparent 55%);
+}
+:root[data-theme="violet"] {
+  color-scheme: dark;
+  --ink: #120e1c; --ink-2: #171225; --panel: #1d1730; --panel-2: #281f42; --panel-3: #352a55;
+  --ink-glass: rgba(18, 14, 28, 0.82);
+  --line: rgba(170, 150, 230, 0.14); --line-strong: rgba(170, 150, 230, 0.3);
+  --text: #efeafb; --muted: #a99cc4; --faint: #8c7faa; /* AA-tuned from mock #7a6e9a */
+  --gold: #a78bff; --gold-bright: #c3aeff; --gold-dim: #6c56b0; --gold-soft: rgba(167, 139, 255, 0.15); --on-gold: #150c2a;
+  --gold-fill: #a78bff; --gold-fill-hover: #c3aeff; --on-gold-fill: #150c2a;
+  --shadow-gold: 0 8px 24px -10px rgba(167, 139, 255, 0.55);
+  --shadow-cta: 0 10px 28px -12px rgba(167, 139, 255, 0.55);
+  --glow-hero:
+    radial-gradient(1300px 640px at 18% -12%, rgba(167, 139, 255, 0.11), transparent 60%),
+    radial-gradient(1100px 620px at 100% 4%, rgba(90, 140, 240, 0.06), transparent 55%);
+  --glow-page:
+    radial-gradient(1200px 560px at 12% -8%, rgba(167, 139, 255, 0.09), transparent 60%),
+    radial-gradient(1000px 560px at 100% -4%, rgba(90, 140, 240, 0.05), transparent 55%);
+  --glow-auth:
+    radial-gradient(1200px 620px at 20% -10%, rgba(167, 139, 255, 0.09), transparent 60%),
+    radial-gradient(1000px 620px at 100% 110%, rgba(90, 140, 240, 0.06), transparent 55%);
+}
+:root[data-theme="graphite"] {
+  color-scheme: dark;
+  --ink: #0e0f11; --ink-2: #131417; --panel: #191b1e; --panel-2: #212429; --panel-3: #2c3036;
+  --ink-glass: rgba(14, 15, 17, 0.85);
+  --line: rgba(200, 205, 215, 0.1); --line-strong: rgba(200, 205, 215, 0.22);
+  --text: #eef0f2; --muted: #9aa0a8; --faint: #81878f; /* AA-tuned from mock #6a7078 */
+  /* accent stays the brand gold; grounds go neutral. gold-fill / shadows inherit :root (same gold). */
+  --gold: #e9b44c; --gold-bright: #f4c667; --gold-dim: #a8842f; --gold-soft: rgba(233, 180, 76, 0.12); --on-gold: #221806;
+  --glow-hero: radial-gradient(1300px 640px at 18% -12%, rgba(233, 180, 76, 0.06), transparent 60%);
+  --glow-page: radial-gradient(1200px 560px at 12% -8%, rgba(233, 180, 76, 0.045), transparent 60%);
+  --glow-auth: radial-gradient(1200px 620px at 20% -10%, rgba(233, 180, 76, 0.055), transparent 60%);
 }
 
 /* base */

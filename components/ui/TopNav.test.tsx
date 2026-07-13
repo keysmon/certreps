@@ -93,24 +93,7 @@ describe("TopNav", () => {
     expect(screen.queryByRole("link", { name: /settings/i })).not.toBeInTheDocument();
   });
 
-  it("toggles the theme, flipping the html attribute and persisting the choice", async () => {
-    localStorage.clear();
-    document.documentElement.removeAttribute("data-theme");
-    mockedAvailable.mockReturnValue(false);
-    render(<TopNav />);
-
-    // Dark default: the button offers a switch to light and no attribute is set.
-    const toLight = screen.getByRole("button", { name: /switch to light theme/i });
-    expect(document.documentElement.getAttribute("data-theme")).toBeNull();
-
-    await userEvent.click(toLight);
-    expect(document.documentElement.getAttribute("data-theme")).toBe("light");
-    expect(localStorage.getItem("certreps.theme")).toBe("light");
-    // The button now offers switching back to dark.
-    const toDark = screen.getByRole("button", { name: /switch to dark theme/i });
-
-    await userEvent.click(toDark);
-    expect(document.documentElement.getAttribute("data-theme")).toBeNull();
-    expect(localStorage.getItem("certreps.theme")).toBe("dark");
-  });
+  // Theme selection moved out of the bar into Settings (a 5-way picker) with the redesign - the bar
+  // no longer carries a light/dark toggle. Theme behaviour is covered by lib/theme.test.ts and
+  // SettingsClient.test.tsx.
 });

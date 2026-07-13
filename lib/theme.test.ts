@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { getTheme, setTheme, toggleTheme, applyTheme, type Theme } from "./theme";
+import { getTheme, setTheme, applyTheme, THEMES, THEME_LABELS, type Theme } from "./theme";
 
 const KEY = "certreps.theme";
 const attr = () => document.documentElement.getAttribute("data-theme");
@@ -10,47 +10,51 @@ beforeEach(() => {
 });
 
 describe("theme store", () => {
-  it("defaults to dark when nothing is stored", () => {
-    expect(getTheme()).toBe("dark");
+  it("defaults to Signal Gold when nothing is stored", () => {
+    expect(getTheme()).toBe("signal");
   });
 
-  it("reads a stored light theme", () => {
-    localStorage.setItem(KEY, "light");
-    expect(getTheme()).toBe("light");
+  it("reads each stored alternate theme verbatim", () => {
+    for (const t of ["ocean", "violet", "graphite", "day"] as Theme[]) {
+      localStorage.setItem(KEY, t);
+      expect(getTheme()).toBe(t);
+    }
   });
 
-  it("falls back to dark for an unrecognized stored value", () => {
+  it("falls back to Signal Gold for an unrecognized stored value", () => {
     localStorage.setItem(KEY, "sepia");
-    expect(getTheme()).toBe("dark");
+    expect(getTheme()).toBe("signal");
   });
 
-  it("applyTheme adds data-theme=light for light and removes it for dark", () => {
-    applyTheme("light");
-    expect(attr()).toBe("light");
-    applyTheme("dark");
-    // Dark is the default and carries NO attribute, matching the no-flash inline script.
+  it("migrates the legacy two-theme values (dark -> signal, light -> day)", () => {
+    localStorage.setItem(KEY, "dark");
+    expect(getTheme()).toBe("signal");
+    localStorage.setItem(KEY, "light");
+    expect(getTheme()).toBe("day");
+  });
+
+  it("applyTheme sets data-theme for the alternates and removes it for Signal Gold", () => {
+    applyTheme("ocean");
+    expect(attr()).toBe("ocean");
+    applyTheme("day");
+    expect(attr()).toBe("day");
+    // Signal Gold is the default and carries NO attribute, matching the no-flash inline script.
+    applyTheme("signal");
     expect(attr()).toBeNull();
   });
 
-  it("setTheme persists the value and applies the attribute", () => {
-    setTheme("light");
-    expect(localStorage.getItem(KEY)).toBe("light");
-    expect(attr()).toBe("light");
+  it("setTheme persists the canonical name and applies the attribute", () => {
+    setTheme("violet");
+    expect(localStorage.getItem(KEY)).toBe("violet");
+    expect(attr()).toBe("violet");
 
-    setTheme("dark");
-    expect(localStorage.getItem(KEY)).toBe("dark");
+    setTheme("signal");
+    expect(localStorage.getItem(KEY)).toBe("signal");
     expect(attr()).toBeNull();
   });
 
-  it("toggleTheme flips dark->light->dark, persisting and applying each time", () => {
-    const light: Theme = toggleTheme();
-    expect(light).toBe("light");
-    expect(getTheme()).toBe("light");
-    expect(attr()).toBe("light");
-
-    const dark: Theme = toggleTheme();
-    expect(dark).toBe("dark");
-    expect(getTheme()).toBe("dark");
-    expect(attr()).toBeNull();
+  it("every theme has a label and the set is exactly the five themes", () => {
+    expect(THEMES).toEqual(["signal", "ocean", "violet", "graphite", "day"]);
+    for (const t of THEMES) expect(THEME_LABELS[t]).toBeTruthy();
   });
 });
