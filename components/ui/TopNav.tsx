@@ -1,51 +1,104 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { getSupabase } from "@/lib/supabase/client";
 import { useSession } from "@/lib/supabase/useSession";
 import { initials } from "@/lib/initials";
-import { getTheme, toggleTheme, type Theme } from "@/lib/theme";
 import { CommandSwitcher } from "./CommandSwitcher";
 import "./TopNav.css";
 
-// Sun (offers light) / moon (offers dark) - the icon names the theme the click switches TO, pairing
-// with the button's aria-label. Stroke inherits currentColor so it recolors with the nav.
-function SunIcon() {
+/**
+ * Signed-in account menu: an initials avatar that opens a small dropdown (My progress / Settings /
+ * Sign out). The redesign's minimal bar drops the persistent nav links, so this menu is the only
+ * chrome path to account + settings for signed-in users - hence it must be reliably reachable and
+ * dismissable. Closes on outside click or Escape (Escape restores focus to the avatar), and moves
+ * focus to the first item on open. Better than the design prototype, which neither traps nor restores
+ * focus (same bar the CommandSwitcher holds).
+ */
+function AccountMenu({ label, onSignOut }: { label?: string; onSignOut: () => void }) {
+  const [open, setOpen] = useState(false);
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const btnRef = useRef<HTMLButtonElement>(null);
+  const firstItemRef = useRef<HTMLAnchorElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    firstItemRef.current?.focus();
+    function onDown(e: MouseEvent) {
+      if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) setOpen(false);
+    }
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setOpen(false);
+        btnRef.current?.focus();
+      }
+    }
+    document.addEventListener("mousedown", onDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
   return (
-    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <circle cx="12" cy="12" r="4" />
-      <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
-    </svg>
-  );
-}
-function MoonIcon() {
-  return (
-    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
-    </svg>
+    <div className="tn-acct" ref={wrapRef}>
+      <button
+        type="button"
+        ref={btnRef}
+        className="tn-avatar"
+        aria-haspopup="menu"
+        aria-expanded={open}
+        aria-label="Account menu"
+        onClick={() => setOpen((o) => !o)}
+      >
+        {initials(label)}
+      </button>
+      {open && (
+        <div className="tn-menu" role="menu" aria-label="Account">
+          {label && (
+            <div className="tn-menu-email" aria-hidden="true">
+              {label}
+            </div>
+          )}
+          <Link ref={firstItemRef} href="/account" role="menuitem" className="tn-menu-item" onClick={() => setOpen(false)}>
+            My progress
+          </Link>
+          <Link href="/settings" role="menuitem" className="tn-menu-item" onClick={() => setOpen(false)}>
+            Settings
+          </Link>
+          <button
+            type="button"
+            role="menuitem"
+            className="tn-menu-item tn-menu-signout"
+            onClick={() => {
+              setOpen(false);
+              onSignOut();
+            }}
+          >
+            Sign out
+          </button>
+        </div>
+      )}
+    </div>
   );
 }
 
 /**
- * Shared top navigation: loop mark + wordmark (home), a Catalog link, and a
- * session-aware auth slot reusing AuthButton's session logic via useSession.
- * Auth-slot semantics mirror AuthButton exactly: no control when Supabase is
- * unavailable (env-less = v1a parity), a "Sign in" ghost button when signed out,
- * and identity + "Sign out" when signed in. The landing page mounts this in place
- * of the layout's AuthButton strip; later tasks adopt it on interior pages too.
- * `active` marks the current nav link (bolder, aria-current) - Catalog and My progress today.
+ * Shared minimal top bar (redesign "global chrome"): the ring-mark logo (home) + a divider + the
+ * compact Cmd+K cert switcher chip, then a muted device/sync status and the auth surface. The
+ * redesign drops the persistent Catalog / My progress nav links (logo -> home covers catalog; the
+ * chip covers cert nav; signed-in users reach account + settings through the avatar menu) and the
+ * in-bar theme toggle (theme moved to a 5-way Settings picker). Auth-slot semantics mirror AuthButton:
+ * no control when Supabase is unavailable (env-less parity), a "Sign in" link when signed out, and the
+ * AccountMenu avatar when signed in. Mounted by every page that owns its own auth surface.
  */
-export function TopNav({ active }: { active?: "catalog" | "progress" }) {
+export function TopNav() {
   const { session, available } = useSession();
   const label = session?.user.email ?? (session?.user.user_metadata?.name as string | undefined);
-
-  // Theme toggle. The server (and first client render) MUST be a deterministic default so the
-  // markup matches and hydration is clean; the real stored theme is read after mount, exactly like
-  // SettingsClient loads prefs. The no-flash script in layout.tsx has already applied the correct
-  // theme visually - this only syncs the button's icon/label to it.
-  const [theme, setThemeState] = useState<Theme>("dark");
-  useEffect(() => setThemeState(getTheme()), []);
-  const isLight = theme === "light";
+  // Honest, quiet status: local-only until you sign in, then synced. Shown once the auth layer is
+  // available so it never contradicts what the auth slot offers.
+  const status = session ? "Synced to your account" : "Progress saved on this device";
 
   return (
     <header className="tn-bar">
@@ -67,47 +120,19 @@ export function TopNav({ active }: { active?: "catalog" | "progress" }) {
         </span>
         CertReps
       </Link>
-      {/* Global Cmd+K certification switcher (Task 9). Ships wherever TopNav lives, now including the
-          practice engine (v1h mounts TopNav on the exam page for reachable nav; the engine binds no
-          conflicting shortcut, so Cmd+K stays the switcher there too). */}
+      <span className="tn-divider" aria-hidden="true" />
+      {/* Global Cmd+K certification switcher, restyled as the compact cert chip. Ships wherever TopNav
+          lives, including the practice engine (it binds no conflicting shortcut). */}
       <CommandSwitcher />
       <span className="tn-spacer" />
-      <Link
-        href="/catalog"
-        className={`tn-link${active === "catalog" ? " tn-link-on" : ""}`}
-        aria-current={active === "catalog" ? "page" : undefined}
-      >
-        Catalog
-      </Link>
-      <Link
-        href="/account"
-        className={`tn-link${active === "progress" ? " tn-link-on" : ""}`}
-        aria-current={active === "progress" ? "page" : undefined}
-      >
-        My progress
-      </Link>
-      <button
-        type="button"
-        className="tn-theme"
-        onClick={() => setThemeState(toggleTheme())}
-        aria-label={isLight ? "Switch to dark theme" : "Switch to light theme"}
-      >
-        {isLight ? <MoonIcon /> : <SunIcon />}
-      </button>
+      {available && <span className="tn-status">{status}</span>}
       {available &&
         (session ? (
-          <>
-            <span className="tn-user">{label}</span>
-            <button type="button" className="tn-signout" onClick={() => getSupabase()?.auth.signOut()}>
-              Sign out
-            </button>
-            {/* Initials avatar -> Settings (the design routes the avatar there). Signed-out shows none. */}
-            <Link href="/settings" className="tn-avatar" aria-label="Settings">
-              {initials(label)}
-            </Link>
-          </>
+          <AccountMenu label={label} onSignOut={() => getSupabase()?.auth.signOut()} />
         ) : (
-          <Link href="/login" className="tn-signin">Sign in</Link>
+          <Link href="/login" className="tn-signin">
+            Sign in
+          </Link>
         ))}
     </header>
   );

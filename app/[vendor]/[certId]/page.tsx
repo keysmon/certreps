@@ -4,16 +4,14 @@ import { notFound } from "next/navigation";
 import { Pill } from "@/components/ui/Pill";
 import { TopNav } from "@/components/ui/TopNav";
 import { VendorDot, VENDORS } from "@/components/ui/VendorDot";
+import type { CSSProperties } from "react";
 import { getCert, listCerts } from "@/lib/certs";
-import { certPath } from "@/lib/routes";
-import { listGuides } from "@/lib/guides";
-import { DomainRows, HeroCtas, ReadinessPanel } from "./CertDetailClient";
+import { PathToReady } from "./CertDetailClient";
 import "./cert-detail.css";
 
 // ASCII-source convention (see app/page.tsx): typographic glyphs from the design copy are
 // reproduced faithfully but written as escapes, never literals.
 const DOT = String.fromCharCode(183); // U+00B7 middle dot
-const EMDASH = String.fromCharCode(8212); // U+2014 em dash (verbatim in the design's section header)
 
 export function generateStaticParams() {
   return listCerts().map((c) => ({ vendor: c.vendorSlug, certId: c.certId }));
@@ -31,12 +29,10 @@ export async function generateMetadata({ params }: { params: Promise<{ vendor: s
   };
 }
 
-// How-it-works copy is verbatim from design/redesign/CertDetail.html.
-const HOW = [
-  { n: `01 ${DOT} Practice`, p: "Original scenario questions per domain. Miss one, see why immediately." },
-  { n: `02 ${DOT} Simulate`, p: "Full-length mock under real exam timing and question count." },
-  { n: `03 ${DOT} Read your gaps`, p: "An honest readiness report that tells you exactly what to drill next." },
-];
+const eyebrow: CSSProperties = {
+  fontFamily: "var(--font-mono)", fontSize: "11px", letterSpacing: ".16em",
+  textTransform: "uppercase", color: "var(--faint)", margin: "0 0 16px",
+};
 
 export default async function CertPage({ params }: { params: Promise<{ vendor: string; certId: string }> }) {
   const { vendor, certId } = await params;
@@ -45,26 +41,19 @@ export default async function CertPage({ params }: { params: Promise<{ vendor: s
   // cert's own vendorSlug, so /gcp/aip-c01 (an alias to an AWS cert) 404s instead of duplicating.
   if (!cert || cert.meta.vendorSlug !== vendor) notFound();
   const meta = cert.meta;
-  const bankSize = cert.bank.length;
-  const guides = listGuides(certId);
 
   const vendorInfo = VENDORS[meta.vendorSlug];
   const accent = vendorInfo?.c ?? "var(--gold)";
   const vendorName = vendorInfo?.n ?? meta.vendor;
-
-  // Same vendor, other certs -> compact "More in this track" rows to their detail pages.
-  const related = listCerts().filter((c) => c.vendorSlug === meta.vendorSlug && c.certId !== meta.certId);
 
   return (
     <div className="cd-glow">
       <a href="#maincontent" className="skip-link">Skip to content</a>
       <TopNav />
 
-      <main className="cd-wrap" id="maincontent">
+      <main className="cd-wrap cd-wrap-narrow" id="maincontent">
         <nav className="cd-crumb" aria-label="Breadcrumb">
-          <Link href="/catalog">Catalog</Link>
-          <span className="cd-crumb-sep" aria-hidden="true">{DOT}</span>
-          <span className="cd-crumb-vendor">{vendorName}</span>
+          <Link href="/catalog">&lsaquo; All exams</Link>
         </nav>
 
         <header className="cd-hero">
@@ -80,91 +69,23 @@ export default async function CertPage({ params }: { params: Promise<{ vendor: s
             Original scenario questions with real explanations, mapped to the official {meta.examCode} exam
             guide. Practice one domain at a time, or sit the full mock under exam timing.
           </p>
-          <HeroCtas certId={certId} vendorSlug={meta.vendorSlug} mockMinutes={meta.mockMinutes} />
         </header>
 
-        <div className="cd-grid">
-          <div>
-            <h2 className="cd-section-h">Domains {EMDASH} practice any</h2>
-            <DomainRows
-              certId={certId}
-              vendorSlug={meta.vendorSlug}
-              passLinePct={meta.passLinePct}
-              domains={meta.domains.map((d) => ({ name: d.name, weightPct: d.weightPct }))}
-            />
+        <div style={eyebrow}>Your path to ready</div>
 
-            <section className="cd-panel cd-how-panel">
-              <h3 className="cd-panel-h">How CertReps works</h3>
-              <div className="cd-how">
-                {HOW.map((s) => (
-                  <div key={s.n}>
-                    <div className="cd-how-n">{s.n}</div>
-                    <p className="cd-how-p">{s.p}</p>
-                  </div>
-                ))}
-              </div>
-            </section>
+        <PathToReady
+          certId={certId}
+          vendorSlug={meta.vendorSlug}
+          mockMinutes={meta.mockMinutes}
+          mockQuestionCount={meta.mockQuestionCount}
+          passLinePct={meta.passLinePct}
+          passLineOfficial={meta.passLineOfficial}
+          domains={meta.domains.map((d) => ({ name: d.name, weightPct: d.weightPct }))}
+        />
 
-            {guides.length > 0 && (
-              <section className="cd-panel cd-guides-panel">
-                <h3 className="cd-panel-h">Study guides</h3>
-                <div className="cd-guides-list">
-                  {guides.map((g) => (
-                    <Link key={g.slug} href={`/guides/${certId}/${g.slug}`}>
-                      {g.title}
-                    </Link>
-                  ))}
-                </div>
-              </section>
-            )}
-          </div>
-
-          <aside className="cd-list">
-            <ReadinessPanel certId={certId} passLinePct={meta.passLinePct} passLineOfficial={meta.passLineOfficial} />
-
-            <div className="cd-panel">
-              <h3 className="cd-panel-h">What&apos;s inside</h3>
-              <div className="cd-kv"><span className="muted">Practice questions</span><span className="cd-kv-v">{bankSize}</span></div>
-              <div className="cd-kv"><span className="muted">Full mock</span><span className="cd-kv-v">Fresh mix every time</span></div>
-              <div className="cd-kv"><span className="muted">Explanations w/ docs</span><span className="cd-kv-v">Every Q</span></div>
-              <div className="cd-kv"><span className="muted">Mock length</span><span className="cd-kv-v">{meta.mockMinutes} min</span></div>
-              {meta.passLineOfficial === false && (
-                <div className="cd-kv"><span className="muted">Pass score</span><span className="cd-kv-v">Not published - {meta.passLinePct}% study target</span></div>
-              )}
-              <div className="cd-kv"><span className="muted">Last verified</span><span className="cd-kv-v">{meta.verified}</span></div>
-            </div>
-
-            <div className="cd-panel cd-nosignup">
-              <div className="cd-nosignup-h">No signup to practice</div>
-              <p className="cd-nosignup-p">
-                Create a free account only if you want progress saved across devices.
-              </p>
-            </div>
-          </aside>
-        </div>
-
-        {related.length > 0 && (
-          <>
-            <h2 className="cd-section-h cd-related-h">More in this track</h2>
-            <div className="cd-related">
-              {related.map((c) => {
-                const rv = VENDORS[c.vendorSlug];
-                const rAccent = rv?.c ?? "var(--gold)";
-                const rName = rv?.n ?? c.vendor;
-                return (
-                  <Link key={c.certId} href={certPath(c)} className="cd-related-row" aria-label={c.title}>
-                    <VendorDot color={rAccent} size={9} />
-                    <div className="cd-related-main">
-                      <div className="cd-related-name">{c.title}</div>
-                      <div className="cd-related-sub">{rName} {DOT} {c.examCode}</div>
-                    </div>
-                    <Pill tone="level">{c.level}</Pill>
-                  </Link>
-                );
-              })}
-            </div>
-          </>
-        )}
+        <p style={{ textAlign: "center", fontFamily: "var(--font-mono)", fontSize: "11.5px", color: "var(--faint)", margin: "30px 0 0" }}>
+          {meta.mockQuestionCount}-question mock {DOT} every answer explained with a docs link {DOT} last verified {meta.verified}
+        </p>
       </main>
     </div>
   );

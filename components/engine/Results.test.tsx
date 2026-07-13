@@ -43,12 +43,12 @@ function passedAttempt(): Attempt {
 }
 
 describe("Results", () => {
-  it("shows score, per-domain rows, and question recap", () => {
+  it("shows score, per-domain rows, and the review section", () => {
     render(<Results attempt={makeAttempt(0)} questions={qs} meta={getMeta()} />);
     expect(screen.getByText("50%")).toBeInTheDocument();
     expect(screen.getByText(/2 \/ 4 correct/i)).toBeInTheDocument();
     expect(screen.getByText(/performance by domain/i)).toBeInTheDocument();
-    expect(screen.getByText(/review every question/i)).toBeInTheDocument();
+    expect(screen.getByText(/review answers/i)).toBeInTheDocument();
     expect(screen.queryByText(/paused/i)).not.toBeInTheDocument();
   });
   it("shows the honesty stamp when heavily paused", () => {
@@ -63,16 +63,21 @@ describe("Results", () => {
 });
 
 describe("Results recap explanations", () => {
-  it("collapses correct rows but auto-opens wrong ones so a miss is not buried", () => {
-    // q0 is correct -> stays collapsed; q1 is wrong -> opens by default (Task 7 additive `open`).
+  it("keeps the review collapsed by default; opening it surfaces misses while correct stay collapsed", async () => {
+    // Redesign: the whole review sits behind a "Review answers" toggle, so nothing shows until opened.
+    // Once opened, a wrong row (q1) auto-expands so a miss is never buried; a correct row (q0) stays shut.
+    const user = userEvent.setup();
     render(<Results attempt={makeAttempt(0)} questions={qs} meta={getMeta()} />);
-    expect(screen.getByText(/Explanation 0/)).not.toBeVisible();
+    expect(screen.getByText(/Explanation 1/)).not.toBeVisible();
+    await user.click(screen.getByText(/Review answers/).closest("summary") as HTMLElement);
     expect(screen.getByText(/Explanation 1/)).toBeVisible();
+    expect(screen.getByText(/Explanation 0/)).not.toBeVisible();
   });
 
   it("expanding a recap row reveals its explanation and the vendor docs link", async () => {
     const user = userEvent.setup();
     render(<Results attempt={makeAttempt(0)} questions={qs} meta={getMeta()} />);
+    await user.click(screen.getByText(/Review answers/).closest("summary") as HTMLElement);
     const summary = screen.getByText(/Stem number 0/).closest("summary") as HTMLElement;
     await user.click(summary);
     const details = summary.closest("details") as HTMLElement;

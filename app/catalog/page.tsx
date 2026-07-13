@@ -9,7 +9,7 @@ import "./catalog.css";
 export const metadata: Metadata = {
   title: "Certification Catalog",
   description:
-    "Browse CertReps' free certification practice exams. Filter by vendor, level, and your readiness, then drill original scenario questions with real explanations. No signup required.",
+    "Browse CertReps' free certification practice exams. Search by name or code, filter by level, then drill original scenario questions with real explanations. No signup required.",
 };
 
 export default function CatalogPage() {
@@ -27,7 +27,7 @@ export default function CatalogPage() {
   return (
     <div className="ct-glow">
       <a href="#maincontent" className="skip-link">Skip to content</a>
-      <TopNav active="catalog" />
+      <TopNav />
       <CatalogClient certs={certs} />
     </div>
   );

@@ -102,38 +102,45 @@ describe("SettingsClient", () => {
     expect(await screen.findByText("Turned on")).toBeInTheDocument();
   });
 
-  it("renders the theme switch off in the SSR pass even when light is stored (hydration-safe)", () => {
+  it("renders Signal Gold selected in the SSR pass even when an alternate is stored (hydration-safe)", () => {
     mockedAvailable.mockReturnValue(false);
-    // Dark is the deterministic SSR default; the real stored theme loads only after mount, so the
-    // prerendered switch is off and matches the client's first render even for a light-theme device.
-    localStorage.setItem("certreps.theme", "light");
+    // Signal Gold is the deterministic SSR default; the real stored theme loads only after mount, so
+    // the prerendered picker shows Signal Gold checked and matches the client's first render.
+    localStorage.setItem("certreps.theme", "ocean");
     const html = renderToString(<SettingsClient />);
-    const btn = html.match(/<button[^>]*aria-label="Light theme"[^>]*>/)?.[0] ?? "";
-    expect(btn).toContain('aria-checked="false"');
+    const signal = html.match(/<button[^>]*aria-label="Signal Gold"[^>]*>/)?.[0] ?? "";
+    const ocean = html.match(/<button[^>]*aria-label="Deep Ocean"[^>]*>/)?.[0] ?? "";
+    expect(signal).toContain('aria-checked="true"');
+    expect(ocean).toContain('aria-checked="false"');
   });
 
-  it("loads a stored light theme via effect after mount", async () => {
+  it("loads a stored theme via effect after mount, migrating the legacy light value to Daylight", async () => {
     mockedAvailable.mockReturnValue(false);
     document.documentElement.removeAttribute("data-theme");
-    localStorage.setItem("certreps.theme", "light");
+    localStorage.setItem("certreps.theme", "light"); // legacy value -> Daylight
     render(<SettingsClient />);
-    const themeSwitch = screen.getByRole("switch", { name: "Light theme" });
-    await waitFor(() => expect(themeSwitch).toHaveAttribute("aria-checked", "true"));
+    const day = screen.getByRole("radio", { name: "Daylight" });
+    await waitFor(() => expect(day).toHaveAttribute("aria-checked", "true"));
   });
 
-  it("toggles the theme: applies the html attribute, persists it, and toasts", async () => {
+  it("picks a theme: applies the html attribute, persists the canonical name, and toasts", async () => {
     mockedAvailable.mockReturnValue(false);
     document.documentElement.removeAttribute("data-theme");
     render(<SettingsClient />);
 
-    const themeSwitch = screen.getByRole("switch", { name: "Light theme" });
-    expect(themeSwitch).toHaveAttribute("aria-checked", "false");
-    await userEvent.click(themeSwitch);
+    const ocean = screen.getByRole("radio", { name: "Deep Ocean" });
+    expect(ocean).toHaveAttribute("aria-checked", "false");
+    await userEvent.click(ocean);
 
-    expect(themeSwitch).toHaveAttribute("aria-checked", "true");
-    expect(document.documentElement.getAttribute("data-theme")).toBe("light");
-    expect(localStorage.getItem("certreps.theme")).toBe("light");
-    expect(await screen.findByText("Light theme on")).toBeInTheDocument();
+    expect(ocean).toHaveAttribute("aria-checked", "true");
+    expect(document.documentElement.getAttribute("data-theme")).toBe("ocean");
+    expect(localStorage.getItem("certreps.theme")).toBe("ocean");
+    expect(await screen.findByText("Deep Ocean theme on")).toBeInTheDocument();
+
+    // Signal Gold is the default and clears the attribute.
+    await userEvent.click(screen.getByRole("radio", { name: "Signal Gold" }));
+    expect(document.documentElement.getAttribute("data-theme")).toBeNull();
+    expect(localStorage.getItem("certreps.theme")).toBe("signal");
   });
 
   it("shows the sync row as a disabled, off switch requiring an account when signed out", () => {

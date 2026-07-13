@@ -25,7 +25,7 @@ describe("ReviewPastClient", () => {
     render(<ReviewPastClient id={id} />);
     // Results-only landmarks: the per-domain breakdown heading and the recap section.
     expect(await screen.findByText(/performance by domain/i)).toBeInTheDocument();
-    expect(screen.getByText(/review every question/i)).toBeInTheDocument();
+    expect(screen.getByText(/review answers/i)).toBeInTheDocument();
   });
 
   it("shows a not-on-this-device card with an account link for an unknown id", async () => {

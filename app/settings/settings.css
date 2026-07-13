@@ -30,6 +30,16 @@
 .st-switch:disabled:not(.on) { opacity: 0.5; }
 .st-switch:not(:disabled):hover { border-color: var(--gold-dim); }
 
+/* Color-theme picker (5 swatch cards). Each shows a ground + accent sample; the selected card gets a
+   gold ring. Auto-fills so it wraps to 2-3 per row on narrow widths. */
+.st-themes { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; margin-top: 12px; }
+.st-theme { display: flex; align-items: center; gap: 11px; background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; cursor: pointer; text-align: left; transition: 0.14s; }
+.st-theme:hover { border-color: var(--gold-dim); }
+.st-theme.on { border-color: var(--gold); background: var(--gold-soft); }
+.st-theme-swatch { flex-shrink: 0; width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--line-strong); display: grid; place-items: center; }
+.st-theme-swatch > span { width: 12px; height: 12px; border-radius: 50%; display: block; }
+.st-theme-name { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.2; }
+
 /* The delete button uses the canonical .btn-danger (globals.css) - Task 10 reconciliation. */
 
 .st-foot { font-family: var(--font-mono); font-size: 11px; color: var(--faint); text-align: center; margin-top: 22px; }

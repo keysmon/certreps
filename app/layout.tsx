@@ -28,11 +28,12 @@ export const metadata: Metadata = {
     "Free, original, deeply-explained practice exams for IT certifications. No signup required.",
 };
 
-// Applied before first paint so a light-theme device never flashes dark. Inert for the default
-// (dark) case - dark carries no attribute, so an empty/absent preference does nothing. Mirrors
-// lib/theme.applyTheme exactly (only "light" sets the attribute). suppressHydrationWarning on
-// <html> below covers the attribute this adds ahead of React hydrating the element.
-const NO_FLASH_THEME = `try{if(localStorage.getItem('certreps.theme')==='light')document.documentElement.setAttribute('data-theme','light')}catch(e){}`;
+// Applied before first paint so an alternate-theme device never flashes Signal Gold. Inert for the
+// default (Signal Gold) case - it carries no attribute, so an absent/"dark" preference does nothing.
+// Mirrors lib/theme (normalize + applyTheme): legacy "dark"->signal, "light"->day, then any of the
+// four alternates sets data-theme. suppressHydrationWarning on <html> below covers the attribute this
+// adds ahead of React hydrating the element.
+const NO_FLASH_THEME = `try{var t=localStorage.getItem('certreps.theme');if(t==='dark')t='signal';else if(t==='light')t='day';if(t&&['ocean','violet','graphite','day'].indexOf(t)>=0)document.documentElement.setAttribute('data-theme',t)}catch(e){}`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

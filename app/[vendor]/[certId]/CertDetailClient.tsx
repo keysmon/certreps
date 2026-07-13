@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { ScoreRing } from "@/components/ui/ScoreRing";
@@ -35,21 +35,10 @@ export interface HeroDomain {
   weightPct: number;
 }
 
-/**
- * Hero CTA cluster. Absorbs ResumeBanner's trigger logic (getInProgress) INTO the hero:
- * the primary flips to "Resume practicing" (linking to the exact resume URL) when a LOCAL
- * unfinished attempt exists, with a slim resume-info line carrying the answered count that
- * the design's CTA lacked. SSR / no-attempt renders "Start practicing" (the narrative
- * default), so the server shell and first client render match - progress reads happen only
- * in the effect. The primary and the "Quick 10-Q drill" ghost both target a quick session;
- * that mirrors the design's own primary+ghost-share-a-mode emphasis pattern (its
- * cta-practice and cta-drill both point at mode=drill). When resuming, the two diverge. When MORE
- * than one attempt is unfinished, the newest keeps the primary CTA and the rest surface as small
- * resume links below it (listInProgress), so no in-progress session is hidden.
- */
+// Resume URL for an unfinished attempt (mode + resume id; drill carries its domain).
 function resumeUrl(base: string, a: Attempt): string {
   const params = new URLSearchParams({ mode: a.mode, resume: a.attemptId });
-  if (a.domain) params.set("domain", a.domain); // drill carries its domain
+  if (a.domain) params.set("domain", a.domain);
   return `${base}?${params.toString()}`;
 }
 
@@ -59,57 +48,122 @@ function resumeUrl(base: string, a: Attempt): string {
 const answeredCount = (a: Attempt): number =>
   Object.values(a.results).filter((r) => r.chosen.length > 0).length;
 
-export function HeroCtas({ certId, vendorSlug, mockMinutes }: { certId: string; vendorSlug: string; mockMinutes: number }) {
+const stepCard = (primary: boolean): CSSProperties => ({
+  display: "flex", gap: "18px", borderRadius: "16px", padding: "22px 24px", marginBottom: "14px",
+  border: primary ? "1px solid var(--gold-dim)" : "1px solid var(--line)",
+  background: primary
+    ? "linear-gradient(180deg,var(--gold-soft),transparent 70%),var(--panel)"
+    : "var(--panel)",
+});
+const stepNum = (primary: boolean): CSSProperties => ({
+  flexShrink: 0, width: "34px", height: "34px", borderRadius: "10px", display: "grid", placeItems: "center",
+  fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "16px",
+  background: primary ? "var(--gold)" : "var(--panel-3)", color: primary ? "var(--on-gold)" : "var(--muted)",
+});
+const stepTitle: CSSProperties = { fontFamily: "var(--font-display)", fontSize: "19px", fontWeight: 700, margin: 0 };
+const stepBody: CSSProperties = { fontSize: "14px", color: "var(--muted)", margin: "5px 0 16px", lineHeight: 1.55 };
+
+/**
+ * "Your path to ready" - the three-step cert-detail flow that replaces the old hero-CTA cluster +
+ * always-open domain list + 3-column explainer + sidebar. Step 1 owns the one primary action
+ * (resume-aware, mirroring the old HeroCtas), with the per-domain drills tucked behind a toggle
+ * (progressive disclosure). Steps 2 + 3 carry the mock and the readiness read.
+ */
+export function PathToReady({
+  certId,
+  vendorSlug,
+  mockMinutes,
+  mockQuestionCount,
+  passLinePct,
+  passLineOfficial,
+  domains,
+}: {
+  certId: string;
+  vendorSlug: string;
+  mockMinutes: number;
+  mockQuestionCount: number;
+  passLinePct: number;
+  passLineOfficial?: boolean;
+  domains: HeroDomain[];
+}) {
   const [attempts, setAttempts] = useState<Attempt[]>([]);
+  const [domainsOpen, setDomainsOpen] = useState(false);
   useEffect(() => {
     setAttempts(listInProgress(certId)); // newest first
   }, [certId]);
 
   const base = practicePath({ vendorSlug, certId });
-  const attempt = attempts[0] ?? null; // the newest keeps the primary CTA
+  const attempt = attempts[0] ?? null; // newest keeps the primary CTA
   const extras = attempts.slice(1); // older unfinished sessions -> small resume links
-  let primaryHref = `${base}?mode=quick`;
-  let primaryLabel = "Start practicing";
-  let resumeLine: string | null = null;
-  if (attempt) {
-    primaryHref = resumeUrl(base, attempt);
-    primaryLabel = "Resume practicing";
-    const answered = answeredCount(attempt);
-    const total = attempt.questionIds.length;
-    const label = MODE_LABEL[attempt.mode] ?? attempt.mode;
-    resumeLine = `${label} in progress ${DOT} ${answered} of ${total} answered`;
-  }
+  const primaryHref = attempt ? resumeUrl(base, attempt) : `${base}?mode=quick`;
+  const primaryLabel = attempt ? "Resume practicing" : "Start practicing";
+  const resumeLine = attempt
+    ? `${MODE_LABEL[attempt.mode] ?? attempt.mode} in progress ${DOT} ${answeredCount(attempt)} of ${attempt.questionIds.length} answered`
+    : null;
 
   return (
     <>
-      <div className="cd-cta">
-        <Button variant="primary" href={primaryHref}>
-          {primaryLabel} {ARROW}
-        </Button>
-        <Button variant="ghost" href={`${base}?mode=mock`}>
-          Take full mock {DOT} {mockMinutes} min
-        </Button>
-        <Button variant="ghost" href={`${base}?mode=quick`}>
-          Quick 10-Q drill
-        </Button>
+      {/* Step 1 - the one primary action */}
+      <div style={stepCard(true)}>
+        <div style={stepNum(true)}>1</div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <h3 style={stepTitle}>Practice a domain</h3>
+          <p style={stepBody}>Answer original scenario questions one at a time. Miss one and see exactly why - immediately, with a link to the source docs.</p>
+          <div style={{ display: "flex", alignItems: "center", gap: "14px", flexWrap: "wrap" }}>
+            <Button variant="primary" href={primaryHref}>{primaryLabel} {ARROW}</Button>
+            <button
+              type="button"
+              onClick={() => setDomainsOpen((o) => !o)}
+              aria-expanded={domainsOpen}
+              style={{ background: "none", border: "none", cursor: "pointer", fontFamily: "var(--font-mono)", fontSize: "12.5px", color: "var(--gold)" }}
+            >
+              {domainsOpen ? "Hide domains ▴" : "Or pick a specific domain ▾"}
+            </button>
+          </div>
+          {resumeLine && <p className="cd-resume-line">{resumeLine}</p>}
+          {extras.length > 0 && (
+            <ul className="cd-resume-more">
+              {extras.map((ex) => (
+                <li key={ex.attemptId}>
+                  <Link href={resumeUrl(base, ex)}>
+                    Resume {MODE_LABEL[ex.mode] ?? ex.mode} {DOT} {answeredCount(ex)} of {ex.questionIds.length} answered{ex.domain ? ` ${DOT} ${ex.domain}` : ""}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+          {domainsOpen && (
+            <div style={{ marginTop: "16px" }}>
+              <DomainRows certId={certId} vendorSlug={vendorSlug} passLinePct={passLinePct} domains={domains} />
+            </div>
+          )}
+        </div>
       </div>
-      {resumeLine && <p className="cd-resume-line">{resumeLine}</p>}
-      {extras.length > 0 && (
-        <ul className="cd-resume-more">
-          {extras.map((ex) => {
-            const answered = answeredCount(ex);
-            const total = ex.questionIds.length;
-            const label = MODE_LABEL[ex.mode] ?? ex.mode;
-            return (
-              <li key={ex.attemptId}>
-                <Link href={resumeUrl(base, ex)}>
-                  Resume {label} {DOT} {answered} of {total} answered{ex.domain ? ` ${DOT} ${ex.domain}` : ""}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      )}
+
+      {/* Step 2 - the full mock */}
+      <div style={stepCard(false)}>
+        <div style={stepNum(false)}>2</div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <h3 style={stepTitle}>Sit the full mock</h3>
+          <p style={stepBody}>Real exam timing and question count - no peeking, just like the day itself. Do this once the domains feel steady.</p>
+          <Button variant="ghost" href={`${base}?mode=mock`}>Take the full mock {DOT} {mockQuestionCount} Q {DOT} {mockMinutes} min</Button>
+        </div>
+      </div>
+
+      {/* Step 3 - readiness */}
+      <div style={stepCard(false)}>
+        <div style={stepNum(false)}>3</div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <h3 style={stepTitle}>Know when you&apos;re ready</h3>
+          <p style={stepBody}>A readiness report scores every domain against your target and names what to drill before you book.</p>
+          <div style={{ display: "flex", alignItems: "center", gap: "18px", flexWrap: "wrap" }}>
+            <ReadinessPanel certId={certId} passLinePct={passLinePct} passLineOfficial={passLineOfficial} bare />
+            <Link href="/account" style={{ fontFamily: "var(--font-mono)", fontSize: "12.5px", color: "var(--gold)" }}>
+              View your progress {ARROW}
+            </Link>
+          </div>
+        </div>
+      </div>
     </>
   );
 }
@@ -171,19 +225,20 @@ export function DomainRows({
 }
 
 /**
- * Readiness panel. ScoreRing (104/8) fed by bestMockPct - the SAME number the catalog card
- * shows. The label reconciles the design's hardcoded 72 to OUR passLine ("Ready to book" at
- * >= passLinePct). The note names the weakest domain from the C10 read. SSR / no-data shows
- * 0% + "Not started yet".
+ * Readiness read. ScoreRing (mock-fed bestMockPct) + label + note. `bare` drops the panel
+ * chrome + heading so it can nest inside the Step-3 card without a double border; the default
+ * keeps the standalone "Your readiness" panel. SSR / no-data shows 0% + "Not started yet".
  */
 export function ReadinessPanel({
   certId,
   passLinePct,
   passLineOfficial,
+  bare = false,
 }: {
   certId: string;
   passLinePct: number;
   passLineOfficial?: boolean;
+  bare?: boolean;
 }) {
   const [pct, setPct] = useState(0);
   const [started, setStarted] = useState(false);
@@ -202,12 +257,8 @@ export function ReadinessPanel({
   }, [certId, passLinePct]);
 
   // The ring is mock-fed (bestMockPct), so pct 0 has two honest states: never touched vs
-  // started-but-no-scored-mock. The old copy said "Not started yet - do a quick drill to
-  // get your first read" even after a FINISHED drill, and drills never move this panel
-  // (user-reported, 2026-07-10) - only a finished full mock does, so the note says so.
+  // started-but-no-scored-mock. Only a finished full mock moves this ring (a drill never does).
   const label = pct === 0 ? (started ? "In progress" : "Not started yet") : pct >= passLinePct ? "Ready to book" : "Getting there";
-  // Vendors that publish no official passing score: passLinePct is OUR study target, so the note
-  // says "Study target" instead of asserting an official "Pass line" (absent/true stays "Pass line").
   const passLabel = passLineOfficial === false ? "Study target" : "Pass line";
   const note =
     pct === 0
@@ -218,18 +269,23 @@ export function ReadinessPanel({
         ? `${passLabel} ${passLinePct}%. Weakest: ${weakest}.`
         : `${passLabel} ${passLinePct}%.`;
 
+  const body = (
+    <div className="cd-ready">
+      <div className="cd-ready-ring">
+        <ScoreRing pct={pct} size={bare ? 76 : 104} stroke={bare ? 6 : 8} passLine={passLinePct} />
+      </div>
+      <div>
+        <div className="cd-ready-label">{label}</div>
+        <div className="cd-ready-note">{note}</div>
+      </div>
+    </div>
+  );
+
+  if (bare) return body;
   return (
     <div className="cd-panel">
       <h3 className="cd-panel-h">Your readiness</h3>
-      <div className="cd-ready">
-        <div className="cd-ready-ring">
-          <ScoreRing pct={pct} size={104} stroke={8} passLine={passLinePct} />
-        </div>
-        <div>
-          <div className="cd-ready-label">{label}</div>
-          <div className="cd-ready-note">{note}</div>
-        </div>
-      </div>
+      {body}
     </div>
   );
 }
