@@ -25,8 +25,6 @@
 .cd-crumb { font-family: var(--font-mono); font-size: 12px; color: var(--faint); padding: 16px 0 4px; }
 .cd-crumb a { color: var(--faint); text-decoration: none; }
 .cd-crumb a:hover { color: var(--gold); }
-.cd-crumb-sep { padding: 0 7px; }
-.cd-crumb-vendor { color: var(--muted); }
 
 /* ===== HERO ===== */
 .cd-hero { position: relative; overflow: hidden; border-radius: 20px; border: 1px solid var(--line); background: var(--panel); padding: 34px 36px; margin-bottom: 24px; }
@@ -35,23 +33,14 @@
 .cd-vendor { font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
 .cd-h1 { font-family: var(--font-display); font-size: clamp(26px, 4.5vw, 34px); font-weight: 800; line-height: 1.12; letter-spacing: -0.01em; margin: 0; }
 .cd-blurb { font-size: 16px; color: var(--muted); max-width: 640px; margin: 14px 0 0; line-height: 1.6; }
-.cd-cta { display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap; }
 .cd-resume-line { font-family: var(--font-mono); font-size: 12px; color: var(--muted); margin: 14px 0 0; }
 .cd-resume-more { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
 .cd-resume-more a { font-family: var(--font-mono); font-size: 12px; color: var(--muted); text-decoration: none; }
 .cd-resume-more a:hover { color: var(--text); text-decoration: underline; }
 
-/* ===== TWO-COLUMN GRID ===== */
-.cd-grid { display: grid; grid-template-columns: 1fr 356px; gap: 26px; align-items: start; }
-.cd-list { display: flex; flex-direction: column; gap: 11px; }
-.cd-section-h { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); margin: 6px 0 14px; }
-.cd-section-h.cd-related-h { margin: 36px 0 14px; }
-
 /* ===== PANELS ===== */
 .cd-panel { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 22px; }
 .cd-panel-h { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); margin: 0 0 14px; }
-.cd-how-panel { margin-top: 8px; }
-.cd-guides-panel { margin-top: 11px; }
 
 /* ===== DOMAIN ROWS ===== */
 .cd-domain { display: flex; align-items: center; gap: 14px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; transition: 0.14s; color: var(--text); text-decoration: none; }
@@ -65,11 +54,6 @@
 .cd-verd { font-family: var(--font-mono); font-size: 11px; white-space: nowrap; }
 .cd-drill { font-family: var(--font-mono); font-size: 12px; color: var(--gold); white-space: nowrap; }
 
-/* ===== HOW-IT-WORKS 3-UP ===== */
-.cd-how { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-.cd-how-n { font-family: var(--font-mono); color: var(--gold); font-size: 13px; margin-bottom: 6px; }
-.cd-how-p { color: var(--muted); font-size: 13px; margin: 0; }
-
 /* ===== READINESS ===== */
 .cd-ready { display: flex; align-items: center; gap: 16px; }
 /* Keep the ring from shrinking under the label/note: ScoreRing's SVG is a fixed 104px, so a
@@ -78,36 +62,7 @@
 .cd-ready-label { font-size: 14px; font-weight: 600; }
 .cd-ready-note { font-family: var(--font-mono); font-size: 11.5px; color: var(--muted); margin-top: 4px; }
 
-/* ===== WHAT'S INSIDE ===== */
-.cd-kv { display: flex; justify-content: space-between; gap: 12px; font-size: 13.5px; padding: 2px 0; }
-.cd-kv + .cd-kv { margin-top: 9px; }
-.cd-kv-v { font-family: var(--font-mono); text-align: right; }
-
-/* ===== NO-SIGNUP GOLD PANEL ===== */
-.cd-nosignup { background: var(--gold-soft); border-color: var(--gold-dim); }
-.cd-nosignup-h { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); margin-bottom: 6px; }
-.cd-nosignup-p { color: var(--muted); font-size: 13px; margin: 0; }
-
-/* ===== GUIDES ===== */
-.cd-guides-list { display: flex; flex-direction: column; gap: 9px; }
-.cd-guides-list a { font-size: 14px; }
-
-/* ===== MORE IN THIS TRACK ===== */
-/* auto-fit + a max track (not the prototype's auto-fill/1fr) so a lone related cert - our
-   2-cert registry yields exactly one - sits at a readable ~360px instead of a cramped 260px
-   with empty columns beside it; mirrors the landing's sparse-registry grid deviation. */
-.cd-related { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 360px)); gap: 16px; }
-.cd-related-row { display: flex; align-items: center; gap: 12px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; transition: 0.14s; color: var(--text); text-decoration: none; }
-.cd-related-row:hover { border-color: var(--line-strong); transform: translateX(2px); color: var(--text); }
-.cd-related-main { flex: 1; min-width: 0; }
-.cd-related-name { font-size: 13.5px; font-weight: 600; }
-.cd-related-sub { font-family: var(--font-mono); font-size: 10.5px; color: var(--faint); margin-top: 2px; }
-
-@media (max-width: 900px) {
-  .cd-grid { grid-template-columns: 1fr; }
-}
 @media (max-width: 640px) {
-  .cd-how { grid-template-columns: 1fr; }
   .cd-wrap { padding: 0 20px 60px; }
   .cd-hero { padding: 26px 22px; }
 }
