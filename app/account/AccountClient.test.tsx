@@ -138,7 +138,9 @@ describe("AccountClient dashboard", () => {
     expect(primary?.getAttribute("href")).toContain("resume=aip-mock");
 
     // The older quick session surfaces as its own small resume link (all unfinished attempts shown).
-    const olderLink = screen.getByRole("link", { name: /resume quick 10/i });
+    // Label text comes from the shared attemptLabel helper (Task 2/7) - "Quick Practice" is the
+    // canonical label, same as CertDetailClient's identical Resume-link pattern.
+    const olderLink = screen.getByRole("link", { name: /resume quick practice/i });
     expect(olderLink.getAttribute("href")).toContain("resume=aip-quick");
   });
 

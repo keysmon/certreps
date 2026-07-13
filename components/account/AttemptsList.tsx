@@ -5,13 +5,7 @@ import { getBank } from "@/lib/bank";
 import { gradeAttempt } from "@/lib/scoring";
 import { questionsByIds } from "@/lib/sampler";
 import { practicePath } from "@/lib/routes";
-
-const MODE_LABEL: Record<string, string> = {
-  mock: "Full mock",
-  quick: "Quick 10",
-  drill: "Drill",
-  retry: "Retry missed",
-};
+import { attemptLabel } from "@/lib/labels";
 
 // Muted mono chip in the spirit of .rd (engine.css), mirrored here so this list does not
 // have to pull in engine.css. A single hairline border, no fill - deliberately understated.
@@ -74,7 +68,7 @@ export function AttemptsList({ attempts, meta }: { attempts: Attempt[]; meta: Ce
             }}
           >
             <span style={{ fontSize: 13.5 }}>{stamp(a.startedAt)}</span>
-            <span style={chipStyle}>{MODE_LABEL[a.mode] ?? a.mode}</span>
+            <span style={chipStyle}>{attemptLabel(a.mode, a.reveal)}</span>
             <span
               style={{
                 marginLeft: "auto",

@@ -8,7 +8,8 @@ import { getSupabase, supabaseAvailable } from "@/lib/supabase/client";
 import { fullSync } from "@/lib/sync-runtime";
 import { readAll, listInProgress } from "@/lib/storage";
 import { listCerts, getCert } from "@/lib/certs";
-import { certPath, practicePath } from "@/lib/routes";
+import { certPath, practicePath, resumeParams } from "@/lib/routes";
+import { attemptLabel } from "@/lib/labels";
 import { gradeAttempt } from "@/lib/scoring";
 import { questionsByIds } from "@/lib/sampler";
 import { progressView, domainReadiness } from "@/lib/progress-view";
@@ -19,13 +20,6 @@ import "./account.css";
 // Glyphs via fromCharCode (craft convention, see Results.tsx) so the source stays ASCII-clean.
 const ARROW = String.fromCharCode(8594);
 const MIDDOT = String.fromCharCode(183);
-
-const MODE_LABEL: Record<string, string> = {
-  mock: "Full mock",
-  quick: "Quick 10",
-  drill: "Drill",
-  retry: "Retry missed",
-};
 
 function vendorColor(slug: string): string {
   return VENDORS[slug]?.c ?? "var(--gold)";
@@ -74,12 +68,6 @@ interface DashboardView {
   cards: CardView[];
   activity: RecentRow[];
   orphanCount: number;
-}
-
-function resumeParams(a: Attempt): string {
-  const p = new URLSearchParams({ mode: a.mode, resume: a.attemptId });
-  if (a.domain) p.set("domain", a.domain);
-  return p.toString();
 }
 
 /**
@@ -142,7 +130,7 @@ function computeView(attempts: Attempt[]): DashboardView {
     const resumeHref = inProg ? `${base}?${resumeParams(inProg)}` : `${base}?mode=quick`;
     const resumeExtras = inProgress.slice(1).map((a) => {
       const answered = answeredCount(a);
-      const label = MODE_LABEL[a.mode] ?? a.mode;
+      const label = attemptLabel(a.mode, a.reveal);
       return {
         href: `${base}?${resumeParams(a)}`,
         text: `Resume ${label} ${MIDDOT} ${answered} of ${a.questionIds.length} answered${a.domain ? ` ${MIDDOT} ${a.domain}` : ""}`,
@@ -170,7 +158,7 @@ function computeView(attempts: Attempt[]): DashboardView {
         attemptId: a.attemptId,
         certId,
         meta,
-        mode: MODE_LABEL[a.mode] ?? a.mode,
+        mode: attemptLabel(a.mode, a.reveal),
         pct: g.pct,
         correct: g.score,
         total: g.total,
