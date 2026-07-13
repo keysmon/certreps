@@ -210,6 +210,18 @@ describe("toRow / fromRow mapping", () => {
     expect(fromRow(toRow(noDomain, "user-1"))).toEqual(noDomain);
   });
 
+  it("round-trips a study run: reveal survives toRow -> fromRow", () => {
+    const study: Attempt = { ...finished, reveal: true };
+    expect(toRow(study, "user-1").reveal).toBe(true);
+    expect(fromRow(toRow(study, "user-1"))).toEqual(study);
+  });
+
+  it("a non-reveal attempt serializes reveal:null and restores key-absent (backward-compat)", () => {
+    const row = toRow(finished, "user-1"); // `finished` has no reveal key
+    expect(row.reveal).toBeNull();
+    expect("reveal" in fromRow(row)).toBe(false);
+  });
+
   it("drops user_id and updated_at on fromRow (no leaked snake_case keys)", () => {
     const restored = fromRow(toRow(finished, "user-1"));
     expect(restored).not.toHaveProperty("user_id");

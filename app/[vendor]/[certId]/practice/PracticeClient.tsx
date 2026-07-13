@@ -29,7 +29,7 @@ export function PracticeClient({ certId }: { certId: string }) {
   const mode: Mode = (MODES as string[]).includes(modeParam) ? (modeParam as Mode) : "quick";
   const domain = params.get("domain") ?? undefined;
   const resume = params.get("resume") ?? undefined;
-  const reveal = params.get("reveal") === "1";
+  const reveal = mode === "mock" && params.get("reveal") === "1";
 
   // Interstitial gate (SSR-safe): the in-progress lookup reads localStorage, so it runs in an effect
   // (never in render or a useState initializer - the hydration lesson) and the first paint is the

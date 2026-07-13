@@ -21,6 +21,7 @@ describe("ExamEngine study mock (reveal)", () => {
     expect(document.querySelector(".explain")).not.toBeNull();
     // Lock: options are disabled after reveal (no re-answering).
     const gradedOpts = screen.getAllByRole("button").filter((b) => b.className.includes("option"));
+    expect(gradedOpts.length).toBeGreaterThan(0);
     expect(gradedOpts.every((b) => (b as HTMLButtonElement).disabled)).toBe(true);
     // The recorded attempt is a study run.
     expect(listAttempts("aip-c01")[0].reveal).toBe(true);
