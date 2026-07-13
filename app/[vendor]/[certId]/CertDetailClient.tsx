@@ -4,7 +4,8 @@ import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { ScoreRing } from "@/components/ui/ScoreRing";
 import { domainReadiness, progressView } from "@/lib/progress-view";
-import { practicePath } from "@/lib/routes";
+import { practicePath, resumeParams } from "@/lib/routes";
+import { attemptLabel } from "@/lib/labels";
 import type { Verdict } from "@/lib/readiness";
 import { listInProgress } from "@/lib/storage";
 import type { Attempt } from "@/lib/types";
@@ -13,13 +14,6 @@ import type { Attempt } from "@/lib/types";
 // the design copy are reproduced faithfully but written as escapes, never literals.
 const ARROW = String.fromCharCode(8594); // U+2192 rightwards arrow
 const DOT = String.fromCharCode(183); // U+00B7 middle dot
-
-const MODE_LABEL: Record<string, string> = {
-  quick: "Quick Practice",
-  drill: "Domain Drill",
-  mock: "Full Mock",
-  retry: "Retry Missed",
-};
 
 // Verdict -> display word + accent. C10 owns the three-band verdict (lib/readiness); this
 // only maps it to the design's word/color. "Not started" is the no-data (SSR) default.
@@ -35,11 +29,9 @@ export interface HeroDomain {
   weightPct: number;
 }
 
-// Resume URL for an unfinished attempt (mode + resume id; drill carries its domain).
+// Resume URL for an unfinished attempt (delegates to the shared query builder).
 function resumeUrl(base: string, a: Attempt): string {
-  const params = new URLSearchParams({ mode: a.mode, resume: a.attemptId });
-  if (a.domain) params.set("domain", a.domain);
-  return `${base}?${params.toString()}`;
+  return `${base}?${resumeParams(a)}`;
 }
 
 // A question is answered only when a choice was recorded. A flagged-but-unanswered mock question
@@ -98,7 +90,7 @@ export function PathToReady({
   const primaryHref = attempt ? resumeUrl(base, attempt) : `${base}?mode=quick`;
   const primaryLabel = attempt ? "Resume practicing" : "Start practicing";
   const resumeLine = attempt
-    ? `${MODE_LABEL[attempt.mode] ?? attempt.mode} in progress ${DOT} ${answeredCount(attempt)} of ${attempt.questionIds.length} answered`
+    ? `${attemptLabel(attempt.mode, attempt.reveal)} in progress ${DOT} ${answeredCount(attempt)} of ${attempt.questionIds.length} answered`
     : null;
 
   return (
@@ -126,7 +118,7 @@ export function PathToReady({
               {extras.map((ex) => (
                 <li key={ex.attemptId}>
                   <Link href={resumeUrl(base, ex)}>
-                    Resume {MODE_LABEL[ex.mode] ?? ex.mode} {DOT} {answeredCount(ex)} of {ex.questionIds.length} answered{ex.domain ? ` ${DOT} ${ex.domain}` : ""}
+                    Resume {attemptLabel(ex.mode, ex.reveal)} {DOT} {answeredCount(ex)} of {ex.questionIds.length} answered{ex.domain ? ` ${DOT} ${ex.domain}` : ""}
                   </Link>
                 </li>
               ))}
@@ -147,6 +139,11 @@ export function PathToReady({
           <h3 style={stepTitle}>Sit the full mock</h3>
           <p style={stepBody}>Real exam timing and question count - no peeking, just like the day itself. Do this once the domains feel steady.</p>
           <Button variant="ghost" href={`${base}?mode=mock`}>Take the full mock {DOT} {mockQuestionCount} Q {DOT} {mockMinutes} min</Button>
+          <p style={{ margin: "10px 0 0" }}>
+            <Link href={`${base}?mode=mock&reveal=1`} style={{ fontFamily: "var(--font-mono)", fontSize: "12.5px", color: "var(--gold)" }}>
+              Prefer to study? Take it untimed with answers as you go {ARROW}
+            </Link>
+          </p>
         </div>
       </div>
 

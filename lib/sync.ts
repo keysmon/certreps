@@ -11,6 +11,7 @@ export interface AttemptRow {
   cert_id: string;
   mode: Mode;
   domain: string | null;
+  reveal: boolean | null;
   question_ids: string[];
   results: Record<string, QuestionResult>;
   started_at: string;
@@ -99,6 +100,7 @@ export function toRow(a: Attempt, userId: string, now: string = new Date().toISO
     cert_id: a.certId,
     mode: a.mode,
     domain: a.domain ?? null,
+    reveal: a.reveal ?? null,
     question_ids: a.questionIds,
     results: a.results,
     started_at: new Date(a.startedAt).toISOString(),
@@ -116,6 +118,7 @@ export function fromRow(r: AttemptRow): Attempt {
     certId: r.cert_id,
     mode: r.mode,
     domain: r.domain ?? undefined,
+    ...(r.reveal ? { reveal: true } : {}),
     // Defensive: 'null'::jsonb satisfies the NOT NULL column constraint but would
     // crash Object.keys() in compareRecency - unreachable via toRow, cheap to guard.
     questionIds: r.question_ids ?? [],

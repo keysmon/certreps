@@ -21,7 +21,7 @@ const PROGRESS_PERSIST_MS = 10_000;
 const MIDDOT = String.fromCharCode(183); // U+00B7 middle dot - mode-note separator
 const TIMES = String.fromCharCode(10005); // U+2715 multiplication x - exit affordance
 
-export function ExamEngine({ certId, mode, domain, resumeAttemptId }: { certId?: string; mode: Mode; domain?: string; resumeAttemptId?: string }) {
+export function ExamEngine({ certId, mode, domain, resumeAttemptId, reveal }: { certId?: string; mode: Mode; domain?: string; resumeAttemptId?: string; reveal?: boolean }) {
   const bank = getBank(certId);
   const meta = getMeta(certId);
   const isMock = mode === "mock";
@@ -96,7 +96,7 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId }: { certId?:
       if (resumed) {
         attemptRef.current = resumed;
       } else {
-        const a = createAttempt(meta.certId, mode, sampled.map((qq) => qq.id), domain);
+        const a = createAttempt(meta.certId, mode, sampled.map((qq) => qq.id), domain, reveal);
         saveAttempt(a);
         attemptRef.current = a;
       }
@@ -110,8 +110,14 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId }: { certId?:
         // A flagged-but-unanswered question carries a legitimate empty-chosen row. Keep it OUT of
         // the answered map so "answered" everywhere means chosen.length > 0 (palette, recorded
         // badge, review lists, resume position all key off this); its flag is still restored below.
-        if (isMock) { if (r.chosen.length) answers0[r.questionId] = r.chosen; }
-        else graded0[r.questionId] = { chosen: r.chosen, correct: r.correct };
+        if (isMock) {
+          if (r.chosen.length) answers0[r.questionId] = r.chosen;
+          // Study run: an answered row was also revealed + locked, so re-seed graded to bring it
+          // back revealed after resume (the exam mock never reveals, so it seeds only answers).
+          if (reveal && r.chosen.length) graded0[r.questionId] = { chosen: r.chosen, correct: r.correct };
+        } else {
+          graded0[r.questionId] = { chosen: r.chosen, correct: r.correct };
+        }
         if (r.flagged) flags0[r.questionId] = true;
       }
       setGraded(graded0);
@@ -144,12 +150,15 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId }: { certId?:
       const correct = isCorrect(chosen, q.correct);
       if (isMock) {
         setAnswers((a) => ({ ...a, [q.id]: chosen }));
+        // Study run: also grade so QuestionCard reveals + locks immediately. The exam mock records
+        // silently (graded stays null) and defers all explanations to the Results screen.
+        if (reveal) setGraded((g) => ({ ...g, [q.id]: { chosen, correct } }));
       } else {
         setGraded((g) => ({ ...g, [q.id]: { chosen, correct } }));
       }
       recordResult(attemptRef.current.attemptId, { questionId: q.id, chosen, correct, flagged: !!flags[q.id] });
     },
-    [q, isMock, flags]
+    [q, isMock, reveal, flags]
   );
 
   const finish = useCallback(() => {
@@ -226,7 +235,7 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId }: { certId?:
     );
   }
 
-  const g = isMock ? null : graded[q.id] ?? null;
+  const g = isMock && !reveal ? null : graded[q.id] ?? null;
   // Seeds QuestionCard's attempt-stable option shuffle. attemptRef.current is set by the init effect
   // whenever questions were sampled, so it is non-null on every path that reaches this render (the
   // questions-empty guard above returns otherwise); the ?? "" is a dead fallback kept only so the
@@ -246,7 +255,9 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId }: { certId?:
   const vendorColor = VENDORS[meta.vendorSlug]?.c ?? "var(--gold)";
   // Honest mode descriptions (design idiom) - the mock note names the blueprint bias + late reveal.
   const modeNote = isMock
-    ? `Mock exam ${MIDDOT} mix follows the exam blueprint ${MIDDOT} explanations at the end`
+    ? reveal
+      ? `Study mock ${MIDDOT} mix follows the exam blueprint ${MIDDOT} untimed ${MIDDOT} answers as you go`
+      : `Mock exam ${MIDDOT} mix follows the exam blueprint ${MIDDOT} explanations at the end`
     : mode === "drill"
     ? `Domain drill ${MIDDOT} instant feedback`
     : mode === "retry"
@@ -269,10 +280,10 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId }: { certId?:
           <span className="pcount">{index + 1}/{questions.length}</span>
           <div className="pbar"><span style={{ width: `${(index / questions.length) * 100}%` }} /></div>
         </div>
-        <span style={{ display: isMock ? "inline-flex" : "none" }}>
+        <span style={{ display: isMock && !reveal ? "inline-flex" : "none" }}>
           <Timer
             initialElapsedSec={elapsedRef.current}
-            countdownSec={isMock ? meta.mockMinutes * 60 : null}
+            countdownSec={isMock && !reveal ? meta.mockMinutes * 60 : null}
             onTick={handleTick}
             onExpire={finish}
             onPause={handlePause}

@@ -33,12 +33,14 @@ export function clearAll(): void {
   }
 }
 
-export function createAttempt(certId: string, mode: Mode, questionIds: string[], domain?: string): Attempt {
+export function createAttempt(certId: string, mode: Mode, questionIds: string[], domain?: string, reveal?: boolean): Attempt {
   return {
     attemptId: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
     certId,
     mode,
     domain,
+    // Only set when true so exam-mock rows are byte-identical to pre-feature rows (backward compat).
+    ...(reveal ? { reveal: true } : {}),
     questionIds,
     results: {},
     startedAt: Date.now(),

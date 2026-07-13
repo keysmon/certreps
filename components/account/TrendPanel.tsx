@@ -25,14 +25,15 @@ const H3: React.CSSProperties = {
 };
 
 /**
- * Readiness trend over the user's full mocks. Below two finished mocks a trend has no shape,
+ * Readiness trend over the user's finished EXAM mocks (study runs with `reveal` are excluded -
+ * they are a study tool, not an exam-condition assessment). Below two finished mocks a trend has no shape,
  * so it renders a one-line hint instead. With two or more it shows the recent score sequence
  * plus per-domain verdicts in the SAME language as Results (above / borderline / weak, same
  * colours). The de-emphasis note fires when ANY mock in the window was heavily paused - which
  * is exactly what readinessRead acts on when it skips such mocks for the domain source.
  */
 export function TrendPanel({ attempts, meta }: { attempts: Attempt[]; meta: CertMeta }) {
-  const finishedMocks = attempts.filter((a) => a.mode === "mock" && a.finishedAt !== null);
+  const finishedMocks = attempts.filter((a) => a.mode === "mock" && !a.reveal && a.finishedAt !== null);
 
   if (finishedMocks.length < 2) {
     return (

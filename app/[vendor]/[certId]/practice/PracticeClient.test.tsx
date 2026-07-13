@@ -14,8 +14,8 @@ vi.mock("next/navigation", () => ({
 // The engine is frozen - stub it so the wrapper's decision (fresh vs resume vs interstitial) is what
 // we assert, without mounting the real ExamEngine. data-resume distinguishes a fresh vs adopt mount.
 vi.mock("@/components/engine/ExamEngine", () => ({
-  ExamEngine: ({ mode, domain, resumeAttemptId }: { mode: string; domain?: string; resumeAttemptId?: string }) => (
-    <div data-testid="engine" data-mode={mode} data-domain={domain ?? ""} data-resume={resumeAttemptId ?? ""}>
+  ExamEngine: ({ mode, domain, resumeAttemptId, reveal }: { mode: string; domain?: string; resumeAttemptId?: string; reveal?: boolean }) => (
+    <div data-testid="engine" data-mode={mode} data-domain={domain ?? ""} data-resume={resumeAttemptId ?? ""} data-reveal={reveal ? "1" : ""}>
       engine
     </div>
   ),
@@ -29,8 +29,8 @@ function setParams(qs: string) {
 }
 
 /** An unfinished attempt of `mode` (optionally a drill domain) with `answered` recorded results. */
-function inProgress(mode: string, answered: number, domain?: string) {
-  const a = createAttempt(AIP, mode as never, IDS, domain);
+function inProgress(mode: string, answered: number, domain?: string, reveal?: boolean) {
+  const a = createAttempt(AIP, mode as never, IDS, domain, reveal);
   saveAttempt(a);
   for (let i = 0; i < answered; i++) {
     recordResult(a.attemptId, { questionId: IDS[i], chosen: [0], correct: false, flagged: false });
@@ -134,5 +134,30 @@ describe("PracticeClient interstitial", () => {
     setParams("mode=mock");
     render(<PracticeClient certId={AIP} />);
     expect(await screen.findByText(/2 of 5 answered/i)).toBeInTheDocument();
+  });
+
+  it("mounts a study run and passes reveal to the engine for ?mode=mock&reveal=1", async () => {
+    setParams("mode=mock&reveal=1");
+    render(<PracticeClient certId={AIP} />);
+    const engine = await screen.findByTestId("engine");
+    expect(engine).toHaveAttribute("data-mode", "mock");
+    expect(engine).toHaveAttribute("data-reveal", "1");
+  });
+
+  it("does not offer an in-progress study run for resume when starting the exam mock", async () => {
+    inProgress("mock", 3, undefined, true); // a STUDY run is in progress
+    setParams("mode=mock"); // exam-mock entry (no reveal)
+    render(<PracticeClient certId={AIP} />);
+    // A study run is a different session: no chooser, a fresh exam engine mounts instead.
+    const engine = await screen.findByTestId("engine");
+    expect(engine).toHaveAttribute("data-reveal", ""); // fresh exam mount, reveal off
+    expect(screen.queryByText(/in progress/i)).not.toBeInTheDocument();
+  });
+
+  it("surfaces the chooser for a same-kind study run and labels it Study Mock", async () => {
+    inProgress("mock", 2, undefined, true);
+    setParams("mode=mock&reveal=1");
+    render(<PracticeClient certId={AIP} />);
+    expect(await screen.findByText(/Study Mock in progress/i)).toBeInTheDocument();
   });
 });

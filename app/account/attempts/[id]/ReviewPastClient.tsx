@@ -5,7 +5,7 @@ import type { Attempt } from "@/lib/types";
 import { getAttempt } from "@/lib/storage";
 import { getMeta } from "@/lib/bank";
 import { getCert } from "@/lib/certs";
-import { certPath, practicePath } from "@/lib/routes";
+import { certPath, practicePath, resumeParams } from "@/lib/routes";
 import { questionsByIds } from "@/lib/sampler";
 import { Results } from "@/components/engine/Results";
 
@@ -68,9 +68,7 @@ export function ReviewPastClient({ id }: { id: string }) {
     // Resume rehydrates the unfinished attempt in the engine (Task 8). Only reachable for a
     // device-LOCAL attempt: getAttempt reads localStorage, so a cloud-only in-progress attempt
     // from another device renders the "not on this device" card above, never this resume link.
-    const params = new URLSearchParams({ mode: attempt.mode, resume: attempt.attemptId });
-    if (attempt.domain) params.set("domain", attempt.domain);
-    const resumeHref = `${practicePath(meta)}?${params.toString()}`;
+    const resumeHref = `${practicePath(meta)}?${resumeParams(attempt)}`;
     return (
       <div className="card">
         <p style={{ margin: "0 0 14px" }}>This attempt is still in progress.</p>

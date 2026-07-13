@@ -4,17 +4,12 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { ExamEngine } from "@/components/engine/ExamEngine";
 import { getMeta } from "@/lib/bank";
-import { practicePath } from "@/lib/routes";
+import { practicePath, resumeParams } from "@/lib/routes";
+import { attemptLabel } from "@/lib/labels";
 import { listInProgress, discardAttempt } from "@/lib/storage";
 import type { Attempt, CertMeta, Mode } from "@/lib/types";
 
 const MODES: Mode[] = ["quick", "drill", "mock", "retry"];
-const MODE_LABEL: Record<string, string> = {
-  quick: "Quick Practice",
-  drill: "Domain Drill",
-  mock: "Full Mock",
-  retry: "Retry Missed",
-};
 // Glyph via fromCharCode (ASCII-source convention, see the engine + detail page).
 const DOT = String.fromCharCode(183); // U+00B7 middle dot
 
@@ -34,6 +29,7 @@ export function PracticeClient({ certId }: { certId: string }) {
   const mode: Mode = (MODES as string[]).includes(modeParam) ? (modeParam as Mode) : "quick";
   const domain = params.get("domain") ?? undefined;
   const resume = params.get("resume") ?? undefined;
+  const reveal = mode === "mock" && params.get("reveal") === "1";
 
   // Interstitial gate (SSR-safe): the in-progress lookup reads localStorage, so it runs in an effect
   // (never in render or a useState initializer - the hydration lesson) and the first paint is the
@@ -45,19 +41,21 @@ export function PracticeClient({ certId }: { certId: string }) {
   useEffect(() => {
     if (resume) return; // an explicit resume link bypasses the chooser; the engine adopts the id
     const match = listInProgress(certId).find(
-      (a) => a.mode === mode && (mode !== "drill" || a.domain === domain),
+      (a) => a.mode === mode && !!a.reveal === reveal && (mode !== "drill" || a.domain === domain),
     );
     setInProgress(match ?? null);
     setChecked(true);
-  }, [certId, mode, domain, resume]);
+  }, [certId, mode, domain, reveal, resume]);
 
-  // Engine contract preserved: key by mode+domain+resume so a changed resume id forces a clean remount.
+  // Engine contract preserved: key by mode+domain+reveal+resume so a changed resume id (or a switch
+  // between exam and study runs) forces a clean remount.
   const engine = (resumeId?: string) => (
     <ExamEngine
-      key={`${mode}-${domain ?? ""}-${resumeId ?? ""}`}
+      key={`${mode}-${domain ?? ""}-${reveal ? "r" : ""}-${resumeId ?? ""}`}
       certId={certId}
       mode={mode}
       domain={domain}
+      reveal={reveal}
       resumeAttemptId={resumeId}
     />
   );
@@ -73,8 +71,6 @@ export function PracticeClient({ certId }: { certId: string }) {
     <PracticeInterstitial
       attempt={inProgress}
       meta={getMeta(certId)}
-      mode={mode}
-      domain={domain}
       onFresh={() => setStartFresh(true)}
       onDiscard={() => {
         // Only ever an unfinished attempt (listInProgress) - discardAttempt's resurrection-safety
@@ -95,15 +91,11 @@ export function PracticeClient({ certId }: { certId: string }) {
 function PracticeInterstitial({
   attempt,
   meta,
-  mode,
-  domain,
   onFresh,
   onDiscard,
 }: {
   attempt: Attempt;
   meta: CertMeta;
-  mode: Mode;
-  domain?: string;
   onFresh: () => void;
   onDiscard: () => void;
 }) {
@@ -112,11 +104,9 @@ function PracticeInterstitial({
   // question now carries a legitimate empty-chosen row, which must not inflate "n of m answered".
   const answered = Object.values(attempt.results).filter((r) => r.chosen.length > 0).length;
   const total = attempt.questionIds.length;
-  const label = MODE_LABEL[attempt.mode] ?? attempt.mode;
+  const label = attemptLabel(attempt.mode, attempt.reveal);
 
-  const p = new URLSearchParams({ mode, resume: attempt.attemptId });
-  if (domain) p.set("domain", domain); // drill carries its domain into the resume URL
-  const resumeHref = `${practicePath(meta)}?${p.toString()}`;
+  const resumeHref = `${practicePath(meta)}?${resumeParams(attempt)}`;
 
   return (
     <div className="stage">
