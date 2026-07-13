@@ -27,7 +27,7 @@ export default function CatalogPage() {
   return (
     <div className="ct-glow">
       <a href="#maincontent" className="skip-link">Skip to content</a>
-      <TopNav active="catalog" />
+      <TopNav />
       <CatalogClient certs={certs} />
     </div>
   );

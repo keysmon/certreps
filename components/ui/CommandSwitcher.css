@@ -3,7 +3,8 @@
    Class names are sw- prefixed to stay collision-free; the trigger's kbd/link colors override
    the global a{color:var(--gold)} where needed. Self-contained so TopNav inherits it everywhere. */
 
-/* Trigger pill (design .switcher) - lives in TopNav between the logo and the nav links. */
+/* Compact cert chip (redesign minimal bar) - lives in TopNav right of the logo divider. Sizes to its
+   content (no min-width) so it reads as a chip, not a wide pill; ellipsis caps a long cert name. */
 .sw-trigger {
   display: flex;
   align-items: center;
@@ -11,10 +12,9 @@
   background: var(--panel);
   border: 1px solid var(--line-strong);
   border-radius: 11px;
-  padding: 8px 13px;
+  padding: 7px 8px 7px 13px;
   cursor: pointer;
-  min-width: 290px;
-  max-width: 340px;
+  max-width: 360px;
   color: var(--text);
   text-align: left;
   transition: 0.14s;
@@ -49,14 +49,16 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.sw-kbd {
+/* "Switch v" badge (design chip affordance, replacing the old Cmd+K kbd; the shortcut still works). */
+.sw-switch {
   margin-left: auto;
   font-family: var(--font-mono);
   font-size: 10.5px;
-  color: var(--faint);
+  color: var(--muted);
   border: 1px solid var(--line);
   border-radius: 6px;
-  padding: 2px 7px;
+  padding: 3px 8px;
+  white-space: nowrap;
   flex-shrink: 0;
 }
 

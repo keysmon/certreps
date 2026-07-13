@@ -11,6 +11,7 @@ import "./CommandSwitcher.css";
 // Typographic glyphs as escapes (ASCII-source craft convention, see CatalogClient / Results).
 const CMDK = String.fromCharCode(8984) + "K"; // U+2318 place-of-interest sign + K
 const MIDDOT = String.fromCharCode(183); // U+00B7 middle dot
+const CHEV = String.fromCharCode(9662); // U+25BE down-pointing triangle - the "Switch" chip affordance
 const ARROWS = String.fromCharCode(8593) + String.fromCharCode(8595); // U+2191 U+2193 up/down
 const RETURN = String.fromCharCode(8629); // U+21B5 carriage return arrow
 
@@ -207,14 +208,14 @@ export function CommandSwitcher() {
 
   // Trigger content: the most-recently-active cert once localStorage hydrates, else the first registry
   // cert with "Browse certs" copy. SSR renders the fallback, so there is no hydration mismatch.
+  // Compact-chip sub-line is "Vendor MIDDOT CODE" (the redesign moved readiness off the chip onto the
+  // cert page), or the generic "Browse certs" when there is no local history yet.
   const triggerCert = registry.find((m) => m.certId === recentId) ?? registry[0];
-  const triggerEntry = triggerCert ? progressByCert[triggerCert.certId] : undefined;
-  const triggerSub =
-    recentId && triggerEntry && triggerEntry.pct > 0
-      ? `${triggerCert!.examCode} ${MIDDOT} ${triggerEntry.pct}% ready`
-      : recentId
-        ? triggerCert!.examCode
-        : "Browse certs";
+  const triggerSub = triggerCert
+    ? recentId
+      ? `${vendorLabel(triggerCert.vendorSlug)} ${MIDDOT} ${triggerCert.examCode}`
+      : "Browse certs"
+    : "";
 
   const listboxId = "sw-listbox";
   const activeId = rows.length ? `sw-opt-${active}` : undefined;
@@ -240,9 +241,7 @@ export function CommandSwitcher() {
             {triggerSub}
           </span>
         </span>
-        <kbd className="sw-kbd" aria-hidden="true">
-          {CMDK}
-        </kbd>
+        <span className="sw-switch" aria-hidden="true">Switch {CHEV}</span>
       </button>
 
       {open && (

@@ -20,7 +20,7 @@ export default async function AccountPage({
   const { welcome } = await searchParams;
   return (
     <div className="pg-glow">
-      <TopNav active="progress" />
+      <TopNav />
       <AccountClient welcome={welcome === "1"} />
     </div>
   );

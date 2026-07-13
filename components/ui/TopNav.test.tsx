@@ -41,56 +41,66 @@ beforeEach(() => vi.clearAllMocks());
 afterEach(() => vi.clearAllMocks());
 
 describe("TopNav", () => {
-  it("always renders the home logo, Catalog, and My progress links", () => {
+  it("renders the home logo and the cert switcher chip, with no persistent nav links", () => {
     mockedAvailable.mockReturnValue(false);
     render(<TopNav />);
     expect(screen.getByRole("link", { name: /certreps home/i })).toHaveAttribute("href", "/");
-    expect(screen.getByRole("link", { name: "Catalog" })).toHaveAttribute("href", "/catalog");
-    expect(screen.getByRole("link", { name: "My progress" })).toHaveAttribute("href", "/account");
-  });
-
-  it("marks My progress as the current page when active", () => {
-    mockedAvailable.mockReturnValue(false);
-    render(<TopNav active="progress" />);
-    expect(screen.getByRole("link", { name: "My progress" })).toHaveAttribute("aria-current", "page");
-    expect(screen.getByRole("link", { name: "Catalog" })).not.toHaveAttribute("aria-current");
+    // The compact cert chip (CommandSwitcher trigger) is present...
+    expect(screen.getByRole("button", { name: /switch certification/i })).toBeInTheDocument();
+    // ...but the redesign dropped the persistent Catalog / My progress text links.
+    expect(screen.queryByRole("link", { name: "Catalog" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "My progress" })).not.toBeInTheDocument();
   });
 
   it("shows no auth control when Supabase is unavailable", () => {
     mockedAvailable.mockReturnValue(false);
     render(<TopNav />);
     expect(screen.queryByRole("link", { name: /sign in/i })).not.toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: /sign out/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /account menu/i })).not.toBeInTheDocument();
     expect(mockedGetSupabase).not.toHaveBeenCalled();
   });
 
-  it("shows a Sign in link to /login when available and signed out", async () => {
+  it("shows a Sign in link to /login when available and signed out (and no account menu)", async () => {
     mockedAvailable.mockReturnValue(true);
     mockedGetSupabase.mockReturnValue(fakeClient(null));
     render(<TopNav />);
     const link = await screen.findByRole("link", { name: /sign in/i });
     expect(link).toHaveAttribute("href", "/login");
-    expect(screen.queryByRole("button", { name: /sign out/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /account menu/i })).not.toBeInTheDocument();
   });
 
-  it("shows the email and a Sign out button when signed in, and signs out on click", async () => {
+  it("opens the account menu when signed in (email + My progress + Settings + Sign out) and signs out", async () => {
     const signOut = vi.fn().mockResolvedValue({ error: null });
     mockedAvailable.mockReturnValue(true);
     mockedGetSupabase.mockReturnValue(fakeClient(sessionWith("ada@example.com"), signOut));
     render(<TopNav />);
-    expect(await screen.findByText("ada@example.com")).toBeInTheDocument();
-    // Signed-in state gains an initials avatar linking to Settings (the design routes it there).
-    expect(screen.getByRole("link", { name: /settings/i })).toHaveAttribute("href", "/settings");
-    await userEvent.click(screen.getByRole("button", { name: /sign out/i }));
+
+    // Signed in: an avatar button; the email + menu items are hidden until it opens.
+    const avatar = await screen.findByRole("button", { name: /account menu/i });
+    expect(avatar).toHaveAttribute("aria-expanded", "false");
+    expect(screen.queryByText("ada@example.com")).not.toBeInTheDocument();
+    expect(screen.queryByRole("menuitem", { name: /sign out/i })).not.toBeInTheDocument();
+
+    await userEvent.click(avatar);
+    expect(avatar).toHaveAttribute("aria-expanded", "true");
+    expect(screen.getByText("ada@example.com")).toBeInTheDocument();
+    expect(screen.getByRole("menuitem", { name: /my progress/i })).toHaveAttribute("href", "/account");
+    expect(screen.getByRole("menuitem", { name: /settings/i })).toHaveAttribute("href", "/settings");
+
+    await userEvent.click(screen.getByRole("menuitem", { name: /sign out/i }));
     expect(signOut).toHaveBeenCalledTimes(1);
   });
 
-  it("shows no Settings avatar when signed out", async () => {
+  it("closes the account menu on Escape and restores aria-expanded", async () => {
     mockedAvailable.mockReturnValue(true);
-    mockedGetSupabase.mockReturnValue(fakeClient(null));
+    mockedGetSupabase.mockReturnValue(fakeClient(sessionWith("ada@example.com")));
     render(<TopNav />);
-    await screen.findByRole("link", { name: /sign in/i });
-    expect(screen.queryByRole("link", { name: /settings/i })).not.toBeInTheDocument();
+    const avatar = await screen.findByRole("button", { name: /account menu/i });
+    await userEvent.click(avatar);
+    expect(screen.getByRole("menu")).toBeInTheDocument();
+    await userEvent.keyboard("{Escape}");
+    expect(screen.queryByRole("menu")).not.toBeInTheDocument();
+    expect(avatar).toHaveAttribute("aria-expanded", "false");
   });
 
   // Theme selection moved out of the bar into Settings (a 5-way picker) with the redesign - the bar
