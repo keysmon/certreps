@@ -127,6 +127,17 @@ describe("PathToReady", () => {
     const olderLink = screen.getByRole("link", { name: /Resume Quick Practice/i });
     expect(olderLink.getAttribute("href")).toContain(`resume=${older.attemptId}`);
   });
+
+  it("offers a study-mode link to the reveal-as-you-go mock in Step 2", () => {
+    renderPath();
+    const link = screen.getByRole("link", { name: /answers as you go/i });
+    expect(link).toHaveAttribute("href", `/aws/${AIP}/practice?mode=mock&reveal=1`);
+    // The primary exam-mock link is unchanged and distinct.
+    expect(screen.getByRole("link", { name: /take the full mock/i })).toHaveAttribute(
+      "href",
+      `/aws/${AIP}/practice?mode=mock`,
+    );
+  });
 });
 
 describe("DomainRows", () => {
