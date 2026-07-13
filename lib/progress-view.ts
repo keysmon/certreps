@@ -14,13 +14,14 @@ export interface ProgressView {
   status: CertStatus;
 }
 
-/** The cert's finished mocks, graded (attempt + overall pct + per-domain tallies). Shared
- *  by progressView (best overall %) and domainReadiness (C10 per-domain read) so both read
- *  the same attempt set. Reads localStorage - call only client-side (SSR returns []). */
+/** The cert's finished EXAM mocks (study runs with `reveal` are excluded - they are a study tool,
+ *  not an exam-condition assessment), graded (attempt + overall pct + per-domain tallies). Shared
+ *  by progressView (best overall %) and domainReadiness (C10 per-domain read) so both read the same
+ *  attempt set. Reads localStorage - call only client-side (SSR returns []). */
 function gradedFinishedMocks(certId: string): GradedMock[] {
   const bank = getBank(certId);
   return listAttempts(certId)
-    .filter((a) => a.mode === "mock" && a.finishedAt !== null)
+    .filter((a) => a.mode === "mock" && !a.reveal && a.finishedAt !== null)
     .map((a) => {
       const g = gradeAttempt(a, questionsByIds(bank, a.questionIds));
       return { attempt: a, pct: g.pct, byDomain: g.byDomain };

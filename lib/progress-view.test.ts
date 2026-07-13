@@ -74,6 +74,17 @@ describe("progressView", () => {
     expect(progressView(AIP, 75)).toEqual({ bestMockPct: 0, status: "Not started" });
     expect(progressView(MLA, 72).status).toBe("Ready");
   });
+
+  it("excludes a study run (reveal) from the mock-fed bar", () => {
+    // A 100% study run must NOT set the readiness bar; only the 70% exam mock counts.
+    writeAll([gradedMock(AIP, 20, 20, { reveal: true }), gradedMock(AIP, 20, 14)]);
+    expect(progressView(AIP, 75)).toEqual({ bestMockPct: 70, status: "In progress" });
+  });
+
+  it("reads a lone finished study run as In progress over a 0% bar", () => {
+    writeAll([gradedMock(AIP, 20, 20, { reveal: true })]);
+    expect(progressView(AIP, 75)).toEqual({ bestMockPct: 0, status: "In progress" });
+  });
 });
 
 describe("domainReadiness", () => {
@@ -93,5 +104,16 @@ describe("domainReadiness", () => {
 
     const read = domainReadiness(AIP, 75);
     expect(read.domains[firstDomain]).toEqual({ pct: 100, verdict: "above" });
+  });
+
+  it("ignores a study run when reading per-domain verdicts", () => {
+    const bank = getBank(AIP);
+    const firstDomain = bank[0].domain;
+    const ids = bank.filter((q) => q.domain === firstDomain).slice(0, 6).map((q) => q.id);
+    const results: Record<string, QuestionResult> = {};
+    for (const id of ids) results[id] = { questionId: id, chosen: [], correct: true, flagged: false };
+    // Only a study run exists -> no exam mock -> empty domain read.
+    writeAll([attempt({ certId: AIP, mode: "mock", questionIds: ids, results, finishedAt: 1_700_000_100_000, reveal: true })]);
+    expect(domainReadiness(AIP, 75).domains).toEqual({});
   });
 });
