@@ -14,3 +14,4 @@ test-results/
 
 # Local: 2026-07 AIP-C01 bank-expansion workflow run intermediates
 pipeline/staging/expansion-2026-07-12/
+pipeline/staging/concept-backfill/
