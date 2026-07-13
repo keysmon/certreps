@@ -40,4 +40,13 @@ describe("TrendPanel", () => {
     );
     expect(screen.getByText(/de-emphasized/i)).toBeInTheDocument();
   });
+
+  it("excludes study runs (reveal) from the trend - they are not exam-condition mocks", () => {
+    const exam = mock("m1", 1000, true);
+    const study = { ...mock("m2", 2000, true), reveal: true as const };
+    render(<TrendPanel attempts={[exam, study]} meta={meta} />);
+    // Only the exam mock counts, so we are below the two-mock threshold: the hint shows and no verdict words render.
+    expect(screen.getByText(/take two full mocks/i)).toBeInTheDocument();
+    expect(screen.queryByText(/^(above|borderline|weak)$/i)).not.toBeInTheDocument();
+  });
 });
