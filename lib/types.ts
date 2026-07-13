@@ -64,6 +64,9 @@ export interface Attempt {
   certId: string;
   mode: Mode;
   domain?: string;            // set for drill
+  // A study run: a full mock that reveals + locks each answer as you go, runs untimed, and is
+  // excluded from the readiness signal. Absent/false = the timed no-feedback exam mock (the default).
+  reveal?: boolean;
   questionIds: string[];      // sampled order
   results: Record<string, QuestionResult>;
   startedAt: number;          // epoch ms

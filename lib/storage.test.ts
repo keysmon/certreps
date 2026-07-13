@@ -118,3 +118,14 @@ describe("attempt store", () => {
     expect(missedQuestionIds("aip-c01")).toEqual([]);
   });
 });
+
+describe("createAttempt reveal flag", () => {
+  it("sets reveal:true only for a study run and omits the key otherwise", () => {
+    const study = createAttempt("aip-c01", "mock", ["q1"], undefined, true);
+    expect(study.reveal).toBe(true);
+
+    const exam = createAttempt("aip-c01", "mock", ["q1"]);
+    expect(exam.reveal).toBeUndefined();
+    expect("reveal" in exam).toBe(false); // exam rows stay byte-identical to today
+  });
+});
