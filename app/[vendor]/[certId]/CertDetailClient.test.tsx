@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { HeroCtas, DomainRows, ReadinessPanel } from "./CertDetailClient";
+import userEvent from "@testing-library/user-event";
+import { PathToReady, DomainRows, ReadinessPanel } from "./CertDetailClient";
 import { createAttempt, saveAttempt, recordResult, writeAll } from "@/lib/storage";
 import { getBank } from "@/lib/bank";
 import type { Attempt, QuestionResult } from "@/lib/types";
@@ -34,39 +35,60 @@ function gradedMock(n: number, right: number): Attempt {
 
 beforeEach(() => localStorage.clear());
 
-describe("HeroCtas", () => {
-  it("shows Start practicing (-> quick) plus the mock and quick-drill ghosts by default", () => {
-    render(<HeroCtas certId={AIP} vendorSlug="aws" mockMinutes={156} />);
+describe("PathToReady", () => {
+  const DOMAINS = [{ name: "Foundation Model Integration & Compliance", weightPct: 31 }];
+  const renderPath = () =>
+    render(
+      <PathToReady
+        certId={AIP}
+        vendorSlug="aws"
+        mockMinutes={156}
+        mockQuestionCount={65}
+        passLinePct={75}
+        domains={DOMAINS}
+      />,
+    );
+
+  it("Step 1 primary -> quick practice, Step 2 -> the full mock, and no legacy quick-drill ghost", () => {
+    renderPath();
     expect(screen.getByRole("link", { name: /start practicing/i })).toHaveAttribute(
       "href",
       `/aws/${AIP}/practice?mode=quick`,
     );
-    expect(screen.getByRole("link", { name: /take full mock/i })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: /take the full mock/i })).toHaveAttribute(
       "href",
       `/aws/${AIP}/practice?mode=mock`,
     );
-    expect(screen.getByRole("link", { name: /quick 10-q drill/i })).toHaveAttribute(
-      "href",
-      `/aws/${AIP}/practice?mode=quick`,
-    );
+    // The old separate "Quick 10-Q drill" ghost is gone in the redesign.
+    expect(screen.queryByRole("link", { name: /quick 10-q drill/i })).not.toBeInTheDocument();
     // No resume-info line when nothing is in progress.
     expect(screen.queryByText(/in progress/i)).not.toBeInTheDocument();
   });
 
-  it("flips the primary to Resume (exact resume URL) with an answered-count line when in progress", async () => {
+  it("hides the per-domain drills until the toggle is expanded (progressive disclosure)", async () => {
+    const user = userEvent.setup();
+    renderPath();
+    expect(screen.queryByRole("link", { name: /Drill Foundation Model Integration/i })).not.toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /pick a specific domain/i }));
+    expect(await screen.findByRole("link", { name: /Drill Foundation Model Integration/i })).toHaveAttribute(
+      "href",
+      `/aws/${AIP}/practice?mode=drill&domain=${encodeURIComponent(DOMAINS[0].name)}`,
+    );
+  });
+
+  it("flips the Step-1 primary to Resume (exact resume URL) with an answered-count line when in progress", async () => {
     const ids = getBank(AIP).slice(0, 5).map((q) => q.id);
     const a = createAttempt(AIP, "mock", ids);
     saveAttempt(a);
     recordResult(a.attemptId, { questionId: ids[0], chosen: [0], correct: false, flagged: false });
     recordResult(a.attemptId, { questionId: ids[1], chosen: [0], correct: false, flagged: false });
 
-    render(<HeroCtas certId={AIP} vendorSlug="aws" mockMinutes={156} />);
+    renderPath();
     const resume = await screen.findByRole("link", { name: /resume practicing/i });
     const href = resume.getAttribute("href") ?? "";
     expect(href).toContain(`/aws/${AIP}/practice`);
     expect(href).toContain("mode=mock");
     expect(href).toContain(`resume=${a.attemptId}`);
-    // The slim resume-info line carries the answered count the design's CTA lacked.
     expect(screen.getByText(/Full Mock in progress/i)).toBeInTheDocument();
     expect(screen.getByText(/2 of 5 answered/i)).toBeInTheDocument();
   });
@@ -80,7 +102,7 @@ describe("HeroCtas", () => {
     // Flagging an unanswered question persists an empty-chosen row (v1h) - it must NOT count.
     recordResult(a.attemptId, { questionId: ids[2], chosen: [], correct: false, flagged: true });
 
-    render(<HeroCtas certId={AIP} vendorSlug="aws" mockMinutes={156} />);
+    renderPath();
     expect(await screen.findByText(/2 of 5 answered/i)).toBeInTheDocument();
   });
 
@@ -95,7 +117,7 @@ describe("HeroCtas", () => {
     saveAttempt(newer);
     recordResult(newer.attemptId, { questionId: ids[0], chosen: [0], correct: false, flagged: false });
 
-    render(<HeroCtas certId={AIP} vendorSlug="aws" mockMinutes={156} />);
+    renderPath();
 
     // Primary CTA resumes the newest (the mock).
     const primary = await screen.findByRole("link", { name: /resume practicing/i });

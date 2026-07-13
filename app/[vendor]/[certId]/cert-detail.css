@@ -18,6 +18,8 @@
 /* 1200 aligns the content edge with the shared TopNav + catalog (Task 10 shell-width reconciliation,
    closing the Task 5 flag: cd-wrap was 1180 while TopNav is 1200, a ~10px content-edge offset). */
 .cd-wrap { max-width: 1200px; margin: 0 auto; padding: 0 34px 80px; }
+/* Redesign: the "path to ready" flow is a single narrow column (was a 2-col grid at 1200px). */
+.cd-wrap.cd-wrap-narrow { max-width: 940px; }
 
 /* ===== BREADCRUMB ===== */
 .cd-crumb { font-family: var(--font-mono); font-size: 12px; color: var(--faint); padding: 16px 0 4px; }
