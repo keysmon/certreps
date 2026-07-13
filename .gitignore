@@ -12,13 +12,18 @@ __pycache__/
 playwright-report/
 test-results/
 
-# Local: 2026-07 AIP-C01 bank-expansion workflow run intermediates
-pipeline/staging/expansion-2026-07-12/
-pipeline/staging/concept-backfill/
-pipeline/staging/redesign-analysis/
+# Local-only, kept out of the published repo (also purged from history): dev/planning docs,
+# the content-generation pipeline (scripts + prompts + staging), and the redesign handoff/specs.
+# Still present locally, just untracked.
+docs/
+pipeline/
+design/redesign-v2/
+design/components-source.md
+
+# Local screenshots / analysis artifacts
 redesign-results-collapsed.png
 redesign-results-expanded.png
-.playwright-mcp/
 redesign-certdetail.png
 redesign-certdetail-domains.png
 redesign-catalog.png
+.playwright-mcp/
