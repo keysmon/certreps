@@ -3,15 +3,13 @@ import "./engine.css";
 
 // Answered carries a check glyph so answered-vs-unanswered is distinguishable without color
 // (fromCharCode per the repo's ASCII-source convention, same U+2713 as QuestionCard/Results).
-// Flagged is a CSS corner triangle (see .mc-flag) - a font-free shape cue; current is a ring;
-// locked is dimmed + disabled. Every state thus reads without relying on hue (a11y).
+// Flagged is a CSS corner triangle (see .mc-flag) - a font-free shape cue; current is a ring.
+// Every state thus reads without relying on hue (a11y).
 const CHECK = String.fromCharCode(10003);
 
 export interface CellState {
   answered: boolean;
   flagged: boolean;
-  /** Practice frontier discipline: a question beyond the answered prefix is not yet reachable. */
-  locked?: boolean;
 }
 
 export function ReviewMap({ states, current, onJump }: { states: CellState[]; current: number; onJump: (i: number) => void }) {
@@ -27,10 +25,9 @@ export function ReviewMap({ states, current, onJump }: { states: CellState[]; cu
           <button
             key={i}
             type="button"
-            disabled={s.locked}
-            className={`mapcell${s.answered ? " answered" : ""}${s.flagged ? " flagged" : ""}${i === current ? " current" : ""}${s.locked ? " locked" : ""}`}
+            className={`mapcell${s.answered ? " answered" : ""}${s.flagged ? " flagged" : ""}${i === current ? " current" : ""}`}
             onClick={() => onJump(i)}
-            aria-label={`Go to question ${i + 1}${s.answered ? "" : ", unanswered"}${s.flagged ? ", flagged" : ""}${i === current ? ", current" : ""}${s.locked ? ", locked" : ""}`}
+            aria-label={`Go to question ${i + 1}${s.answered ? "" : ", unanswered"}${s.flagged ? ", flagged" : ""}${i === current ? ", current" : ""}`}
           >
             <span className="mc-num">{i + 1}</span>
             {s.answered && <span className="mc-check" aria-hidden="true">{CHECK}</span>}

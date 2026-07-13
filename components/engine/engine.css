@@ -68,8 +68,6 @@
 .mapcell.answered { border-color: var(--emerald); color: var(--emerald); background: var(--emerald-soft); }
 .mapcell.flagged { border-color: var(--gold); color: var(--gold); background: var(--gold-soft); }
 .mapcell.current { outline: 2px solid var(--gold); outline-offset: -3px; font-weight: 700; }
-/* Frontier-locked practice cells: dimmed + non-interactive so "can't skip ahead" reads without color. */
-.mapcell.locked { opacity: 0.4; cursor: not-allowed; }
 /* Non-color state glyphs (a11y): a check for answered, a corner triangle for flagged. Both are
    shape/mark cues that survive a grayscale or colorblind view; the number stays centered. */
 .mc-check { position: absolute; right: 3px; bottom: 1px; font-size: 9px; line-height: 1; color: var(--emerald); pointer-events: none; }
