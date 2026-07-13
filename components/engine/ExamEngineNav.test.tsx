@@ -10,9 +10,6 @@ import { questionsByIds } from "@/lib/sampler";
 beforeEach(() => localStorage.clear());
 
 const optionButtons = () => screen.getAllByRole("button").filter((b) => b.className.includes("option"));
-// Palette cells expose an aria-label starting "Go to question N"; this pulls them in grid order,
-// distinct from the QuestionCard option buttons and the Prev/Next nav.
-const paletteCells = () => screen.getAllByRole("button", { name: /^go to question/i });
 
 describe("ExamEngine mock navigation (v1h)", () => {
   it("answers stay editable: re-visiting pre-fills the choice and re-submitting overwrites the journal", async () => {
@@ -103,49 +100,27 @@ describe("ExamEngine mock navigation (v1h)", () => {
   });
 });
 
-describe("ExamEngine practice navigation (v1h)", () => {
+describe("ExamEngine practice navigation (redesign)", () => {
   const DOMAIN = "Operational Efficiency & Optimization"; // Domain 4
 
-  it("locks the palette beyond the frontier - you cannot skip ahead to unanswered questions", async () => {
+  it("answering surfaces the sticky verdict + forward action, with no palette and no Prev", async () => {
     render(<ExamEngine mode="drill" domain={DOMAIN} />);
-    // Answer Q1 (instant feedback).
+    // The frontier palette is gone: no "Go to question N" cells before OR after answering.
+    expect(screen.queryAllByRole("button", { name: /^go to question/i })).toHaveLength(0);
+
     await userEvent.click(optionButtons()[0]);
     await userEvent.click(screen.getByRole("button", { name: /submit answer/i }));
-    expect(document.querySelector(".explain")).not.toBeNull();
+    expect(document.querySelector(".explain")).not.toBeNull(); // graded (instant feedback)
 
-    const cells = paletteCells();
-    expect(cells[0].className).toContain("answered"); // graded
-    // Frontier is Q2 (index 1); everything past it is locked (disabled), so no skipping ahead.
-    expect(cells[1]).not.toBeDisabled(); // the reachable frontier
-    expect(cells[2]).toBeDisabled(); // beyond the frontier
-    expect(cells[cells.length - 1]).toBeDisabled();
-  });
+    // The sticky action bar carries its own verdict. Scope the text query to .pab-verdict - matching
+    // /correct|not quite/i unscoped would double-hit QuestionCard's explanation verdict and throw.
+    const bar = document.querySelector(".practice-actionbar");
+    expect(bar).not.toBeNull();
+    expect(within(bar as HTMLElement).getByText(/^correct$|^not quite$/i)).toBeInTheDocument();
 
-  it("revisits an already-graded question read-only via Prev (deterministic replay)", async () => {
-    render(<ExamEngine mode="drill" domain={DOMAIN} />);
-    // Answer Q1, advance to Q2, answer Q2.
-    await userEvent.click(optionButtons()[0]);
-    await userEvent.click(screen.getByRole("button", { name: /submit answer/i }));
-    await userEvent.click(screen.getByRole("button", { name: /next question/i }));
-    await userEvent.click(optionButtons()[0]);
-    await userEvent.click(screen.getByRole("button", { name: /submit answer/i }));
-
-    // Prev back to Q1 - it renders in its graded, read-only state (no submit control, options locked).
-    await userEvent.click(screen.getByRole("button", { name: /^prev$/i }));
-    expect(screen.getByText(/question 1 of/i)).toBeInTheDocument();
-    expect(document.querySelector(".explain")).not.toBeNull();
-    expect(optionButtons()[0]).toBeDisabled();
-    expect(screen.queryByRole("button", { name: /submit answer|update answer/i })).not.toBeInTheDocument();
-  });
-
-  it("jumps to a graded question from the palette", async () => {
-    render(<ExamEngine mode="drill" domain={DOMAIN} />);
-    await userEvent.click(optionButtons()[0]);
-    await userEvent.click(screen.getByRole("button", { name: /submit answer/i }));
-    await userEvent.click(screen.getByRole("button", { name: /next question/i }));
-    // On Q2 now; jump back to Q1 via its palette cell.
-    await userEvent.click(paletteCells()[0]);
-    expect(screen.getByText(/question 1 of/i)).toBeInTheDocument();
-    expect(document.querySelector(".explain")).not.toBeNull(); // graded replay
+    // One forward action, no Prev, and still no palette cells to skip ahead with.
+    expect(screen.getByRole("button", { name: /next question/i })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /^prev$/i })).not.toBeInTheDocument();
+    expect(screen.queryAllByRole("button", { name: /^go to question/i })).toHaveLength(0);
   });
 });

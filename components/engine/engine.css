@@ -48,8 +48,6 @@
 .stage { max-width: 860px; margin: 0 auto; padding: 34px 30px 90px; }
 .mode-note { font-family: var(--font-mono); font-size: 11.5px; color: var(--faint); margin: 0 0 2px; }
 .footbar { display: flex; align-items: center; gap: 12px; border-top: 1px solid var(--line); padding-top: 18px; margin-top: 22px; }
-.streak { font-family: var(--font-mono); font-size: 12px; color: var(--faint); }
-.streak b { color: var(--emerald); }
 .recorded { font-family: var(--font-mono); font-size: 12px; color: var(--emerald); }
 /* Mock nav sits directly under the QuestionCard submit footbar; no extra top divider. */
 .mocknav { display: flex; align-items: center; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
@@ -77,12 +75,15 @@
 .mc-check { position: absolute; right: 3px; bottom: 1px; font-size: 9px; line-height: 1; color: var(--emerald); pointer-events: none; }
 .mc-flag { position: absolute; top: 0; right: 0; width: 0; height: 0; border-style: solid; border-width: 0 7px 7px 0; border-color: transparent var(--gold) transparent transparent; border-top-right-radius: 8px; pointer-events: none; }
 
-/* ---- v1h exam navigation: practice Prev + frontier palette, mock review screen ---- */
-/* Practice nav sits under the QuestionCard: a light row while answering (just Prev), gaining a
-   divider + forward CTA once the question is graded (mirrors the old single-button footbar). */
-.practicenav { display: flex; align-items: center; gap: 12px; margin-top: 14px; }
-.practicenav.graded { border-top: 1px solid var(--line); padding-top: 18px; margin-top: 22px; }
-.practicemap { margin-top: 8px; }
+/* ---- exam navigation: practice sticky action bar + mock review screen ---- */
+/* Practice forward action: a fixed bottom bar that replaces the old Prev/streak/frontier-palette.
+   Shown only once the question is graded; one primary action (Next question / See results) plus a
+   persistent verdict readout. The stage below gets extra bottom padding (via :has) so the bar never
+   overlaps the last option / explanation; mock + results keep the base padding. */
+.practice-actionbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 60; background: var(--ink-glass); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border-top: 1px solid var(--line-strong); }
+.practice-actionbar-inner { max-width: 720px; margin: 0 auto; padding: 13px 28px; display: flex; align-items: center; gap: 14px; }
+.pab-verdict { font-family: var(--font-mono); font-size: 13px; font-weight: 600; letter-spacing: .02em; }
+.stage:has(.practice-actionbar) { padding-bottom: 104px; }
 /* Exam-bar review affordance: keep it whole (never wrap mid-label) inside the sticky bar. */
 .exam-review { white-space: nowrap; }
 .review-top { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }

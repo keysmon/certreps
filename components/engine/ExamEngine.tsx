@@ -237,31 +237,12 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId }: { certId?:
   // question carries an empty-chosen row that must still read as unanswered.
   const isAnswered = (qid: string) => (answers[qid]?.length ?? 0) > 0;
 
-  // Practice frontier: the first not-yet-graded index (= the length of the graded prefix, since
-  // practice answers strictly in order). You may revisit any graded question read-only and you may
-  // sit on the frontier, but cells beyond it are locked - the linear "no skipping ahead" discipline,
-  // made visible in the palette. Unused in mock (free navigation), computed cheaply either way.
-  let frontier = questions.findIndex((qq) => !graded[qq.id]);
-  if (frontier === -1) frontier = questions.length;
-
   // Mock review-screen derivations: the answered tally plus the unanswered/flagged jump lists.
   // Cheap over <=65 questions; only rendered in the review phase.
   const answeredCount = questions.filter((qq) => isAnswered(qq.id)).length;
   const unansweredQs = questions.map((qq, i) => ({ qq, i })).filter(({ qq }) => !isAnswered(qq.id));
   const flaggedQs = questions.map((qq, i) => ({ qq, i })).filter(({ qq }) => flags[qq.id]);
 
-  // Streak (drill/quick only, Task 6): consecutive-correct over the in-order answered prefix. A pure
-  // render derivation from `graded` - it adds no state and never writes storage, so engine logic is
-  // untouched. It is 0 on a fresh mount (empty `graded`), honestly reflects a resumed practice run's
-  // restored answers, and stays 0 in mock (mock records into `answers`, never grading `graded`).
-  let streak = 0;
-  if (!isMock) {
-    for (const qq of questions) {
-      const res = graded[qq.id];
-      if (!res) break;
-      streak = res.correct ? streak + 1 : 0;
-    }
-  }
   const vendorColor = VENDORS[meta.vendorSlug]?.c ?? "var(--gold)";
   // Honest mode descriptions (design idiom) - the mock note names the blueprint bias + late reveal.
   const modeNote = isMock
@@ -393,30 +374,22 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId }: { certId?:
               </div>
             )}
 
-            {!isMock && (
-              <>
-                {/* Prev is always available (revisit a graded question read-only); the forward CTA
-                    appears only once the current question is graded, preserving the answer-then-advance
-                    pedagogy. Jumping ahead past the frontier is impossible - the palette locks it. */}
-                <div className={`practicenav${g ? " graded" : ""}`}>
-                  <button className="btn btn-ghost btn-sm" disabled={index === 0} onClick={() => goTo(index - 1)}>Prev</button>
-                  {g && streak > 0 && <span className="streak">Streak: <b>{streak} correct</b></span>}
-                  {g && (
-                    <button className="btn btn-primary" style={{ marginLeft: "auto" }} onClick={() => (last ? finish() : goTo(index + 1))}>
-                      {last ? "See results" : "Next question"}
-                    </button>
-                  )}
+            {/* Practice forward action: a sticky bottom bar (no Prev, no streak, no palette). It
+                appears only once the question is graded, so the answer-then-advance pedagogy holds -
+                you cannot skip ahead because there is nothing to skip to. The verdict is a persistent
+                readout while QuestionCard's explanation may be scrolled above the bar. */}
+            {!isMock && g && (
+              <div className="practice-actionbar">
+                <div className="practice-actionbar-inner">
+                  <span className="pab-verdict" style={{ color: g.correct ? "var(--emerald)" : "var(--rose)" }}>
+                    {g.correct ? "Correct" : "Not quite"}
+                  </span>
+                  <span style={{ flex: 1 }} />
+                  <button className="btn btn-primary" onClick={() => (last ? finish() : goTo(index + 1))}>
+                    {last ? "See results" : "Next question"}
+                  </button>
                 </div>
-                {/* Frontier-aware palette: graded cells jump read-only; cells beyond the frontier are
-                    locked (disabled) so linear discipline holds. Derives purely from `graded` + index. */}
-                <div className="practicemap">
-                  <ReviewMap
-                    states={questions.map((qq, i) => ({ answered: !!graded[qq.id], flagged: false, locked: i > frontier }))}
-                    current={index}
-                    onJump={goTo}
-                  />
-                </div>
-              </>
+              </div>
             )}
           </div>
         )}
