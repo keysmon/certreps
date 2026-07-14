@@ -9,7 +9,7 @@ import { test, expect } from "@playwright/test";
 // exercised for mock's review screen instead).
 test("exam navigation: palette jump, edit, flag, leave, resume via interstitial, submit", async ({ page }) => {
   await page.goto("/aws/aif-c01");
-  await page.getByRole("link", { name: /Take full mock/ }).click();
+  await page.getByRole("link", { name: /Take the full mock/ }).click();
   await expect(page).toHaveURL(/mode=mock/);
 
   // Answer questions 1-3, advancing with the mock nav's "Next" after each submit.
@@ -46,14 +46,15 @@ test("exam navigation: palette jump, edit, flag, leave, resume via interstitial,
   await expect(page.locator(".qnum")).toHaveText("Question 4 of 50");
   await page.getByRole("button", { name: "Flag for review" }).click();
 
-  // Leave mid-exam through the reachable site nav (the old distraction-free stance is reversed).
-  await page.getByRole("link", { name: "Catalog" }).click();
-  await expect(page).toHaveURL(/\/catalog$/);
+  // Leave mid-exam through the engine's Exit affordance. The redesign dropped the persistent
+  // "Catalog" nav link, so the exam bar's Exit (back to the cert page) is the in-session way out.
+  await page.locator("a.exit").click();
+  await expect(page).toHaveURL(/\/aws\/aif-c01$/);
 
   // Return, and re-enter through the BARE mock URL (not the "Resume practicing" shortcut) so the
   // interstitial actually gates the re-entry.
   await page.goto("/aws/aif-c01");
-  await page.getByRole("link", { name: /Take full mock/ }).click();
+  await page.getByRole("link", { name: /Take the full mock/ }).click();
   await expect(page.getByRole("heading", { name: "You have a Full Mock in progress" })).toBeVisible();
   await page.getByRole("link", { name: "Resume", exact: true }).click();
 
@@ -81,7 +82,9 @@ test("exam navigation: palette jump, edit, flag, leave, resume via interstitial,
   await expect(reviewLists.nth(1).getByRole("button", { name: "Question 4 (unanswered)", exact: true })).toBeVisible();
 
   // Submit and confirm Results graded the EDITED answer for question 1, not the original pick.
+  // The redesigned Results hero leads with the verdict headline (.r-verdict) under a "Readiness"
+  // eyebrow - the old "Readiness read" wording is gone, so anchor on the headline element.
   await page.getByRole("button", { name: "Submit exam" }).click();
-  await expect(page.getByText("Readiness read")).toBeVisible();
+  await expect(page.locator("h3.r-verdict")).toBeVisible();
   await expect(page.locator(".recap-item").first()).toContainText(editedOptionText);
 });

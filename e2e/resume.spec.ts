@@ -29,14 +29,16 @@ test("resume: leave mid-drill, resume it, then discard removes only that attempt
   await page.locator("div.footbar button.btn-primary").click();
   await page.goto("/aws/aif-c01");
 
-  // Start the domain drill, answer 2 of 12, then navigate away without finishing.
+  // Start the domain drill, answer 2 of 12, then navigate away without finishing. The per-domain
+  // drill links now sit behind a progressive-disclosure toggle - expand it first.
+  await page.getByRole("button", { name: /pick a specific domain/i }).click();
   await page.getByRole("link", { name: "Drill Applications of Foundation Models" }).click();
   await expect(page).toHaveURL(/mode=drill&domain=/); // wait for the navigation to land before reading it
   const drillUrl = page.url();
   for (let i = 0; i < 2; i++) {
     await page.locator("button.option").first().click();
     await page.locator("div.footbar button.btn-primary").click();
-    await page.locator(".practicenav button.btn-primary").click();
+    await page.locator(".practice-actionbar button.btn-primary").click();
   }
   await page.goto("/aws/aif-c01");
 

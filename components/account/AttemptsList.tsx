@@ -37,10 +37,10 @@ export function AttemptsList({ attempts, meta }: { attempts: Attempt[]; meta: Ce
     return (
       <div className="card" style={{ textAlign: "center" }}>
         <p className="muted" style={{ margin: "0 0 14px" }}>
-          No practice history yet - take a quick 10 to get started.
+          No practice history yet - take a quick session to get started.
         </p>
         <Link className="btn btn-primary" href={`${practicePath(meta)}?mode=quick`}>
-          Quick 10
+          Start practicing
         </Link>
       </div>
     );

@@ -18,7 +18,7 @@ describe("AttemptsList", () => {
   it("shows an empty state with a link to start practicing when there is no history", () => {
     render(<AttemptsList attempts={[]} meta={meta} />);
     expect(screen.getByText(/no practice history yet/i)).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /quick 10/i })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /start practicing/i })).toBeInTheDocument();
   });
 
   it("renders a finished attempt with its score, linking to the attempt detail page", () => {

@@ -7,6 +7,8 @@ import { test, expect } from "@playwright/test";
 // 12-question drill samples cleanly with margin.
 test("drill lifecycle: finishing a 12-question drill reads In progress everywhere", async ({ page }) => {
   await page.goto("/aws/aif-c01");
+  // The per-domain drill links now sit behind a progressive-disclosure toggle - expand it first.
+  await page.getByRole("button", { name: /pick a specific domain/i }).click();
   await page.getByRole("link", { name: "Drill Applications of Foundation Models" }).click();
   await expect(page).toHaveURL(/mode=drill&domain=/);
 
@@ -14,19 +16,19 @@ test("drill lifecycle: finishing a 12-question drill reads In progress everywher
     await page.locator("button.option").first().click();
     await page.locator("div.footbar button.btn-primary").click(); // Submit answer
     await expect(page.locator(".explain")).toBeVisible();
-    await page.locator(".practicenav button.btn-primary").click(); // Next question / See results
+    await page.locator(".practice-actionbar button.btn-primary").click(); // Next question / See results
   }
 
-  // Results screen shows a readiness read.
-  await expect(page.getByText("Readiness read")).toBeVisible();
+  // Results screen rendered (its verdict headline is the stable marker).
+  await expect(page.locator("h3.r-verdict")).toBeVisible();
 
   // Back on the detail page, the readiness panel reads "In progress" (not "Not started yet").
+  // This is the core regression: a finished drill must NOT flip the cert back to "Not started".
   await page.goto("/aws/aif-c01");
-  await expect(page.getByText("In progress")).toBeVisible();
+  await expect(page.locator(".cd-ready-label")).toHaveText("In progress");
   await expect(page.getByText("Not started yet")).toHaveCount(0);
 
-  // The catalog's Status facet counts exactly one cert as In progress.
-  await page.goto("/catalog");
-  const filters = page.getByRole("complementary", { name: "Filters" });
-  await expect(filters.getByRole("button", { name: /^In progress/ })).toContainText("1");
+  // Note: the redesigned catalog dropped the Status facet, and its per-card progress reflects
+  // best-mock score only (a drill never moves it), so there is no drill-driven catalog status to
+  // assert here - the cert-detail "In progress" check above carries the regression intent.
 });
