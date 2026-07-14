@@ -25,8 +25,11 @@ test("sign in and out with a real account", async ({ page }) => {
   await page.getByRole("button", { name: "Sign in" }).click();
 
   await expect(page).toHaveURL(/\/account/);
-  await expect(page.locator(".tn-user")).toBeVisible();
+  // Redesign: the top bar's signed-in surface is the account-menu avatar (aria-label "Account menu"),
+  // and Sign out moved inside that dropdown (was the top-level .tn-signout). Open the menu, then sign out.
+  await expect(page.getByRole("button", { name: "Account menu" })).toBeVisible();
 
-  await page.locator(".tn-signout").click();
+  await page.getByRole("button", { name: "Account menu" }).click();
+  await page.getByRole("menuitem", { name: "Sign out" }).click();
   await expect(page.getByRole("link", { name: "Sign in" })).toBeVisible();
 });

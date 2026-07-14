@@ -1,33 +1,31 @@
 import { test, expect } from "@playwright/test";
 
-// Real-user path: land on the homepage, browse to the catalog, narrow it to one vendor
-// via a facet chip, then open a cert detail page and confirm its core content renders -
-// domain rows, the fact-row panel, and a live (200) study-guide link.
-test("landing -> catalog -> filter by vendor -> cert detail renders domains, facts, and a live study guide", async ({
+// Real-user path: land on the homepage, browse to the catalog, narrow it to one cert via the
+// search field (the redesign replaced the vendor facet sidebar with a search + level filter),
+// then open a cert detail page and confirm its core content renders - the per-domain rows (behind
+// the "pick a specific domain" toggle now) and the full-mock launch.
+test("landing -> catalog -> search -> cert detail renders its domain rows and the mock launch", async ({
   page,
 }) => {
   await page.goto("/");
   await page.getByRole("link", { name: /Browse \d+ certifications/ }).click();
   await expect(page).toHaveURL(/\/catalog$/);
 
-  const filters = page.getByRole("complementary", { name: "Filters" });
-  await filters.getByRole("button", { name: /^AWS/ }).click();
-  await expect(page.locator("h1.ct-title")).toHaveText("AWS");
-
-  await page.getByRole("link", { name: "AWS Certified AI Practitioner" }).click();
+  // The catalog is a search field + level segment + card grid (no vendor facet sidebar, no
+  // h1.ct-title). Type the exam name to narrow, then open its card.
+  await page.getByRole("searchbox", { name: "Search certifications" }).fill("AWS Certified AI Practitioner");
+  await page.getByRole("link", { name: "AWS Certified AI Practitioner", exact: true }).click();
   await expect(page).toHaveURL(/\/aws\/aif-c01$/);
 
-  // Domains render - one row per meta.json domain.
+  // Domain rows live behind the progressive-disclosure toggle - expand it, then confirm one row
+  // per meta.json domain renders (5 for aif-c01).
+  await page.getByRole("button", { name: /pick a specific domain/i }).click();
   await expect(page.locator(".cd-domain")).toHaveCount(5);
 
-  // Fact rows (the "What's inside" panel) render.
-  await expect(page.getByText("Practice questions")).toBeVisible();
-  await expect(page.getByText("Mock length")).toBeVisible();
+  // The full mock is launchable from the detail page (Step 2 of "Your path to ready").
+  await expect(page.getByRole("link", { name: /Take the full mock/ })).toBeVisible();
 
-  // The study guide link resolves (200), not just renders.
-  const guideLink = page.getByRole("link", { name: "Applications of Foundation Models on AWS (AIF-C01 Domain 3)" });
-  await expect(guideLink).toBeVisible();
-  const href = await guideLink.getAttribute("href");
-  const resp = await page.request.get(href!);
-  expect(resp.status()).toBe(200);
+  // Note: the old "What's inside" facts panel (Practice questions / Mock length) and the per-domain
+  // study-guide links were removed in the redesign, so those sub-assertions are dropped - the domain
+  // rows + mock launch above carry the "cert detail renders its core content" intent.
 });
