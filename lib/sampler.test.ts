@@ -17,14 +17,14 @@ describe("difficultyTargets", () => {
 describe("sampleMock", () => {
   it("returns exact per-domain counts from meta", () => {
     const qs = sampleMock(getBank(), getMeta());
-    expect(qs.length).toBe(65);
+    expect(qs.length).toBe(75);
     for (const d of getMeta().domains) {
       expect(qs.filter((q) => q.domain === d.name).length).toBe(d.mockCount);
     }
   });
   it("has no duplicate questions", () => {
     const qs = sampleMock(getBank(), getMeta());
-    expect(new Set(qs.map((q) => q.id)).size).toBe(65);
+    expect(new Set(qs.map((q) => q.id)).size).toBe(75);
   });
   it("two mocks differ in order (shuffled)", () => {
     const a = sampleMock(getBank(), getMeta()).map((q) => q.id).join(",");

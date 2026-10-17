@@ -69,6 +69,13 @@ export default async function CertPage({ params }: { params: Promise<{ vendor: s
             Original scenario questions with real explanations, mapped to the official {meta.examCode} exam
             guide. Practice one domain at a time, or sit the full mock under exam timing.
           </p>
+          {meta.certId === "aip-c01" && (
+            <p className="cd-blurb">
+              The AWS exam has 75 questions in 180 minutes: 65 scored and 10 unidentified unscored.
+              This mock scores all 75 practice questions. Its 75% study target is independent of
+              AWS&apos;s 750/1000 scaled passing score and does not predict an exam result.
+            </p>
+          )}
         </header>
 
         <div style={eyebrow}>Your path to ready</div>

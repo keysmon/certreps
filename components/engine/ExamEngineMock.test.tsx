@@ -31,13 +31,13 @@ describe("ExamEngine mock mode", () => {
     await userEvent.click(screen.getByRole("button", { name: /review & submit/i }));
     const map = screen.getByTestId("reviewmap");
     const cells = within(map).getAllByRole("button");
-    expect(cells.length).toBe(65);
+    expect(cells.length).toBe(75);
     expect(cells[0].className).toContain("answered");
     expect(cells[1].className).toContain("flagged");
     expect(cells[1].className).not.toContain("answered"); // flagged but unanswered
     // Jump back to Q2 from the map
     await userEvent.click(cells[1]);
-    expect(screen.getByText(/question 2 of 65/i)).toBeInTheDocument();
+    expect(screen.getByText(/question 2 of 75/i)).toBeInTheDocument();
     // Return to review and submit the exam
     await userEvent.click(screen.getByRole("button", { name: /review & submit/i }));
     await userEvent.click(screen.getByRole("button", { name: /submit exam/i }));
@@ -55,7 +55,7 @@ describe("ExamEngine mock mode", () => {
     // Fake timers scoped to this test only (test 1 above relies on real timers + userEvent).
     vi.useFakeTimers();
     try {
-      const budget = getMeta().mockMinutes * 60; // 156 * 60 = 9360
+      const budget = getMeta().mockMinutes * 60; // 180 * 60 = 10800
       const toSec = (t: string) =>
         t.split(":").reverse().reduce((acc, v, i) => acc + Number(v) * 60 ** i, 0);
       render(<ExamEngine mode="mock" />);

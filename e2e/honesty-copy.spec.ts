@@ -32,3 +32,18 @@ test("honesty copy: unpublished pass score reads as a study target, official cer
   await expect(page.locator(".r-sub")).toContainText("Pass line is ~70%.");
   await expect(page.locator(".r-sub")).not.toContainText(/study target/i);
 });
+
+
+test("AIP-C01 mock uses 75 questions, 180 minutes, and an independent study target", async ({ page }) => {
+  await page.goto("/aws/aip-c01");
+  await expect(page.getByText(/The AWS exam has 75 questions in 180 minutes/)).toBeVisible();
+  await page.getByRole("link", { name: /Take the full mock/ }).click();
+  await expect(page.locator(".qnum")).toHaveText("Question 1 of 75");
+  await expect(page.getByRole("timer")).toHaveText(/^(3:00:00|2:59:\d{2})$/);
+  await page.getByRole("button", { name: "Review & submit" }).click();
+  await expect(page.getByRole("button", { name: /^Go to question \d+/ })).toHaveCount(75);
+  await page.getByRole("button", { name: "Submit exam" }).click();
+  await expect(page.locator(".r-sub")).toContainText("Study target is 75%.");
+  await expect(page.locator(".r-sub")).toContainText("does not convert to AWS's 750/1000 scaled passing score");
+  await expect(page.locator(".r-sub")).not.toContainText(/ready to book|pass line/i);
+});

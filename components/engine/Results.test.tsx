@@ -112,7 +112,7 @@ describe("Results verdict copy (official vs unofficial pass line)", () => {
   const PASS = getMeta().passLinePct; // aip-c01 = 75
 
   it("official passed: keeps the pass-line headline and the ~ subcopy byte-for-byte", () => {
-    render(<Results attempt={passedAttempt()} questions={qs} meta={getMeta()} />);
+    render(<Results attempt={passedAttempt()} questions={qs} meta={{ ...getMeta(), certId: "test-official", passLineOfficial: true }} />);
     expect(screen.getByText("Above the pass line - keep it up.")).toBeInTheDocument();
     expect(
       screen.getByText(`Pass line is ~${PASS}%. Two clean runs above this and you are ready to book.`),
@@ -120,28 +120,28 @@ describe("Results verdict copy (official vs unofficial pass line)", () => {
   });
 
   it("official not-passed: keeps the ~ pass-line subcopy byte-for-byte", () => {
-    render(<Results attempt={makeAttempt(0)} questions={qs} meta={getMeta()} />);
+    render(<Results attempt={makeAttempt(0)} questions={qs} meta={{ ...getMeta(), certId: "test-official", passLineOfficial: true }} />);
     expect(
       screen.getByText(`Pass line is ~${PASS}%. Drill your weakest domain below, then run it again.`),
     ).toBeInTheDocument();
   });
 
   it("unofficial passed: uses the study-target headline and subcopy, never 'Pass line'", () => {
-    const meta = { ...getMeta(), passLineOfficial: false };
+    const meta = getMeta();
     render(<Results attempt={passedAttempt()} questions={qs} meta={meta} />);
     expect(screen.getByText("Above your study target - keep it up.")).toBeInTheDocument();
     expect(
-      screen.getByText(`Study target is ${PASS}%. Two clean runs above this and you are ready to book.`),
+      screen.getByText(`Study target is ${PASS}%. Review uncertain answers and check unfamiliar scenarios with official practice resources. This practice percentage does not convert to AWS's 750/1000 scaled passing score.`),
     ).toBeInTheDocument();
     expect(screen.queryByText(/Pass line/i)).not.toBeInTheDocument();
   });
 
   it("unofficial not-passed: study-target subcopy; the non-pass-line headline is unchanged", () => {
-    const meta = { ...getMeta(), passLineOfficial: false };
+    const meta = getMeta();
     render(<Results attempt={makeAttempt(0)} questions={qs} meta={meta} />);
     expect(screen.getByText("Getting there - a couple of soft spots.")).toBeInTheDocument();
     expect(
-      screen.getByText(`Study target is ${PASS}%. Drill your weakest domain below, then run it again.`),
+      screen.getByText(`Study target is ${PASS}%. Drill your weakest domain below, then run it again. This practice percentage does not convert to AWS's 750/1000 scaled passing score.`),
     ).toBeInTheDocument();
   });
 });

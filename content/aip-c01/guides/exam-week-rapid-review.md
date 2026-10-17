@@ -11,9 +11,15 @@ rather than trying to memorize it cold.
 
 ## The exam shape
 
-AIP-C01 is 65 scored questions in 156 minutes, which works out to about 2.4 minutes per
-question.
-The pass line is 75 percent (750 out of 1000 scaled points).
+AIP-C01 has 75 questions in 180 minutes, which works out to about 2.4 minutes per
+question. Of these, 65 are scored and 10 are unscored; the unscored questions are not identified.
+AWS requires a scaled passing score of 750 out of 1000. This is not a raw 75% accuracy
+requirement, and a practice percentage cannot be converted directly into an AWS score.
+CertReps scores all 75 practice questions and uses 75% as an independent study target,
+not an official passing percentage or a guarantee of passing.
+
+Sources: [AWS exam overview](https://aws.amazon.com/certification/certified-generative-ai-developer-professional/)
+and [AWS exam guide](https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01.html).
 The five domains are not weighted evenly, so spend your review time where the exam spends its
 questions:
 
@@ -119,8 +125,9 @@ premium for the delay-tolerant one.
 | Observability | emits OpenTelemetry traces to CloudWatch showing reasoning, tool calls, and step inputs/outputs |
 
 One date to remember: the original Bedrock Agents (now **Agents Classic**) is **closed to new
-customers as of July 30, 2026**. AgentCore is the current path, and the exam frames agent
-scenarios in AgentCore terms.
+customers as of July 30, 2026**. AgentCore is an important current path. Match the services named in the scenario: recognize
+AgentCore tools and hosting as well as Bedrock Agents action groups and return-control workflows.
+Do not substitute one architecture for another solely because it is newer.
 
 ## The classic discriminators
 
@@ -252,18 +259,22 @@ These are the wrong-answer patterns that show up more than once across the pract
 
 1. Read the qualifier word first - MOST cost-effective, LEAST overhead, BEST fit - before you
    read the options.
-2. Budget about 2.4 minutes per question (156 minutes over 65 scored questions); flag and move
+2. Budget about 2.4 minutes per question (180 minutes over 75 questions); flag and move
    rather than stall.
-3. The pass line is 75 percent (750 of 1000). Two clean mock exams above that line is real
-   signal, not luck.
+3. AWS requires 750 of 1000 scaled points, not 75% raw accuracy. CertReps uses a 75% study
+   target; review mistakes and uncertain answers rather than treating that target as proof of passing.
 4. Domains 1 and 2 (57% combined) are model selection, RAG, and Converse/AgentCore
    fundamentals - review those first if time is short.
 5. PII scenario: is it inference-time (Guardrails), bulk-corpus discovery (Macie), or a bespoke
    format (a regex pattern in the Guardrails sensitive-information policy)?
-6. Agent scenario: default to AgentCore terminology, not Agents Classic.
-7. Cost-at-scale-for-a-narrow-task scenario: think distillation before Provisioned Throughput.
-8. Quality-proof scenario: "automatically, every release" means LLM-as-a-judge; "subjective,
-   regulated sign-off" means human evaluation.
+6. Agent scenario: match the named architecture. AgentCore Gateway tools and Bedrock Agents
+   action groups are different integration paths; select the one that satisfies the scenario.
+7. Cost-at-scale scenario: benchmark a smaller model or distillation for a suitable narrow task;
+   evaluate supported Provisioned Throughput for sustained capacity. Distillation and capacity
+   provisioning solve different problems and can be combined.
+8. Quality-proof scenario: automated release gates can use schema checks, reference-based
+   metrics, or a calibrated LLM judge. Choose metrics that test the requirement; use human
+   review where domain expertise, subjective criteria, or risk requires it.
 9. Retrieval-returns-nothing-relevant scenario: suspect metadata filters or chunking before you
    touch the generation model.
 10. Exception-name scenario: match the fix to that exact exception - do not swap
@@ -277,3 +288,8 @@ Take the [full AIP-C01 mock exam](/aws/aip-c01/practice?mode=mock) or drill a si
 [Domain 3](/aws/aip-c01/practice?mode=drill&domain=AI%20Safety%2C%20Security%20%26%20Governance),
 [Domain 4](/aws/aip-c01/practice?mode=drill&domain=Operational%20Efficiency%20%26%20Optimization),
 [Domain 5](/aws/aip-c01/practice?mode=drill&domain=Testing%2C%20Validation%20%26%20Troubleshooting).
+
+
+References for these distinctions: [Bedrock evaluation methods](https://docs.aws.amazon.com/bedrock/latest/userguide/evaluation.html),
+[Bedrock Agents action groups](https://docs.aws.amazon.com/bedrock/latest/userguide/agents-action-create.html),
+and [model distillation](https://docs.aws.amazon.com/bedrock/latest/userguide/model-distillation.html).

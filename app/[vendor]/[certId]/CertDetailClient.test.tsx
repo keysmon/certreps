@@ -189,13 +189,12 @@ describe("ReadinessPanel", () => {
     expect(screen.queryByText("Not started yet")).not.toBeInTheDocument();
   });
 
-  it("reads Ready to book once the best finished mock meets the pass line", async () => {
+  it("reads Study target met once the best finished mock meets the pass line", async () => {
     writeAll([gradedMock(20, 15)]); // 75% == pass line
     render(<ReadinessPanel certId={AIP} passLinePct={75} />);
-    expect(await screen.findByText("Ready to book")).toBeInTheDocument();
-    // Official (flag absent): the note asserts a "Pass line", never a study target.
-    expect(screen.getByText(/Pass line 75%/i)).toBeInTheDocument();
-    expect(screen.queryByText(/Study target/i)).not.toBeInTheDocument();
+    expect(await screen.findByText("Study target met")).toBeInTheDocument();
+    // AIP-C01 uses a practice target, not a conversion of the scaled AWS score.
+    expect(screen.queryByText(/Ready to book/i)).not.toBeInTheDocument();
   });
 
   it("reads Getting there when the best mock is below the pass line", async () => {

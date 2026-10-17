@@ -60,8 +60,8 @@ export function Results({ attempt, questions, meta }: { attempt: Attempt; questi
 
   // Verdict headline + subcopy, banded by OUR pass line (top boundary = passLinePct; the lower
   // boundary is 50 = "half correct"). Plain dashes only - no em dashes (craft rule).
-  // Vendors that publish no official passing score: passLinePct is OUR study target, so the copy
-  // says "study target" instead of asserting an official "pass line" (absent/true stays official).
+  // An independent practice threshold must be described as a study target, including
+  // AIP-C01 where the official scaled score is not a raw accuracy percentage.
   const officialPassLine = meta.passLineOfficial !== false;
   const headline = passed
     ? officialPassLine
@@ -73,7 +73,9 @@ export function Results({ attempt, questions, meta }: { attempt: Attempt; questi
   const passSentence = officialPassLine
     ? `Pass line is ~${meta.passLinePct}%.`
     : `Study target is ${meta.passLinePct}%.`;
-  const subcopy = passed
+  const subcopy = meta.certId === "aip-c01"
+    ? `${passSentence} ${passed ? "Review uncertain answers and check unfamiliar scenarios with official practice resources." : "Drill your weakest domain below, then run it again."} This practice percentage does not convert to AWS's 750/1000 scaled passing score.`
+    : passed
     ? `${passSentence} Two clean runs above this and you are ready to book.`
     : `${passSentence} Drill your weakest domain below, then run it again.`;
 

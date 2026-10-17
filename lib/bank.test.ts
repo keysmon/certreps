@@ -12,10 +12,12 @@ describe("bank", () => {
       expect(q.docUrl).toMatch(/^https:\/\/(docs\.)?aws\.amazon\.com\//);
     }
   });
-  it("meta domain mockCounts sum to 65", () => {
+  it("meta domain mockCounts sum to the 75-question AIP-C01 exam", () => {
     const meta = getMeta();
-    expect(meta.domains.reduce((s, d) => s + d.mockCount, 0)).toBe(65);
-    expect(getMeta().mockQuestionCount).toBe(65);
+    expect(meta.domains.reduce((s, d) => s + d.mockCount, 0)).toBe(75);
+    expect(getMeta().mockQuestionCount).toBe(75);
+    expect(meta.mockMinutes).toBe(180);
+    expect(meta.passLineOfficial).toBe(false);
     expect(getMeta().domains.reduce((s, d) => s + d.weightPct, 0)).toBe(100);
   });
   it("groups by domain matching meta counts availability", () => {

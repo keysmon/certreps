@@ -70,7 +70,7 @@ describe("ExamEngine resume-in-progress", () => {
     render(<ExamEngine mode="mock" resumeAttemptId={a.attemptId} />);
 
     // Fresh full-length mock sampled; a NEW unfinished row is created alongside the finished seed.
-    expect(screen.getByText(/question 1 of 65/i)).toBeInTheDocument();
+    expect(screen.getByText(/question 1 of 75/i)).toBeInTheDocument();
     const all = listAttempts("aip-c01");
     expect(all.length).toBe(2);
     expect(all.some((x) => x.attemptId !== a.attemptId && x.finishedAt === null)).toBe(true);
@@ -78,7 +78,7 @@ describe("ExamEngine resume-in-progress", () => {
 
   it("falls back to a fresh attempt when the resume id is unknown", () => {
     render(<ExamEngine mode="mock" resumeAttemptId="does-not-exist" />);
-    expect(screen.getByText(/question 1 of 65/i)).toBeInTheDocument();
+    expect(screen.getByText(/question 1 of 75/i)).toBeInTheDocument();
     const all = listAttempts("aip-c01");
     expect(all.length).toBe(1);
     expect(all[0].finishedAt).toBeNull();
@@ -104,7 +104,7 @@ describe("ExamEngine resume-in-progress", () => {
     saveAttempt(a);
     // Engine is mock, stored attempt is quick -> mode mismatch -> fresh sample, new row.
     render(<ExamEngine mode="mock" resumeAttemptId={a.attemptId} />);
-    expect(screen.getByText(/question 1 of 65/i)).toBeInTheDocument();
+    expect(screen.getByText(/question 1 of 75/i)).toBeInTheDocument();
     expect(listAttempts("aip-c01").length).toBe(2);
   });
 });

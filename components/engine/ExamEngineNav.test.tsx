@@ -53,22 +53,22 @@ describe("ExamEngine mock navigation (v1h)", () => {
     await userEvent.click(screen.getByRole("button", { name: /review & submit/i }));
 
     // Warning copy states unanswered questions grade wrong.
-    expect(screen.getByText(/1 of 65 answered/i)).toBeInTheDocument();
-    expect(screen.getByText(/64 unanswered - they grade as incorrect/i)).toBeInTheDocument();
+    expect(screen.getByText(/1 of 75 answered/i)).toBeInTheDocument();
+    expect(screen.getByText(/74 unanswered - they grade as incorrect/i)).toBeInTheDocument();
     // Sectioned jump lists.
-    expect(screen.getByRole("heading", { name: /unanswered \(64\)/i })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /unanswered \(74\)/i })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /flagged for review \(1\)/i })).toBeInTheDocument();
 
     // The flagged section carries a jump link back to Q2 (labelled unanswered); clicking returns there.
     const flagLink = screen.getByRole("button", { name: /question 2 \(unanswered\)/i });
     await userEvent.click(flagLink);
-    expect(screen.getByText(/question 2 of 65/i)).toBeInTheDocument();
+    expect(screen.getByText(/question 2 of 75/i)).toBeInTheDocument();
   });
 
   it("submitting with unanswered questions grades them wrong (0 correct on an empty run)", async () => {
     render(<ExamEngine mode="mock" />);
     await userEvent.click(screen.getByRole("button", { name: /review & submit/i }));
-    expect(screen.getByText(/65 unanswered - they grade as incorrect/i)).toBeInTheDocument();
+    expect(screen.getByText(/75 unanswered - they grade as incorrect/i)).toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: /submit exam/i }));
     expect(await screen.findByRole("heading", { name: /results/i })).toBeInTheDocument();
     const a = listAttempts("aip-c01")[0];
@@ -89,7 +89,7 @@ describe("ExamEngine mock navigation (v1h)", () => {
     render(<ExamEngine mode="mock" resumeAttemptId={attemptId} />);
     expect(listAttempts("aip-c01").length).toBe(1); // C1: adopted, not duplicated
     // Lands on Q1 (first genuinely-unanswered), still unanswered, flag restored (Unflag shown).
-    expect(screen.getByText(/question 1 of 65/i)).toBeInTheDocument();
+    expect(screen.getByText(/question 1 of 75/i)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /^unflag$/i })).toBeInTheDocument();
     expect(screen.queryByText(/answer recorded/i)).not.toBeInTheDocument();
     // The palette confirms flagged-but-unanswered.
