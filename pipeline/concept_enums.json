@@ -1,0 +1,42 @@
+{
+  "Foundation Model Integration & Compliance": [
+    "choosing-a-foundation-model",
+    "knowledge-bases-and-chunking",
+    "vector-stores-and-embeddings",
+    "retrieval-quality-and-access-control",
+    "customization-ladder",
+    "data-protection-and-compliance"
+  ],
+  "Implementation & Integration": [
+    "converse-api-tool-use-structured-output",
+    "prompt-caching-structure-guardrails",
+    "agentcore",
+    "streaming-responses",
+    "orchestration-and-event-driven-pipelines",
+    "resilience-throttling-failure",
+    "embeddings-pipelines"
+  ],
+  "AI Safety, Security & Governance": [
+    "guardrails-policy-toolbox",
+    "guardrails-at-scale",
+    "iam-and-account-governance",
+    "logging-auditing-data-protection",
+    "owasp-llm-risks-agent-safety",
+    "provenance-bias-compliance-evidence"
+  ],
+  "Operational Efficiency & Optimization": [
+    "prompt-caching",
+    "throughput-modes",
+    "latency-levers",
+    "cost-monitoring-control",
+    "model-distillation"
+  ],
+  "Testing, Validation & Troubleshooting": [
+    "evaluation-job-types",
+    "rag-evaluation-metrics",
+    "prompt-regression-discipline",
+    "bedrock-exception-taxonomy",
+    "debugging-agents-retrieval-latency",
+    "reproducibility-production-monitoring"
+  ]
+}

@@ -17,7 +17,10 @@ test-results/
 # the content-generation pipeline (scripts + prompts + staging), and the redesign handoff/specs.
 # Still present locally, just untracked.
 docs/
-pipeline/
+# CI needs the standalone bank validator and its vocabulary; generation stays local.
+pipeline/*
+!pipeline/validate_bank.py
+!pipeline/concept_enums.json
 design/redesign-v2/
 design/components-source.md
 
