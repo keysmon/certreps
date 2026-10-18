@@ -26,3 +26,13 @@ for (const width of [1280, 375]) test(`industrial workspace navigation and page 
   }
   expect(errors).toEqual([]);
 });
+
+for (const width of [1280, 375]) test(`answer choices stay below the question at ${width}px`, async ({ page }) => {
+  await page.setViewportSize({ width, height: 900 });
+  await page.goto("/aws/aip-c01/practice?mode=quick");
+  await expect(page.locator("button.option").first()).toBeVisible();
+  const stem = await page.locator(".qstem").boundingBox();
+  const options = await page.locator(".qcard > .options").boundingBox();
+  expect(options!.y).toBeGreaterThanOrEqual(stem!.y + stem!.height);
+  expect(Math.abs(options!.x - stem!.x)).toBeLessThan(2);
+});
