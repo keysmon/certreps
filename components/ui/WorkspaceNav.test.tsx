@@ -33,3 +33,14 @@ it("opens the mobile menu and closes it with Escape and on navigation", async ()
   rerender(<WorkspaceNav />);
   expect(menu).toHaveAttribute("aria-expanded", "false");
 });
+
+it("identifies curriculum and lesson routes as Learn without marking Certifications active", () => {
+  for (const route of ["/learn", "/aws/aip-c01/learn", "/guides/aip-c01/implementation-and-integration"]) {
+    pathname = route;
+    const {unmount} = render(<WorkspaceNav />);
+    const rail = screen.getByRole("navigation", { name: "Workspace navigation" });
+    expect(within(rail).getByRole("link", { name: /Learn/i })).toHaveAttribute("aria-current", "page");
+    expect(within(rail).getByRole("link", { name: /Certifications/i })).not.toHaveAttribute("aria-current");
+    unmount();
+  }
+});

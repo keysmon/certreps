@@ -1,111 +1,104 @@
-# Testing, Validation & Troubleshooting for GenAI on AWS (AIP-C01 Domain 5)
+# Testing, Validation, and Troubleshooting
 
-*Verified Q3 2026 - covers ~11% of the AIP-C01 exam.*
+AIP-C01 Domain 5 · 11% of scored content · Sources reviewed 2026-10-18
 
-## What this domain tests
+## What you will learn
 
-How to prove a generative-AI workload on Amazon Bedrock is good enough to ship and how to
-find the fault when it is not: picking the right evaluation method, reading RAG quality
-metrics, gating prompt changes in CI, decoding Bedrock exceptions, and debugging agents,
-retrieval, and latency in production.
+Design an evaluation that measures real task performance, distinguish retrieval failures from generation failures, test agent actions, and diagnose regressions with controlled evidence. This lesson covers evaluation systems and troubleshooting. Prerequisites: a RAG request path, basic metrics, and an API error response. You can complete the exercise with a spreadsheet or paper; no paid model calls are required.
 
-## Choosing an evaluation job type
+## 1. Define success before comparing models
 
-Amazon Bedrock model evaluation offers three approaches, and the exam wants you to match the
-method to the requirement:
+A fluent answer can be wrong, unsupported, unsafe, or irrelevant. Evaluate separate dimensions so one strength does not hide another weakness. For a policy assistant, distinguish correctness, evidence support, completeness, appropriate refusal, safety, latency, and cost. For an agent, also measure whether the requested business task completed and whether unauthorized actions were prevented.
 
-- **Automatic (reference-based) metrics** like BERTScore and F1 need gold reference outputs
-  and measure surface overlap. They poorly capture faithfulness, coherence, or tone, so they
-  are wrong whenever quality is nuanced or no references exist.
-- **LLM-as-a-judge** brings your own prompt dataset and scores nuanced dimensions (coherence,
-  faithfulness, conciseness) at scale. The go-to answer when scoring must run **automatically
-  on every release** across thousands of items.
-- **Human evaluation** routes responses to your subject-matter experts. Reserve it for
-  **subjective, high-stakes sign-off** (brand voice, cultural sensitivity, legal tone) where
-  a judge model is not authoritative enough and mistakes carry regulatory weight. Most
-  accurate, but too slow and costly to repeat every release.
+Build a representative evaluation dataset with normal requests, difficult examples, ambiguous questions, unsupported requests, adversarial inputs, and important user or language groups. Record expected evidence and acceptable behavior. Do not require one exact wording when several paraphrases are valid.
 
-## Reading RAG evaluation metrics
+Keep development examples separate from a held-out test set. If you repeatedly edit the prompt to improve the same examples, you may be optimizing for those examples rather than the real workload. Freeze dataset versions, source snapshots, prompt versions, model identifiers, inference parameters, and evaluation rubrics so comparisons have a clear meaning.
 
-A Knowledge Bases RAG evaluation job reports separate scores, each isolating a different
-failure:
+## 2. Choose evaluation methods by the question
 
-- **Context relevance** measures whether the retrieved passages are on topic. Low context
-  relevance is a **retrieval** problem.
-- **Groundedness** measures whether the generated answer is actually supported by those
-  retrieved passages. **High context relevance but low groundedness** means retrieval worked
-  and the model is adding unsupported content, which is hallucination during **generation**,
-  not retrieval. Replacing embeddings or ingesting more documents would not help here.
-- **Answer relevance** measures whether the answer addresses the question.
+| Method | Useful for | Main limitation |
+|---|---|---|
+| Deterministic checks | Required fields, numeric calculations, tool contracts, forbidden actions | Limited coverage of nuanced language quality |
+| Reference-based metrics | Comparing output with labeled answers or expected entities | Surface overlap can miss meaning or reward the wrong detail |
+| LLM-as-a-judge | Rubric-based assessment of open-ended answers at scale | Judge mistakes, bias, and rubric sensitivity |
+| Human review | Domain judgment, subjective quality, high-impact cases | Time, cost, and reviewer disagreement |
 
-Because low groundedness is a generation fault, the fixes are a grounding-focused prompt,
-lower temperature, or a guardrail. To enforce it at inference time, attach an Amazon Bedrock
-guardrail with the **contextual grounding check** enabled and set grounding and relevance
-thresholds so ungrounded answers are blocked before they reach users.
+Use multiple methods where they address different risks. A valid JSON object may contain the wrong total. A semantically similar answer may reverse an exception. A high judge score is evidence from an evaluator, not proof of truth.
 
-## Prompt regression discipline
+Bedrock offers programmatic, human, and judge-model evaluations. RAG evaluation can inspect retrieval alone or retrieval plus generation. Supported models, required dataset fields, metrics, and Regions vary with the job type. Check the specific evaluation path rather than assuming every metric needs the same inputs.
 
-Prompt edits look harmless and quietly break quality, so treat prompts like code:
+Calibrate a judge against expert-reviewed examples. Define concrete score anchors and examples of partial failure; require the evaluator to identify supporting evidence. Review disagreements and score stability. Keep the evaluator and rubric stable when comparing candidates, and protect sensitive evaluation data as you would production content.
 
-- **Golden dataset plus CI gate.** Maintain a versioned golden dataset of representative
-  inputs with expected outputs, run an automated evaluation on **every pull request**, and
-  fail the build when the aggregate quality score drops below a defined threshold. This is a
-  deterministic, repeatable regression gate. Bedrock Prompt management versions and stores
-  prompts but does not evaluate quality or block a regression on its own.
-- **Canary or A-B rollout.** After a change passes offline evaluation, route a **small
-  percentage** of live traffic to the new prompt and compare quality and business metrics
-  against the current version before ramping up. This limits the blast radius a full cutover
-  cannot. Error-rate metrics do not measure answer quality.
+## 3. Evaluate retrieval and generation separately
 
-## The Bedrock exception taxonomy
+Retrieval asks whether relevant, authorized evidence reaches the context. Generation asks whether the answer uses that evidence correctly.
 
-Reading the exception is half the answer. Each maps to one root cause and one fix:
+Suppose a query has four labeled relevant passages. A retriever returns five passages, three of which are labeled relevant. Recall at five is 3/4, or 75%; precision at five is 3/5, or 60%. These numbers describe this labeled case, not answer correctness. Ranking-sensitive measures can additionally reveal whether useful passages appear near the top.
 
-- **ThrottlingException** - requests exceed the account's per-model rate. Intermittent, worse
-  at peak. Fix with client-side **exponential backoff plus jitter**, and for sustained demand
-  request a service quota increase or buy Provisioned Throughput.
-- **AccessDeniedException** - a permission or access gate. If IAM already allows
-  `bedrock:InvokeModel` and other models work but one new model fails **every** call
-  immediately, the cause is almost always that **model access was never granted** for that
-  model in the account and Region (a Bedrock setting separate from IAM).
-- **ValidationException** - the request violates a fixed input constraint, such as a prompt
-  that **exceeds the model's context window**. It is not transient, so retries keep failing.
-  Fix by reducing input size through chunking or staged, hierarchical summarization.
+Test exact identifiers, paraphrases, document boundaries, updated versions, multilingual queries, tables, and access filters. Inspect retrieved text rather than document titles alone. An extraction failure can produce a relevant-looking file with unusable content.
 
-The trap is treating one exception with another's remedy: match the exception name to its own
-fix.
+Then test generation with known-good context. Does the response use the correct exception, cite supporting evidence, abstain when the context is insufficient, and avoid unsupported additions? A response can be faithful to a stale source yet wrong about the current policy. Track freshness and source validity alongside groundedness.
 
-## Debugging agents, retrieval, and latency
+## 4. Evaluate actions, not just agent prose
 
-- **Agent misbehavior.** When an AgentCore agent returns an unhelpful answer, enable and inspect
-  **AgentCore Observability**. Its OpenTelemetry traces expose the model's step-by-step reasoning,
-  which tools it invoked, and each step's inputs and outputs, so you can pinpoint where
-  orchestration went wrong. CloudTrail records API activity, not intermediate reasoning.
-- **Retrieval misses.** When the correct passage exists but never appears in **Retrieve**
-  results, the fault is retrieval, not generation. The two usual culprits: a **metadata
-  filter** whose expression does not match the document's attributes silently drops it from
-  the candidate set, and a **chunking** strategy that splits the answer's facts from the
-  query's key terms leaves no chunk whose embedding is close enough to be retrieved.
-- **Latency.** Before optimizing, localize the bottleneck. Compare the Bedrock
-  **InvocationLatency** metric (the model call) against your own timers around retrieval and
-  orchestration to see which stage dominates. Provisioned Throughput only helps if the model
-  call is the bottleneck; a larger model is usually slower, not faster.
+An agent saying “your request is complete” is not evidence that the tool succeeded. Capture tool requests, validated arguments, authorization outcomes, execution results, and final state. Test missing parameters, tool errors, duplicate delivery, timeouts, approval requirements, and loop limits.
 
-## Reproducibility and production monitoring
+Measure task completion, correct tool selection, valid arguments, unauthorized-action prevention, tool latency, and total calls. Use simulated or read-only tools for early evaluation. For a consequential operation, verify backend state and idempotency behavior. Natural-language explanations can look convincing even when the agent executed the wrong operation.
 
-Flaky evaluation runs, where the same input produces different outputs across runs, come from
-sampling. Make decoding deterministic: set **temperature to 0** for greedy decoding and
-constrain **top-p and top-k** so the same input returns the same output. Retrying until a test
-passes only hides the nondeterminism.
+## 5. Diagnose the earliest failing stage
 
-For ongoing observability, two features do distinct jobs. **Model invocation logging** is the
-only one that captures the full prompt and completion payloads, delivering them to Amazon S3
-and CloudWatch Logs for offline quality and compliance review (CloudTrail records API metadata
-but not the bodies). **CloudWatch alarms** on the InvocationLatency and InvocationServerErrors
-metrics provide automated threshold alerting. Track latency by **percentiles (p90, p99), not
-averages**, since a healthy mean hides the slow tail users actually feel.
+| Symptom | First evidence to inspect | Candidate causes to test |
+|---|---|---|
+| Important policy never appears in answers | Ingestion status and retrieved passages | Stale sync, parsing, filters, chunking, embedding mismatch |
+| Correct passage retrieved, wrong conclusion | Final assembled prompt and answer | Lost context, conflicting instructions, unsupported inference |
+| Output stops halfway through | Stop reason and token budget | Output cap, stop sequence, stream interruption |
+| API validation error | Actual serialized request and model support | Unsupported parameter, schema feature, modality, missing field |
+| Throttling under bursts | Applicable quotas, token use, concurrency, retries | Token spikes, retry amplification, insufficient headroom |
+| Tool request succeeds but outcome is duplicated | Execution records and idempotency keys | Retried non-idempotent writes, ambiguous timeout handling |
 
-## Practice this domain
+Change one major factor at a time and keep a reproducible failing case. If indexing failed, repeatedly rewriting the answer prompt hides the cause. If the response was truncated, lowering temperature does not restore missing tokens. If a model upgrade rejects a parameter, retries of the same invalid body will continue to fail.
 
-Take a [Domain 5 drill](/aws/aip-c01/practice?mode=drill&domain=Testing%2C%20Validation%20%26%20Troubleshooting)
-or the [full AIP-C01 mock exam](/aws/aip-c01/practice?mode=mock).
+Context overflow requires accounting for instructions, history, retrieved passages, tool descriptions, and allowed output. Summarization or pruning can help, but preserve decisions and facts needed for the task. Test the revised context assembly against the original failing case and a broader regression set.
+
+## 6. Make evaluation part of deployment
+
+Define quality gates before release: task accuracy, critical safety cases, retrieval behavior, and acceptable cost and latency. Thresholds belong to the application and risk level; fictional practice targets are not AWS requirements.
+
+An offline comparison tests controlled examples. A canary exposes a limited amount of real traffic with rollback criteria. An A/B test compares outcomes across controlled traffic groups. Shadow evaluation can observe a candidate without letting it take live actions, provided duplicated calls and data handling are acceptable. Each answers a different question.
+
+Log configuration identifiers and stage timings with correlation IDs. Review production feedback, but recognize sampling bias: silent users and thumbs-up ratings do not establish full correctness. Feed reviewed failures into future regression sets while retaining a held-out assessment.
+
+## Worked scenario: regression after a prompt update
+
+Assume answer correctness falls from 90% to 82% on the same fictional test set. Retrieval recall is unchanged. Inspect the assembled prompt and find that a new output template pushes the exception passage outside the retained context. Restore necessary evidence, reduce redundant instructions, and rerun the failing examples plus the full regression set. This is a context-assembly hypothesis supported by evidence; retraining the model would be an unjustified first step.
+
+## Guided exercise
+
+Write six test cases for a returns assistant: ordinary return, damaged item, expired policy, unauthorized order, missing evidence, and a poisoned document. Define the expected source, acceptable answer, prohibited action, and one measurable check for each. Label which checks are deterministic and which need judgment. Now imagine retrieval is correct but one answer invents a deadline. State the next observation you need before changing anything.
+
+## Checkpoint
+
+1. Can a grounded answer still be incorrect?
+2. Why keep a held-out dataset after prompt tuning?
+3. What confirms that a cancellation agent actually completed the task?
+
+### Answers and reasoning
+
+1. Yes. Its source may be stale or false, or it may omit a relevant exception.
+2. It tests generalization beyond the examples used to choose the prompt.
+3. Authorized backend state and tool execution evidence, including correct duplicate handling, rather than the final sentence alone. For the exercise, inspect the assembled context and generation output to locate the unsupported deadline.
+
+## Common traps
+
+Do not compare candidates on different datasets, trust aggregate averages alone, equate schema validity with correctness, or deploy on one successful demo. Trace evidence before choosing a fix.
+
+## Official references
+
+- [Domain 5 tasks and skills](https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain5.html)
+- [Bedrock evaluation methods](https://docs.aws.amazon.com/bedrock/latest/userguide/evaluation.html)
+- [Retrieval-only and retrieve-and-generate evaluation](https://docs.aws.amazon.com/bedrock/latest/userguide/evaluation-kb.html)
+- [Evaluation dataset and rubric guidance](https://docs.aws.amazon.com/bedrock/latest/userguide/advanced-prompt-optimization-evaluation.html)
+- [Client-side tool-use lifecycle](https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use-client-side.html)
+- [Runtime monitoring and diagnostic options](https://docs.aws.amazon.com/bedrock/latest/userguide/monitoring.html)
+
+Continue when useful with a [Domain 5 drill](/aws/aip-c01/practice?mode=drill&domain=Testing%2C%20Validation%20%26%20Troubleshooting) or the [mock exam](/aws/aip-c01/practice?mode=mock). Reading is optional; practice remains available directly.

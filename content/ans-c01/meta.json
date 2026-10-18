@@ -9,9 +9,23 @@
   "mockQuestionCount": 40,
   "mockMinutes": 105,
   "passLinePct": 70,
+  "passLineOfficial": false,
   "verified": "Q3 2026",
+  "examDetails": {
+    "guideUrl": "https://docs.aws.amazon.com/aws-certification/latest/advanced-networking-specialty-01/advanced-networking-specialty-01.html",
+    "examUrl": "https://aws.amazon.com/certification/certified-advanced-networking-specialty/",
+    "questionCount": "65",
+    "durationMinutes": 170,
+    "passingScore": "750 / 1,000 scaled score (not a raw percentage)",
+    "questionTypes": [
+      "Multiple choice",
+      "Multiple response"
+    ],
+    "checkedOn": "2026-10-18",
+    "statusNote": "AWS has announced this exam will retire after December 31, 2026. Certifications earned before retirement remain valid for their standard three-year term."
+  },
   "seoTitle": "Free ANS-C01 Practice Exam - AWS Certified Advanced Networking Specialty",
-  "seoDescription": "Free full-length ANS-C01 practice exam with {n} original scenario questions, instant explanations, and a per-domain readiness read. No signup.",
+  "seoDescription": "Free ANS-C01 practice exam with {n} original scenario questions, instant explanations, and a per-domain readiness read. No signup.",
   "domains": [
     { "name": "Network Design", "tag": "Domain 1", "weightPct": 30, "mockCount": 12 },
     { "name": "Network Implementation", "tag": "Domain 2", "weightPct": 26, "mockCount": 10 },

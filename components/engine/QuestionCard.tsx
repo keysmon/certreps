@@ -2,6 +2,7 @@
 import { useMemo, useState } from "react";
 import type { Question } from "@/lib/types";
 import { optionPermutation } from "@/lib/permute";
+import { AnswerLearning } from "./AnswerLearning";
 import { ReportProblem } from "@/components/ReportProblem";
 import "./engine.css";
 
@@ -23,8 +24,12 @@ export function QuestionCard({
   total,
   vendorName,
   initialChosen,
+  certId,
+  vendorSlug,
 }: {
   question: Question;
+  certId?: string;
+  vendorSlug?: string;
   graded: GradedView | null;
   onSubmit: (chosen: number[]) => void;
   attemptId: string;
@@ -98,7 +103,7 @@ export function QuestionCard({
         <div className={`explain ${graded.correct ? "right" : "wrong"}`} role="status" aria-live="polite">
           <p className="verdict">{graded.correct ? `${CHECK} Correct` : `${CROSS} Not quite`}</p>
           {/* Safe: trusted build-time content from our own pipeline (<b>/<em> only), never user input. */}
-          <p dangerouslySetInnerHTML={{ __html: question.explanation }} />
+          <AnswerLearning question={question} certId={certId} vendorSlug={vendorSlug} attemptId={attemptId} chosen={graded.chosen} />
           <a className="doclink" href={question.docUrl} target="_blank" rel="noopener noreferrer">
             Read the {vendorName} docs {String.fromCharCode(8594)}
           </a>

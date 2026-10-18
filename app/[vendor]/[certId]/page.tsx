@@ -8,6 +8,7 @@ import type { CSSProperties } from "react";
 import { getPracticeBank } from "@/lib/bank";
 import aipReview from "@/content/aip-c01/review.json";
 import { getCert, listCerts } from "@/lib/certs";
+import { ExamDetails } from "@/components/ExamDetails";
 import { PathToReady } from "./CertDetailClient";
 import "./cert-detail.css";
 
@@ -69,7 +70,7 @@ export default async function CertPage({ params }: { params: Promise<{ vendor: s
           <h1 className="cd-h1">{meta.title}</h1>
           <p className="cd-blurb">
             Original scenario questions with real explanations, mapped to the official {meta.examCode} exam
-            guide. Practice one domain at a time, or sit the full mock under exam timing.
+            guide. Practice one domain at a time, or take a timed practice mock.
           </p>
           {meta.certId === "aip-c01" && (
             <p className="cd-blurb">
@@ -87,7 +88,9 @@ export default async function CertPage({ params }: { params: Promise<{ vendor: s
           </p>
         )}
 
-        <div style={eyebrow}>Your path to ready</div>
+        <section className="learning-panel"><h2>Want to learn the topics?</h2><p>Browse the curriculum and available lessons whenever you need them. You can start practicing directly.</p><Link className="btn btn-ghost" href={`/${meta.vendorSlug}/${certId}/learn`}>Explore curriculum</Link></section>
+        <ExamDetails meta={meta} />
+        <div style={eyebrow}>Your practice</div>
 
         <PathToReady
           certId={certId}

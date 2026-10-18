@@ -1,0 +1,276 @@
+{
+  "aipc01-0003": {
+    "takeaway": "Use hierarchical chunking when retrieval needs small matching units but generation needs their broader parent context.",
+    "options": [
+      "Child chunks support precise matching; replacing them with their parent chunks supplies surrounding context for the answer.",
+      "Small fixed chunks can match precisely, but this configuration has no parent expansion to recover the surrounding section.",
+      "Treating a whole manual as one chunk loses the small retrieval units the scenario requires.",
+      "Overlap repeats adjacent text; it does not create a child-to-parent retrieval relationship."
+    ]
+  },
+  "aipc01-0005": {
+    "takeaway": "For cross-language semantic retrieval, choose an embedding model designed to represent the required languages in a shared vector space.",
+    "options": [
+      "Titan Multimodal Embeddings targets image-and-text similarity; that capability does not establish support for this multilingual text-search requirement.",
+      "Cohere Embed Multilingual supports cross-lingual search with one multilingual text-embedding model, matching the requested architecture.",
+      "Separate language indexes add routing and maintenance work and contradict the requirement to keep one embedding architecture. They do not by themselves solve cross-language matching.",
+      "BM25 matches lexical terms. It does not produce semantic embeddings that connect equivalent meanings across languages."
+    ]
+  },
+  "aipc01-0007": {
+    "takeaway": "Enforce retrieval scope before returning chunks: derive department filters from authenticated permissions in trusted application code.",
+    "options": [
+      "A department attribute and a server-enforced query filter restrict the shared index to the caller's authorized documents. Do not let callers choose an unrestricted department value.",
+      "Separate knowledge bases can isolate departments, but require the additional indexes and operations the scenario wants to avoid.",
+      "Post-filtering allows unauthorized chunks to reach the application first and can leave too few relevant results after filtering.",
+      "A content-safety guardrail does not replace document authorization or reliably establish which department a caller may access."
+    ]
+  },
+  "aipc01-0011": {
+    "takeaway": "Use supervised fine-tuning to learn task behavior, tone, and formatting from labeled examples when prompting has proved insufficient; evaluate the result before release.",
+    "options": [
+      "The labeled examples teach the desired input-to-output behavior and style by updating model parameters, matching the stated need.",
+      "RAG supplies examples as inference-time context but does not train the model to follow their style consistently.",
+      "Continued pre-training targets adaptation from raw domain text, rather than directly learning the labeled input-to-output behavior available here.",
+      "More examples increase each request's context and cost; the scenario already says prompt instructions have not met the consistency requirement."
+    ]
+  },
+  "aipc01-0013": {
+    "takeaway": "Choose customer managed KMS keys for customer control and key-use auditing, and configure each storage layer, including the vector store and S3, as applicable.",
+    "options": [
+      "Default AWS owned encryption protects stored data, but does not give the bank control of the encryption key's policy or lifecycle.",
+      "Customer managed KMS keys provide policy and lifecycle control and auditable KMS activity. Apply them to the relevant Bedrock resources and backing stores; one setting does not cover every layer.",
+      "A hardcoded key exposes key material and lacks the managed access controls and audit trail requested for these service resources.",
+      "Security groups restrict network traffic; they neither encrypt stored artifacts nor provide customer control over encryption keys."
+    ]
+  },
+  "aipc01-0021": {
+    "takeaway": "For a large tool catalog, retrieve relevant tool definitions before asking the model to choose an operation.",
+    "options": [
+      "Gateway semantic tool selection searches by task context so the agent can surface relevant tools without sending every schema in each prompt.",
+      "Sending the entire catalog preserves the prompt-size and tool-choice problems identified in the scenario.",
+      "One general-purpose tool still needs to express and validate many distinct operations; merging names alone does not discover the relevant capability.",
+      "Random selection can omit the required operation, leaving the agent unable to complete otherwise supported requests."
+    ]
+  },
+  "aipc01-0022": {
+    "takeaway": "Use Converse to share message handling across supported Bedrock models; still check feature support and any model-specific parameters.",
+    "options": [
+      "Converse provides a common message request and response structure, reducing model-family adapters when testing supported models.",
+      "An adapter per model family can work, but requires maintaining the separate serialization and parsing code the team wants to reduce.",
+      "Batch inference processes asynchronous collections of requests; it does not provide the interactive chat interface needed here.",
+      "Moving to separately hosted SageMaker endpoints adds deployment work, and a common runtime transport does not make every model's payload identical."
+    ]
+  },
+  "aipc01-0023": {
+    "takeaway": "Place stable prompt content before changing content and cache the reusable prefix on a supported model; verify cache hits and net savings.",
+    "options": [
+      "Retrieving the style guide changes context assembly and adds retrieval work; it does not directly reuse the model's repeated prefix processing.",
+      "The output ceiling does not reduce the repeated instruction tokens that dominate input processing.",
+      "A checkpoint after the static prefix makes it eligible for reuse across questions, reducing input processing on cache hits subject to model limits and cache lifetime.",
+      "Changing API serialization does not remove or cache the repeated 8,000-token prefix."
+    ]
+  },
+  "aipc01-0024": {
+    "takeaway": "For transient throttling, bound retries and spread them with exponential backoff and jitter; retries cannot create sustained capacity.",
+    "options": [
+      "A tight retry loop adds traffic while the service is already rejecting excess load, making recovery harder.",
+      "Failing immediately gives recoverable throttling no opportunity to clear, reducing successful completion during short bursts.",
+      "A fixed delay can synchronize concurrent Lambda instances so they send the next burst together.",
+      "Increasing delays reduce retry pressure, randomized jitter separates callers, and an attempt limit bounds waiting and retry work."
+    ]
+  },
+  "aipc01-0026": {
+    "takeaway": "Semantic vector search needs embeddings, with documents and queries encoded in a compatible embedding space.",
+    "options": [
+      "A summarization prompt returns generated text; that text is not a dense vector ready for nearest-neighbor comparison.",
+      "Grounding checks assess whether an answer is supported by supplied material; they do not build article vectors for an index.",
+      "A text-embedding model converts article text into numerical vectors intended for semantic similarity search.",
+      "Tool use lets the model request application functions; it does not itself encode text into search vectors."
+    ]
+  },
+  "aipc01-0027": {
+    "takeaway": "Streaming must work through every hop. Lambda function URLs support RESPONSE_STREAM; API Gateway REST proxy integrations can also stream when explicitly configured.",
+    "options": [
+      "A streaming-enabled function URL and a Lambda handler that forwards chunks give the browser an incremental response through the listed direct path.",
+      "A larger timeout permits a longer request but does not change buffering. API Gateway REST needs STREAM transfer mode and a compatible streaming integration.",
+      "Collecting all chunks before returning recreates the buffering that delays the user's first visible token.",
+      "Batch inference produces asynchronous completed results; polling it does not deliver an interactive token stream."
+    ]
+  },
+  "aipc01-0028": {
+    "takeaway": "Use a state machine when the requirement is explicit sequencing, branching, retries, and failure visibility across multiple services.",
+    "options": [
+      "A large Lambda can implement the workflow, but the team must write and maintain its branching, retry, and execution-tracking logic.",
+      "EventBridge routes events, but rules alone do not supply this whole branching workflow with a single execution history.",
+      "SQS decouples stages and buffers work; queues alone do not define the conditional sequence or track the complete execution.",
+      "Step Functions expresses tasks, choices, retries, and failure paths in a state machine with managed execution visibility."
+    ]
+  },
+  "aipc01-0038": {
+    "takeaway": "Use ApplyGuardrail to evaluate content independently of where the generating model runs, and enforce its result before forwarding input or releasing output.",
+    "options": [
+      "Custom regex and keywords would duplicate only part of the managed policy and create separate implementations to maintain.",
+      "InvokeModel calls a model available through Bedrock; it does not turn an arbitrary external endpoint into a Bedrock invocation.",
+      "ApplyGuardrail accepts content for evaluation against the existing guardrail independently of model inference, so both applications can reuse the policy.",
+      "WAF protects web traffic using web-security rules; it does not execute the existing Bedrock semantic content-safety policy."
+    ]
+  },
+  "aipc01-0039": {
+    "takeaway": "Match the policy to the problem: denied topics for subjects, word filters for phrases, and sensitive-information filters for identifiers. Test coverage across phrasings.",
+    "options": [
+      "Word filters match configured words or phrases; an enumeration cannot reliably describe the whole concept of personalized advice.",
+      "A denied topic defines the prohibited subject semantically using a description and examples, making it the best policy fit without guaranteeing perfect detection.",
+      "Lower temperature changes sampling randomness, not whether personalized advice is an allowed topic.",
+      "A PII policy detects personal identifiers and patterns; a request for financial advice need not contain any such identifier."
+    ]
+  },
+  "aipc01-0042": {
+    "takeaway": "Combine detection of malicious input with enforced limits on tool actions. A missed prompt attack must still face authorization checks.",
+    "options": [
+      "The prompt-attack filter adds detection of malicious user instructions. Configure the input scope or tags required by the invocation API and test the filter.",
+      "Least-privilege tools, IAM, and Gateway policy constrain authorized actions outside the model, limiting damage when detection misses an attack.",
+      "A system instruction can help guide behavior, but it is not an authorization boundary that prevents a tool from executing.",
+      "Larger models can still follow injected instructions; model size does not provide immunity or replace enforced permissions.",
+      "Higher temperature adds output variation without restricting what tools the agent may invoke."
+    ]
+  },
+  "aipc01-0044": {
+    "takeaway": "Use Macie for managed sensitive-data discovery in S3, then remediate findings separately before training; discovery alone does not sanitize the corpus.",
+    "options": [
+      "Guardrails evaluates submitted inference content; it is not a managed discovery job over a multi-terabyte S3 training corpus.",
+      "Macie inventories S3 data and runs sensitive-data discovery with findings, matching the bulk classification and reporting requirement.",
+      "CloudTrail records object API activity, such as reads and writes, rather than classifying the sensitive content inside files.",
+      "Comprehend can detect PII in supported text, but manually processing individual objects adds extraction, scheduling, and reporting work at this scale."
+    ]
+  },
+  "aipc01-0045": {
+    "takeaway": "Use a cross-account role with a trust policy and scoped permissions to obtain temporary credentials for centrally governed resources.",
+    "options": [
+      "A policy attached directly to a base foundation model is not the cross-account access mechanism offered for that model resource.",
+      "IAM user access keys create the long-lived credentials the design specifically needs to avoid.",
+      "Public invocation removes the identity and authorization controls required for centrally governed model and guardrail access.",
+      "STS AssumeRole provides temporary credentials in account B. The trust policy, caller permission to assume the role, and the role's scoped Bedrock permissions establish the access path."
+    ]
+  },
+  "aipc01-0053": {
+    "takeaway": "For interactive latency, evaluate latency-optimized inference on a supported model and Region; measure actual tail latency because quotas can cause standard-mode fallback.",
+    "options": [
+      "Batch inference waits for asynchronous processing and is unsuited to an immediate voice reply.",
+      "A larger output limit allows longer answers; it does not make each generated token arrive faster.",
+      "A queue can smooth load, but waiting for capacity adds to the user's response time.",
+      "Latency-optimized inference directly targets response time for supported models. Check the served configuration and measured latency rather than treating the option as an SLA guarantee."
+    ]
+  },
+  "aipc01-0059": {
+    "takeaway": "Use an automated judge with a defined rubric for repeated semantic-quality scoring, and calibrate its judgments against expert review.",
+    "options": [
+      "Human review can supply valuable judgments, but reviewing thousands of summaries every release does not meet the request for automatic scoring.",
+      "Reference-based similarity metrics alone do not establish factual faithfulness or capture every aspect of coherence and conciseness.",
+      "An LLM judge can score the team's dataset against the specified dimensions and produce explanations at release scale. Its scores still need validation against the intended quality standard.",
+      "Summary length is an operational measurement, not evidence that the summary is coherent or supported by its source."
+    ]
+  },
+  "aipc01-0060": {
+    "takeaway": "Separate retrieval relevance from answer groundedness: on-topic passages can still produce an answer containing unsupported claims.",
+    "options": [
+      "High context relevance does not support irrelevant retrieval as the primary diagnosis. Replacing embeddings would not directly address unsupported generated claims.",
+      "Low groundedness means the answer is insufficiently supported by the supplied passages, even when those passages and the answer are on-topic.",
+      "Acceptable answer relevance gives no evidence that ambiguity is the main issue; relevance and evidential support are separate dimensions.",
+      "More documents do not directly fix unsupported generation when the reported retrieved context is already relevant. Inspect the answer against its actual passages first."
+    ]
+  },
+  "aipc01-0062": {
+    "takeaway": "Classify the exception before fixing it: throttling calls for rate control and capacity investigation, while authorization and validation failures require different changes.",
+    "options": [
+      "Bounded backoff with jitter handles bursts; for sustained demand, investigate the applicable quotas and supported capacity options before choosing an increase or Provisioned Throughput.",
+      "Missing invocation permission produces an authorization failure; peak-only ThrottlingException is evidence of a different problem.",
+      "Changing the output ceiling is not the general fix for ThrottlingException. Token-based quotas can matter, so inspect the actual rate and token limits rather than assuming a context-window error.",
+      "Invocation logging supplies diagnostic evidence; enabling it does not resubmit failed requests."
+    ]
+  },
+  "aipc01-0064": {
+    "takeaway": "After offline checks, use a limited production rollout with quality and business measures, explicit promotion criteria, and a rollback path.",
+    "options": [
+      "Immediate replacement exposes every user, and an error-rate alarm can miss fluent but lower-quality answers.",
+      "A small treatment group and a current-version control reveal production effects while limiting exposure before expansion.",
+      "A larger offline dataset can improve confidence but cannot measure actual production business effects or limit the later all-user cutover.",
+      "Provisioned capacity addresses serving throughput; it neither compares prompt quality nor restricts which users receive the new prompt."
+    ]
+  },
+  "aipc01-0118": {
+    "takeaway": "For bulk work that can wait, consider batch inference on a supported model, checking job quotas, pricing, and completion time against the deadline.",
+    "options": [
+      "Repeatedly reserving peak real-time capacity adds capacity-management work and can leave paid capacity idle between nightly runs.",
+      "Aggressive retries increase pressure on the same on-demand limits instead of moving the workload to an appropriate asynchronous path.",
+      "Latency optimization targets interactive response time; it does not address the overnight bulk-processing cost objective.",
+      "Batch inference reads prepared inputs from S3 and writes results asynchronously to S3, matching a large workload whose results can wait."
+    ]
+  },
+  "aipc01-0120": {
+    "takeaway": "For native team-level on-demand cost allocation, invoke through tagged application inference profiles and activate the relevant billing cost-allocation tags.",
+    "options": [
+      "Budget alerts report thresholds against available cost dimensions; adding alerts does not create a missing team attribution dimension.",
+      "Separate accounts can provide attribution, but require an organizational change and reconciliation that application profiles can avoid for this requirement.",
+      "A profile per team provides a tagged invocation resource for cost attribution when teams actually use their assigned profile ARNs.",
+      "Invocation logs support usage analysis and may identify callers, but manually guessing teams from logs is weaker than the requested tagged billing breakdown."
+    ]
+  },
+  "aipc01-0124": {
+    "takeaway": "When Retrieve omits the answer passage, inspect retrieval filters and indexed chunks before changing the answer-generating model.",
+    "options": [
+      "The generator's context limit applies after retrieval; it does not explain a passage already absent from a direct Retrieve result.",
+      "A mismatched metadata predicate can remove the correct document from eligible results before it reaches generation.",
+      "A missing permission produces an access failure; it is not a mechanism that silently replaces the relevant passages with unrelated ones.",
+      "Throttling reports a failure rather than substituting unrelated retrieved content as a successful response.",
+      "Splitting related facts across chunks can weaken the evidence and semantic match available in any one result, making chunk inspection and retrieval testing appropriate."
+    ]
+  },
+  "aipc01-0128": {
+    "takeaway": "Version prompts and evaluation data together, then enforce a quality threshold in CI; a stable procedure improves comparisons without making model scores deterministic.",
+    "options": [
+      "A few manual checks can miss representative failure cases and do not provide the requested automated merge gate.",
+      "Waiting for production complaints discovers regressions after users are exposed and does not prevent merging them.",
+      "Prompt management stores and versions prompts; it does not itself run the team's quality evaluation or enforce a CI threshold.",
+      "A versioned evaluation set and a failing CI check turn the agreed quality threshold into a pre-merge safeguard. Calibrate thresholds for judge and generation variability."
+    ]
+  },
+  "aipc01-0410": {
+    "takeaway": "Prompt caching reuses prefix processing on a cache hit. It changes input processing cost and time, while the model still generates a new response.",
+    "options": [
+      "A successful cache read uses the model's cached-input price, reducing the cost of those reused input tokens.",
+      "Reusing prefix processing can reduce time-to-first-token; actual improvement depends on the workload and model.",
+      "Cached tokens still belong to the prompt context; caching does not enlarge the model's context window.",
+      "Prefix reuse reduces input processing, not the sequential work of generating each output token, so proportional output-speed gains do not follow.",
+      "Caching does not reserve serving capacity or guarantee throughput; dedicated capacity is a separate serving choice."
+    ]
+  },
+  "aipc01-0498": {
+    "takeaway": "Distillation can start with representative prompts: the teacher generates responses used to train the smaller student, with quality validated on held-out examples.",
+    "options": [
+      "Human-labeled prompt-response pairs can help, but are not mandatory when the teacher can generate responses from supplied prompts.",
+      "Bedrock can generate teacher responses for the team's prompts and use that synthetic data to fine-tune the student.",
+      "CloudTrail management events audit API activity; they are not the exclusive source of prompt-response training data.",
+      "Prompt caching reuses inference prefixes and is not a prerequisite or replacement for preparing a representative distillation dataset."
+    ]
+  },
+  "aipc01-0621": {
+    "takeaway": "Start model selection with the required output modality, then verify the chosen model's lifecycle and Regional availability.",
+    "options": [
+      "Stable Image Ultra is a text-to-image generator, and its model card lists US West (Oregon), matching the required output and Region.",
+      "Nova Micro produces text; it does not generate the product-image pixels requested here.",
+      "Titan Text Embeddings V2 encodes text into vectors for similarity tasks rather than creating new images.",
+      "Cohere Embed English encodes text for retrieval or similarity; an embedding is not a generated product image."
+    ]
+  },
+  "aipc01-0650": {
+    "takeaway": "Use Titan's embedded watermark and surviving Content Credentials as provenance evidence, with explicit limits after edits or metadata removal.",
+    "options": [
+      "Bedrock watermark detection checks for the invisible signal embedded in generated images; modified images can be harder to detect reliably.",
+      "C2PA Content Credentials carry signed generation provenance when the metadata is retained and verifiable.",
+      "An application-captured SHA-256 hash can establish an exact file match, but it is not a provenance signal Titan automatically attaches.",
+      "An application-added logo is a separate visible mark, not Titan's built-in invisible watermark or Content Credentials.",
+      "Ordinary application-added EXIF tags are separate editable metadata and are not the signed Content Credentials specified here."
+    ]
+  }
+}

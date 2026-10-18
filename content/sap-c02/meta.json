@@ -9,9 +9,22 @@
   "mockQuestionCount": 65,
   "mockMinutes": 156,
   "passLinePct": 75,
+  "passLineOfficial": false,
   "verified": "Q3 2026",
+  "examDetails": {
+    "guideUrl": "https://docs.aws.amazon.com/aws-certification/latest/solutions-architect-professional-02/solutions-architect-professional-02.html",
+    "examUrl": "https://aws.amazon.com/certification/certified-solutions-architect-professional/",
+    "questionCount": "75",
+    "durationMinutes": 180,
+    "passingScore": "750 / 1,000 scaled score (not a raw percentage)",
+    "questionTypes": [
+      "Multiple choice",
+      "Multiple response"
+    ],
+    "checkedOn": "2026-10-18"
+  },
   "seoTitle": "Free SAP-C02 Practice Exam - AWS Certified Solutions Architect Professional",
-  "seoDescription": "Free full-length SAP-C02 practice exam with {n} original scenario questions, instant explanations, and a per-domain readiness read. No signup.",
+  "seoDescription": "Free SAP-C02 practice exam with {n} original scenario questions, instant explanations, and a per-domain readiness read. No signup.",
   "domains": [
     {
       "name": "Design Solutions for Organizational Complexity",

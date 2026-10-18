@@ -6,7 +6,7 @@ const excluded = new Set(bank.filter((q) => "excludedFromPractice" in q && q.exc
 
 test("reviewed AIP bank blocks stale resumes and starts a clean 75-question mock", async ({ page }) => {
   await page.goto("/aws/aip-c01");
-  await expect(page.getByText(/589 active practice questions/)).toBeVisible();
+  await expect(page.getByText(/588 active practice questions/)).toBeVisible();
   const old = { attemptId: "retired-session", certId: "aip-c01", mode: "mock", questionIds: ["aipc01-0001"], results: {}, startedAt: Date.now(), finishedAt: null, elapsedSec: 0, pauseCount: 0 };
   await page.evaluate(({ key, old }) => localStorage.setItem(key, JSON.stringify([old])), { key, old });
   await page.goto("/aws/aip-c01/practice?mode=mock&resume=retired-session");

@@ -3,7 +3,7 @@
   "baselineCommit": "a9a59df4d75d3fb2cbc2a44fea164719c3f6e4b1",
   "baselineBankSha256": "4b86fbc56b0dbb54d259aa44736feb09180cd0679e51130b199da79e2b6905c2",
   "reviewedOriginalCount": 610,
-  "activeCount": 589,
+  "activeCount": 588,
   "corrections": [
     {
       "id": "aipc01-0012",
@@ -952,6 +952,13 @@
       "sources": [
         "https://docs.aws.amazon.com/bedrock/latest/userguide/model-distillation.html"
       ]
+    },
+    {
+      "id": "aipc01-0010",
+      "reason": "Current Bedrock continued pre-training availability could not be verified from the current customization overview. Excluded pending confirmation; no claim that the underlying customization concept is invalid.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html"
+      ]
     }
   ],
   "limitations": [
@@ -960,5 +967,6 @@
     "Some findings concern the explanation or omitted preconditions, with the intended key still reasonable. Answer_wrong includes requirements that none of the listed options fully satisfies.",
     "Reachable references do not prove that the keyed answer follows from the page."
   ],
-  "publishedContractsSha256": "ad3a69f22400d1de29f97ed0d9de91418a3260c36299d9aac2ce353ef0f9a7ed"
+  "publishedContractsSha256": "ad3a69f22400d1de29f97ed0d9de91418a3260c36299d9aac2ce353ef0f9a7ed",
+  "followupReviewedOn": "2026-10-18"
 }

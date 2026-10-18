@@ -275,7 +275,7 @@ export function ReadinessPanel({
 
   // The ring is mock-fed (bestMockPct), so pct 0 has two honest states: never touched vs
   // started-but-no-scored-mock. Only a finished full mock moves this ring (a drill never does).
-  const label = !hasMockScore ? (started ? "In progress" : "Not started yet") : pct >= passLinePct ? (certId === "aip-c01" ? "Study target met" : "Ready to book") : "Getting there";
+  const label = !hasMockScore ? (started ? "In progress" : "Not started yet") : pct >= passLinePct ? "Study target met" : "Getting there";
   const passLabel = passLineOfficial === false ? "Study target" : "Pass line";
   const note =
     !hasMockScore

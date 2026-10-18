@@ -4,7 +4,7 @@ import { getPracticeBank } from "../lib/bank";
 for (const viewport of [{ width: 320, height: 568 }, { width: 375, height: 667 }, { width: 430, height: 740 }, { width: 932, height: 430 }]) {
   test(`iPhone pages and touch controls at ${viewport.width}px`, async ({ page }) => {
     await page.setViewportSize(viewport);
-    for (const path of ["/", "/catalog", "/aws/aip-c01", "/account", "/settings", "/login", "/guides/aip-c01/exam-week-rapid-review"]) {
+    for (const path of ["/", "/catalog", "/learn", "/aws/aip-c01/learn", "/aws/aip-c01", "/account", "/settings", "/login", "/guides/aip-c01/exam-week-rapid-review"]) {
       await page.goto(path);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), path).toBe(true);
       await expect(page.locator('meta[name="viewport"]')).toHaveAttribute("content", /viewport-fit=cover/);

@@ -11,8 +11,20 @@
   "passLinePct": 70,
   "passLineOfficial": false,
   "verified": "Q3 2026",
+  "examDetails": {
+    "guideUrl": "https://www.databricks.com/sites/default/files/2026-02/Databricks-Certified-Generative-AI-Engineer-Associate-Exam-Guide-Interrim-Feb26.pdf",
+    "examUrl": "https://www.databricks.com/learn/certification/generative-ai-engineer-associate",
+    "questionCount": "45 scored; additional unscored questions may appear",
+    "durationMinutes": 90,
+    "passingScore": "Not publicly published by Databricks",
+    "questionTypes": [
+      "Multiple choice",
+      "Multiple selection"
+    ],
+    "checkedOn": "2026-10-18"
+  },
   "seoTitle": "Free Databricks Generative AI Engineer Associate Practice Exam",
-  "seoDescription": "Free full-length Databricks Generative AI Engineer Associate practice exam with {n} original scenario questions, instant explanations, and a per-domain readiness read. No signup.",
+  "seoDescription": "Free Databricks Generative AI Engineer Associate practice exam with {n} original scenario questions, instant explanations, and a per-domain readiness read. No signup.",
   "domains": [
     {
       "name": "Design Applications",

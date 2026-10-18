@@ -11,8 +11,20 @@
   "passLinePct": 75,
   "passLineOfficial": false,
   "verified": "2026-10-17",
+  "examDetails": {
+    "guideUrl": "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01.html",
+    "examUrl": "https://aws.amazon.com/certification/certified-generative-ai-developer-professional/",
+    "questionCount": "75",
+    "durationMinutes": 180,
+    "passingScore": "750 / 1,000 scaled score (not a raw percentage)",
+    "questionTypes": [
+      "Multiple choice",
+      "Multiple response"
+    ],
+    "checkedOn": "2026-10-18"
+  },
   "seoTitle": "Free AIP-C01 Practice Exam - AWS Certified Generative AI Developer",
-  "seoDescription": "Free full-length AIP-C01 practice exam with {n} original scenario questions, explanations, and per-domain readiness scoring. No signup. Not affiliated with AWS.",
+  "seoDescription": "Free AIP-C01 practice exam with {n} original scenario questions, explanations, and per-domain readiness scoring. No signup. Not affiliated with AWS.",
   "domains": [
     { "name": "Foundation Model Integration & Compliance", "tag": "Domain 1", "weightPct": 31, "mockCount": 23 },
     { "name": "Implementation & Integration", "tag": "Domain 2", "weightPct": 26, "mockCount": 20 },

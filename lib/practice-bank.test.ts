@@ -43,7 +43,8 @@ it("preserves every original published answer contract and accounts for every re
   expect(createHash("sha256").update(JSON.stringify(contracts)).digest("hex")).toBe(review.publishedContractsSha256);
   expect(getPracticeBank()).toHaveLength(review.activeCount);
   expect(review.corrections).toHaveLength(83);
-  expect(review.unresolved).toHaveLength(21);
+  expect(review.unresolved).toHaveLength(22);
+  expect(getPracticeBank().some(q => q.id === "aipc01-0010")).toBe(false);
   for (const unresolved of review.unresolved) {
     expect(archive.find((q) => q.id === unresolved.id)?.excludedFromPractice).toBe(true);
   }

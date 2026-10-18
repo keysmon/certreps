@@ -2,7 +2,7 @@
 
 *Verified Q3 2026 - covers ~30% of the ANS-C01 exam.*
 
-**Note: AWS retires the ANS-C01 exam on August 25, 2026. If you are booked before then, this track is for you.**
+**Exam availability checked October 18, 2026:** AWS lists December 31, 2026 as the last day to take ANS-C01. Certifications earned before retirement retain their standard three-year validity. See the [official exam page](https://aws.amazon.com/certification/certified-advanced-networking-specialty/) before booking.
 
 ## What this domain tests
 

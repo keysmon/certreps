@@ -29,8 +29,8 @@ test("honesty copy: unpublished pass score reads as a study target, official cer
 
   // AWS AIF-C01 has a real published pass line -> "pass line", never the "study target" hedge.
   await submitEmptyMock(page, "/aws/aif-c01");
-  await expect(page.locator(".r-sub")).toContainText("Practice comparison threshold: 70%.");
-  await expect(page.locator(".r-sub")).not.toContainText(/study target/i);
+  await expect(page.locator(".r-sub")).toContainText("Independent study target: 70%.");
+  await expect(page.locator(".r-sub")).not.toContainText(/pass line/i);
 });
 
 

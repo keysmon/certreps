@@ -6,8 +6,9 @@ import { VENDORS } from "./VendorDot";
 
 const LINKS = [
   { href: "/catalog", label: "Certifications", index: "01" },
-  { href: "/account", label: "My progress", index: "02" },
-  { href: "/settings", label: "Settings", index: "03" },
+  { href: "/learn", label: "Learn", index: "02" },
+  { href: "/account", label: "My progress", index: "03" },
+  { href: "/settings", label: "Settings", index: "04" },
 ];
 
 /** Shared navigation is presentation-only; account and practice state stay in their existing owners. */
@@ -17,7 +18,9 @@ export function WorkspaceNav({ practice = false }: { practice?: boolean }) {
   const toggleRef = useRef<HTMLButtonElement>(null);
   useEffect(() => setOpen(false), [pathname]);
   function active(href: string) {
-    if (href === "/catalog") return pathname === href || pathname.startsWith("/guides/") || Object.hasOwn(VENDORS, pathname.split("/")[1]);
+    const learning = pathname === "/learn" || pathname.endsWith("/learn") || pathname.startsWith("/guides/");
+    if (href === "/learn") return learning;
+    if (href === "/catalog") return !learning && (pathname === href || Object.hasOwn(VENDORS, pathname.split("/")[1]));
     return pathname === href || pathname.startsWith(href + "/");
   }
   const links = LINKS.map(link => <Link key={link.href} href={link.href} aria-current={active(link.href) ? "page" : undefined} onClick={() => setOpen(false)}><span aria-hidden="true">{link.index}</span>{link.label}<span className="workspace-nav-arrow" aria-hidden="true">{String.fromCharCode(8599)}</span></Link>);

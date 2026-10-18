@@ -11,8 +11,19 @@
   "passLinePct": 70,
   "passLineOfficial": false,
   "verified": "Q3 2026",
+  "examDetails": {
+    "guideUrl": "https://services.google.com/fh/files/misc/generative_ai_leader_exam_guide_english.pdf",
+    "examUrl": "https://cloud.google.com/learn/certification/generative-ai-leader",
+    "questionCount": "50–60",
+    "durationMinutes": 90,
+    "passingScore": "Pass/fail; Google does not provide a numerical score",
+    "questionTypes": [
+      "Multiple choice"
+    ],
+    "checkedOn": "2026-10-18"
+  },
   "seoTitle": "Free Google Cloud Generative AI Leader Practice Exam",
-  "seoDescription": "Free full-length GenAI Leader practice exam with {n} original scenario questions, instant explanations, and a per-domain readiness read. No signup.",
+  "seoDescription": "Free GenAI Leader practice exam with {n} original scenario questions, instant explanations, and a per-domain readiness read. No signup.",
   "domains": [
     {
       "name": "Fundamentals of gen AI",

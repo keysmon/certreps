@@ -9,9 +9,22 @@
   "mockQuestionCount": 65,
   "mockMinutes": 130,
   "passLinePct": 72,
+  "passLineOfficial": false,
   "verified": "Q3 2026",
+  "examDetails": {
+    "guideUrl": "https://docs.aws.amazon.com/aws-certification/latest/developer-associate-02/developer-associate-02.html",
+    "examUrl": "https://aws.amazon.com/certification/certified-developer-associate/",
+    "questionCount": "65",
+    "durationMinutes": 130,
+    "passingScore": "720 / 1,000 scaled score (not a raw percentage)",
+    "questionTypes": [
+      "Multiple choice",
+      "Multiple response"
+    ],
+    "checkedOn": "2026-10-18"
+  },
   "seoTitle": "Free DVA-C02 Practice Exam - AWS Certified Developer Associate",
-  "seoDescription": "Free full-length DVA-C02 practice exam with {n} original scenario questions, instant explanations, and a per-domain readiness read. No signup.",
+  "seoDescription": "Free DVA-C02 practice exam with {n} original scenario questions, instant explanations, and a per-domain readiness read. No signup.",
   "domains": [
     { "name": "Development with AWS Services", "tag": "Domain 1", "weightPct": 32, "mockCount": 21 },
     { "name": "Security", "tag": "Domain 2", "weightPct": 26, "mockCount": 17 },

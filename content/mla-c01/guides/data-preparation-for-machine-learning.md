@@ -2,6 +2,8 @@
 
 *Verified Q3 2026 - covers ~28% of the MLA-C01 exam.*
 
+**Version notice checked October 18, 2026:** This lesson follows the legacy MLA-C01 blueprint retained by this English practice bank. English MLA-C01 testing ended September 28, 2026; MLA-C02 beta delivery began September 29, 2026. MLA-C01 remains available in Japanese, Korean, and Simplified Chinese until MLA-C02 general availability. Review the [official exam page and successor guide](https://aws.amazon.com/certification/certified-machine-learning-engineer-associate/) before booking; this lesson does not cover the complete MLA-C02 blueprint.
+
 ## What this domain tests
 
 Data Preparation is the largest MLA-C01 domain.

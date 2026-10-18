@@ -1,0 +1,1176 @@
+{
+  "aif-c01": {
+    "overview": "Build foundational AI literacy across all five AIF-C01 domains, with a lesson on foundation model applications and offline exercises for the remaining topics.",
+    "prerequisites": [
+      "Basic familiarity with cloud services and business workflows",
+      "Comfort reading a simple chart or metric"
+    ],
+    "modules": [
+      {
+        "domain": "Fundamentals of AI and ML",
+        "topics": [
+          "AI vs ML vs deep learning",
+          "Supervised and unsupervised learning",
+          "Training and inference",
+          "Business metrics and ML metrics"
+        ],
+        "objective": "Classify an AI use case and explain how its data and success criteria influence the approach.",
+        "exercise": "Write three business problems. For each, identify the prediction or generation task, available labels, one success metric, and one reason a non-AI solution might suffice."
+      },
+      {
+        "domain": "Fundamentals of GenAI",
+        "topics": [
+          "Tokens and embeddings",
+          "Foundation model capabilities",
+          "Generative AI lifecycle",
+          "Model selection tradeoffs"
+        ],
+        "objective": "Explain how a foundation model generates output and compare options using capability, cost, and risk.",
+        "exercise": "Draw a prompt-to-response flow. Compare a small text model and a multimodal model for two fictional requests, documenting the missing information needed to choose."
+      },
+      {
+        "domain": "Applications of Foundation Models",
+        "topics": [
+          "Prompt design and examples",
+          "Retrieval augmented generation",
+          "Fine-tuning vs retrieval",
+          "Inference parameters",
+          "Output evaluation"
+        ],
+        "objective": "Choose prompting, retrieval, or customization to address a specific output problem.",
+        "exercise": "Use a three-paragraph fictional policy to draft a grounded prompt. Write an answerable question and an unanswerable one, plus the expected citation or abstention; no model call is required.",
+        "guideSlug": "applications-of-foundation-models"
+      },
+      {
+        "domain": "Guidelines for Responsible AI",
+        "topics": [
+          "Fairness and bias",
+          "Explainability and transparency",
+          "Human review",
+          "Safety evaluation"
+        ],
+        "objective": "Identify affected users and propose measurable responsible AI safeguards.",
+        "exercise": "Create a risk table for a résumé-screening assistant. Include three possible harms, evidence needed to detect each, a mitigation, and the person responsible for review."
+      },
+      {
+        "domain": "Security, Compliance, and Governance for AI Solutions",
+        "topics": [
+          "Shared responsibility",
+          "Least-privilege access",
+          "Data privacy and encryption",
+          "Auditability and governance"
+        ],
+        "objective": "Connect an AI data-flow risk to an access, privacy, or governance control.",
+        "exercise": "Sketch a support chatbot data flow. Mark where personal data enters, who can read it, what is logged, and when it is deleted. Explain which controls belong to the application team."
+      }
+    ],
+    "sources": [
+      {
+        "label": "Official exam guide",
+        "url": "https://docs.aws.amazon.com/aws-certification/latest/ai-practitioner-01/ai-practitioner-01.html"
+      },
+      {
+        "label": "Official exam overview and availability",
+        "url": "https://aws.amazon.com/certification/certified-ai-practitioner/"
+      }
+    ],
+    "reviewedOn": "2026-10-18"
+  },
+  "aip-c01": {
+    "overview": "Study all five AIP-C01 domains through domain lessons, decision-focused topic outlines, and offline architecture and evaluation exercises.",
+    "prerequisites": [
+      "HTTP APIs, JSON, and basic application architecture",
+      "IAM roles, storage, and networking fundamentals",
+      "Basic prompting and retrieval augmented generation"
+    ],
+    "modules": [
+      {
+        "domain": "Foundation Model Integration & Compliance",
+        "topics": [
+          "Requirements and model selection",
+          "Prompting, retrieval, and customization",
+          "Ingestion and chunking",
+          "Retrieval quality and metadata",
+          "Data provenance and permissions"
+        ],
+        "objective": "Design a model and retrieval approach that satisfies business, data, and compliance constraints.",
+        "exercise": "Using a fictional support manual, specify chunk boundaries, metadata filters, an access rule, and five evaluation questions. Explain how you would handle conflicting or missing evidence.",
+        "guideSlug": "foundation-model-integration-and-compliance"
+      },
+      {
+        "domain": "Implementation & Integration",
+        "topics": [
+          "Inference APIs and streaming",
+          "Controlled tool execution",
+          "Agent orchestration",
+          "Enterprise integrations",
+          "Deployment and asynchronous jobs"
+        ],
+        "objective": "Trace a complete model-to-tool workflow with authorization, retries, and explicit failure handling.",
+        "exercise": "Write pseudocode for a refund assistant: validate the request, request approval, execute one authorized tool, deduplicate retries, and return the result. Walk through a timeout after the refund succeeds.",
+        "guideSlug": "implementation-and-integration"
+      },
+      {
+        "domain": "AI Safety, Security & Governance",
+        "topics": [
+          "Guardrail policies",
+          "Prompt injection and tool risks",
+          "IAM and network boundaries",
+          "Sensitive data protection",
+          "Audit trails and governance"
+        ],
+        "objective": "Select layered controls for an AI workflow and identify what each control cannot guarantee.",
+        "exercise": "Threat-model a document assistant. Write one malicious retrieved passage, then specify input separation, retrieval authorization, tool restrictions, and audit events that contain its effects.",
+        "guideSlug": "ai-safety-security-and-governance"
+      },
+      {
+        "domain": "Operational Efficiency & Optimization",
+        "topics": [
+          "Token and latency budgets",
+          "Model routing and right-sizing",
+          "Caching",
+          "Batch and provisioned inference",
+          "Operational metrics"
+        ],
+        "objective": "Compare inference options against measured traffic, latency, quality, and budget requirements.",
+        "exercise": "Create a spreadsheet or paper estimate for 1,000 fictional requests. Vary input tokens, output tokens, cache hit rate, and model price assumptions; label assumed prices and identify the largest cost driver.",
+        "guideSlug": "operational-efficiency-and-optimization"
+      },
+      {
+        "domain": "Testing, Validation & Troubleshooting",
+        "topics": [
+          "Evaluation datasets and rubrics",
+          "Reference metrics and model judges",
+          "Retrieval vs generation failures",
+          "Regression gates",
+          "API and operational troubleshooting"
+        ],
+        "objective": "Use a repeatable evaluation to isolate a failure and decide whether a change is safe to release.",
+        "exercise": "Build a six-case evaluation table including missing evidence, conflicting evidence, unsafe requests, and malformed tool results. Define pass criteria and a rollback trigger before proposing a prompt change.",
+        "guideSlug": "testing-validation-and-troubleshooting"
+      }
+    ],
+    "sources": [
+      {
+        "label": "Official exam guide",
+        "url": "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01.html"
+      },
+      {
+        "label": "Official exam overview and availability",
+        "url": "https://aws.amazon.com/certification/certified-generative-ai-developer-professional/"
+      }
+    ],
+    "reviewedOn": "2026-10-18"
+  },
+  "ans-c01": {
+    "overview": "Review advanced AWS networking through all four ANS-C01 domains. AWS has announced exam retirement after December 31, 2026; this outline remains useful for networking study.",
+    "prerequisites": [
+      "IP addressing, subnetting, routing, and DNS",
+      "AWS VPC and hybrid connectivity fundamentals",
+      "Experience interpreting network diagrams"
+    ],
+    "modules": [
+      {
+        "domain": "Network Design",
+        "topics": [
+          "Hybrid connectivity and resiliency",
+          "VPC and transit routing",
+          "DNS architecture",
+          "Traffic inspection",
+          "Bandwidth and availability tradeoffs"
+        ],
+        "objective": "Design a hybrid network whose routing and failure behavior meet stated requirements.",
+        "exercise": "Draw two data centers and two AWS Regions. Mark redundant links, route advertisements, DNS resolution paths, and a single-link failure; explain the expected surviving path.",
+        "guideSlug": "network-design"
+      },
+      {
+        "domain": "Network Implementation",
+        "topics": [
+          "Subnet and route-table configuration",
+          "Direct Connect and VPN integration",
+          "Transit Gateway attachments",
+          "DNS forwarding",
+          "Infrastructure as code"
+        ],
+        "objective": "Translate a network design into an ordered implementation and validation plan.",
+        "exercise": "Write a configuration checklist for connecting two fictional VPCs through a transit gateway. List required routes, attachment associations, security rules, and reachability checks without creating resources."
+      },
+      {
+        "domain": "Network Management and Operation",
+        "topics": [
+          "Flow logs and traffic visibility",
+          "Connectivity troubleshooting",
+          "Route changes and automation",
+          "Network performance",
+          "Operational runbooks"
+        ],
+        "objective": "Isolate a network fault using routing, DNS, policy, and traffic evidence.",
+        "exercise": "Invent a failed HTTPS request across a hybrid link. Build a diagnostic sequence covering DNS, routes, security groups, network ACLs, and return paths; note what evidence would eliminate each cause."
+      },
+      {
+        "domain": "Network Security, Compliance, and Governance",
+        "topics": [
+          "Segmentation and isolation",
+          "Network access controls",
+          "Encryption in transit",
+          "Centralized inspection",
+          "Network governance"
+        ],
+        "objective": "Place security controls along a traffic path while preserving required connectivity.",
+        "exercise": "Annotate a three-tier network diagram with trust boundaries and permitted flows. Add a centralized inspection hop and trace both outbound and return traffic for asymmetric routing risks."
+      }
+    ],
+    "sources": [
+      {
+        "label": "Official exam guide",
+        "url": "https://docs.aws.amazon.com/aws-certification/latest/advanced-networking-specialty-01/advanced-networking-specialty-01.html"
+      },
+      {
+        "label": "Official exam overview and availability",
+        "url": "https://aws.amazon.com/certification/certified-advanced-networking-specialty/"
+      }
+    ],
+    "reviewedOn": "2026-10-18"
+  },
+  "clf-c02": {
+    "overview": "Learn the cloud concepts, security responsibilities, service choices, and billing fundamentals in CLF-C02, with an available cloud technology lesson.",
+    "prerequisites": [
+      "Basic computer and internet literacy",
+      "No prior certification required for this outline"
+    ],
+    "modules": [
+      {
+        "domain": "Cloud Concepts",
+        "topics": [
+          "Cloud value proposition",
+          "Elasticity and scalability",
+          "Availability and global infrastructure",
+          "Well-Architected principles"
+        ],
+        "objective": "Explain how cloud characteristics address a business requirement.",
+        "exercise": "For a seasonal shop, a global website, and an internal payroll system, identify a cloud benefit and a tradeoff; distinguish scaling from improving availability."
+      },
+      {
+        "domain": "Security and Compliance",
+        "topics": [
+          "Shared responsibility",
+          "IAM fundamentals",
+          "Security and compliance services",
+          "Encryption and audit logging"
+        ],
+        "objective": "Assign security responsibilities and choose a suitable foundational control.",
+        "exercise": "Make an AWS-versus-customer responsibility table for virtual machines and managed databases. Include operating-system patching, data classification, access control, and physical security."
+      },
+      {
+        "domain": "Cloud Technology and Services",
+        "topics": [
+          "Compute and serverless",
+          "Object, block, and file storage",
+          "Managed databases",
+          "Networking and content delivery",
+          "Management and deployment tools"
+        ],
+        "objective": "Select a service category from a simple workload description and justify the fit.",
+        "exercise": "Create a service map for a fictional photo-sharing app: uploads, metadata, image processing, delivery, and monitoring. Compare one alternative for each component.",
+        "guideSlug": "cloud-technology-and-services"
+      },
+      {
+        "domain": "Billing, Pricing, and Support",
+        "topics": [
+          "Pricing models",
+          "Cost allocation and budgets",
+          "Billing tools",
+          "Support plans",
+          "Total cost considerations"
+        ],
+        "objective": "Identify the billing or support mechanism that addresses a stated operational need.",
+        "exercise": "Draft a monthly cost-review checklist for three teams. Include tags, unusual-spend alerts, idle resources, support escalation, and one workload suitable for a commitment discount."
+      }
+    ],
+    "sources": [
+      {
+        "label": "Official exam guide",
+        "url": "https://docs.aws.amazon.com/aws-certification/latest/cloud-practitioner-02/cloud-practitioner-02.html"
+      },
+      {
+        "label": "Official exam overview and availability",
+        "url": "https://aws.amazon.com/certification/certified-cloud-practitioner/"
+      }
+    ],
+    "reviewedOn": "2026-10-18"
+  },
+  "dea-c01": {
+    "overview": "Work through the four DEA-C01 domains from ingestion to governance, using pipeline design exercises and an ingestion lesson.",
+    "prerequisites": [
+      "Basic SQL and data modeling",
+      "Batch and streaming pipeline concepts",
+      "AWS storage and IAM fundamentals"
+    ],
+    "modules": [
+      {
+        "domain": "Data Ingestion and Transformation",
+        "topics": [
+          "Batch and streaming ingestion",
+          "Data transformation",
+          "Pipeline orchestration",
+          "Schema evolution",
+          "Data quality checks"
+        ],
+        "objective": "Design an ingestion pipeline that preserves correctness through retries and changing data.",
+        "exercise": "Sketch a pipeline for daily CSV orders and streaming status events. Define keys, deduplication, schema-change handling, a bad-record path, and a reconciliation count.",
+        "guideSlug": "data-ingestion-and-transformation"
+      },
+      {
+        "domain": "Data Store Management",
+        "topics": [
+          "Storage formats and partitioning",
+          "Data modeling",
+          "Catalogs and metadata",
+          "Lake and warehouse choices",
+          "Lifecycle management"
+        ],
+        "objective": "Choose a storage layout that supports query patterns, governance, and cost constraints.",
+        "exercise": "Design a local folder layout for one year of fictional sales data. Specify partition keys, file format, retention, and two query patterns; explain the small-file risk."
+      },
+      {
+        "domain": "Data Operations and Support",
+        "topics": [
+          "Pipeline monitoring",
+          "Operational troubleshooting",
+          "Data quality and reconciliation",
+          "Performance tuning",
+          "Cost optimization"
+        ],
+        "objective": "Use pipeline and query evidence to distinguish freshness, correctness, and performance problems.",
+        "exercise": "Given an invented pipeline that completes on time but loses 5% of rows, write checks at each stage. Then add a separate slow-query symptom and identify which evidence would differentiate the causes."
+      },
+      {
+        "domain": "Data Security and Governance",
+        "topics": [
+          "Identity and least privilege",
+          "Encryption and keys",
+          "Data classification",
+          "Fine-grained access",
+          "Audit and governance"
+        ],
+        "objective": "Apply access and protection rules consistently across a data pipeline.",
+        "exercise": "Create an access matrix for raw, curated, and analytics datasets. Include an engineer, analyst, and service role; mark sensitive columns and record one audit event for each privileged operation."
+      }
+    ],
+    "sources": [
+      {
+        "label": "Official exam guide",
+        "url": "https://docs.aws.amazon.com/aws-certification/latest/data-engineer-associate-01/data-engineer-associate-01.html"
+      },
+      {
+        "label": "Official exam overview and availability",
+        "url": "https://aws.amazon.com/certification/certified-data-engineer-associate/"
+      }
+    ],
+    "reviewedOn": "2026-10-18"
+  },
+  "dop-c02": {
+    "overview": "Organize professional DevOps study across delivery, infrastructure, resilience, observability, incidents, and governance; an SDLC automation lesson is available.",
+    "prerequisites": [
+      "Software delivery and source control",
+      "AWS operations, IAM, and networking fundamentals",
+      "Basic scripting and infrastructure as code"
+    ],
+    "modules": [
+      {
+        "domain": "SDLC Automation",
+        "topics": [
+          "Source control and build pipelines",
+          "Automated testing",
+          "Deployment strategies",
+          "Artifact promotion",
+          "Release gates and rollback"
+        ],
+        "objective": "Design a repeatable delivery pipeline that prevents unsafe promotion and supports recovery.",
+        "exercise": "Write a pipeline outline for a small API. Identify immutable artifacts, test gates, deployment approval, a canary metric, and the exact rollback condition.",
+        "guideSlug": "sdlc-automation"
+      },
+      {
+        "domain": "Configuration Management and IaC",
+        "topics": [
+          "Infrastructure templates and modules",
+          "Configuration management",
+          "Secrets and parameters",
+          "Drift detection",
+          "Multi-account deployment"
+        ],
+        "objective": "Separate infrastructure, runtime configuration, and secrets while managing drift.",
+        "exercise": "Draft a repository layout with shared infrastructure modules and dev/prod parameters. Describe how to detect a manual change and restore the declared state without putting secrets in source control."
+      },
+      {
+        "domain": "Resilient Cloud Solutions",
+        "topics": [
+          "High availability",
+          "Auto scaling",
+          "Failure isolation",
+          "Backup and disaster recovery",
+          "Resilience testing"
+        ],
+        "objective": "Match a resilience design to recovery objectives and failure scenarios.",
+        "exercise": "Set fictional RTO and RPO targets for a payment API. Draw the recovery plan, list dependency failures, and describe a safe tabletop failover exercise with success criteria."
+      },
+      {
+        "domain": "Monitoring and Logging",
+        "topics": [
+          "Metrics, logs, and traces",
+          "Alert design",
+          "Centralized observability",
+          "Audit event collection",
+          "Retention and analysis"
+        ],
+        "objective": "Create observability signals that reveal user impact and support diagnosis.",
+        "exercise": "Define an availability indicator, latency indicator, dashboard, and actionable alarm for an API. Trace one incident from the user symptom to a log field and an ownership route."
+      },
+      {
+        "domain": "Incident and Event Response",
+        "topics": [
+          "Event-driven remediation",
+          "Incident triage",
+          "Runbooks",
+          "Escalation and communication",
+          "Post-incident learning"
+        ],
+        "objective": "Design an incident response that limits impact and verifies recovery.",
+        "exercise": "Write a runbook for a failed deployment causing elevated errors. Include evidence collection, rollback decision, idempotent remediation, validation, and a short post-incident improvement."
+      },
+      {
+        "domain": "Security and Compliance",
+        "topics": [
+          "Least privilege in pipelines",
+          "Secret handling",
+          "Security scanning",
+          "Compliance evidence",
+          "Preventive account controls"
+        ],
+        "objective": "Protect the software delivery path and collect evidence for its controls.",
+        "exercise": "Threat-model a build pipeline from source to production. Identify where credentials could leak, who can change release gates, and what evidence would prove a signed artifact was deployed."
+      }
+    ],
+    "sources": [
+      {
+        "label": "Official exam guide",
+        "url": "https://docs.aws.amazon.com/aws-certification/latest/devops-engineer-professional-02/devops-engineer-professional-02.html"
+      },
+      {
+        "label": "Official exam overview and availability",
+        "url": "https://aws.amazon.com/certification/certified-devops-engineer-professional/"
+      }
+    ],
+    "reviewedOn": "2026-10-18"
+  },
+  "dva-c02": {
+    "overview": "Build an AWS application-development study plan across implementation, security, deployment, and troubleshooting, with a service-development lesson.",
+    "prerequisites": [
+      "Programming and HTTP API fundamentals",
+      "Basic databases, queues, and AWS services",
+      "Familiarity with testing and source control"
+    ],
+    "modules": [
+      {
+        "domain": "Development with AWS Services",
+        "topics": [
+          "Service APIs and SDK behavior",
+          "Serverless application patterns",
+          "Data access and consistency",
+          "Messaging and event processing",
+          "Error handling and idempotency"
+        ],
+        "objective": "Implement a service interaction that remains correct through duplicates, retries, and partial failure.",
+        "exercise": "Write pseudocode for processing an order event twice. Include an idempotency key, conditional write, retriable error, and dead-letter path; trace the state after each step.",
+        "guideSlug": "development-with-aws-services"
+      },
+      {
+        "domain": "Security",
+        "topics": [
+          "IAM roles and temporary credentials",
+          "Authentication vs authorization",
+          "Encryption and secret storage",
+          "Application access controls"
+        ],
+        "objective": "Choose application security controls that restrict both callers and workload permissions.",
+        "exercise": "Design access rules for a browser, API, and background worker. Identify which identity calls each service, where authorization runs, and how a secret rotates without entering the client bundle."
+      },
+      {
+        "domain": "Deployment",
+        "topics": [
+          "Packaging and configuration",
+          "CI/CD and test environments",
+          "Infrastructure definitions",
+          "Deployment strategies",
+          "Rollback and versioning"
+        ],
+        "objective": "Plan a deployment that keeps code, configuration, and rollback versions consistent.",
+        "exercise": "Draft a release checklist for a serverless API. Include dependency packaging, environment settings, a staged traffic shift, smoke checks, and the prior version needed for rollback."
+      },
+      {
+        "domain": "Troubleshooting and Optimization",
+        "topics": [
+          "Logs and distributed traces",
+          "Timeouts and throttling",
+          "Performance profiling",
+          "Caching",
+          "Failure diagnosis"
+        ],
+        "objective": "Use observable evidence to distinguish application faults from dependency or capacity limits.",
+        "exercise": "Create a timeline for a request that retries a throttled dependency and exceeds its timeout. Mark useful logs and metrics, then propose a bounded retry policy and a verification step."
+      }
+    ],
+    "sources": [
+      {
+        "label": "Official exam guide",
+        "url": "https://docs.aws.amazon.com/aws-certification/latest/developer-associate-02/developer-associate-02.html"
+      },
+      {
+        "label": "Official exam overview and availability",
+        "url": "https://aws.amazon.com/certification/certified-developer-associate/"
+      }
+    ],
+    "reviewedOn": "2026-10-18"
+  },
+  "genai-engineer": {
+    "overview": "Outline the six Databricks Generative AI Engineer Associate domains using the official March 2026 guide, with an application-development lesson and offline design exercises.",
+    "prerequisites": [
+      "Basic Python and API concepts",
+      "LLM prompting and retrieval fundamentals",
+      "Familiarity with data pipelines and access control"
+    ],
+    "modules": [
+      {
+        "domain": "Design Applications",
+        "topics": [
+          "Business requirements",
+          "Task and model selection",
+          "Prompt design",
+          "Chain and agent decomposition",
+          "Success criteria"
+        ],
+        "objective": "Translate a business task into an application design with measurable output requirements.",
+        "exercise": "Define a fictional internal FAQ assistant. Write its inputs, required output schema, allowed tools, unsupported requests, and five acceptance examples before selecting a model."
+      },
+      {
+        "domain": "Data Preparation",
+        "topics": [
+          "Document extraction",
+          "Chunking and embeddings",
+          "Source selection and cleaning",
+          "Retrieval evaluation",
+          "Reranking and filtering"
+        ],
+        "objective": "Prepare a retrieval dataset and explain how preprocessing choices affect answer quality.",
+        "exercise": "Split a short local policy document into chunks on paper. Assign source IDs and access metadata, write three search queries, and explain which relevant passage each query should retrieve."
+      },
+      {
+        "domain": "Application Development",
+        "topics": [
+          "Prompt and context construction",
+          "Model and embedding selection",
+          "RAG and agent workflows",
+          "Guardrails",
+          "MLflow and agent tooling"
+        ],
+        "objective": "Connect application components into a testable RAG or agent workflow.",
+        "exercise": "Write a local pseudocode pipeline for retrieve, assemble context, generate, and validate. Add one malicious passage and one empty retrieval result, then trace the expected safe output for each.",
+        "guideSlug": "building-genai-applications-on-databricks"
+      },
+      {
+        "domain": "Assembling and Deploying Applications",
+        "topics": [
+          "Model packaging and registration",
+          "Model Serving",
+          "Vector Search and AI Search",
+          "Unity Catalog access",
+          "CI/CD and MCP integrations"
+        ],
+        "objective": "Describe how an application is packaged, authorized, served, and updated.",
+        "exercise": "Draw an application-to-serving architecture with a retrieval index and one tool. Mark service identities, secret boundaries, versioned artifacts, and a rollback path; no Databricks workspace is required."
+      },
+      {
+        "domain": "Governance",
+        "topics": [
+          "Input guardrails",
+          "Sensitive-data handling",
+          "Data licensing",
+          "Access governance",
+          "Problematic content mitigation"
+        ],
+        "objective": "Choose governance controls for both application inputs and source data.",
+        "exercise": "Make a review checklist for three fictional sources: an internal manual, customer messages, and a licensed article. Decide permitted uses, redaction needs, access restrictions, and evidence to retain."
+      },
+      {
+        "domain": "Evaluation and Monitoring",
+        "topics": [
+          "Quality and retrieval metrics",
+          "Ground-truth requirements",
+          "Model judges and custom scorers",
+          "Tracing and inference logs",
+          "Cost and latency monitoring"
+        ],
+        "objective": "Design an evaluation and monitoring loop that identifies actionable quality regressions.",
+        "exercise": "Create a six-row evaluation dataset with expected evidence and scoring criteria. Include one judge that needs a reference answer and one that does not; define a drift signal and a review threshold."
+      }
+    ],
+    "sources": [
+      {
+        "label": "Official exam guide",
+        "url": "https://www.databricks.com/sites/default/files/2026-02/Databricks-Certified-Generative-AI-Engineer-Associate-Exam-Guide-Interrim-Feb26.pdf"
+      },
+      {
+        "label": "Official exam overview and availability",
+        "url": "https://www.databricks.com/learn/certification/generative-ai-engineer-associate"
+      },
+      {
+        "label": "Official certification scoring FAQ",
+        "url": "https://www.databricks.com/learn/certification/faq"
+      }
+    ],
+    "reviewedOn": "2026-10-18"
+  },
+  "genai-leader": {
+    "overview": "Connect generative AI fundamentals and Google Cloud offerings to practical business decisions, with a lesson on Google Cloud offerings.",
+    "prerequisites": [
+      "Basic business processes and outcome measurement",
+      "No hands-on cloud experience required for these exercises"
+    ],
+    "modules": [
+      {
+        "domain": "Fundamentals of gen AI",
+        "topics": [
+          "Generative AI capabilities and limits",
+          "Foundation models and modalities",
+          "Training and inference",
+          "Prompts and context",
+          "Responsible AI concepts"
+        ],
+        "objective": "Explain generative AI to a business stakeholder with clear capabilities and limitations.",
+        "exercise": "Describe three potential workplace uses in plain language. For each, name the input, output, business benefit, failure risk, and the human review needed before acting."
+      },
+      {
+        "domain": "Google Cloud's gen AI offerings",
+        "topics": [
+          "Gemini model capabilities",
+          "Vertex AI platform",
+          "Google Cloud AI services",
+          "Grounding and enterprise search",
+          "Agents and business applications"
+        ],
+        "objective": "Match Google Cloud offerings to a business need and identify when specialist help is required.",
+        "exercise": "Build a decision table for document summarization, enterprise search, and workflow assistance. Compare the relevant Google Cloud offering, data requirements, and operational responsibility using the official guide.",
+        "guideSlug": "google-clouds-gen-ai-offerings"
+      },
+      {
+        "domain": "Techniques to improve gen AI model output",
+        "topics": [
+          "Prompt clarity and examples",
+          "Grounding and retrieval",
+          "Model customization",
+          "Output evaluation",
+          "Human feedback"
+        ],
+        "objective": "Choose a practical method for improving model output based on the observed weakness.",
+        "exercise": "Rewrite a vague meeting-summary prompt with an audience, format, evidence requirement, and examples. Write expected outputs for an incomplete transcript and a transcript containing conflicting statements."
+      },
+      {
+        "domain": "Business strategies for a successful gen AI solution",
+        "topics": [
+          "Use-case prioritization",
+          "Value and cost measurement",
+          "Adoption and change management",
+          "Risk and governance",
+          "Pilot design"
+        ],
+        "objective": "Propose an AI pilot with a business owner, measurable outcome, and review gates.",
+        "exercise": "Prepare a one-page pilot plan for a fictional support team. Define baseline workload, a success metric, costs to track, privacy constraints, staff training, and a stop-or-expand decision."
+      }
+    ],
+    "sources": [
+      {
+        "label": "Official exam guide",
+        "url": "https://services.google.com/fh/files/misc/generative_ai_leader_exam_guide_english.pdf"
+      },
+      {
+        "label": "Official exam overview and availability",
+        "url": "https://cloud.google.com/learn/certification/generative-ai-leader"
+      },
+      {
+        "label": "Official certification FAQ",
+        "url": "https://support.google.com/cloud-certification/answer/9438208?hl=en"
+      }
+    ],
+    "reviewedOn": "2026-10-18"
+  },
+  "mla-c01": {
+    "overview": "Study the legacy MLA-C01 blueprint retained by this English practice bank. English MLA-C01 testing ended September 28, 2026; this outline is not an MLA-C02 course. Use the official exam page to review the successor before booking.",
+    "prerequisites": [
+      "Basic ML training and evaluation",
+      "Data preparation and Python concepts",
+      "AWS IAM, storage, and SageMaker fundamentals"
+    ],
+    "modules": [
+      {
+        "domain": "Data Preparation for Machine Learning",
+        "topics": [
+          "Data ingestion and storage",
+          "Data exploration and quality",
+          "Feature engineering",
+          "Data leakage prevention",
+          "Training and validation splits"
+        ],
+        "objective": "Prepare a reproducible dataset for the legacy MLA-C01 workflow without leaking target information.",
+        "exercise": "Create a ten-row fictional customer dataset. Mark the label, missing values, sensitive fields, and features unavailable at prediction time; choose a time-aware split and explain your leakage checks.",
+        "guideSlug": "data-preparation-for-machine-learning"
+      },
+      {
+        "domain": "ML Model Development",
+        "topics": [
+          "Algorithm and model selection",
+          "SageMaker training workflows",
+          "Hyperparameter tuning",
+          "Evaluation metrics",
+          "Model artifacts and experiments"
+        ],
+        "objective": "Choose and evaluate a training approach using the problem type and error costs.",
+        "exercise": "Build a small confusion matrix on paper for fraud predictions. Calculate precision and recall, explain the business tradeoff, and specify a training experiment that would test a proposed improvement."
+      },
+      {
+        "domain": "Deployment and Orchestration of ML Workflows",
+        "topics": [
+          "Deployment patterns",
+          "Inference endpoints and batch jobs",
+          "Workflow orchestration",
+          "Model registry and release controls",
+          "Infrastructure automation"
+        ],
+        "objective": "Plan model deployment and promotion with explicit validation and rollback steps.",
+        "exercise": "Draw a training-to-deployment workflow with artifact registration, an approval gate, staged traffic, and rollback. Compare online and batch inference for a fictional daily scoring job."
+      },
+      {
+        "domain": "ML Solution Monitoring, Maintenance, and Security",
+        "topics": [
+          "Data and model drift",
+          "Inference monitoring",
+          "Retraining triggers",
+          "Access and encryption",
+          "Operational maintenance"
+        ],
+        "objective": "Define monitoring and security controls for a deployed legacy ML workload.",
+        "exercise": "Write a monitoring sheet with input drift, quality, latency, and access signals. For each, specify evidence, an owner, and a response; explain why drift alone does not prove that retraining helps."
+      }
+    ],
+    "sources": [
+      {
+        "label": "Official exam guide",
+        "url": "https://d1.awsstatic.com/training-and-certification/docs-machine-learning-engineer-associate/AWS-Certified-Machine-Learning-Engineer-Associate_Exam-Guide.pdf"
+      },
+      {
+        "label": "Official exam overview and availability",
+        "url": "https://aws.amazon.com/certification/certified-machine-learning-engineer-associate/"
+      }
+    ],
+    "reviewedOn": "2026-10-18"
+  },
+  "nca-genl": {
+    "overview": "Build foundational LLM knowledge across all five NCA-GENL topic areas. The available NVIDIA stack lesson links model fundamentals to software delivery.",
+    "prerequisites": [
+      "Basic understanding of generative AI and LLMs",
+      "Introductory Python and data concepts"
+    ],
+    "modules": [
+      {
+        "domain": "Core Machine Learning and AI Knowledge",
+        "topics": [
+          "Transformers and attention",
+          "Tokens and embeddings",
+          "Training vs inference",
+          "Prompting and RAG",
+          "Model evaluation basics"
+        ],
+        "objective": "Explain the components of an LLM application and distinguish generation from retrieval.",
+        "exercise": "Draw a document-question-answer flow. Label tokenization, embedding, retrieval, prompt assembly, and generation; explain how an incorrect retrieved passage can produce a plausible wrong answer.",
+        "guideSlug": "nvidia-generative-ai-stack"
+      },
+      {
+        "domain": "Software Development",
+        "topics": [
+          "Python application structure",
+          "LLM APIs and integration",
+          "Model deployment concepts",
+          "Inference optimization",
+          "Testing and reliability"
+        ],
+        "objective": "Describe how a model becomes an application service with defined inputs and failure behavior.",
+        "exercise": "Write pseudocode for a chat API wrapper with input limits, a timeout, structured output validation, and a mocked response. Identify where serving optimizations could help and what must be measured."
+      },
+      {
+        "domain": "Experimentation",
+        "topics": [
+          "Experiment design",
+          "Training and fine-tuning basics",
+          "Hyperparameters",
+          "Benchmarks and baselines",
+          "Reproducibility"
+        ],
+        "objective": "Compare experiments while keeping evaluation conditions and evidence consistent.",
+        "exercise": "Plan two prompt variants against the same ten fictional requests. Record the hypothesis, fixed conditions, evaluation rubric, and decision rule; explain why changing the test set mid-comparison weakens the result."
+      },
+      {
+        "domain": "Data Analysis and Visualization",
+        "topics": [
+          "Data cleaning and exploration",
+          "Summary statistics",
+          "Visualization",
+          "Model comparison metrics",
+          "Dataset limitations"
+        ],
+        "objective": "Interpret data and evaluation results without overlooking sampling or measurement limits.",
+        "exercise": "Use ten invented latency values and ten quality labels. Compute the average, identify an outlier, sketch a chart, and explain which additional data you need before choosing a model."
+      },
+      {
+        "domain": "Trustworthy AI",
+        "topics": [
+          "Fairness and bias",
+          "Privacy and consent",
+          "Transparency",
+          "Safety and misuse",
+          "Human oversight"
+        ],
+        "objective": "Identify an AI trust risk and propose a testable mitigation.",
+        "exercise": "Review a fictional public chatbot. Write three misuse or privacy scenarios, the data required to test each, one mitigation, and a human escalation rule."
+      }
+    ],
+    "sources": [
+      {
+        "label": "Official exam topics and preparation",
+        "url": "https://www.nvidia.com/en-us/learn/certification/generative-ai-llm-associate/#exam-preparation"
+      },
+      {
+        "label": "Official exam overview and availability",
+        "url": "https://www.nvidia.com/en-us/learn/certification/generative-ai-llm-associate/"
+      },
+      {
+        "label": "Official certification policies",
+        "url": "https://www.nvidia.com/en-us/learn/certification/"
+      }
+    ],
+    "reviewedOn": "2026-10-18"
+  },
+  "saa-c03": {
+    "overview": "Practice architecture decisions across security, resilience, performance, and cost, with a lesson on secure architectures.",
+    "prerequisites": [
+      "AWS compute, storage, database, and networking basics",
+      "IAM and shared-responsibility fundamentals"
+    ],
+    "modules": [
+      {
+        "domain": "Design Secure Architectures",
+        "topics": [
+          "IAM and federation",
+          "Network isolation",
+          "Encryption and key management",
+          "Data access controls",
+          "Security monitoring"
+        ],
+        "objective": "Design workload boundaries that protect access, traffic, and stored data.",
+        "exercise": "Sketch a web application with public and private components. Label roles, allowed network flows, encrypted data, and audit logs; explain how an administrator connects without public inbound access.",
+        "guideSlug": "design-secure-architectures"
+      },
+      {
+        "domain": "Design Resilient Architectures",
+        "topics": [
+          "Multi-AZ availability",
+          "Decoupling and queues",
+          "Auto scaling",
+          "Backup and recovery",
+          "Failure isolation"
+        ],
+        "objective": "Choose resilient patterns based on failure scope and recovery objectives.",
+        "exercise": "Draw a two-AZ service and list what happens when an instance, database node, or AZ fails. Set fictional RTO/RPO goals and identify the backup or failover evidence needed to meet them."
+      },
+      {
+        "domain": "Design High-Performing Architectures",
+        "topics": [
+          "Compute selection",
+          "Storage performance",
+          "Database access patterns",
+          "Caching",
+          "Networking and global delivery"
+        ],
+        "objective": "Select performance improvements that address a measured bottleneck.",
+        "exercise": "Given a fictional API with slow database reads and globally distant users, separate compute, data, and network hypotheses. Choose a measurement and architecture option for each rather than scaling everything."
+      },
+      {
+        "domain": "Design Cost-Optimized Architectures",
+        "topics": [
+          "Compute purchase options",
+          "Storage classes and lifecycle",
+          "Database right-sizing",
+          "Data transfer costs",
+          "Utilization and cost review"
+        ],
+        "objective": "Reduce cost while maintaining the workload requirements that matter.",
+        "exercise": "Make a cost-optimization proposal for a batch job and a steady API. Compare purchase options, idle capacity, storage retention, and transfer paths; document any availability or latency tradeoff."
+      }
+    ],
+    "sources": [
+      {
+        "label": "Official exam guide",
+        "url": "https://docs.aws.amazon.com/aws-certification/latest/solutions-architect-associate-03/solutions-architect-associate-03.html"
+      },
+      {
+        "label": "Official exam overview and availability",
+        "url": "https://aws.amazon.com/certification/certified-solutions-architect-associate/"
+      }
+    ],
+    "reviewedOn": "2026-10-18"
+  },
+  "sap-c02": {
+    "overview": "Structure advanced architecture study around organizational complexity, new solutions, improvement, and migration, with a lesson on new solution design.",
+    "prerequisites": [
+      "Practical AWS architecture experience",
+      "Multi-account, networking, and security fundamentals",
+      "Ability to reason about recovery and consistency tradeoffs"
+    ],
+    "modules": [
+      {
+        "domain": "Design Solutions for Organizational Complexity",
+        "topics": [
+          "Multi-account governance",
+          "Organizational networking",
+          "Federation and access",
+          "Shared services",
+          "Cross-account observability"
+        ],
+        "objective": "Design common controls for multiple business units with distinct ownership boundaries.",
+        "exercise": "Create an account and organizational-unit diagram for a fictional enterprise. Assign identity, network, security, and application responsibilities; trace one cross-account access request."
+      },
+      {
+        "domain": "Design for New Solutions",
+        "topics": [
+          "Requirements and tradeoffs",
+          "Compute and data architecture",
+          "Integration and messaging",
+          "High availability and disaster recovery",
+          "Global performance"
+        ],
+        "objective": "Select a new architecture that satisfies competing functional and operational constraints.",
+        "exercise": "Write an architecture decision for a global ordering service. Include traffic shape, consistency, latency, RTO/RPO, security, and cost; compare two designs and explain the rejected option.",
+        "guideSlug": "design-for-new-solutions"
+      },
+      {
+        "domain": "Continuous Improvement for Existing Solutions",
+        "topics": [
+          "Operational improvement",
+          "Reliability and resilience",
+          "Performance tuning",
+          "Cost optimization",
+          "Security modernization"
+        ],
+        "objective": "Prioritize improvements using evidence from an existing system and measurable acceptance criteria.",
+        "exercise": "Invent a legacy application with one outage pattern, one bottleneck, and one cost issue. Rank three improvements, identify dependencies, and define a before/after measure for each."
+      },
+      {
+        "domain": "Accelerate Workload Migration and Modernization",
+        "topics": [
+          "Migration discovery and assessment",
+          "Migration strategies",
+          "Data transfer and cutover",
+          "Modernization patterns",
+          "Validation and rollback"
+        ],
+        "objective": "Plan a migration that controls data consistency, downtime, and recovery risk.",
+        "exercise": "Draft a staged migration plan for a database-backed application. Include dependency discovery, initial copy, change synchronization, cutover checks, rollback conditions, and post-cutover reconciliation."
+      }
+    ],
+    "sources": [
+      {
+        "label": "Official exam guide",
+        "url": "https://docs.aws.amazon.com/aws-certification/latest/solutions-architect-professional-02/solutions-architect-professional-02.html"
+      },
+      {
+        "label": "Official exam overview and availability",
+        "url": "https://aws.amazon.com/certification/certified-solutions-architect-professional/"
+      }
+    ],
+    "reviewedOn": "2026-10-18"
+  },
+  "scs-c03": {
+    "overview": "Study the six SCS-C03 security domains through control-selection and incident exercises, with an available IAM lesson.",
+    "prerequisites": [
+      "AWS IAM, networking, and logging fundamentals",
+      "Basic incident response and security concepts",
+      "Experience reasoning about data protection"
+    ],
+    "modules": [
+      {
+        "domain": "Detection",
+        "topics": [
+          "Centralized security logging",
+          "Threat detection services",
+          "Finding aggregation",
+          "Detection rules and tuning",
+          "Evidence correlation"
+        ],
+        "objective": "Connect a suspicious event to the logging and detection evidence needed to investigate it.",
+        "exercise": "Construct a fictional sequence of unusual sign-ins and data reads. List relevant audit fields, a detection rule, false-positive checks, and the account or team that should receive the finding."
+      },
+      {
+        "domain": "Incident Response",
+        "topics": [
+          "Incident preparation",
+          "Triage and containment",
+          "Evidence preservation",
+          "Recovery",
+          "Response automation"
+        ],
+        "objective": "Design an incident response that limits damage while preserving evidence.",
+        "exercise": "Write a tabletop runbook for a compromised workload role. Order containment, credential response, forensic capture, scope checks, and recovery; identify one automated step that needs safeguards."
+      },
+      {
+        "domain": "Infrastructure Security",
+        "topics": [
+          "Network segmentation",
+          "Workload hardening",
+          "Vulnerability management",
+          "Edge protection",
+          "Private service connectivity"
+        ],
+        "objective": "Choose infrastructure controls that reduce exposure across network and compute layers.",
+        "exercise": "Review a fictional internet-facing service diagram. Mark public entry points, unnecessary traffic, patching responsibilities, and protective controls; trace how an attacker could reach a private datastore."
+      },
+      {
+        "domain": "Identity and Access Management",
+        "topics": [
+          "Policy evaluation",
+          "Federation and temporary credentials",
+          "Cross-account trust",
+          "Permission boundaries and SCPs",
+          "Access analysis"
+        ],
+        "objective": "Evaluate an access request across granting and restricting policy layers.",
+        "exercise": "Write a policy-evaluation table for a role reading a cross-account bucket. Add an explicit deny, a permission boundary, and an SCP one at a time; explain which requests remain authorized.",
+        "guideSlug": "identity-and-access-management"
+      },
+      {
+        "domain": "Data Protection",
+        "topics": [
+          "Data classification",
+          "Encryption at rest and in transit",
+          "KMS key policies",
+          "Secret lifecycle",
+          "Backup and deletion controls"
+        ],
+        "objective": "Design data protection with clear ownership of keys, permissions, and retention.",
+        "exercise": "Map a sensitive document from upload through storage, processing, backup, and deletion. Specify encryption, key access, audit events, retention, and the evidence needed to verify deletion scope."
+      },
+      {
+        "domain": "Security Foundations and Governance",
+        "topics": [
+          "Security governance",
+          "Multi-account controls",
+          "Compliance evidence",
+          "Shared responsibility",
+          "Risk and exception management"
+        ],
+        "objective": "Translate security requirements into preventive controls and reviewable evidence.",
+        "exercise": "Create a control register for a fictional three-account organization. Include requirement, owner, enforcement mechanism, evidence, review cadence, and one time-limited exception with compensating controls."
+      }
+    ],
+    "sources": [
+      {
+        "label": "Official exam guide",
+        "url": "https://docs.aws.amazon.com/aws-certification/latest/security-specialty-03/security-specialty-03.html"
+      },
+      {
+        "label": "Official exam overview and availability",
+        "url": "https://aws.amazon.com/certification/certified-security-specialty/"
+      }
+    ],
+    "reviewedOn": "2026-10-18"
+  },
+  "soa-c03": {
+    "overview": "Plan CloudOps study across monitoring, recovery, automation, security, and networking, with a lesson on monitoring and remediation.",
+    "prerequisites": [
+      "AWS compute, networking, and storage basics",
+      "Basic monitoring and incident troubleshooting",
+      "Familiarity with command-line operations and IAM"
+    ],
+    "modules": [
+      {
+        "domain": "Monitoring, Logging, Analysis, Remediation, and Performance Optimization",
+        "topics": [
+          "Metrics, logs, and traces",
+          "Actionable alarms",
+          "Root-cause analysis",
+          "Automated remediation",
+          "Performance troubleshooting"
+        ],
+        "objective": "Diagnose an operational symptom and design a measured, reversible remediation.",
+        "exercise": "Create an incident timeline for an API with rising latency and errors. Define a dashboard, a composite alarm idea, diagnostic queries, and a remediation step with a recovery check.",
+        "guideSlug": "monitoring-logging-analysis-remediation-and-performance-optimization"
+      },
+      {
+        "domain": "Reliability and Business Continuity",
+        "topics": [
+          "High availability",
+          "Backup and restore",
+          "Disaster recovery objectives",
+          "Scaling and failover",
+          "Resilience validation"
+        ],
+        "objective": "Operate a workload through failure while meeting recovery and data-loss limits.",
+        "exercise": "Write a restore runbook for a fictional database. State RTO/RPO, backup selection, dependency restoration order, data validation, and a tabletop test that would expose an unusable backup."
+      },
+      {
+        "domain": "Deployment, Provisioning, and Automation",
+        "topics": [
+          "Infrastructure as code",
+          "Deployment automation",
+          "Configuration and patching",
+          "Systems Manager operations",
+          "Change control"
+        ],
+        "objective": "Plan repeatable infrastructure and configuration changes with safe recovery.",
+        "exercise": "Draft a patch rollout for a two-AZ service. Include inventory, a small first group, health checks, approval conditions, drift handling, and a rollback or replacement plan."
+      },
+      {
+        "domain": "Security and Compliance",
+        "topics": [
+          "IAM and access operations",
+          "Encryption and secrets",
+          "Security findings",
+          "Compliance checks",
+          "Audit logging"
+        ],
+        "objective": "Maintain access and security controls while responding to operational findings.",
+        "exercise": "Build a checklist for onboarding a workload role and later removing its access. Include trust, least privilege, secret handling, logging, and a review of unused permissions."
+      },
+      {
+        "domain": "Networking and Content Delivery",
+        "topics": [
+          "VPC routing and connectivity",
+          "DNS",
+          "Load balancing",
+          "Content delivery",
+          "Network troubleshooting"
+        ],
+        "objective": "Trace an application request through DNS, network controls, routing, and delivery layers.",
+        "exercise": "Diagram a request from a user through DNS, a CDN, a load balancer, and a private instance. Introduce a missing route and a blocked port separately, then identify the evidence that distinguishes them."
+      }
+    ],
+    "sources": [
+      {
+        "label": "Official exam guide",
+        "url": "https://docs.aws.amazon.com/aws-certification/latest/sysops-administrator-associate-03/sysops-administrator-associate-03.html"
+      },
+      {
+        "label": "Official exam overview and availability",
+        "url": "https://aws.amazon.com/certification/certified-cloudops-engineer-associate/"
+      }
+    ],
+    "reviewedOn": "2026-10-18"
+  }
+}

@@ -9,9 +9,22 @@
   "mockQuestionCount": 65,
   "mockMinutes": 130,
   "passLinePct": 72,
+  "passLineOfficial": false,
   "verified": "Q3 2026",
+  "examDetails": {
+    "guideUrl": "https://docs.aws.amazon.com/aws-certification/latest/sysops-administrator-associate-03/sysops-administrator-associate-03.html",
+    "examUrl": "https://aws.amazon.com/certification/certified-cloudops-engineer-associate/",
+    "questionCount": "65",
+    "durationMinutes": 130,
+    "passingScore": "720 / 1,000 scaled score (not a raw percentage)",
+    "questionTypes": [
+      "Multiple choice",
+      "Multiple response"
+    ],
+    "checkedOn": "2026-10-18"
+  },
   "seoTitle": "Free SOA-C03 Practice Exam - AWS Certified CloudOps Engineer Associate",
-  "seoDescription": "Free full-length SOA-C03 practice exam with {n} original scenario questions, instant explanations, and a per-domain readiness read. No signup.",
+  "seoDescription": "Free SOA-C03 practice exam with {n} original scenario questions, instant explanations, and a per-domain readiness read. No signup.",
   "domains": [
     {
       "name": "Monitoring, Logging, Analysis, Remediation, and Performance Optimization",

@@ -9,9 +9,22 @@
   "mockQuestionCount": 65,
   "mockMinutes": 130,
   "passLinePct": 72,
+  "passLineOfficial": false,
   "verified": "Q3 2026",
+  "examDetails": {
+    "guideUrl": "https://docs.aws.amazon.com/aws-certification/latest/data-engineer-associate-01/data-engineer-associate-01.html",
+    "examUrl": "https://aws.amazon.com/certification/certified-data-engineer-associate/",
+    "questionCount": "65",
+    "durationMinutes": 130,
+    "passingScore": "720 / 1,000 scaled score (not a raw percentage)",
+    "questionTypes": [
+      "Multiple choice",
+      "Multiple response"
+    ],
+    "checkedOn": "2026-10-18"
+  },
   "seoTitle": "Free DEA-C01 Practice Exam - AWS Certified Data Engineer Associate",
-  "seoDescription": "Free full-length DEA-C01 practice exam with {n} original scenario questions, instant explanations, and a per-domain readiness read. No signup.",
+  "seoDescription": "Free DEA-C01 practice exam with {n} original scenario questions, instant explanations, and a per-domain readiness read. No signup.",
   "domains": [
     {
       "name": "Data Ingestion and Transformation",

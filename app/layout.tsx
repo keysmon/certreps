@@ -5,6 +5,7 @@ import { AuthButton } from "@/components/AuthButton";
 import { WorkspaceNav } from "@/components/ui/WorkspaceNav";
 import "./globals.css";
 import "./industrial.css";
+import "./learning.css";
 
 // Self-hosted mono type for technical labels; display text uses the system sans stack.
 const jetbrainsMono = JetBrains_Mono({

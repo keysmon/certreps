@@ -9,9 +9,25 @@
   "mockQuestionCount": 50,
   "mockMinutes": 130,
   "passLinePct": 75,
+  "passLineOfficial": false,
   "verified": "Q3 2026",
+  "examDetails": {
+    "guideUrl": "https://docs.aws.amazon.com/aws-certification/latest/security-specialty-03/security-specialty-03.html",
+    "examUrl": "https://aws.amazon.com/certification/certified-security-specialty/",
+    "questionCount": "65",
+    "durationMinutes": 170,
+    "passingScore": "750 / 1,000 scaled score (not a raw percentage)",
+    "questionTypes": [
+      "Multiple choice",
+      "Multiple response",
+      "Ordering",
+      "Matching"
+    ],
+    "checkedOn": "2026-10-18",
+    "statusNote": "The official exam can also include ordering and matching questions. CertReps practice currently uses multiple choice and multiple response."
+  },
   "seoTitle": "Free SCS-C03 Practice Exam - AWS Certified Security Specialty",
-  "seoDescription": "Free full-length SCS-C03 practice exam with {n} original scenario questions, instant explanations, and a per-domain readiness read. No signup.",
+  "seoDescription": "Free SCS-C03 practice exam with {n} original scenario questions, instant explanations, and a per-domain readiness read. No signup.",
   "domains": [
     {
       "name": "Detection",

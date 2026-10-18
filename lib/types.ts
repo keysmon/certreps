@@ -45,9 +45,20 @@ export interface CertMeta {
   passLinePct: number;
   // Whether passLinePct represents an official raw passing percentage. false means
   // it is OUR study target, including exams whose scaled score cannot be converted
-  // to a raw percentage (AIP-C01). Absent/true retains legacy display behavior.
+  // to a raw percentage (AWS exams). Absent/true retains legacy display behavior.
   passLineOfficial?: boolean;
   verified: string;
+  // Real exam facts, separate from the practice configuration and bank review date.
+  examDetails?: {
+    guideUrl: string;
+    examUrl?: string;
+    questionCount: string;
+    durationMinutes: number;
+    passingScore: string;
+    questionTypes: string[];
+    checkedOn: string;
+    statusNote?: string;
+  };
   // SERP-budget title/description for the cert landing page. The page is a pure
   // template over these: seoDescription carries a {n} placeholder for the mock
   // question count so the copy stays in the content layer, not the route code.

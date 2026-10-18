@@ -418,6 +418,8 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId, reveal, retr
             <QuestionCard
               key={q.id}
               question={q}
+              certId={meta.certId}
+              vendorSlug={meta.vendorSlug}
               graded={g}
               onSubmit={submit}
               attemptId={attemptId}

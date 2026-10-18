@@ -1,0 +1,6 @@
+import type { CertMeta } from "@/lib/types";
+export function ExamDetails({meta}: {meta: CertMeta}) {
+ const info = meta.examDetails;
+ if (!info) return null;
+ return <section className="learning-panel exam-details" aria-label="Exam format"><h2>Official exam and this practice bank</h2>{info.statusNote && <p className="learning-notice">{info.statusNote}</p>}<dl className="learning-facts"><div><dt>Official exam</dt><dd>{info.questionCount} questions / {info.durationMinutes} minutes</dd></div><div><dt>Official passing score</dt><dd>{info.passingScore}</dd></div><div><dt>Official question formats</dt><dd>{info.questionTypes.join(", ")}</dd></div><div><dt>CertReps mock</dt><dd>{meta.mockQuestionCount} practice questions / {meta.mockMinutes} minutes. Multiple choice and multiple response only.</dd></div></dl><p className="learning-muted">Practice percentages are study feedback and do not predict an official exam result. Content availability and exam policies can change.</p><a href={info.guideUrl} target="_blank" rel="noopener noreferrer">Official exam guide (opens new tab)</a><p className="learning-muted">Exam details checked {info.checkedOn}. Question-bank review: {meta.verified}.</p></section>;
+}

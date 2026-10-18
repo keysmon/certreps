@@ -1,158 +1,101 @@
-# Implementation & Integration for GenAI on AWS (AIP-C01 Domain 2)
+# Implementation and Integration
 
-*Verified Q3 2026 - covers ~26% of the AIP-C01 exam.*
+AIP-C01 Domain 2 · 26% of scored content · Sources reviewed 2026-10-18
 
-## What this domain tests
+## What you will learn
 
-Wiring generative-AI models into working applications on Amazon Bedrock: calling models through a
-portable API, building agents that take actions and cite sources, streaming tokens to clients,
-orchestrating multi-step pipelines, keeping workloads resilient under throttling, and standing up
-embeddings-based semantic search.
+Integrate model APIs, implement a controlled tool loop, distinguish agent infrastructure from orchestration, and design streaming and asynchronous workflows. This lesson spans agent tools, deployment, enterprise integration, APIs, and development patterns. Prerequisites: HTTP requests, JSON, authentication, and the difference between a synchronous response and a queued job. The exercise is a paper design with no paid resources.
 
-## The Converse API, tool use, and structured output
+## 1. Put a stable interface around inference
 
-The **Converse API** exposes one consistent request and response shape (messages, system prompt,
-inference parameters) across Bedrock model families, so you can A/B test Claude against Amazon Nova
-and Meta Llama by swapping the model ID with no per-model request-building or response-parsing code.
-Prefer it over model-specific **InvokeModel** JSON bodies whenever the scenario wants to switch or
-compare models cheaply.
+Bedrock Converse provides a common message interface for supported models. It reduces provider-specific request handling, but a model switch still requires checking modalities, supported parameters, tool behavior, quotas, and quality. InvokeModel uses a model-specific body and remains useful where a model feature requires that interface. Converse and ConverseStream use the bedrock-runtime endpoint.
 
-For output that conforms to a strict schema, declare the target structure as a **tool** in the
-Converse tool configuration and use tool use: the model returns arguments matching your defined field
-names and types, which a downstream parser consumes directly. This beats asking for JSON in plain
-English (no structural guarantee) and beats raising temperature (which makes output less consistent).
-Harden it further by **prefilling the assistant turn** with the opening brace so the model continues
-valid JSON.
+Your application should own request validation, authorization, model selection, timeout budgets, and error handling. Keep model IDs and prompt versions in controlled configuration. Pass only necessary conversation history; a conversational API does not remove the application's responsibility for state, privacy, or context limits.
 
-The tool-use loop has a required shape. When Converse returns a stopReason of **tool_use** with a
-toolUse block, the application executes the requested function, then sends a follow-up Converse
-request that appends the assistant toolUse message plus a user message carrying a matching
-**toolResult** block with the same **toolUseId**. Only then can the model produce its final answer.
-Ignoring the block, returning it raw, or switching APIs does not complete the loop.
+For self-hosted models on SageMaker AI, deployment also involves instance capacity, model loading, memory, scaling, and endpoint operation. Managed inference reduces those infrastructure decisions. Choose based on customization, operational capacity, latency, and supported deployment modes rather than assuming every custom model requires the same serving option.
 
-When several business units share one model and spend must be attributed per unit, invoke through a
-tagged **application inference profile** so Bedrock usage is tracked by tag in Cost Explorer with no
-custom accounting.
+## 2. Complete the tool loop safely
 
-## Prompt caching, prompt structure, and guardrails
+A tool definition describes an operation and its inputs. In client-side Converse tool use, the model requests a tool; application code executes it. The loop is:
 
-When a request sends a large static prefix (system prompt, style guide, policy text) followed by a
-short, always-different question, enable **prompt caching** and place the cache checkpoint **after**
-the static prefix and **before** the variable question. Content before the checkpoint is cached, so
-that placement makes the large prefix reusable and cuts both input-token cost and time-to-first-token
-while leaving the prompt text intact; a checkpoint inside or after the changing question yields almost
-no reuse.
+1. Send messages and allowed tool definitions.
+2. Inspect the assistant response for tool-use content and the stop reason.
+3. Validate the tool name and arguments; authenticate and authorize the operation.
+4. Execute the tool, or return a controlled error.
+5. Append the assistant tool-use message and a tool result associated with the same tool-use ID.
+6. Ask the model to continue, enforcing turn, time, and cost limits.
 
-When a prompt mixes reviewer instructions with a source document and the model follows sentences
-buried in the document, wrap the source in **XML tags** such as `<document>...</document>` and keep
-the instructions outside the tags so the model treats the document as data, not commands.
+A request to refund an order is not permission to refund any order. The backend must check ownership, amount, approval, and duplicate execution. Use an idempotency key for consequential writes so retries do not repeat the business action. Represent timeouts accurately: “unknown whether completed” is different from “failed before execution.” Reconcile ambiguous outcomes before retrying.
 
-To block denied topics and filter harmful content with the least code, create a Bedrock **guardrail**
-and reference it in the **guardrailConfig** of each Converse request. For a custom RAG app that calls
-Converse directly and does not use Agents, screen both directions with one guardrail: call the
-**ApplyGuardrail** API on the raw user input before retrieval, and pass the same guardrail in
-guardrailConfig so the model output is evaluated too.
+MCP standardizes how an agent discovers and calls tools; it does not establish that every discovered tool is safe for every caller. Tool results, including text returned from a database or website, remain untrusted input to the model.
 
-## Amazon Bedrock AgentCore
+## 3. Separate output shape from business correctness
 
-The original Amazon Bedrock Agents is now **Bedrock Agents Classic** and is closed to new customers as
-of July 30, 2026; **Amazon Bedrock AgentCore** is the current path for building and running agents. It
-is a set of modular services that work with any framework (Strands, LangGraph, CrewAI) and any model,
-so the exam frames agent scenarios in AgentCore terms.
+Prompting “return JSON” and supplying an ordinary tool schema do not by themselves provide the strict structured-output guarantee. On supported Bedrock models, use Converse `outputConfig.textFormat` for JSON-schema output, or `strict: true` in tool definitions for strict tool inputs. Other APIs have different fields. Check model, API, Region, inference-profile, and schema-subset support. Unsupported schema features can be rejected, and first-use schema compilation can add latency.
 
-**AgentCore Runtime** is a secure, serverless host for agents and tools. Each user conversation runs as
-a separate **runtime session in its own isolated microVM** (isolated CPU, memory, and filesystem), which
-is the fix for a multi-tenant assistant whose context bleeds across users - give every user or
-conversation a distinct session rather than sharing one. Runtime is framework- and model-agnostic,
-supports runs up to 8 hours, and lets agents talk to other agents and tools over **Model Context
-Protocol (MCP)** or **agent-to-agent (A2A)**; a multi-agent design (an orchestrator routing to billing,
-returns, and shipping specialists) is built on Runtime plus A2A, not a single named feature.
+Schema conformance does not prove an invoice amount is correct or that a tool action is authorized. Continue enforcing business rules, ownership, limits, refusal handling, and complete-response handling. Assistant prefilling is model-specific and is not a universal JSON enforcement technique. A supported structured-output feature is preferable when the requirement is machine-readable shape.
 
-**AgentCore Gateway** turns your existing REST APIs, Lambda functions, and services into **MCP tools**
-for agents with little code, and can front other agents and MCP servers behind one secure, authenticated
-endpoint. Expose only the tools an agent actually needs: least functionality means not wrapping
-high-impact operations (delete, refund) as tools at all. **Policy in AgentCore** enforces this
-deterministically - it intercepts every tool call at the Gateway boundary and evaluates it against rules
-written in **Cedar** (or natural language), so only the required read-only tools are allowed regardless
-of how the agent is prompted.
+## 4. Choose agent components by responsibility
 
-**AgentCore Memory** removes the need to hand-manage conversation state. **Short-term memory** keeps
-turn-by-turn context within a session, so a user need not repeat the device model or symptoms already
-given; **long-term memory** extracts and persists key facts and preferences across separate sessions for
-personalization days later. A larger context window does not carry data between sessions.
+| Need | Component or pattern |
+|---|---|
+| Run an agent or tool with session isolation | AgentCore Runtime |
+| Expose APIs and services as MCP tools | AgentCore Gateway |
+| Retain conversation events and selected cross-session facts | AgentCore Memory |
+| Manage agent and external-service authentication | AgentCore Identity |
+| Inspect agent execution and bottlenecks | AgentCore Observability |
+| Explicit business branches, retries, waiting, and approvals | Step Functions workflow |
 
-**AgentCore Identity** gives each agent its own identity and integrates with your existing IdP (Amazon
-Cognito, Okta, Microsoft Entra ID), so end users reach only the agents they are authorized for and
-agents authenticate outbound to third-party services (Slack, GitHub) on a user's behalf or autonomously.
-The built-in **Code Interpreter** and **Browser** tools give agents a sandbox to run code or drive a
-real browser.
+AgentCore services are modular. A framework such as Strands supplies agent behavior; hosting, tool exposure, and memory are separate design choices. A multi-agent design adds coordination overhead and should have a reason, such as distinct capabilities or trust boundaries.
 
-**AgentCore Observability** is how you debug a misbehaving agent: it emits **OpenTelemetry** traces to
-Amazon CloudWatch and visualizes each step of the execution path - the model's reasoning, the tools it
-invoked, and each step's inputs and outputs - so you can pinpoint where orchestration went wrong.
-CloudTrail records API management activity, not this intermediate detail.
+Current documentation calls the earlier service Bedrock Agents Classic and says it is closed to new customers while existing customers can continue. Classic scenarios still require understanding action groups, knowledge bases, versions, aliases, and traces. A newer product does not automatically change the answer to a scenario using an existing architecture. The blueprint, rather than a product launch date, defines the study scope.
 
-## Streaming responses to clients
+## 5. Make streaming work across the whole path
 
-**ConverseStream** produces tokens incrementally, but the delivery path decides whether the browser
-sees them early. A REST API through API Gateway buffers the full response, so users wait for the whole
-answer and raising the timeout does not help. To stream from a Lambda backend with the least added
-infrastructure, invoke it through a **Lambda function URL configured with response streaming** and
-forward the ConverseStream chunks.
+ConverseStream emits incremental model events. Your server, proxy, and browser must also forward and consume them incrementally. Measure time to first visible output as well as time to completion.
 
-When web and mobile clients need a persistent managed connection for push delivery, two managed
-options fit: publish each chunk through an **AWS AppSync** GraphQL subscription so subscribed clients
-receive tokens over the managed WebSocket, or send each chunk through an **Amazon API Gateway
-WebSocket API** using the connection callback URL. S3 polling and email are not push-based and are
-never the streaming answer.
+API Gateway REST APIs default to buffering, but supported proxy integrations can use response transfer mode `STREAM`. Therefore, “API Gateway REST always buffers” is outdated. Verify integration type and settings. A Lambda function URL with response streaming is another option; WebSocket APIs or AppSync subscriptions fit persistent push delivery. The best choice depends on existing infrastructure, authentication, connection behavior, and client requirements.
 
-## Orchestration and event-driven pipelines
+Handle disconnects, partial responses, errors after streaming begins, and safety checks. Showing early text improves perceived responsiveness without necessarily shortening total generation time.
 
-For a pipeline with sequential and conditional steps (classify, branch to one of several summarization
-prompts, call an external API, write to S3) plus built-in retries and failure visibility, use **AWS
-Step Functions**: it models branching, retries, and error handling declaratively and gives a visual
-execution history for pinpointing failures, minimizing custom orchestration code. One giant Lambda
-hand-codes all control flow and risks timeouts.
+## 6. Handle asynchronous work and failures
 
-To call Bedrock from a state machine without a wrapper Lambda, use the Step Functions **optimized
-integration** for Amazon Bedrock, which invokes InvokeModel directly from a task state. To start a
-pipeline the moment an object lands in S3 with no server polling, create an **Amazon EventBridge**
-rule on the S3 object-created event that targets the state machine.
+For a document-processing workflow, EventBridge can trigger work when a business event occurs, SQS can absorb bursts, and Step Functions can coordinate processing states. A queue changes the user contract from immediate completion to accepted work; expose job status and a failure path.
 
-## Resilience under throttling and failure
+Retry transient errors with capped exponential backoff and jitter. Reject invalid requests rather than retrying them unchanged. Limit concurrency, inspect token and request quotas, and use tested fallback behavior. A circuit breaker stops repeatedly calling an unhealthy dependency while allowing controlled recovery. Cross-Region inference must satisfy residency and permissions; it is not an unrestricted escape from capacity planning.
 
-For intermittent **ThrottlingException** from Bedrock, the client-side baseline is retry with
-**exponential backoff and jitter**, capping attempts: backoff spreads retries over time and jitter
-de-synchronizes concurrent callers so they do not retry in lockstep and recreate the storm. A tight
-loop or a fixed one-second interval makes it worse.
+## Worked scenario: a service-desk agent
 
-For durable headroom beyond catching the error, request a **Service Quotas** increase for the model's
-requests-per-minute and tokens-per-minute limits, and route overflow through a **cross-Region
-inference profile** to distribute load; InvokeModel and Converse share the same account limits, so
-switching APIs bypasses nothing. When requests must still complete during spikes even at reduced
-quality, buffer them on an **Amazon SQS** queue drained by a consumer with backoff to smooth bursts,
-and add application-level **fallback** to a secondary, higher-availability model when the primary
-throttles. For a downstream dependency suffering extended outages, add a **circuit breaker** that
-stops calling the failing dependency for a cooldown and fails fast or returns a fallback, protecting
-the thread pool from cascading timeouts.
+Assume an agent can read a ticket and propose a replacement device, but shipping requires employee approval. Expose a read-only ticket tool and a proposal tool. Store the proposal with an idempotency key, request approval through a durable workflow, then let an authorized backend execute shipment. Return the actual shipment result to the model. A natural-language instruction saying “never ship without approval” supplements the design; the backend approval check enforces it.
 
-## Embeddings pipelines for semantic search
+## Guided exercise
 
-Semantic search needs vectors, not prose. An **embeddings model** such as Amazon Titan Text Embeddings
-maps text to a fixed-length dense vector for nearest-neighbor retrieval, where a generation model
-cannot produce comparable vectors. Embed each document at index time; at query time, embed the query
-and retrieve nearest vectors, which on Amazon Aurora PostgreSQL is **pgvector** similarity search over
-the stored vectors.
+Draw the six-step tool loop for `lookup_order(order_id)`. Mark where the caller's identity is checked. Now add `cancel_order` and simulate a timeout after cancellation succeeded. Write the record needed to prevent a duplicate cancellation, the response shown while outcome is uncertain, and the maximum loop count. Finally mark every hop that must stream for the user to see an early token.
 
-The load-bearing rule: use the **same embedding model and output dimension** for both the indexed
-documents and the incoming queries so their vectors share one comparable space. Mixing models produces
-incompatible vectors and collapses retrieval quality. For bulk workloads of tens of millions of
-documents, submit an **Amazon Bedrock batch inference job** that reads from S3 and writes embeddings
-back to S3 at the discounted batch price rather than looping real-time calls, and configure **Titan
-Text Embeddings V2** to emit smaller-dimension vectors (such as 256) to cut vector storage and query
-cost.
+## Checkpoint
 
-## Practice this domain
+1. A schema-valid refund request names another customer's order. Should it execute?
+2. Does replacing Converse with InvokeModel automatically resolve throttling?
+3. Where does a tool result's matching ID matter?
 
-Take a [Domain 2 drill](/aws/aip-c01/practice?mode=drill&domain=Implementation%20%26%20Integration)
-or the [full AIP-C01 mock exam](/aws/aip-c01/practice?mode=mock).
+### Answers and reasoning
+
+1. No. Structural validity does not replace ownership and action authorization.
+2. No. Identify the applicable model, endpoint, and quota; changing the request format alone does not establish new capacity.
+3. It associates the result with the requested operation so the conversation can continue coherently.
+
+## Common traps
+
+Do not confuse a tool request with execution, agent memory with document retrieval, streaming with shorter total generation, or a queue with synchronous availability. Avoid unbounded tool loops and retries of non-idempotent actions.
+
+## Official references
+
+- [Domain 2 tasks and skills](https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain2.html)
+- [Converse API](https://docs.aws.amazon.com/bedrock/latest/userguide/conversation-inference.html)
+- [Tool-use modes](https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html)
+- [Structured outputs and strict tool use](https://docs.aws.amazon.com/bedrock/latest/userguide/structured-output.html)
+- [AgentCore overview](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/what-is-bedrock-agentcore.html)
+- [Bedrock Agents Classic](https://docs.aws.amazon.com/bedrock/latest/userguide/agents.html)
+- [API Gateway response streaming](https://docs.aws.amazon.com/apigateway/latest/developerguide/response-transfer-mode.html)
+
+Continue when useful with a [Domain 2 drill](/aws/aip-c01/practice?mode=drill&domain=Implementation%20%26%20Integration) or the [mock exam](/aws/aip-c01/practice?mode=mock). Reading is optional; practice remains available directly.

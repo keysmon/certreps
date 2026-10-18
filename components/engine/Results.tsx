@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import type { Attempt, CertMeta, Question } from "@/lib/types";
+import { AnswerLearning } from "./AnswerLearning";
 import { gradeAttempt } from "@/lib/scoring";
 import { HEAVY_PAUSE_THRESHOLD, domainVerdict, type Verdict } from "@/lib/readiness";
 import { VENDORS } from "@/components/ui/VendorDot";
@@ -195,7 +196,7 @@ export function Results({ attempt, questions, meta }: { attempt: Attempt; questi
                   {q.excludedFromPractice && (
                     <p className="muted">Archived question: excluded from new practice after review. {q.exclusionReason}</p>
                   )}
-                  <p className="recap-explain" dangerouslySetInnerHTML={{ __html: q.explanation }} />
+                  <AnswerLearning question={q} certId={meta.certId} vendorSlug={meta.vendorSlug} attemptId={attempt.attemptId} chosen={chosen} className="recap-explain" showCorrect={false} />
                   <a className="doclink" href={q.docUrl} target="_blank" rel="noopener noreferrer">
                     Read the {VENDORS[meta.vendorSlug]?.n ?? meta.vendor} docs {ARROW}
                   </a>

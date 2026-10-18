@@ -1,126 +1,90 @@
-# Foundation Model Integration, Data Management, and Compliance for GenAI on AWS (AIP-C01 Domain 1)
+# Foundation Model Integration, Data Management, and Compliance
 
-*Verified Q3 2026 - covers ~31% of the AIP-C01 exam.*
+AIP-C01 Domain 1 · 31% of scored content · Sources reviewed 2026-10-18
 
-## What this domain tests
+## What you will learn
 
-Choosing and integrating the right Amazon Bedrock foundation model for a workload, grounding it
-with Knowledge Bases and vector search, moving up the customization ladder when prompting is not
-enough, and keeping data private, encrypted, and in-Region. It is the largest domain, so most of
-the exam's model-selection and compliance scenarios live here.
+Turn a business requirement into a model and data architecture; distinguish prompting, retrieval, and customization; design a maintainable retrieval pipeline; explain how permissions and provenance affect answer quality. This lesson covers the six Domain 1 task areas. You should already understand an API request, an IAM role, and basic S3 storage. No AWS account or paid resources are needed for the exercise.
 
-## Choosing a foundation model
+## 1. Start with the acceptance criteria
 
-Match the model to the workload's context length, modality, cost, and licensing.
+A foundation model produces plausible continuations from its input. It does not automatically know today's company policy, possess access to your database, or verify every claim. Before choosing a model, define the task and the evidence of success: who asks, what data they may use, what an acceptable answer contains, latency, cost, residency, and failure behavior.
 
-- **Anthropic Claude has a large context window (200K tokens, and more on the newest Claude models)** and strong reasoning, so it is the answer
-  for ingesting a very long document (a 250-page contract) in one pass and reasoning across
-  distant sections.
-- **Amazon Nova Micro is text-only with the lowest latency and very low cost**, the pick for
-  high-volume, lightweight work such as short-message intent classification. It does not accept
-  image or video input.
-- **Amazon Nova Lite and Nova Pro are multimodal and accept text, image, and video inputs.**
-- **Amazon Nova Canvas generates images from text** prompts; do not confuse it with the
-  text-understanding Nova models.
-- For image *inputs* alongside text, both **Claude vision models and Amazon Nova multimodal
-  models** are valid candidates. Claude accepts images but outputs text, not images.
-- **Meta Llama models are open-weight and openly licensed**, so the same base model can be
-  self-hosted (for example on Amazon SageMaker) to avoid vendor lock-in. Claude and Nova are
-  proprietary, API-only.
+For a support assistant, “helpful answers” is too vague. “Answer from the currently approved manual, cite the section, and abstain when evidence is missing” can be evaluated. A proof of concept should test those requirements on representative examples before expanding infrastructure.
 
-## Amazon Bedrock Knowledge Bases and chunking
+Choose models by measured capability: input modalities, context size, tool support, language performance, output constraints, availability, and cost. A long context window means a request can fit; it does not prove the model will find a small exception buried in a long document. Keep model selection behind configuration and a common application interface so a model update does not require rewriting business logic.
 
-Knowledge Bases handle ingestion, embedding, and retrieval for RAG. Chunking strategy is the
-most-tested lever.
+## 2. Choose the intervention that fixes the failure
 
-- **Hierarchical chunking** creates parent and child chunks: retrieval matches the small child
-  chunk for precision, then returns the larger parent chunk for context. Best for structured
-  documents with nested sections.
-- **Semantic chunking** splits text at natural meaning boundaries using embedding similarity, so
-  related sentences stay together. Best for long narrative content where topic boundaries do not
-  align with fixed token counts.
-- **No chunking** treats each record or document as a single chunk. Best when content is already
-  pre-segmented, such as spreadsheet rows that are each a self-contained FAQ answer.
-- **Fixed-size chunking** ignores document structure and can split ideas mid-thought.
-- After source updates, run an **incremental data source sync** that re-embeds only added,
-  modified, and deleted objects, rather than recreating the Knowledge Base and reprocessing
-  everything.
+| Observed problem | Candidate intervention | What it changes |
+|---|---|---|
+| Instructions are ambiguous | Better prompt and examples | Information supplied with each request |
+| Company facts change frequently | Retrieval augmented generation (RAG) | Evidence fetched at request time |
+| Repeated task behavior remains poor despite good prompts | Supported model customization | Learned model behavior |
+| Large model is too costly for a narrow task | Smaller model, routing, or distillation | Capacity and cost of the serving path |
 
-## Vector stores and embeddings
+These are alternatives and combinations, not a compulsory sequence. RAG retrieves external evidence without updating model weights. Supervised fine-tuning uses labeled examples to change behavior. Distillation transfers task behavior from a teacher to a smaller student. Customization support and serving requirements vary by model; do not assume every family supports every method. Strict JSON formatting alone is a reason to investigate supported structured outputs before funding training.
 
-Pick the store by latency, existing footprint, and scale; pick the embeddings model by modality
-and language.
+## 3. Build the retrieval pipeline in two halves
 
-- **Amazon OpenSearch Serverless** is the **quick-create default** that Bedrock provisions and
-  manages for you with no manual vector-store setup.
-- **Aurora PostgreSQL with the pgvector extension** adds vector search inside a database a team
-  already runs, avoiding a new service for a moderate corpus.
-- **Redis Enterprise** keeps vectors in memory for **single-digit millisecond** similarity
-  lookups, the choice for real-time features. **S3 Vectors** optimizes cost for large,
-  latency-tolerant corpora.
-- **Amazon Neptune Analytics** backs **GraphRAG**, which builds a knowledge graph to traverse
-  explicit entity relationships and answer multi-hop questions that pure vector similarity
-  cannot. DynamoDB and Athena are not vector stores.
-- **Cohere Embed Multilingual** maps many languages into one shared vector space for cross-lingual
-  search from a single model. **Amazon Titan Multimodal Embeddings** map images and text into a
-  shared space for text-to-image and image-to-image search.
-- **Amazon Titan Text Embeddings V2 supports output dimensions of 1024 (default), 512, and 256.**
-  Choosing 256 shrinks vectors to cut storage cost and query latency at a small accuracy cost.
+At ingestion, acquire documents, validate them, parse their contents, split into chunks, attach metadata, generate embeddings, and index them. At query time, authenticate the caller, establish allowed sources, retrieve candidates, optionally rerank, assemble context, generate, and return evidence.
 
-## Retrieval quality and access control
+An embedding is a numeric representation used for similarity comparison. Document and query vectors must use compatible embedding models and configurations. Matching vector length alone does not make vectors from unrelated models comparable. Changing the embedding model normally requires rebuilding the indexed representations and testing retrieval again.
 
-When a RAG app returns loosely relevant chunks, fix retrieval before touching the generation model.
+Chunking controls what a search result can carry. Tiny chunks may lose the condition attached to a rule; huge chunks dilute relevance and consume context. Preserve headings, table meaning, and document relationships where useful. Overlap can protect boundary information, but also duplicates content. Choose settings through retrieval tests rather than a universal token count.
 
-- **Metadata filtering** attaches attributes such as department to documents and filters at query
-  time, giving document-level isolation from a single index. It is the multi-tenant answer, better
-  than one index per unit or post-filtering that still pulls other tenants' data into the app.
-- **A reranker model (Amazon Rerank or Cohere Rerank)** scores each retrieved chunk against the
-  query and reorders results so the best passages reach the model first, and it lets you pass
-  fewer, higher-quality chunks to cut cost and latency.
-- To improve retrieval relevance without changing the foundation model, the two highest-leverage
-  changes are **adding metadata filtering** and **matching the chunking strategy to the document
-  structure**. Temperature, max output tokens, and swapping the generation model affect only
-  generation, not what is retrieved.
+Metadata should include source identity, version or effective date, classification, and the attributes needed for access filtering. Validate dates, empty documents, extraction failures, duplicates, and unsupported formats before indexing. A successful upload does not establish a successful parse. Define update and deletion behavior so superseded policies and revoked documents disappear from retrieval.
 
-## The customization ladder
+## 4. Compare search and storage choices
 
-Climb only as far as the requirement forces you: **prompt engineering, then RAG, then
-fine-tuning, then continued pre-training.**
+Semantic search helps when a question paraphrases the source. Lexical search helps with exact identifiers such as error codes or product numbers. Hybrid retrieval combines these signals when the backend and integration support it. Reranking reorders candidates using another relevance assessment; it cannot recover a document excluded before candidate retrieval.
 
-- **RAG** fits changing or current facts, answers that need source citations, and adding knowledge
-  without retraining.
-- **Fine-tuning** is for reliably enforcing a proprietary output format or tone that prompting
-  cannot, using labeled examples, when the underlying knowledge is stable. Training data is a
-  **JSONL file where each line is a JSON object with prompt and completion fields.**
-- **Continued pre-training** consumes a large *unlabeled* corpus to teach domain vocabulary and
-  style; use it when there are no labeled prompt-and-completion pairs.
-- Serving custom models (2025 update): **custom Amazon Nova models (Nova Micro, Nova Lite,
-  Nova 2 Lite, Nova Pro) and Meta Llama 3.3 70B can be deployed for on-demand inference** (in
-  US East N. Virginia or US West Oregon), while **an Anthropic Claude fine-tune still requires
-  Provisioned Throughput.**
+| Choice | Useful reason to choose it | Question to verify |
+|---|---|---|
+| OpenSearch vector search | Search features and vector/keyword combinations | Index design, filtering, supported search mode |
+| Aurora PostgreSQL with pgvector | Existing relational operations and SQL needs | Index behavior, capacity, query latency |
+| A managed knowledge-base experience | Reduced ingestion and retrieval infrastructure work | Connectors, permission behavior, regional support |
+| Customer-managed retrieval components | Detailed control over parsing, storage, and ranking | Who maintains synchronization and authorization? |
 
-## Data protection and compliance
+The current Bedrock overview distinguishes Managed Knowledge Bases from customer-managed Knowledge Bases. Their connector, permission, and infrastructure responsibilities differ. Treat the exact product variant in a scenario as meaningful; never assume every knowledge base automatically honors every enterprise ACL.
 
-Bedrock's default posture is strong, and the exam rewards knowing the exact controls.
+## 5. Govern prompts and evidence
 
-- **Amazon does not use your prompts or completions to train the base foundation models, and your
-  content is not shared with third-party model providers.**
-- **Bedrock is HIPAA-eligible under an AWS Business Associate Addendum (BAA)**, supporting PHI
-  workloads with proper controls.
-- **A customer managed AWS KMS key** encrypts Knowledge Base data and custom-model artifacts at
-  rest with keys you control, rotate, audit via CloudTrail, and can revoke.
-- **An interface VPC endpoint using AWS PrivateLink** exposes Bedrock as a private ENI so API
-  traffic stays on the AWS network. A NAT gateway still uses the public path.
-- **Scope Bedrock usage to chosen Regions for data residency.** Cross-Region inference may route
-  requests to other Regions, so use a geography-scoped inference profile (for example EU-scoped)
-  or disable cross-Region routing to keep data in-Region.
-- **Model invocation logging** captures the full request and response payloads and delivers them
-  to Amazon S3 and CloudWatch Logs for audit. **CloudTrail records management events (who called
-  what), not the prompt and response content.**
-- **Amazon Bedrock Guardrails sensitive information filters** detect PII in inputs and outputs and
-  block or mask it, replacing values with the entity type such as {NAME} or {PHONE}.
+A useful prompt states the task, separates reference material from instructions, defines the output, and explains what to do without sufficient evidence. Delimiters make structure clearer but do not enforce security against hostile source text. Authorization belongs in the retrieval and tool layers.
 
-## Practice this domain
+Version the prompt, model configuration, embedding configuration, and data snapshot used in an evaluation. Preserve source identifiers in answers so a reviewer can check the actual supporting passage. A citation is a pointer; it still needs to support the specific claim. Restrict and retain source data according to the application's requirements, including copies in logs and indexes.
 
-Take a [Domain 1 drill](/aws/aip-c01/practice?mode=drill&domain=Foundation%20Model%20Integration%20%26%20Compliance)
-or the [full AIP-C01 mock exam](/aws/aip-c01/practice?mode=mock).
+## Worked scenario: an equipment manual assistant
+
+Assume a manufacturer updates manuals weekly, requires exact part-number lookup, and restricts manuals by customer contract. The assistant currently answers from an older manual.
+
+Start by checking which version was ingested and retrieved. Fine-tuning would not repair a stale source pipeline. Record effective dates, synchronize updates, filter by authenticated customer entitlement, and test hybrid retrieval for exact part numbers plus natural-language symptoms. Add a prompt to cite the approved section and abstain without evidence. Compare candidate models on these same cases. The architecture follows the freshness, access, and retrieval requirements; “use the largest model” does not resolve them.
+
+## Guided exercise: design on paper
+
+Create three short policy passages: an old return period, its replacement, and an exception for damaged items. Write two customer identities with different access. Draw ingestion and query paths, then answer: which metadata selects the current policy, where is access enforced, and which chunk preserves the exception? Write a query containing an exact policy code and another that paraphrases it. Predict which retrieval method each benefits from. No cloud deployment is required.
+
+## Checkpoint
+
+1. Retrieval returns the correct policy, but the answer invents an extra exception. Which layer should you inspect next?
+2. Two embedding models both emit 1,024 dimensions. Can their vectors be mixed safely?
+3. A document is deleted from S3. What must your architecture verify?
+
+### Answers and reasoning
+
+1. Inspect assembled context, prompt, and generation behavior; the needed evidence already reached retrieval. Add grounding evaluation and an abstention policy rather than changing storage blindly.
+2. No. Equal dimensions do not establish a shared embedding space.
+3. Verify synchronization removes its searchable content and that cached answers respect deletion or invalidation requirements.
+
+## Common traps
+
+Do not treat RAG as a truth guarantee, a reranker as a substitute for permissions, a larger context as better retrieval, or fine-tuning as a live company database. Watch for “least operational overhead”: unnecessary custom services can make a technically valid design the wrong answer.
+
+## Official references
+
+- [Domain 1 tasks and skills](https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain1.html)
+- [Bedrock Knowledge Bases and product variants](https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base.html)
+- [Knowledge-base data prerequisites](https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-ds.html)
+- [Model customization methods](https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html)
+
+Continue when useful with a [Domain 1 drill](/aws/aip-c01/practice?mode=drill&domain=Foundation%20Model%20Integration%20%26%20Compliance) or the [mock exam](/aws/aip-c01/practice?mode=mock). Reading is optional; practice remains available directly.

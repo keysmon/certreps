@@ -197,6 +197,8 @@
     ],
     "explanation": "<b>Continued pre-training</b> consumes large unlabeled corpora to teach a model domain vocabulary and style without requiring labeled pairs, exactly matching the firm's situation. Fine-tuning needs labeled prompt-and-completion data they lack, RAG injects retrieved facts at inference but does not change the model's internal language, and few-shot prompting cannot absorb an entire proprietary corpus.",
     "id": "aipc01-0010",
+    "excludedFromPractice": true,
+    "exclusionReason": "Current Bedrock continued pre-training availability could not be verified against the current customization documentation during the 2026-10-18 lesson review.",
     "difficulty": "hard",
     "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html",
     "concept": "customization-ladder"
@@ -1290,7 +1292,7 @@
     "correct": [
       0
     ],
-    "explanation": "A ThrottlingException means requests are exceeding the account's per-model rate, so the correct response is client-side <b>exponential backoff with jitter</b> plus, for sustained demand, a service quota increase or <b>Provisioned Throughput</b>. A missing bedrock:InvokeModel permission would fail every call with AccessDeniedException, not intermittently at peak. Reducing max_tokens addresses context-length ValidationExceptions. Model invocation logging records calls but does not retry them.",
+    "explanation": "A <b>ThrottlingException</b> calls for bounded <b>exponential backoff with jitter</b> and investigation of the applicable request-rate and token quotas. For sustained demand, request an eligible quota increase or evaluate supported <b>Provisioned Throughput</b>. Missing bedrock:InvokeModel permission produces AccessDeniedException rather than peak-load throttling. An oversized <b>max_tokens</b> value can also contribute to throttling because Bedrock reserves input tokens plus the requested output allowance upfront; inspect token usage and right-size that allowance where applicable. The option that reduces max_tokens only to fit the context window does not diagnose the reported rate-limit failure. Model invocation logging supplies evidence but does not retry failed requests.",
     "id": "aipc01-0062",
     "difficulty": "easy",
     "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/quotas.html",
@@ -2666,7 +2668,7 @@
     "correct": [
       3
     ],
-    "explanation": "A <b>regression gate</b> built from a versioned <b>golden dataset</b> plus an automated evaluation that runs in the pull request pipeline and fails the build when the aggregate score drops below a set threshold catches quality regressions before they merge, deterministically and repeatably. Manual spot-checks are inconsistent and do not scale, deploying to all traffic and waiting for complaints provides no safeguard and maximum blast radius, and Prompt management versions and stores prompts but does not evaluate quality or block a regression on its own.",
+    "explanation": "A <b>regression gate</b> combines a versioned <b>golden dataset</b> with automated evaluation in the pull request pipeline and fails the build when quality falls below an agreed threshold. Compare each prompt version against the baseline using consistent evaluation settings, and use repeated measurements where needed to account for generation and judge variability; the scores are not guaranteed to be deterministic. Manual spot-checks can miss regressions, while releasing to all users and waiting for complaints exposes production before evaluation. Prompt management stores and versions prompts but does not evaluate quality or enforce the pipeline gate on its own.",
     "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/evaluation.html",
     "id": "aipc01-0128",
     "concept": "prompt-regression-discipline"
