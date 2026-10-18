@@ -403,3 +403,18 @@ body.industrial-shell { padding-left:var(--workspace-width); }
  .industrial-shell .exambar .timer { font-size:12px; }
  .industrial-shell .practice-menu .workspace-menu-toggle { min-width:56px; }
 }
+
+/* Keep answer submission in the same safe bottom area as the graded Next action. */
+@media (max-width:760px), (max-height:500px) and (pointer:coarse) {
+ .industrial-shell .qcard:has(> .footbar) { animation:none; }
+ .industrial-shell .qcard > .footbar {
+  position:fixed; left:0; right:0; bottom:0; z-index:60; margin:0;
+  padding:12px var(--phone-right) calc(12px + var(--safe-bottom)) var(--phone-left);
+  background:var(--ink); border-top:1px solid var(--line-strong);
+ }
+ .industrial-shell .stage:has(.qcard > .footbar) { padding-bottom:calc(140px + var(--safe-bottom)); }
+}
+@media (max-width:760px), (max-height:500px) and (pointer:coarse) {
+ .industrial-shell .recap { overflow-wrap:anywhere; }
+ .industrial-shell .recap-body .option > span:last-child { min-width:0; }
+}

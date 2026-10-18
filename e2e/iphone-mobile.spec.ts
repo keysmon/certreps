@@ -40,6 +40,11 @@ for (const viewport of [{ width: 320, height: 568 }, { width: 375, height: 667 }
     await page.setViewportSize(viewport);
     await page.goto("/aws/aip-c01/practice?mode=quick");
     await expect(page.locator("button.option").first()).toBeVisible();
+    const submit = page.getByRole("button", { name: "Submit answer", exact: true });
+    await expect(submit).toBeInViewport();
+    await expect(submit).toBeDisabled();
+    const submitBox = await submit.boundingBox();
+    expect(submitBox!.y + submitBox!.height).toBeLessThanOrEqual(viewport.height);
     await page.screenshot({ path: `/tmp/certreps-iphone-question-${viewport.width}.png`, fullPage: true });
     const bar = await page.locator(".exambar").boundingBox();
     expect(bar!.height).toBeLessThanOrEqual(60);
@@ -61,7 +66,15 @@ for (const viewport of [{ width: 320, height: 568 }, { width: 375, height: 667 }
     const id = await page.evaluate(() => JSON.parse(localStorage.getItem("certreps.attempts.v1")!)[0].questionIds[0]);
     const q = getPracticeBank().find(q => q.id === id)!;
     for (const i of q.correct) await page.locator("button.option").filter({ hasText: q.options[i] }).click();
-    await page.getByRole("button", { name: "Submit answer", exact: true }).click();
+    await expect(submit).toBeEnabled();
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await expect(submit).toBeInViewport();
+    expect((await submit.boundingBox())!.y).toBeCloseTo(submitBox!.y, 0);
+    await page.addStyleTag({ content: ":root { --safe-bottom: 34px; }" });
+    expect(await page.locator(".qcard > .footbar").evaluate(el => parseFloat(getComputedStyle(el).paddingBottom))).toBeGreaterThanOrEqual(46);
+    await page.screenshot({ path: `/tmp/certreps-iphone-submit-${viewport.width}.png` });
+    await submit.click();
+    await expect(page.locator(".qcard > .footbar")).toHaveCount(0);
     await page.addStyleTag({ content: ":root { --safe-bottom: 34px; }" });
     const action = page.getByRole("button", { name: "Next question", exact: true });
     expect((await action.boundingBox())!.height).toBeGreaterThanOrEqual(44);
@@ -84,6 +97,10 @@ for (const viewport of [{ width: 320, height: 568 }, { width: 375, height: 667 }
     await page.setViewportSize(viewport);
     await page.goto("/aws/aip-c01/practice?mode=mock");
     await expect(page.getByRole("timer")).toBeVisible();
+    await expect(page.getByRole("button", { name: "Submit answer", exact: true })).toBeInViewport();
+    await page.locator("button.option").first().click();
+    await page.getByRole("button", { name: "Submit answer", exact: true }).click();
+    await expect(page.getByRole("button", { name: "Update answer", exact: true })).toBeInViewport();
     const review = page.getByRole("button", { name: "Review & submit", exact: true });
     expect((await review.boundingBox())!.height).toBeGreaterThanOrEqual(44);
     expect((await page.locator(".exambar").boundingBox())!.height).toBeLessThanOrEqual(60);
@@ -119,4 +136,19 @@ test("phone keyboard certification switcher remains visible with compact chrome"
   await page.keyboard.press("Escape");
   await expect(page.getByRole("dialog")).not.toBeVisible();
   await expect(page.getByRole("button", { name: "Open navigation", exact: true })).toBeFocused();
+});
+
+
+test("long service actions wrap in narrow phone answer review", async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 568 });
+  const q = getPracticeBank().find(q => JSON.stringify(q).includes("bedrock:InvokeModelWithResponseStream"))!;
+  expect(q).toBeDefined();
+  await page.goto("/aws/aip-c01");
+  await page.evaluate(questionId => localStorage.setItem("certreps.attempts.v1", JSON.stringify([{
+    attemptId: "long-service-action", certId: "aip-c01", mode: "quick", questionIds: [questionId],
+    results: {}, startedAt: 1, finishedAt: 2, elapsedSec: 60, pauseCount: 0,
+  }])), q.id);
+  await page.goto("/account/attempts/long-service-action");
+  await page.getByRole("button", { name: "Review 1 missed question", exact: true }).click();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });
