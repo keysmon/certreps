@@ -259,7 +259,7 @@ function EmptyState() {
       </div>
       <div className="big">No practice yet</div>
       <p className="muted">
-        Pick a certification and run a quick drill - your scores, readiness, and weak areas will show up here.
+        Practice to record your scores. Complete a full mock to see readiness and weak areas.
       </p>
       <Link className="btn btn-primary" href="/catalog">
         Browse certifications {ARROW}
@@ -348,7 +348,7 @@ export function AccountClient({ welcome }: { welcome: boolean }) {
             <div className="body">
               <div className="bt">Account backup enabled</div>
               <div className="bs">
-                Your scores back up automatically while you are signed in{email ? ` as ${email}` : ""}.
+                Your completed attempts can sync across devices while you are signed in{email ? ` as ${email}` : ""}.
               </div>
             </div>
             <button type="button" className="pg-signout" disabled={signingOut} onClick={signOut}>
@@ -360,7 +360,7 @@ export function AccountClient({ welcome }: { welcome: boolean }) {
             <span className="dot" style={{ background: "var(--gold)" }} aria-hidden="true" />
             <div className="body">
               <div className="bt">Progress is saved on this device</div>
-              <div className="bs">Sign in to sync across devices and never lose your reps.</div>
+              <div className="bs">Sign in to back up completed attempts across devices.</div>
             </div>
             <Link className="btn btn-primary btn-sm" href="/login">
               Sign in to sync
