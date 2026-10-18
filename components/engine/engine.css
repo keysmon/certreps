@@ -151,3 +151,27 @@
   .r-stats { grid-template-columns: 1fr 1fr; }
   .recap-body { padding-left: 4px; }
 }
+
+/* Session results: score captions stay outside the ring and actions wrap on small screens. */
+.result-hero { display: flex; align-items: center; gap: 28px; padding: 28px 30px; margin-bottom: 22px; border: 1px solid var(--line); background: var(--panel); border-radius: var(--radius-lg); }
+.result-copy { flex: 1; min-width: 0; }
+.result-domain { font-weight: 600; margin: 10px 0 4px; }
+.result-counts { color: var(--muted); font-size: 14px; margin: 8px 0; }
+.result-actions { display: flex; flex-wrap: wrap; gap: 12px; margin: 0 0 12px; }
+.result-actions .btn { white-space: normal; text-align: center; }
+.result-note { font-size: 12.5px; color: var(--muted); line-height: 1.6; margin: 10px 0 20px; }
+.result-breakdown, .result-recommendations { margin-bottom: 22px; }
+.result-domain-link { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px; margin: 8px 0; border: 1px solid var(--line); border-radius: var(--radius-sm); color: var(--text); text-decoration: none; }
+.result-domain-link small { display: block; margin-top: 4px; color: var(--muted); }
+.result-domain-link > span:last-child { flex-shrink: 0; color: var(--gold); }
+.result-back { margin: 0 0 22px; font-size: 14px; }
+.recap-collapse { scroll-margin-top: 90px; }
+.result-review-filter { padding: 14px 0; }
+@media (max-width: 600px) {
+  .result-hero { flex-direction: column; align-items: flex-start; padding: 22px 18px; gap: 18px; }
+  .result-hero > div:first-child { align-self: center; }
+  .result-copy .r-verdict { font-size: 23px; }
+  .result-actions { flex-direction: column; }
+  .result-actions .btn { width: 100%; }
+  .recap-collapse > summary { flex-wrap: wrap; }
+}

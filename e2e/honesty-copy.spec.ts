@@ -24,12 +24,12 @@ test("honesty copy: unpublished pass score reads as a study target, official cer
 }) => {
   // NVIDIA NCA-GENL publishes no official pass line -> "study target", never "pass line".
   await submitEmptyMock(page, "/nvidia/nca-genl");
-  await expect(page.locator(".r-sub")).toContainText("Study target is 70%.");
+  await expect(page.locator(".r-sub")).toContainText("Independent study target: 70%.");
   await expect(page.locator(".r-sub")).not.toContainText(/pass line/i);
 
   // AWS AIF-C01 has a real published pass line -> "pass line", never the "study target" hedge.
   await submitEmptyMock(page, "/aws/aif-c01");
-  await expect(page.locator(".r-sub")).toContainText("Pass line is ~70%.");
+  await expect(page.locator(".r-sub")).toContainText("Practice comparison threshold: 70%.");
   await expect(page.locator(".r-sub")).not.toContainText(/study target/i);
 });
 
@@ -43,7 +43,7 @@ test("AIP-C01 mock uses 75 questions, 180 minutes, and an independent study targ
   await page.getByRole("button", { name: "Review & submit" }).click();
   await expect(page.getByRole("button", { name: /^Go to question \d+/ })).toHaveCount(75);
   await page.getByRole("button", { name: "Submit exam" }).click();
-  await expect(page.locator(".r-sub")).toContainText("Study target is 75%.");
-  await expect(page.locator(".r-sub")).toContainText("does not convert to AWS's 750/1000 scaled passing score");
+  await expect(page.locator(".r-sub")).toContainText("Independent study target: 75%.");
+  await expect(page.locator(".result-note").last()).toContainText("does not convert to AWS's 750/1000 scaled passing score");
   await expect(page.locator(".r-sub")).not.toContainText(/ready to book|pass line/i);
 });

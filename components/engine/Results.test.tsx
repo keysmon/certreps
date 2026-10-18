@@ -108,41 +108,49 @@ describe("Results recap explanations", () => {
   });
 });
 
-describe("Results verdict copy (official vs unofficial pass line)", () => {
-  const PASS = getMeta().passLinePct; // aip-c01 = 75
-
-  it("official passed: keeps the pass-line headline and the ~ subcopy byte-for-byte", () => {
-    render(<Results attempt={passedAttempt()} questions={qs} meta={{ ...getMeta(), certId: "test-official", passLineOfficial: true }} />);
-    expect(screen.getByText("Above the pass line - keep it up.")).toBeInTheDocument();
-    expect(
-      screen.getByText(`Pass line is ~${PASS}%. Two clean runs above this and you are ready to book.`),
-    ).toBeInTheDocument();
+describe("Results session guidance", () => {
+  it("treats a strong single-domain drill as a session result, with no remedial domain recommendation", async () => {
+    const questions = [qs[0], qs[2]];
+    const attempt = { ...passedAttempt(), mode: "drill" as const, domain: qs[0].domain, questionIds: questions.map(q => q.id) };
+    render(<Results attempt={attempt} questions={questions} meta={getMeta()} />);
+    expect(screen.getByText("Domain drill result")).toBeInTheDocument();
+    expect(screen.queryByText(/^readiness$/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/performance by domain/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/drill .* next/i)).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: /retry/i })).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /choose another domain/i })).toHaveAttribute("href", "/aws/aip-c01#domains");
   });
 
-  it("official not-passed: keeps the ~ pass-line subcopy byte-for-byte", () => {
-    render(<Results attempt={makeAttempt(0)} questions={qs} meta={{ ...getMeta(), certId: "test-official", passLineOfficial: true }} />);
-    expect(
-      screen.getByText(`Pass line is ~${PASS}%. Drill your weakest domain below, then run it again.`),
-    ).toBeInTheDocument();
+  it("recommends only below-target domains in a mixed mock", () => {
+    render(<Results attempt={makeAttempt(0)} questions={qs} meta={getMeta()} />);
+    const links = screen.getAllByRole("link", { name: /practice .* domain/i });
+    expect(links).toHaveLength(1);
+    expect(links[0]).toHaveAttribute("href", `/aws/aip-c01/practice?mode=drill&domain=${encodeURIComponent(qs[1].domain)}`);
   });
 
-  it("unofficial passed: uses the study-target headline and subcopy, never 'Pass line'", () => {
-    const meta = getMeta();
-    render(<Results attempt={passedAttempt()} questions={qs} meta={meta} />);
-    expect(screen.getByText("Above your study target - keep it up.")).toBeInTheDocument();
-    expect(
-      screen.getByText(`Study target is ${PASS}%. Review uncertain answers and check unfamiliar scenarios with official practice resources. This practice percentage does not convert to AWS's 750/1000 scaled passing score.`),
-    ).toBeInTheDocument();
-    expect(screen.queryByText(/Pass line/i)).not.toBeInTheDocument();
+  it("scopes retry to the completed session and opens its missed answers directly", async () => {
+    render(<Results attempt={makeAttempt(0)} questions={qs} meta={getMeta()} />);
+    expect(screen.getByRole("link", { name: /retry 2 missed questions/i })).toHaveAttribute("href", "/aws/aip-c01/practice?mode=retry&from=t1");
+    await userEvent.click(screen.getByRole("button", { name: /review 2 missed questions/i }));
+    expect(screen.getByText(/Explanation 1/)).toBeVisible();
+    expect(screen.queryByText(/Stem number 0/)).not.toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: /show all 4 answers/i }));
+    expect(screen.getByText(/Stem number 0/)).toBeInTheDocument();
   });
 
-  it("unofficial not-passed: study-target subcopy; the non-pass-line headline is unchanged", () => {
-    const meta = getMeta();
-    render(<Results attempt={makeAttempt(0)} questions={qs} meta={meta} />);
-    expect(screen.getByText("Getting there - a couple of soft spots.")).toBeInTheDocument();
-    expect(
-      screen.getByText(`Study target is ${PASS}%. Drill your weakest domain below, then run it again. This practice percentage does not convert to AWS's 750/1000 scaled passing score.`),
-    ).toBeInTheDocument();
+  it("distinguishes unanswered questions and includes them in this session's review", async () => {
+    const attempt = makeAttempt(0);
+    delete attempt.results.q3;
+    render(<Results attempt={attempt} questions={qs} meta={getMeta()} />);
+    expect(screen.getByText("2 correct · 1 incorrect · 1 unanswered")).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: /review 2 missed questions/i }));
+    expect(screen.getByText(/Not answered/)).toBeVisible();
+  });
+
+  it("does not promise exam readiness after an official-cert quick session", () => {
+    render(<Results attempt={{ ...passedAttempt(), mode: "quick" }} questions={qs} meta={{ ...getMeta(), certId: "official", passLineOfficial: true }} />);
+    expect(screen.getByText("Quick practice result")).toBeInTheDocument();
+    expect(screen.queryByText(/ready to book/i)).not.toBeInTheDocument();
   });
 });
 
@@ -161,4 +169,12 @@ describe("answerLine view-order sort", () => {
   it("reads Not answered for empty picks", () => {
     expect(answerLine([], ["a", "b"], [0, 1])).toBe("Not answered");
   });
+});
+
+it("keeps archived misses reviewable without offering an unavailable retry", async () => {
+  const questions = [{ ...qs[1], excludedFromPractice: true }];
+  render(<Results attempt={makeAttempt(0)} questions={questions} meta={getMeta()} />);
+  expect(screen.queryByRole("link", { name: /retry/i })).not.toBeInTheDocument();
+  await userEvent.click(screen.getByRole("button", { name: "Review 1 missed question" }));
+  expect(screen.getByText(/Archived question:/)).toBeVisible();
 });

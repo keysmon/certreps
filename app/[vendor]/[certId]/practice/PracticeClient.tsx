@@ -29,19 +29,21 @@ export function PracticeClient({ certId }: { certId: string }) {
   const mode: Mode = (MODES as string[]).includes(modeParam) ? (modeParam as Mode) : "quick";
   const domain = params.get("domain") ?? undefined;
   const resume = params.get("resume") ?? undefined;
+  const retryFrom = mode === "retry" ? params.get("from") ?? undefined : undefined;
   const reveal = mode === "mock" && params.get("reveal") === "1";
 
   // A Start fresh decision belongs only to the current URL context. Reset the gate before
   // mounting another mode/domain/study session so it cannot orphan that session's saved attempt.
-  return <PracticeSession key={JSON.stringify([certId, mode, domain, resume, reveal])} certId={certId} mode={mode} domain={domain} resume={resume} reveal={reveal} />;
+  return <PracticeSession key={JSON.stringify([certId, mode, domain, resume, reveal, retryFrom])} certId={certId} mode={mode} domain={domain} resume={resume} reveal={reveal} retryFrom={retryFrom} />;
 }
 
-function PracticeSession({ certId, mode, domain, resume, reveal }: {
+function PracticeSession({ certId, mode, domain, resume, reveal, retryFrom }: {
   certId: string;
   mode: Mode;
   domain?: string;
   resume?: string;
   reveal: boolean;
+  retryFrom?: string;
 }) {
   // Interstitial gate (SSR-safe): the in-progress lookup reads localStorage, so it runs in an effect
   // (never in render or a useState initializer - the hydration lesson) and the first paint is the
@@ -51,13 +53,13 @@ function PracticeSession({ certId, mode, domain, resume, reveal }: {
   const [startFresh, setStartFresh] = useState(false);
 
   useEffect(() => {
-    if (resume) return; // an explicit resume link bypasses the chooser; the engine adopts the id
+    if (resume || retryFrom) return; // an explicit resume link bypasses the chooser; the engine adopts the id
     const match = listInProgress(certId).find(
       (a) => isResumableAttempt(a, getBank(certId), { certId, mode, domain, reveal }),
     );
     setInProgress(match ?? null);
     setChecked(true);
-  }, [certId, mode, domain, reveal, resume]);
+  }, [certId, mode, domain, reveal, resume, retryFrom]);
 
   // Engine contract preserved: key by mode+domain+reveal+resume so a changed resume id (or a switch
   // between exam and study runs) forces a clean remount.
@@ -69,11 +71,14 @@ function PracticeSession({ certId, mode, domain, resume, reveal }: {
       domain={domain}
       reveal={reveal}
       resumeAttemptId={resumeId}
+      retryFrom={retryFrom}
     />
   );
 
   // Explicit resume link -> mount the engine directly (today's adopt-by-id path).
   if (resume) return engine(resume);
+  // A result-page retry explicitly starts a new session for that result, not unrelated saved retries.
+  if (retryFrom) return engine();
   // Pre-check paint matches the page Suspense fallback + the engine's own shell (no hydration flash).
   if (!checked) return <p className="stage">Loading...</p>;
   // Nothing to resume, or the user chose to start fresh -> mount the engine fresh (new attempt).

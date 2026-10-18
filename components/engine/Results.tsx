@@ -1,4 +1,5 @@
 "use client";
+import { useRef, useState } from "react";
 import type { Attempt, CertMeta, Question } from "@/lib/types";
 import { gradeAttempt } from "@/lib/scoring";
 import { HEAVY_PAUSE_THRESHOLD, domainVerdict, type Verdict } from "@/lib/readiness";
@@ -22,12 +23,6 @@ const VERDICT_COLORS: Record<Verdict, string> = {
   borderline: "var(--gold)",
   weak: "var(--rose)",
 };
-const VERDICT_LABELS: Record<Verdict, string> = {
-  above: "Above",
-  borderline: "Borderline",
-  weak: "Weak",
-};
-
 // "L / text, L / text" for an index list (multi-select safe); empty picks read "Not answered".
 // `indices` are canonical; `perm` maps them to the order the user actually saw, so the letters match
 // the recap's displayed positions (and entries list top-to-bottom in that seen order).
@@ -53,106 +48,73 @@ export function Results({ attempt, questions, meta }: { attempt: Attempt; questi
       return { name: d.name, correct: v.correct, total: v.total, verdict, color: VERDICT_COLORS[verdict], pct };
     });
 
-  // The redesign's "drill these two next": the two lowest-accuracy domains that appeared. A single-
-  // domain drill yields one row, so we take up to two rather than assuming a multi-domain mock.
-  const weakestTwo = [...domainRows].sort((a, b) => a.pct - b.pct).slice(0, 2);
+  const needsPractice = [...domainRows].filter(d => d.pct < meta.passLinePct).sort((a, b) => a.pct - b.pct).slice(0, 2);
   const drillHref = (name: string) => `${practicePath(meta)}?mode=drill&domain=${encodeURIComponent(name)}`;
-
-  // Verdict headline + subcopy, banded by OUR pass line (top boundary = passLinePct; the lower
-  // boundary is 50 = "half correct"). Plain dashes only - no em dashes (craft rule).
-  // An independent practice threshold must be described as a study target, including
-  // AIP-C01 where the official scaled score is not a raw accuracy percentage.
-  const officialPassLine = meta.passLineOfficial !== false;
-  const headline = passed
-    ? officialPassLine
-      ? "Above the pass line - keep it up."
-      : "Above your study target - keep it up."
-    : g.pct >= 50
-    ? "Getting there - a couple of soft spots."
-    : "Early days - this is exactly what practice is for.";
-  const passSentence = officialPassLine
-    ? `Pass line is ~${meta.passLinePct}%.`
-    : `Study target is ${meta.passLinePct}%.`;
-  const subcopy = meta.certId === "aip-c01"
-    ? `${passSentence} ${passed ? "Review uncertain answers and check unfamiliar scenarios with official practice resources." : "Drill your weakest domain below, then run it again."} This practice percentage does not convert to AWS's 750/1000 scaled passing score.`
-    : passed
-    ? `${passSentence} Two clean runs above this and you are ready to book.`
-    : `${passSentence} Drill your weakest domain below, then run it again.`;
-
-  const wrongCount = questions.filter((q) => !attempt.results[q.id]?.correct).length;
+  const isDrill = attempt.mode === "drill";
+  const sessionLabel = isDrill ? "Domain drill result" : attempt.mode === "quick" ? "Quick practice result" : attempt.mode === "retry" ? "Missed-question retry result" : attempt.reveal ? "Untimed study result" : "Full mock result";
+  const targetLabel = meta.passLineOfficial === false ? "Study target" : "Practice target";
+  const headline = passed ? `${targetLabel} met for this session.` : `Below your ${targetLabel.toLowerCase()} for this session.`;
+  const missed = questions.filter(q => !attempt.results[q.id]?.correct);
+  const retryCount = missed.filter(q => !q.excludedFromPractice).length;
+  const unanswered = questions.filter(q => !attempt.results[q.id]?.chosen.length).length;
+  const wrongCount = missed.length;
   const rightCount = questions.length - wrongCount;
+  const incorrect = wrongCount - unanswered;
+  const subcopy = wrongCount
+    ? `Review ${wrongCount === 1 ? "the missed question" : "the missed questions"}, then ${passed ? "practice another domain" : "retry them to check your understanding"}.`
+    : "Every question in this session was correct. Practice another domain or try a full mock for broader coverage.";
+  const targetCopy = meta.passLineOfficial === false ? `Independent study target: ${meta.passLinePct}%.` : `Practice comparison threshold: ${meta.passLinePct}%.`;
+  const scopeCopy = isDrill ? "This result covers this domain drill only; it does not measure overall exam readiness." : "This is a practice result, not a prediction of your exam outcome.";
+  const recapRef = useRef<HTMLDetailsElement>(null);
+  const [missedOnly, setMissedOnly] = useState(false);
+  const openMissed = () => {
+    setMissedOnly(true);
+    if (recapRef.current) {
+      recapRef.current.open = true;
+      recapRef.current.scrollIntoView?.({ behavior: "smooth", block: "start" });
+    }
+  };
 
   return (
     <div className="results">
       <h2 className="sr-only">Results</h2>
 
-      {/* Compact hero: ring + verdict. The 6,800px-tall per-question review now lives, collapsed,
-          at the bottom (Review answers) - the redesign's core simplification. */}
-      <div
-        style={{
-          display: "flex", alignItems: "center", gap: "28px", flexWrap: "wrap",
-          border: "1px solid var(--line)", background: "var(--panel)",
-          borderRadius: "var(--radius-lg)", padding: "28px 30px", marginBottom: "20px",
-        }}
-      >
+      <section className="result-hero" aria-label={sessionLabel}>
         <ScoreRing pct={g.pct} size={150} stroke={10} correct={g.score} total={g.total} passLine={meta.passLinePct} />
-        <div style={{ flex: 1, minWidth: "220px" }}>
-          <span className="eyebrow">Readiness</span>
+        <div className="result-copy">
+          <span className="eyebrow">{sessionLabel}</span>
           <h3 className="r-verdict">{headline}</h3>
-          <p className="r-sub">{subcopy}</p>
+          {isDrill && <p className="result-domain">{attempt.domain ?? domainRows[0]?.name}</p>}
+          <p className="result-counts">{rightCount} correct {MIDDOT} {incorrect} incorrect{unanswered > 0 ? ` ${MIDDOT} ${unanswered} unanswered` : ""}</p>
+          <p className="r-sub">{targetCopy} {subcopy}</p>
           {attempt.pauseCount >= 1 && (
-            <div className="pausestamp">
-              Paused {attempt.pauseCount}x
-              {attempt.pauseCount >= HEAVY_PAUSE_THRESHOLD && " - timing may not reflect exam conditions"}
-            </div>
+            <div className="pausestamp">Paused {attempt.pauseCount}x{attempt.pauseCount >= HEAVY_PAUSE_THRESHOLD && " - timing may not reflect exam conditions"}</div>
           )}
         </div>
-      </div>
+      </section>
 
-      <div className="panel" style={{ marginBottom: "22px" }}>
-        <DomainBars title="Performance by domain" rows={domainRows} />
+      <div className="result-actions">
+        {wrongCount > 0 && <button type="button" className="btn btn-primary" onClick={openMissed}>Review {wrongCount} missed {wrongCount === 1 ? "question" : "questions"}</button>}
+        <a className={`btn ${wrongCount ? "btn-ghost" : "btn-primary"}`} href={`${certPath(meta)}#domains`}>{isDrill ? "Choose another domain" : "Choose a domain to practice"}</a>
+        {retryCount > 0 && <a className="btn btn-ghost" href={`${practicePath(meta)}?mode=retry&from=${encodeURIComponent(attempt.attemptId)}`}>Retry {retryCount} missed {retryCount === 1 ? "question" : "questions"}</a>}
       </div>
+      {wrongCount > 0 && <p className="result-note">Missed questions include incorrect and unanswered questions. Retry includes only active questions from this session.</p>}
 
-      {weakestTwo.length > 0 && (
-        <>
-          <div className="eyebrow" style={{ margin: "0 0 12px" }}>
-            Drill {weakestTwo.length === 1 ? "this domain" : "these two"} next
-          </div>
-          <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", marginBottom: "22px" }}>
-            {weakestTwo.map((d) => (
-              <a
-                key={d.name}
-                href={drillHref(d.name)}
-                style={{
-                  flex: 1, minWidth: "220px", display: "flex", alignItems: "center",
-                  justifyContent: "space-between", gap: "12px", background: "var(--ink-2)",
-                  border: "1px solid var(--line-strong)", borderRadius: "var(--radius-sm)",
-                  padding: "16px 18px", textDecoration: "none", color: "var(--text)",
-                }}
-              >
-                <div style={{ minWidth: 0 }}>
-                  <div style={{ fontSize: "14.5px", fontWeight: 600 }}>{d.name}</div>
-                  <div style={{ fontFamily: "var(--font-mono)", fontSize: "11px", marginTop: "3px", color: d.color }}>
-                    {VERDICT_LABELS[d.verdict]}
-                  </div>
-                </div>
-                <span style={{ fontFamily: "var(--font-mono)", fontSize: "12px", color: "var(--gold)", whiteSpace: "nowrap" }}>
-                  Drill {ARROW}
-                </span>
-              </a>
-            ))}
-          </div>
-        </>
+      {!isDrill && domainRows.length > 0 && <div className="panel result-breakdown"><DomainBars title="Performance by domain" rows={domainRows} /></div>}
+      {needsPractice.length > 0 && (
+        <section className="result-recommendations" aria-label="Suggested practice">
+          <h4 className="eyebrow">{isDrill ? "More practice in this domain" : "Domains below your practice target"}</h4>
+          {needsPractice.map(d => <a className="result-domain-link" key={d.name} href={drillHref(d.name)} aria-label={`Practice ${d.name} domain`}>
+            <span>{d.name}<small>{d.correct}/{d.total} correct in this session</small></span><span>Practice {ARROW}</span>
+          </a>)}
+        </section>
       )}
-
-      <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", marginBottom: "26px" }}>
-        <a className="btn btn-ghost" href={`${practicePath(meta)}?mode=retry`}>Retry missed questions</a>
-        <a className="btn btn-ghost" href={certPath(meta)}>Back to certification</a>
-      </div>
+      <p className="result-note">{scopeCopy}{meta.certId === "aip-c01" && " This practice percentage does not convert to AWS's 750/1000 scaled passing score."}</p>
+      <p className="result-back"><a href={certPath(meta)}>Back to certification</a></p>
 
       {/* Review answers: collapsed by default (the whole screen stays short). Opening it surfaces the
           misses expanded (open={!ok}) so a wrong answer is never buried once a learner opts in. */}
-      <details className="recap-collapse">
+      <details ref={recapRef} id="answer-review" className="recap-collapse">
         <summary
           style={{
             display: "flex", alignItems: "center", gap: "12px", cursor: "pointer", listStyle: "none",
@@ -163,16 +125,20 @@ export function Results({ attempt, questions, meta }: { attempt: Attempt; questi
         >
           <span>Review answers</span>
           <span style={{ fontFamily: "var(--font-mono)", fontSize: "12px", color: "var(--muted)", fontWeight: 400 }}>
-            {rightCount} correct {MIDDOT} {wrongCount} to review
+            {rightCount} correct {MIDDOT} {wrongCount} missed
           </span>
           <span style={{ flex: 1 }} />
           <span className="recap-chevron" aria-hidden="true">{CHEVRON}</span>
         </summary>
 
         <div className="recap">
+          {wrongCount > 0 && <div className="result-review-filter">
+            <button type="button" className="btn btn-ghost" aria-pressed={missedOnly} onClick={() => setMissedOnly(o => !o)}>{missedOnly ? `Show all ${questions.length} answers` : `Show only ${wrongCount} missed`}</button>
+          </div>}
           {questions.map((q, i) => {
             const r = attempt.results[q.id];
             const ok = r?.correct ?? false;
+            if (missedOnly && ok) return null;
             const chosen = r?.chosen ?? [];
             // Replay the exact per-attempt shuffle the engine showed (same seed: attemptId + q.id), so
             // the recap - and the "Your answer / Correct" letters - match the order the user saw.
@@ -182,7 +148,7 @@ export function Results({ attempt, questions, meta }: { attempt: Attempt; questi
             return (
               <details className="recap-item" key={q.id} open={!ok}>
                 <summary className="recap-summary">
-                  <span className={`ri ${ok ? "ok" : "no"}`} aria-label={ok ? "correct" : "incorrect"}>{ok ? CHECK : CROSS}</span>
+                  <span className={`ri ${ok ? "ok" : "no"}`} aria-label={ok ? "correct" : !chosen.length ? "unanswered" : "incorrect"}>{ok ? CHECK : CROSS}</span>
                   <span className="rq">Q{i + 1} - {q.stem}</span>
                   <span className="rd">{q.tag}</span>
                   <span className="recap-chevron" aria-hidden="true">{CHEVRON}</span>

@@ -84,6 +84,12 @@ export function PathToReady({
   const [attempts, setAttempts] = useState<Attempt[]>([]);
   const [domainsOpen, setDomainsOpen] = useState(false);
   useEffect(() => {
+    const openFromHash = () => { if (window.location.hash === "#domains") setDomainsOpen(true); };
+    openFromHash();
+    window.addEventListener("hashchange", openFromHash);
+    return () => window.removeEventListener("hashchange", openFromHash);
+  }, []);
+  useEffect(() => {
     setAttempts(listInProgress(certId).filter((a) => isResumableAttempt(a, getBank(certId)))); // newest eligible first
   }, [certId, revision]);
 
@@ -99,7 +105,7 @@ export function PathToReady({
   return (
     <>
       {/* Step 1 - the one primary action */}
-      <div style={stepCard(true)}>
+      <div id="domains" style={{ ...stepCard(true), scrollMarginTop: "90px" }}>
         <div style={stepNum(true)}>1</div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <h3 style={stepTitle}>Practice a domain</h3>

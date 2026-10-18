@@ -203,3 +203,11 @@ describe("PracticeClient navigation context", () => {
     expect(screen.queryByTestId("engine")).not.toBeInTheDocument();
   });
 });
+
+it("starts a result-scoped retry without offering to resume unrelated retry history", async () => {
+  inProgress("retry", 2);
+  setParams("mode=retry&from=finished-source");
+  render(<PracticeClient certId={AIP} />);
+  expect(await screen.findByTestId("engine")).toHaveAttribute("data-resume", "");
+  expect(screen.queryByRole("link", { name: /^Resume$/ })).not.toBeInTheDocument();
+});

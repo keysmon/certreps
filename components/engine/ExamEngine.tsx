@@ -21,7 +21,7 @@ const PROGRESS_PERSIST_MS = 10_000;
 const MIDDOT = String.fromCharCode(183); // U+00B7 middle dot - mode-note separator
 const TIMES = String.fromCharCode(10005); // U+2715 multiplication x - exit affordance
 
-export function ExamEngine({ certId, mode, domain, resumeAttemptId, reveal }: { certId?: string; mode: Mode; domain?: string; resumeAttemptId?: string; reveal?: boolean }) {
+export function ExamEngine({ certId, mode, domain, resumeAttemptId, reveal, retryFrom }: { certId?: string; mode: Mode; domain?: string; resumeAttemptId?: string; reveal?: boolean; retryFrom?: string }) {
   const bank = getPracticeBank(certId);
   const meta = getMeta(certId);
   const isMock = mode === "mock";
@@ -35,6 +35,7 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId, reveal }: { 
   // client render agree and only the client ever samples. Mirrors the CatalogClient/CertDetailClient
   // idiom (SSR the zero-state default, hydrate from localStorage in an effect).
   const [ready, setReady] = useState(false);
+  const [retryUnavailable, setRetryUnavailable] = useState(false);
   const [reviewedOutResume, setReviewedOutResume] = useState(false);
   const [mismatchedResume, setMismatchedResume] = useState<Attempt | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -88,6 +89,15 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId, reveal }: { 
       return;
     }
 
+    const retrySource = mode === "retry" && retryFrom ? getAttempt(retryFrom) : null;
+    if (!resumed && mode === "retry" && retryFrom && (!retrySource || retrySource.certId !== meta.certId || retrySource.finishedAt === null)) {
+      setRetryUnavailable(true);
+      setReady(true);
+      return;
+    }
+    const retryIds = retrySource
+      ? retrySource.questionIds.filter(id => !retrySource.results[id]?.correct)
+      : missedQuestionIds(meta.certId);
     const sampled: Question[] = resumed
       ? questionsByIds(bank, resumed.questionIds)
       : mode === "quick"
@@ -95,7 +105,7 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId, reveal }: { 
       : mode === "drill" && domain
       ? sampleDrill(bank, domain, DRILL_N, buildWeights(listAttempts(meta.certId), bank))
       : mode === "retry"
-      ? questionsByIds(bank, missedQuestionIds(meta.certId))
+      ? questionsByIds(bank, retryIds)
       : mode === "mock"
       ? sampleMock(bank, meta)
       : [];
@@ -239,11 +249,13 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId, reveal }: { 
     );
   }
 
+  if (retryUnavailable) return <div className="stage"><div className="card"><h2>This session is not available in this browser</h2><p>Open your account to load saved results, then retry from that session's review.</p><a className="btn btn-primary" href="/account">Open your account</a></div></div>;
+
   if (questions.length === 0) {
     return (
       <div className="stage">
         <div className="card">
-          <p>{mode === "retry" ? "No missed questions yet - take a practice run first." : "No questions available."}</p>
+          <p>{mode === "retry" ? (retryFrom ? "No active missed questions remain from this session. Choose a domain for more practice." : "No missed questions yet - take a practice run first.") : "No questions available."}</p>
           <a className="btn btn-ghost" href={certPath(meta)}>Back to {meta.examCode}</a>
         </div>
       </div>
@@ -287,7 +299,7 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId, reveal }: { 
     : mode === "drill"
     ? `Domain drill ${MIDDOT} instant feedback`
     : mode === "retry"
-    ? `Retry missed ${MIDDOT} instant feedback`
+    ? `${retryFrom ? "Retry session misses" : "Retry all previous misses"} ${MIDDOT} instant feedback`
     : `Quick drill ${MIDDOT} instant feedback`;
 
   // Contract C1a (Task 13 review): the exam bar (switcher + progress + Timer) is hoisted above the

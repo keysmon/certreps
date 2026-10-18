@@ -27,6 +27,7 @@ export function ScoreRing({ pct = 0, size = 168, correct, total, label, stroke =
   const srScore = `${pct}%${hasScore ? `, ${correct} of ${total} correct` : ""}${label ? `, ${label}` : ""}`;
 
   return (
+    <div style={{ width: size + "px", flexShrink: 0, textAlign: "center" }}>
     <div style={{ width: size + "px", height: size + "px", position: "relative", display: "grid", placeItems: "center", textAlign: "center" }}>
       <svg width={size} height={size} aria-hidden="true" style={{ transform: "rotate(-90deg)", position: "absolute", inset: 0 }}>
         <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--line)" strokeWidth={stroke} />
@@ -34,9 +35,10 @@ export function ScoreRing({ pct = 0, size = 168, correct, total, label, stroke =
       </svg>
       <div aria-hidden="true">
         <div style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: Math.round(size * 0.27) + "px", color: pct === 0 ? "var(--faint)" : "var(--text)", fontVariantNumeric: "tabular-nums" }}>{pct}%</div>
-        {hasScore && <div style={{ fontFamily: "var(--font-mono)", fontSize: "12.5px", color: "var(--muted)" }}>{correct} / {total} correct</div>}
         {label && <div style={{ fontFamily: "var(--font-mono)", fontSize: "12px", color: "var(--muted)" }}>{label}</div>}
       </div>
+    </div>
+      {hasScore && <div aria-hidden="true" style={{ fontFamily: "var(--font-mono)", fontSize: "12.5px", color: "var(--muted)", marginTop: "6px" }}>{correct} / {total} correct</div>}
       <span className="sr-only">{srScore}</span>
     </div>
   );
