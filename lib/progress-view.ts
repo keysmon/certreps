@@ -1,4 +1,4 @@
-import { getBank } from "./bank";
+import { getBank, attemptUsesActiveQuestions } from "./bank";
 import { readinessRead, type GradedMock, type ReadinessRead } from "./readiness";
 import { gradeAttempt } from "./scoring";
 import { questionsByIds } from "./sampler";
@@ -21,7 +21,7 @@ export interface ProgressView {
 function gradedFinishedMocks(certId: string): GradedMock[] {
   const bank = getBank(certId);
   return listAttempts(certId)
-    .filter((a) => a.mode === "mock" && !a.reveal && a.finishedAt !== null)
+    .filter((a) => a.mode === "mock" && !a.reveal && a.finishedAt !== null && attemptUsesActiveQuestions(a, bank))
     .map((a) => {
       const g = gradeAttempt(a, questionsByIds(bank, a.questionIds));
       return { attempt: a, pct: g.pct, byDomain: g.byDomain };

@@ -216,6 +216,9 @@ export function Results({ attempt, questions, meta }: { attempt: Attempt; questi
                     })}
                   </div>
                   {/* Safe: trusted build-time content from our own pipeline (<b>/<em> only), never user input. */}
+                  {q.excludedFromPractice && (
+                    <p className="muted">Archived question: excluded from new practice after review. {q.exclusionReason}</p>
+                  )}
                   <p className="recap-explain" dangerouslySetInnerHTML={{ __html: q.explanation }} />
                   <a className="doclink" href={q.docUrl} target="_blank" rel="noopener noreferrer">
                     Read the {VENDORS[meta.vendorSlug]?.n ?? meta.vendor} docs {ARROW}

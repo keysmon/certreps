@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { listCerts, getCert } from "@/lib/certs";
+import { listCerts } from "@/lib/certs";
+import { getPracticeBank } from "@/lib/bank";
 import { TopNav } from "@/components/ui/TopNav";
 import { CatalogClient, type CatalogCert } from "./CatalogClient";
 import "./catalog.css";
@@ -20,7 +21,7 @@ export default function CatalogPage() {
     title: m.title,
     examCode: m.examCode,
     level: m.level,
-    questions: getCert(m.certId)?.bank.length ?? 0,
+    questions: getPracticeBank(m.certId).length,
     passLinePct: m.passLinePct,
   }));
 

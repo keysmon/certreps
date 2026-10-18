@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { listCerts, getCert } from "@/lib/certs";
+import { listCerts } from "@/lib/certs";
 import { certPath } from "@/lib/routes";
 import { CertCard } from "@/components/ui/CertCard";
 import { VENDORS } from "@/components/ui/VendorDot";
+import { getPracticeBank } from "@/lib/bank";
 import { TopNav } from "@/components/ui/TopNav";
 import "./landing.css";
 
@@ -101,7 +102,7 @@ export default function Home() {
                 key={meta.certId}
                 meta={meta}
                 href={certPath(meta)}
-                questions={getCert(meta.certId)?.bank.length}
+                questions={getPracticeBank(meta.certId).length}
                 style={{ height: "100%" }}
               />
             ))}

@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { ExamEngine } from "./ExamEngine";
-import { getBank, getMeta } from "@/lib/bank";
+import { getPracticeBank as getBank, getMeta } from "@/lib/bank";
 import { createAttempt, saveAttempt, recordResult, finishAttempt, getAttempt, listAttempts } from "@/lib/storage";
 
 beforeEach(() => localStorage.clear());
@@ -106,5 +106,26 @@ describe("ExamEngine resume-in-progress", () => {
     render(<ExamEngine mode="mock" resumeAttemptId={a.attemptId} />);
     expect(screen.getByText(/question 1 of 75/i)).toBeInTheDocument();
     expect(listAttempts("aip-c01").length).toBe(2);
+  });
+});
+
+
+describe("audited exclusions", () => {
+  it("blocks an explicit stale resume without changing saved history", () => {
+    const a = createAttempt("aip-c01", "quick", ["aipc01-0001"]);
+    saveAttempt(a);
+    render(<ExamEngine mode="quick" resumeAttemptId={a.attemptId} />);
+    expect(screen.getByText("This session needs a fresh question set")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Start fresh practice" })).toHaveAttribute("href", "/aws/aip-c01/practice?mode=quick");
+    expect(getAttempt(a.attemptId)).toEqual(a);
+    expect(listAttempts("aip-c01")).toHaveLength(1);
+  });
+  it("does not retry excluded questions from past mistakes", () => {
+    const a = createAttempt("aip-c01", "quick", ["aipc01-0001"]);
+    saveAttempt(a);
+    recordResult(a.attemptId, { questionId: "aipc01-0001", chosen: [], correct: false, flagged: false });
+    finishAttempt(a.attemptId, 10, 0);
+    render(<ExamEngine mode="retry" />);
+    expect(screen.getByText(/No missed questions yet/)).toBeInTheDocument();
   });
 });

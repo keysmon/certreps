@@ -3,7 +3,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { CatalogClient, type CatalogCert } from "./CatalogClient";
 import { listCerts, getCert } from "@/lib/certs";
-import { getBank } from "@/lib/bank";
+import { getPracticeBank as getBank } from "@/lib/bank";
 import { writeAll } from "@/lib/storage";
 import type { Attempt, QuestionResult } from "@/lib/types";
 

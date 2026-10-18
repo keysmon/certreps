@@ -1,4 +1,4 @@
-import type { CertMeta, Question } from "./types";
+import type { Attempt, CertMeta, Question } from "./types";
 import { getCert } from "./certs";
 
 const DEFAULT_CERT = "aip-c01";
@@ -26,4 +26,15 @@ export function byDomain(bank: Question[]): Record<string, Question[]> {
   const out: Record<string, Question[]> = {};
   for (const q of bank) (out[q.domain] ??= []).push(q);
   return out;
+}
+
+/** Active view for new practice. getBank remains the complete historical archive. */
+export function getPracticeBank(certId: string = DEFAULT_CERT): Question[] {
+  return getBank(certId).filter((q) => !q.excludedFromPractice);
+}
+
+/** An old attempt is safe to resume/score for readiness only while every item is active. */
+export function attemptUsesActiveQuestions(attempt: Pick<Attempt, "questionIds">, bank: Question[]): boolean {
+  const activeIds = new Set(bank.filter((q) => !q.excludedFromPractice).map((q) => q.id));
+  return attempt.questionIds.length > 0 && attempt.questionIds.every((id) => activeIds.has(id));
 }

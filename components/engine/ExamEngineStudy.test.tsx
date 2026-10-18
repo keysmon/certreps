@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { ExamEngine } from "./ExamEngine";
-import { getBank } from "@/lib/bank";
+import { getPracticeBank as getBank } from "@/lib/bank";
 import { createAttempt, saveAttempt, recordResult, getAttempt, listAttempts } from "@/lib/storage";
 
 beforeEach(() => localStorage.clear());

@@ -17,6 +17,10 @@ export interface Question {
   // questions added during/after the 2026-07 bank expansion; absent on older ones.
   // Additive: the app does not yet read it (Project B - adaptive frequency - will).
   concept?: string;
+  // Retain published records for historical grading, but never sample reviewed-out items.
+  excludedFromPractice?: boolean;
+  exclusionReason?: string;
+  supersededBy?: string;
 }
 
 export interface DomainMeta {

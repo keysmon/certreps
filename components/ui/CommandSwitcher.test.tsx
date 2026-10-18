@@ -3,7 +3,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { listCerts } from "@/lib/certs";
 import { CommandSwitcher } from "./CommandSwitcher";
-import { getBank } from "@/lib/bank";
+import { getPracticeBank as getBank } from "@/lib/bank";
 import { writeAll } from "@/lib/storage";
 import type { Attempt, QuestionResult } from "@/lib/types";
 

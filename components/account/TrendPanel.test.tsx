@@ -1,13 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { TrendPanel } from "./TrendPanel";
-import { getMeta } from "@/lib/bank";
+import { getMeta, getPracticeBank } from "@/lib/bank";
 import { HEAVY_PAUSE_THRESHOLD } from "@/lib/readiness";
 import type { Attempt } from "@/lib/types";
 
 const meta = getMeta();
 // Real Domain-1 bank ids: gradeAttempt resolves them so readinessRead yields a real verdict.
-const D1_IDS = ["aipc01-0001", "aipc01-0002", "aipc01-0003"];
+const D1_IDS = getPracticeBank().filter((q) => q.tag === "Domain 1").slice(0, 3).map((q) => q.id);
 
 function mock(id: string, startedAt: number, correct: boolean, pauseCount = 0): Attempt {
   const results: Attempt["results"] = {};

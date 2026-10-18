@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { progressView, domainReadiness } from "./progress-view";
-import { getBank } from "./bank";
+import { getPracticeBank as getBank } from "./bank";
 import { writeAll } from "./storage";
 import type { Attempt, QuestionResult } from "./types";
 
@@ -116,4 +116,13 @@ describe("domainReadiness", () => {
     writeAll([attempt({ certId: AIP, mode: "mock", questionIds: ids, results, finishedAt: 1_700_000_100_000, reveal: true })]);
     expect(domainReadiness(AIP, 75).domains).toEqual({});
   });
+});
+
+
+it("does not count archived question scores towards current readiness", () => {
+  const old = gradedMock(AIP, 1, 1, { questionIds: ["aipc01-0001"], results: {
+    "aipc01-0001": { questionId: "aipc01-0001", chosen: [], correct: true, flagged: false },
+  } });
+  writeAll([old]);
+  expect(progressView(AIP, 75)).toEqual({ bestMockPct: 0, status: "In progress" });
 });

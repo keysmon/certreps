@@ -41,6 +41,7 @@ function orderPool(pool: Question[], weights?: Map<string, number>): Question[] 
  *  With `weights`, ordering within buckets is weighted (missed/unseen surface more); the difficulty
  *  mix is unchanged. Without `weights`, byte-for-byte the prior uniform-shuffle behavior. */
 function pickBalanced(pool: Question[], count: number, weights?: Map<string, number>): Question[] {
+  pool = pool.filter((q) => !q.excludedFromPractice);
   if (count <= 0) return [];
   const targets = difficultyTargets(count);
   const buckets: Record<Difficulty, Question[]> = { easy: [], medium: [], hard: [] };
@@ -61,6 +62,9 @@ export function sampleMock(bank: Question[], meta: CertMeta): Question[] {
   const groups = byDomain(bank);
   const out: Question[] = [];
   for (const d of meta.domains) out.push(...pickBalanced(groups[d.name] ?? [], d.mockCount));
+  if (out.length !== meta.mockQuestionCount) {
+    throw new Error(`Insufficient active questions for ${meta.certId} mock`);
+  }
   return shuffle(out);
 }
 

@@ -37,7 +37,7 @@ describe("cert registry", () => {
     const entry = getCert("aip-c01");
     expect(entry).not.toBeNull();
     expect(entry!.meta.certId).toBe("aip-c01");
-    expect(entry!.bank.length).toBe(610);
+    expect(entry!.bank.length).toBeGreaterThanOrEqual(610);
   });
 
   it("getCert returns null for an unknown cert", () => {
@@ -47,12 +47,12 @@ describe("cert registry", () => {
 
 describe("parameterized bank loader (back-compat pinned)", () => {
   it("getBank(certId) returns that cert's bank", () => {
-    expect(getBank("aip-c01").length).toBe(610);
+    expect(getBank("aip-c01").length).toBeGreaterThanOrEqual(610);
   });
 
   it("getBank() default arg is identical to getBank('aip-c01')", () => {
     expect(getBank()).toEqual(getBank("aip-c01"));
-    expect(getBank().length).toBe(610);
+    expect(getBank().length).toBeGreaterThanOrEqual(610);
   });
 
   it("getMeta() default and getMeta(certId) both resolve aip-c01", () => {
@@ -91,6 +91,6 @@ describe("mla-c01 registry entry", () => {
   it("getBank('mla-c01') serves the mla bank, default stays aip-c01", () => {
     expect(getBank("mla-c01").length).toBe(65);
     expect(getBank("mla-c01")[0].id).toMatch(/^mlac01-/);
-    expect(getBank().length).toBe(610);
+    expect(getBank().length).toBeGreaterThanOrEqual(610);
   });
 });

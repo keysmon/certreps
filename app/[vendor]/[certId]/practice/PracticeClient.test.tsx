@@ -3,7 +3,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { PracticeClient } from "./PracticeClient";
 import { createAttempt, saveAttempt, recordResult, getAttempt, listInProgress } from "@/lib/storage";
-import { getMeta, getBank } from "@/lib/bank";
+import { getMeta, getPracticeBank as getBank } from "@/lib/bank";
 
 // useSearchParams is driven per-test through this mutable holder.
 let currentParams = new URLSearchParams();

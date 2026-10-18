@@ -5,6 +5,8 @@ import { Pill } from "@/components/ui/Pill";
 import { TopNav } from "@/components/ui/TopNav";
 import { VendorDot, VENDORS } from "@/components/ui/VendorDot";
 import type { CSSProperties } from "react";
+import { getPracticeBank } from "@/lib/bank";
+import aipReview from "@/content/aip-c01/review.json";
 import { getCert, listCerts } from "@/lib/certs";
 import { PathToReady } from "./CertDetailClient";
 import "./cert-detail.css";
@@ -77,6 +79,13 @@ export default async function CertPage({ params }: { params: Promise<{ vendor: s
             </p>
           )}
         </header>
+
+        {meta.certId === "aip-c01" && (
+          <p className="cd-blurb">
+            {getPracticeBank(certId).length} active practice questions. Content reviewed {aipReview.reviewedOn};
+            {" "}{aipReview.unresolved.length} unresolved questions excluded from practice.
+          </p>
+        )}
 
         <div style={eyebrow}>Your path to ready</div>
 

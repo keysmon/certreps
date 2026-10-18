@@ -18,3 +18,14 @@ Published-bank invariant (review-past replays depend on it): question ids are ap
 CertReps is an independent study resource.
 Not affiliated with, endorsed by, or sponsored by Amazon Web Services.
 All questions are original - never actual exam content.
+
+### Reviewed question lifecycle
+
+`getBank` retains all published records for historical grading. New practice uses
+`getPracticeBank`; every sampler also excludes `excludedFromPractice` records.
+A question with a defective stem, option, or answer key is retired and replaced
+with an appended ID (`supersededBy`), preserving published options and keys.
+Unresolved items remain excluded until reviewed. Existing sessions containing
+excluded items must start fresh; their saved history is preserved. Completed mocks
+containing excluded items remain reviewable but do not contribute to readiness.
+The AIP-C01 source review and correction mapping is in `content/aip-c01/review.json`.

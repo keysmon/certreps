@@ -1,0 +1,964 @@
+{
+  "reviewedOn": "2026-10-17",
+  "baselineCommit": "a9a59df4d75d3fb2cbc2a44fea164719c3f6e4b1",
+  "baselineBankSha256": "4b86fbc56b0dbb54d259aa44736feb09180cd0679e51130b199da79e2b6905c2",
+  "reviewedOriginalCount": 610,
+  "activeCount": 589,
+  "corrections": [
+    {
+      "id": "aipc01-0012",
+      "action": "replace",
+      "replacementId": "aipc01-0611",
+      "rationale": "The original keyed option and explanation imply one prompt/completion schema for all text models; replacement explicitly tests model-dependent schemas.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/model-customization-prepare.html"
+      ]
+    },
+    {
+      "id": "aipc01-0025",
+      "action": "replace",
+      "replacementId": "aipc01-0612",
+      "rationale": "The original answer promises strict compliance from ordinary tool use without strict:true; replacement uses explicit schema-constrained output.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/structured-output.html"
+      ]
+    },
+    {
+      "id": "aipc01-0027",
+      "action": "update",
+      "explanation": "<b>A Lambda function URL configured for response streaming</b> is the only listed change that forwards chunks incrementally without adding a separate messaging service. Raising an integration timeout alone does not enable streaming. API Gateway REST proxy integrations also support response streaming when configured with the STREAM transfer mode and a compatible streaming backend; REST APIs are not inherently limited to buffered responses. Buffering chunks and batch inference do not satisfy this interactive requirement.",
+      "docUrl": "https://docs.aws.amazon.com/apigateway/latest/developerguide/response-transfer-mode.html",
+      "rationale": "The listed function-URL answer remains valid; remove the obsolete blanket statement that REST APIs always buffer.",
+      "sources": [
+        "https://docs.aws.amazon.com/apigateway/latest/developerguide/response-transfer-mode.html"
+      ]
+    },
+    {
+      "id": "aipc01-0035",
+      "action": "replace",
+      "replacementId": "aipc01-0613",
+      "rationale": "The original pair includes an opening-brace prefill, which cannot enforce exact schemas. Replacement tests the two supported enforcement mechanisms.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/structured-output.html"
+      ]
+    },
+    {
+      "id": "aipc01-0043",
+      "action": "replace",
+      "replacementId": "aipc01-0614",
+      "rationale": "Logging controls customer logs, not service abuse retention. Select model and eligible ZDR terms explicitly; retain CSAM exception. Current AWS lists model-specific retention up to 30 days.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/abuse-detection.html"
+      ]
+    },
+    {
+      "id": "aipc01-0047",
+      "action": "replace",
+      "replacementId": "aipc01-0615",
+      "rationale": "Include InvokeModelWithResponseStream (or InvokeModel*) to close streaming/ConverseStream bypass. Scope SCP claim to member accounts; management account is exempt.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_InvokeModelWithResponseStream.html",
+        "https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps.html"
+      ]
+    },
+    {
+      "id": "aipc01-0048",
+      "action": "replace",
+      "replacementId": "aipc01-0616",
+      "rationale": "As of this audit Clarify is closed to new customers. Qualify existing-customer use. Bedrock Evaluations replaces FM evaluation; tabular bias/attribution guidance also includes open-source metrics/SHAP and AWS monitoring solutions.",
+      "sources": [
+        "https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-availability-change.html"
+      ]
+    },
+    {
+      "id": "aipc01-0051",
+      "action": "replace",
+      "replacementId": "aipc01-0617",
+      "rationale": "Qualifies model/minimum/TTL and removes the universal fine-tuning-requires-PT claim.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-caching.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/deploy-custom-model-on-demand.html"
+      ]
+    },
+    {
+      "id": "aipc01-0056",
+      "action": "replace",
+      "replacementId": "aipc01-0618",
+      "rationale": "Replaces per-model metrics with an actual team cost-attribution mechanism and narrows scope to one shared account.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/inference-profiles.html",
+        "https://docs.aws.amazon.com/cost-management/latest/userguide/budgets-managing-costs.html",
+        "https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/activating-tags.html"
+      ]
+    },
+    {
+      "id": "aipc01-0057",
+      "action": "replace",
+      "replacementId": "aipc01-0619",
+      "rationale": "Includes global routing savings in the premise so the cost key remains unique without claiming cross-Region routing never discounts tokens.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/prov-throughput.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html"
+      ]
+    },
+    {
+      "id": "aipc01-0063",
+      "action": "replace",
+      "replacementId": "aipc01-0620",
+      "rationale": "Resolve the source-audited accuracy issue without changing a published answer key.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html"
+      ]
+    },
+    {
+      "id": "aipc01-0066",
+      "action": "replace",
+      "replacementId": "aipc01-0621",
+      "rationale": "Nova Canvas reached EOL before the audit. Replace the AWS-first-party restriction with a verified Active Bedrock image-generation model in its supported Region.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-stability-ai-stable-image-ultra-1-0.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/model-lifecycle-legacy.html"
+      ]
+    },
+    {
+      "id": "aipc01-0077",
+      "action": "replace",
+      "replacementId": "aipc01-0622",
+      "rationale": "The original question has multiple qualifying listed stores and falsely says Neptune requires precreation.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-create.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-build-graphs-build.html"
+      ]
+    },
+    {
+      "id": "aipc01-0080",
+      "action": "replace",
+      "replacementId": "aipc01-0623",
+      "rationale": "Cohere Embed English now supports images, so replace that valid competing distractor rather than changing the published key.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/titan-multiemb-models.html"
+      ]
+    },
+    {
+      "id": "aipc01-0105",
+      "action": "replace",
+      "replacementId": "aipc01-0624",
+      "rationale": "Synchronous means each chunk is scanned before release; classifiers can miss harmful content. Say no unmoderated chunks, not no unsafe output.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-streaming.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-how.html"
+      ]
+    },
+    {
+      "id": "aipc01-0114",
+      "action": "replace",
+      "replacementId": "aipc01-0625",
+      "rationale": "Gateway invokes Lambda with its assumed service role. Scope that role and Lambda principal; put confused-deputy SourceArn/SourceAccount conditions on the role trust policy.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/gateway-prerequisites-permissions.html"
+      ]
+    },
+    {
+      "id": "aipc01-0116",
+      "action": "replace",
+      "replacementId": "aipc01-0626",
+      "rationale": "Uses a currently listed supported pair and explicitly limits the router to two configured models.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-routing.html"
+      ]
+    },
+    {
+      "id": "aipc01-0120",
+      "action": "update",
+      "explanation": "<b>Application inference profiles</b> provide native billed-cost allocation through profile tags when teams invoke through their assigned profile ARNs; activate the relevant cost allocation tags. Budgets adds alerts, while separate accounts are unnecessary for this requirement. Invocation logs can contain reliable caller identity and request metadata and are useful for token analysis; manually guessing from logs is a weaker way to obtain the requested native billing breakdown.",
+      "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/inference-profiles.html",
+      "rationale": "Keeps the valid profile key while acknowledging automatic identity.arn and optional requestMetadata in logs.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/inference-profiles.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/model-invocation-logging.html",
+        "https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/activating-tags.html"
+      ]
+    },
+    {
+      "id": "aipc01-0130",
+      "action": "replace",
+      "replacementId": "aipc01-0627",
+      "rationale": "Resolve the source-audited accuracy issue without changing a published answer key.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-anthropic-claude-opus-4-7.html"
+      ]
+    },
+    {
+      "id": "aipc01-0131",
+      "action": "replace",
+      "replacementId": "aipc01-0628",
+      "rationale": "Replace retired blanket manual-access guidance with an explicit missing Anthropic FTU prerequisite, eliminating other possible causes from the scenario.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html"
+      ]
+    },
+    {
+      "id": "aipc01-0154",
+      "action": "replace",
+      "replacementId": "aipc01-0629",
+      "rationale": "The original unspecified model cannot support a definite PT prerequisite. Replacement explicitly assumes verified eligibility and tests the required deployment step.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/deploy-custom-model-on-demand.html"
+      ]
+    },
+    {
+      "id": "aipc01-0176",
+      "action": "replace",
+      "replacementId": "aipc01-0630",
+      "rationale": "The original stem itself promises an indefinite, entirely free wait. Replacement uses bounded callback semantics.",
+      "sources": [
+        "https://docs.aws.amazon.com/step-functions/latest/dg/connect-to-resource.html",
+        "https://docs.aws.amazon.com/step-functions/latest/dg/service-quotas.html",
+        "https://aws.amazon.com/step-functions/pricing/"
+      ]
+    },
+    {
+      "id": "aipc01-0210",
+      "action": "replace",
+      "replacementId": "aipc01-0631",
+      "rationale": "Grant the profile ARN separately and apply InferenceProfileArn condition to foundation-model resource evaluation; AWS says this context key is not populated for profile resource evaluation.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/geographic-cross-region-inference.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/inference-profiles-prereq.html"
+      ]
+    },
+    {
+      "id": "aipc01-0211",
+      "action": "replace",
+      "replacementId": "aipc01-0632",
+      "rationale": "SCPs do not affect management account principals. Say member accounts, and separately control management-account usage.",
+      "sources": [
+        "https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps.html"
+      ]
+    },
+    {
+      "id": "aipc01-0212",
+      "action": "replace",
+      "replacementId": "aipc01-0633",
+      "rationale": "Endpoint policies govern calls through that endpoint. Add independently enforced SourceVpce conditions or network egress restrictions to forbid public endpoint calls.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/vpc-interface-endpoints.html",
+        "https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_condition-keys.html#condition-keys-sourcevpce"
+      ]
+    },
+    {
+      "id": "aipc01-0217",
+      "action": "replace",
+      "replacementId": "aipc01-0634",
+      "rationale": "Current cited Memory encryption page instructs granting the IAM user/role permissions with kms:ViaService. The asserted mandatory service-principal configuration is not supported there.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/storage-encryption.html"
+      ]
+    },
+    {
+      "id": "aipc01-0221",
+      "action": "replace",
+      "replacementId": "aipc01-0635",
+      "rationale": "Only POST_CHUNKING is supported. To inspect whole parsed documents then chunk, set chunkingStrategy NONE and implement custom chunking, or screen before ingestion.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-custom-transformation.html"
+      ]
+    },
+    {
+      "id": "aipc01-0231",
+      "action": "replace",
+      "replacementId": "aipc01-0636",
+      "rationale": "Corrects the invalid literal value and makes the API parameter distinction explicit.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/service-tiers-inference.html"
+      ]
+    },
+    {
+      "id": "aipc01-0232",
+      "action": "replace",
+      "replacementId": "aipc01-0637",
+      "rationale": "Names a documented model/minimum and rules out the unsupported inference that the original stem fixed Region or TTL.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-caching.html"
+      ]
+    },
+    {
+      "id": "aipc01-0245",
+      "action": "replace",
+      "replacementId": "aipc01-0638",
+      "rationale": "Replaces the hard-cap guarantee with the actual delayed budget-action behavior.",
+      "sources": [
+        "https://docs.aws.amazon.com/cost-management/latest/userguide/budgets-controls.html",
+        "https://docs.aws.amazon.com/cost-management/latest/userguide/budgets-managing-costs.html"
+      ]
+    },
+    {
+      "id": "aipc01-0247",
+      "action": "replace",
+      "replacementId": "aipc01-0639",
+      "rationale": "Resolve the source-audited accuracy issue without changing a published answer key.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-how-retrieval.html"
+      ]
+    },
+    {
+      "id": "aipc01-0250",
+      "action": "replace",
+      "replacementId": "aipc01-0640",
+      "rationale": "Resolve the source-audited accuracy issue without changing a published answer key.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_InvokeModel.html"
+      ]
+    },
+    {
+      "id": "aipc01-0252",
+      "action": "update",
+      "explanation": "Inspect the returned guardrail action and enabled trace to determine whether a policy intervened and which assessment caused it. A successful filtered response is distinct from a model server error or throttling. Some guardrail content filters are probabilistic ML classifiers, so neither identical behavior nor perfect detection should be assumed.",
+      "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-components.html",
+      "rationale": "Resolve the source-audited accuracy issue without changing a published answer key.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-components.html"
+      ]
+    },
+    {
+      "id": "aipc01-0273",
+      "action": "replace",
+      "replacementId": "aipc01-0641",
+      "rationale": "Explicitly migrates the modelId before deleting provisioned capacity.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/prov-thru-use.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/prov-thru-delete.html"
+      ]
+    },
+    {
+      "id": "aipc01-0279",
+      "action": "replace",
+      "replacementId": "aipc01-0642",
+      "rationale": "The original stem incorrectly treats sentence splitting and complete structure blindness as defining Bedrock behavior; replacement tests documented configuration instead.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-chunking.html"
+      ]
+    },
+    {
+      "id": "aipc01-0287",
+      "action": "replace",
+      "replacementId": "aipc01-0643",
+      "rationale": "The original incorrectly excludes Cohere image support. Replacement directly teaches that supported capability with only one valid listed choice.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-embed-v3.html",
+        "https://aws.amazon.com/about-aws/whats-new/2025/01/amazon-bedrock-multimodal-cohere-embed-3-multilingual-english/"
+      ]
+    },
+    {
+      "id": "aipc01-0296",
+      "action": "replace",
+      "replacementId": "aipc01-0644",
+      "rationale": "The original option hardcodes a universal prompt/completion schema and redirects to continued pre-training without specifying model support.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/model-customization-prepare.html"
+      ]
+    },
+    {
+      "id": "aipc01-0298",
+      "action": "update",
+      "explanation": "<b>Amazon S3 and Amazon CloudWatch Logs</b> are the supported destinations for model invocation logging, which can capture request and response content for supported operations and configured modalities. CloudTrail records API activity, including management events and selected data events, rather than serving as the full prompt/response logging destination. AWS Config tracks resource configuration. Configure logging and retention for the required Region and endpoint.",
+      "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-invocation-logging.html",
+      "rationale": "Retain the correct destination pair; remove the false claim that CloudTrail only supports management events.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/model-invocation-logging.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/logging-using-cloudtrail.html"
+      ]
+    },
+    {
+      "id": "aipc01-0299",
+      "action": "update",
+      "explanation": "<b>The first two statements are accurate:</b> Bedrock does not use customer prompts or completions to train the underlying base models or share that content with third-party providers, and Guardrails sensitive-information filters can block or anonymize detected PII. CloudTrail records API activity through management and selected data events, rather than the full prompt and model response text required here. A NAT gateway is not a substitute for PrivateLink private endpoint connectivity. A customer managed KMS key controls encryption but does not replace an applicable HIPAA BAA.",
+      "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/logging-using-cloudtrail.html",
+      "rationale": "Retain the correct selections while correcting the CloudTrail-only-management explanation.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/logging-using-cloudtrail.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/data-protection.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/data-retention.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-sensitive-filters.html"
+      ]
+    },
+    {
+      "id": "aipc01-0304",
+      "action": "replace",
+      "replacementId": "aipc01-0645",
+      "rationale": "The original option itself conflates natural-language policy authoring with runtime enforcement; replace with an explicit formal authorization boundary.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/policy.html"
+      ]
+    },
+    {
+      "id": "aipc01-0316",
+      "action": "replace",
+      "replacementId": "aipc01-0646",
+      "rationale": "The original keyed option itself says ordinary tool use provides a structural guarantee, so an explanation-only change would leave a false option.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/structured-output.html"
+      ]
+    },
+    {
+      "id": "aipc01-0320",
+      "action": "update",
+      "explanation": "<b>Place the checkpoint after the policy manual and before the changing question</b> to make the largest static prefix eligible for reuse. A checkpoint before the manual includes no manual content; placing it after the changing question can cause misses. A checkpoint partway through the manual can still cache the preceding static portion if it meets the model's minimum, but it leaves the rest of the reusable manual outside that explicit checkpoint. Cache hits remain subject to model support, prefix matching, and retention behavior.",
+      "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-caching.html",
+      "rationale": "The best placement remains unchanged; correct the false assertion that a mid-manual checkpoint necessarily provides little or no benefit.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-caching.html"
+      ]
+    },
+    {
+      "id": "aipc01-0352",
+      "action": "replace",
+      "replacementId": "aipc01-0647",
+      "rationale": "Include InvokeModelWithResponseStream (or InvokeModel*) to close streaming/ConverseStream bypass. Scope SCP claim to member accounts; management account is exempt.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_InvokeModelWithResponseStream.html",
+        "https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps.html"
+      ]
+    },
+    {
+      "id": "aipc01-0354",
+      "action": "replace",
+      "replacementId": "aipc01-0648",
+      "rationale": "Separate backend permissions limit what each backend does, but do not authorize which caller may invoke refund. Enforce caller/tool Policy or interceptor authorization, or separate gateways. Native target IAM credentials use Gateway service role.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/gateway-building-adding-targets-authorization.html",
+        "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/gateway-prerequisites-permissions.html",
+        "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/policy-core-concepts.html"
+      ]
+    },
+    {
+      "id": "aipc01-0355",
+      "action": "replace",
+      "replacementId": "aipc01-0649",
+      "rationale": "Include InvokeModelWithResponseStream (or InvokeModel*) to close streaming/ConverseStream bypass. Scope SCP claim to member accounts; management account is exempt.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_InvokeModelWithResponseStream.html",
+        "https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-permissions-id.html"
+      ]
+    },
+    {
+      "id": "aipc01-0364",
+      "action": "replace",
+      "replacementId": "aipc01-0650",
+      "rationale": "Provenance is evidence, not unconditional proof: modified images lower watermark detection accuracy, and removable C2PA metadata may be absent. Perceptual hashes also must not be equated with cryptographic hashes.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/titan-image-models.html"
+      ]
+    },
+    {
+      "id": "aipc01-0365",
+      "action": "replace",
+      "replacementId": "aipc01-0651",
+      "rationale": "As of this audit Clarify is closed to new customers. Qualify existing-customer use. Bedrock Evaluations replaces FM evaluation; tabular bias/attribution guidance also includes open-source metrics/SHAP and AWS monitoring solutions.",
+      "sources": [
+        "https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-availability-change.html"
+      ]
+    },
+    {
+      "id": "aipc01-0377",
+      "action": "replace",
+      "replacementId": "aipc01-0652",
+      "rationale": "Bedrock evaluates enabled input policies and does not charge model inference when input is blocked. ApplyGuardrail can add an earlier application/retrieval gate; explain why existing input checks were disabled or selective.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-how.html"
+      ]
+    },
+    {
+      "id": "aipc01-0382",
+      "action": "update",
+      "explanation": "Synchronous processing buffers response chunks and applies configured policies before release, adding latency. Asynchronous processing releases chunks as they become available while scanning continues, so inappropriate content may reach the TTS engine before later chunks are blocked. Synchronous mode avoids unmoderated release, but does not guarantee perfect detection. Streaming mode is a per-call setting; it does not require publishing a guardrail version.",
+      "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-streaming.html",
+      "rationale": "Synchronous means each chunk is scanned before release; classifiers can miss harmful content. Say no unmoderated chunks, not no unsafe output.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-streaming.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-how.html"
+      ]
+    },
+    {
+      "id": "aipc01-0389",
+      "action": "replace",
+      "replacementId": "aipc01-0653",
+      "rationale": "Include InvokeModelWithResponseStream (or InvokeModel*) to close streaming/ConverseStream bypass. Scope SCP claim to member accounts; management account is exempt.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_InvokeModelWithResponseStream.html",
+        "https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps.html"
+      ]
+    },
+    {
+      "id": "aipc01-0392",
+      "action": "replace",
+      "replacementId": "aipc01-0654",
+      "rationale": "Logging controls customer logs, not service abuse retention. Select model and eligible ZDR terms explicitly; retain CSAM exception. Current AWS lists model-specific retention up to 30 days.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/abuse-detection.html"
+      ]
+    },
+    {
+      "id": "aipc01-0406",
+      "action": "replace",
+      "replacementId": "aipc01-0655",
+      "rationale": "Provenance is evidence, not unconditional proof: modified images lower watermark detection accuracy, and removable C2PA metadata may be absent. Perceptual hashes also must not be equated with cryptographic hashes.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/titan-image-models.html"
+      ]
+    },
+    {
+      "id": "aipc01-0407",
+      "action": "replace",
+      "replacementId": "aipc01-0656",
+      "rationale": "As of this audit Clarify is closed to new customers. Qualify existing-customer use. Bedrock Evaluations replaces FM evaluation; tabular bias/attribution guidance also includes open-source metrics/SHAP and AWS monitoring solutions.",
+      "sources": [
+        "https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-availability-change.html"
+      ]
+    },
+    {
+      "id": "aipc01-0408",
+      "action": "replace",
+      "replacementId": "aipc01-0657",
+      "rationale": "As of this audit Clarify is closed to new customers. Qualify existing-customer use. Bedrock Evaluations replaces FM evaluation; tabular bias/attribution guidance also includes open-source metrics/SHAP and AWS monitoring solutions.",
+      "sources": [
+        "https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-availability-change.html"
+      ]
+    },
+    {
+      "id": "aipc01-0411",
+      "action": "replace",
+      "replacementId": "aipc01-0658",
+      "rationale": "Names a model whose caching minimum is satisfied and removes any suggestion that Batch API and prompt caching can be combined.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-caching.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference.html"
+      ]
+    },
+    {
+      "id": "aipc01-0415",
+      "action": "replace",
+      "replacementId": "aipc01-0659",
+      "rationale": "Replaces token-level partial-reuse and standard-write-rate guarantees with model-aware cache behavior.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-caching.html"
+      ]
+    },
+    {
+      "id": "aipc01-0424",
+      "action": "replace",
+      "replacementId": "aipc01-0660",
+      "rationale": "Replaces an unsupported duty-cycle conclusion with a complete, explicitly illustrative cost calculation.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/prov-throughput.html"
+      ]
+    },
+    {
+      "id": "aipc01-0437",
+      "action": "update",
+      "explanation": "<b>Reranking a sufficiently broad candidate set and sending fewer relevant chunks to generation</b> can reduce input tokens. A CloudWatch alarm on InputTokenCount helps detect subsequent input-volume increases. Use Average or per-request analysis when diagnosing prompt-size changes, because Sum can also rise with more calls. More context increases tokens; disabling logs does not shrink the prompt; provisioned capacity does not remove redundant context.",
+      "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/monitoring-runtime-metrics.html",
+      "rationale": "Repoints the source to the tested metrics and clarifies candidate retrieval versus final context plus statistic choice.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/monitoring-runtime-metrics.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/rerank.html"
+      ]
+    },
+    {
+      "id": "aipc01-0438",
+      "action": "replace",
+      "replacementId": "aipc01-0661",
+      "rationale": "Separates candidate retrieval from final generation context and removes the claim that a reranker recovers unseen chunks.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/rerank-use.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/rerank.html"
+      ]
+    },
+    {
+      "id": "aipc01-0439",
+      "action": "replace",
+      "replacementId": "aipc01-0662",
+      "rationale": "Uses the actual metric source and avoids treating request counts as proof of distinct users or excluding retries without evidence. Replaces the unsupported option inference that accepted calls prove more distinct users.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/monitoring-runtime-metrics.html"
+      ]
+    },
+    {
+      "id": "aipc01-0447",
+      "action": "replace",
+      "replacementId": "aipc01-0663",
+      "rationale": "Retains sensible explicit checkpoint placement but acknowledges implicit caching and model-specific lookback.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-caching.html"
+      ]
+    },
+    {
+      "id": "aipc01-0468",
+      "action": "update",
+      "explanation": "<b>Meta Llama 3.3 70B Instruct</b> is listed for custom-model on-demand deployment in US West (Oregon), subject to the customization-date and deployment prerequisites. Invoke the active deployment ARN rather than assuming a raw custom-model ID is an on-demand endpoint. This avoids paying for reserved capacity between calls. Provisioned Throughput also has no-commitment options for supported models, but those still charge for provisioned capacity while allocated.",
+      "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/deploy-custom-model-on-demand.html",
+      "rationale": "Removes the false denial of other term-free capacity choices and states the deployment prerequisites.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/deploy-custom-model-on-demand.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/prov-throughput.html"
+      ]
+    },
+    {
+      "id": "aipc01-0492",
+      "action": "replace",
+      "replacementId": "aipc01-0664",
+      "rationale": "Changes the requirement to accepted call volume and explicitly separates it from retry-count confirmation.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/monitoring-runtime-metrics.html"
+      ]
+    },
+    {
+      "id": "aipc01-0507",
+      "action": "update",
+      "explanation": "BERTScore uses contextual BERT embeddings and cosine similarity to measure semantic similarity against reference text; it is not just lexical overlap. That score alone does not establish factual faithfulness, coherence, empathy or brand tone. Choose a rubric-based judge or human review where those dimensions matter, and calibrate the evaluation on representative cases.",
+      "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-evaluation-report-programmatic.html",
+      "rationale": "Resolve the source-audited accuracy issue without changing a published answer key.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/model-evaluation-report-programmatic.html"
+      ]
+    },
+    {
+      "id": "aipc01-0510",
+      "action": "replace",
+      "replacementId": "aipc01-0665",
+      "rationale": "Resolve the source-audited accuracy issue without changing a published answer key.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/model-evaluation-report-programmatic.html"
+      ]
+    },
+    {
+      "id": "aipc01-0511",
+      "action": "update",
+      "explanation": "The scenario has no usable gold references, so a calibrated LLM judge with the specified rubric is the best listed automatic approach. BERTScore and F1 require reference data for these reference-based comparisons. BERTScore is embedding-based and can accommodate semantic paraphrases; the absence of reference answers, rather than lexical wording differences alone, is the relevant limitation.",
+      "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-evaluation-report-programmatic.html",
+      "rationale": "Resolve the source-audited accuracy issue without changing a published answer key.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/model-evaluation-report-programmatic.html"
+      ]
+    },
+    {
+      "id": "aipc01-0512",
+      "action": "replace",
+      "replacementId": "aipc01-0666",
+      "rationale": "Resolve the source-audited accuracy issue without changing a published answer key.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/model-evaluation-report-programmatic.html"
+      ]
+    },
+    {
+      "id": "aipc01-0530",
+      "action": "replace",
+      "replacementId": "aipc01-0667",
+      "rationale": "Resolve the source-audited accuracy issue without changing a published answer key.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html"
+      ]
+    },
+    {
+      "id": "aipc01-0541",
+      "action": "replace",
+      "replacementId": "aipc01-0668",
+      "rationale": "Resolve the source-audited accuracy issue without changing a published answer key.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-anthropic-claude-opus-4-7.html"
+      ]
+    },
+    {
+      "id": "aipc01-0543",
+      "action": "replace",
+      "replacementId": "aipc01-0669",
+      "rationale": "Resolve the source-audited accuracy issue without changing a published answer key.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-anthropic-claude-opus-4-7.html"
+      ]
+    },
+    {
+      "id": "aipc01-0551",
+      "action": "update",
+      "explanation": "BERTScore uses contextual BERT embeddings and cosine similarity to measure semantic similarity against reference text; it is not just lexical overlap. That score alone does not establish factual faithfulness, coherence, empathy or brand tone. Choose a rubric-based judge or human review where those dimensions matter, and calibrate the evaluation on representative cases. The scenario explicitly requires unattended scoring for all descriptions, so a rubric-based LLM judge fits the automation requirement; latency alarms do not score quality.",
+      "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-evaluation-report-programmatic.html",
+      "rationale": "Resolve the source-audited accuracy issue without changing a published answer key.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/model-evaluation-report-programmatic.html"
+      ]
+    },
+    {
+      "id": "aipc01-0553",
+      "action": "update",
+      "explanation": "With verified reference translations, an automatic semantic/reference metric such as BERTScore provides a repeatable regression signal. BERTScore compares contextual embeddings rather than only lexical surface overlap. Reference scores do not eliminate the value of separate human or judge-based checks for meaning, fluency and task-specific errors.",
+      "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-evaluation-report-programmatic.html",
+      "rationale": "Resolve the source-audited accuracy issue without changing a published answer key.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/model-evaluation-report-programmatic.html"
+      ]
+    },
+    {
+      "id": "aipc01-0556",
+      "action": "replace",
+      "replacementId": "aipc01-0670",
+      "rationale": "Resolve the source-audited accuracy issue without changing a published answer key.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/model-evaluation-report-programmatic.html"
+      ]
+    },
+    {
+      "id": "aipc01-0558",
+      "action": "replace",
+      "replacementId": "aipc01-0671",
+      "rationale": "Resolve the source-audited accuracy issue without changing a published answer key.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/evaluation-kb.html"
+      ]
+    },
+    {
+      "id": "aipc01-0561",
+      "action": "replace",
+      "replacementId": "aipc01-0672",
+      "rationale": "Resolve the source-audited accuracy issue without changing a published answer key.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/evaluation-kb.html"
+      ]
+    },
+    {
+      "id": "aipc01-0580",
+      "action": "update",
+      "explanation": "A model-specific AccessDeniedException can reflect missing Marketplace permissions, an unmet provider agreement/FTU requirement, or additional account access. Many supported models activate automatically once prerequisites are satisfied. Inspect availability and agreement status and the actual policies; no universal manual Model access console grant is required, and successful InvokeModel authorization alone does not establish all activation prerequisites.",
+      "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html",
+      "rationale": "Resolve the source-audited accuracy issue without changing a published answer key.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html"
+      ]
+    },
+    {
+      "id": "aipc01-0583",
+      "action": "replace",
+      "replacementId": "aipc01-0673",
+      "rationale": "Resolve the source-audited accuracy issue without changing a published answer key.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html"
+      ]
+    },
+    {
+      "id": "aipc01-0587",
+      "action": "replace",
+      "replacementId": "aipc01-0674",
+      "rationale": "Resolve the source-audited accuracy issue without changing a published answer key.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html"
+      ]
+    },
+    {
+      "id": "aipc01-0589",
+      "action": "replace",
+      "replacementId": "aipc01-0675",
+      "rationale": "Resolve the source-audited accuracy issue without changing a published answer key.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html"
+      ]
+    },
+    {
+      "id": "aipc01-0601",
+      "action": "replace",
+      "replacementId": "aipc01-0676",
+      "rationale": "Resolve the source-audited accuracy issue without changing a published answer key.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-anthropic-claude-opus-4-7.html"
+      ]
+    },
+    {
+      "id": "aipc01-0602",
+      "action": "replace",
+      "replacementId": "aipc01-0677",
+      "rationale": "Resolve the source-audited accuracy issue without changing a published answer key.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-anthropic-claude-opus-4-7.html"
+      ]
+    },
+    {
+      "id": "aipc01-0606",
+      "action": "replace",
+      "replacementId": "aipc01-0678",
+      "rationale": "Resolve the source-audited accuracy issue without changing a published answer key.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-anthropic-claude-opus-4-7.html"
+      ]
+    },
+    {
+      "id": "aipc01-0607",
+      "action": "replace",
+      "replacementId": "aipc01-0679",
+      "rationale": "Resolve the source-audited accuracy issue without changing a published answer key.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-anthropic-claude-opus-4-7.html"
+      ]
+    }
+  ],
+  "unresolved": [
+    {
+      "id": "aipc01-0001",
+      "reason": "Claude200K is largest among the listed context sizes, so marked answer is defensible. Global-largest framing is stale and pages alone do not determine token count; Nova Micro supports128K. Specific document token count and intended model version are missing. No answer reversal asserted.",
+      "sources": [
+        "https://docs.aws.amazon.com/nova/latest/userguide/"
+      ]
+    },
+    {
+      "id": "aipc01-0030",
+      "reason": "Memory is the right capability, but raw service APIs need event retrieval/context integration or framework adapters. Cannot tell whether the question assumes a configured adapter.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/memory.html"
+      ]
+    },
+    {
+      "id": "aipc01-0054",
+      "reason": "Distillation is a means to approach task accuracy, not a guarantee of identical or lossless teacher accuracy.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/model-distillation.html"
+      ]
+    },
+    {
+      "id": "aipc01-0068",
+      "reason": "Correct when data is presegmented, or CSV record-based structure metadata is configured. Generic spreadsheet row handling is underspecified; a file-level no-chunk strategy alone does not establish row parsing.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-metadata.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-chunking.html"
+      ]
+    },
+    {
+      "id": "aipc01-0074",
+      "reason": "Serving-mode distinction is documented, but only Claude3Haiku is listed for native Claude fine tuning and it reached EOL September10,2026. New fine-tuning/PT creation is blocked for Legacy models; stem lacks exact model/job date.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/deploy-custom-model-on-demand.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/model-lifecycle-legacy.html"
+      ]
+    },
+    {
+      "id": "aipc01-0100",
+      "reason": "It represents session-scoped conversational events, but this is not necessarily deletion at session end; storage retention is separate. Long-term answer is correct. Confirm whether intended phrase means retrieval scope or actual lifetime.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/memory.html"
+      ]
+    },
+    {
+      "id": "aipc01-0141",
+      "reason": "The startsWith/stringContains restriction is confirmed for the new managed Knowledge Base, but traditional quick-create OpenSearch is a distinct workflow with different filtering support. Stem must explicitly select managed KB rather than all quick-create stores.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-retrieve.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-create.html"
+      ]
+    },
+    {
+      "id": "aipc01-0172",
+      "reason": "AWS documentation says function URLs do not support streaming within a VPC environment and describes a VPC-client endpoint architecture, but does not clearly equate that to public clients invoking a VPC-attached function. Do not assert the broader causal mechanism without service test/support.",
+      "sources": [
+        "https://docs.aws.amazon.com/lambda/latest/dg/configuration-response-streaming.html"
+      ]
+    },
+    {
+      "id": "aipc01-0228",
+      "reason": "Foundational GuardDuty management-event plan supplies the model-anomaly capability attributed to current AI Protection page.",
+      "sources": [
+        "https://docs.aws.amazon.com/guardduty/latest/ug/ai-protection.html",
+        "https://docs.aws.amazon.com/pdfs/guardduty/latest/ug/guardduty-ug.pdf"
+      ]
+    },
+    {
+      "id": "aipc01-0233",
+      "reason": "JSON schema constrains visible schema output; strict tool input validation alone does not forbid all surrounding text or hidden reasoning, and model support differs.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/structured-output.html"
+      ]
+    },
+    {
+      "id": "aipc01-0244",
+      "reason": "Job concurrency is plausible, but the umbrella batch page links quotas rather than documenting exact queue behavior; no numerical concurrency limit asserted in question.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference.html"
+      ]
+    },
+    {
+      "id": "aipc01-0246",
+      "reason": "Pinning explicit model version is sound. Absolute immutable-behavior language is stronger than version pinning alone; deterministic output and lifetime availability are separate.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html"
+      ]
+    },
+    {
+      "id": "aipc01-0269",
+      "reason": "Current purchase guide explicitly names both provisioning modes, but retrieved detail/API page only exposes Model Units. By-Tokens eligibility for custom models and exact commitments not established by these pages.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/prov-thru-purchase.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/service-tiers-inference.html"
+      ]
+    },
+    {
+      "id": "aipc01-0318",
+      "reason": "Correct option states the loop is incomplete. The explanation additionally claims the API does not hard-reject, which can be model/provider dependent; current client-side-tool guide does not establish universal acceptance.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use-client-side.html"
+      ]
+    },
+    {
+      "id": "aipc01-0445",
+      "reason": "Generic model-free prompt-caching questions use prefixes below 4096 tokens. Some supported Claude models require4096, while others require512 or1024.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-caching.html"
+      ]
+    },
+    {
+      "id": "aipc01-0450",
+      "reason": "Generic model-free prompt-caching questions use prefixes below 4096 tokens. Some supported Claude models require4096, while others require512 or1024.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-caching.html"
+      ]
+    },
+    {
+      "id": "aipc01-0452",
+      "reason": "Generic model-free prompt-caching questions use prefixes below 4096 tokens. Some supported Claude models require4096, while others require512 or1024.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-caching.html"
+      ]
+    },
+    {
+      "id": "aipc01-0489",
+      "reason": "Single-app metric attribution requires a distinct app/profile/custom metric setup when multiple applications share one model.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/monitoring-runtime-metrics.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/inference-profiles.html"
+      ]
+    },
+    {
+      "id": "aipc01-0500",
+      "reason": "Distillation is a means to approach task accuracy, not a guarantee of identical or lossless teacher accuracy.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/model-distillation.html"
+      ]
+    },
+    {
+      "id": "aipc01-0503",
+      "reason": "Distillation is a means to approach task accuracy, not a guarantee of identical or lossless teacher accuracy.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/model-distillation.html"
+      ]
+    },
+    {
+      "id": "aipc01-0505",
+      "reason": "Distillation is a means to approach task accuracy, not a guarantee of identical or lossless teacher accuracy.",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/model-distillation.html"
+      ]
+    }
+  ],
+  "limitations": [
+    "All610 question records were read. Targeted technical claims were checked against primary AWS documentation; this was not independent execution of every service or proof of every proposition.",
+    "No material issue identified is not a guarantee of accuracy; unresolved/model-dependent claims and documented AWS source inconsistencies remain.",
+    "Some findings concern the explanation or omitted preconditions, with the intended key still reasonable. Answer_wrong includes requirements that none of the listed options fully satisfies.",
+    "Reachable references do not prove that the keyed answer follows from the page."
+  ],
+  "publishedContractsSha256": "ad3a69f22400d1de29f97ed0d9de91418a3260c36299d9aac2ce353ef0f9a7ed"
+}

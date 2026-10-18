@@ -3,7 +3,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { PathToReady, DomainRows, ReadinessPanel } from "./CertDetailClient";
 import { createAttempt, saveAttempt, recordResult, writeAll } from "@/lib/storage";
-import { getBank } from "@/lib/bank";
+import { getPracticeBank as getBank } from "@/lib/bank";
 import type { Attempt, QuestionResult } from "@/lib/types";
 
 const AIP = "aip-c01"; // passLine 75

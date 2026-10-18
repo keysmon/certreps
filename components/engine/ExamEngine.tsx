@@ -1,7 +1,7 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Attempt, Mode, Question } from "@/lib/types";
-import { getBank, getMeta } from "@/lib/bank";
+import { getBank, getPracticeBank, getMeta, attemptUsesActiveQuestions } from "@/lib/bank";
 import { sampleDrill, sampleMock, sampleQuick, questionsByIds } from "@/lib/sampler";
 import { createAttempt, saveAttempt, recordResult, finishAttempt, missedQuestionIds, listAttempts, getAttempt, saveProgress } from "@/lib/storage";
 import { buildWeights } from "@/lib/adaptive";
@@ -11,7 +11,7 @@ import { Timer } from "./Timer";
 import { Results } from "./Results";
 import { ReviewMap } from "./ReviewMap";
 import { VendorDot, VENDORS } from "@/components/ui/VendorDot";
-import { certPath } from "@/lib/routes";
+import { certPath, practicePath } from "@/lib/routes";
 import "./engine.css";
 
 const QUICK_N = 10;
@@ -22,7 +22,7 @@ const MIDDOT = String.fromCharCode(183); // U+00B7 middle dot - mode-note separa
 const TIMES = String.fromCharCode(10005); // U+2715 multiplication x - exit affordance
 
 export function ExamEngine({ certId, mode, domain, resumeAttemptId, reveal }: { certId?: string; mode: Mode; domain?: string; resumeAttemptId?: string; reveal?: boolean }) {
-  const bank = getBank(certId);
+  const bank = getPracticeBank(certId);
   const meta = getMeta(certId);
   const isMock = mode === "mock";
 
@@ -35,6 +35,7 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId, reveal }: { 
   // client render agree and only the client ever samples. Mirrors the CatalogClient/CertDetailClient
   // idiom (SSR the zero-state default, hydrate from localStorage in an effect).
   const [ready, setReady] = useState(false);
+  const [reviewedOutResume, setReviewedOutResume] = useState(false);
   const [questions, setQuestions] = useState<Question[]>([]);
 
   const [index, setIndex] = useState(0);
@@ -76,9 +77,15 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId, reveal }: { 
     const resumed: Attempt | null = (() => {
       if (!resumeAttemptId) return null;
       const a = getAttempt(resumeAttemptId);
-      if (!a || a.finishedAt !== null || a.mode !== mode) return null;
+      if (!a || a.certId !== meta.certId || a.finishedAt !== null || a.mode !== mode) return null;
       return a;
     })();
+
+    if (resumed && !attemptUsesActiveQuestions(resumed, getBank(meta.certId))) {
+      setReviewedOutResume(true);
+      setReady(true);
+      return;
+    }
 
     const sampled: Question[] = resumed
       ? questionsByIds(bank, resumed.questionIds)
@@ -211,6 +218,19 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId, reveal }: { 
   // MUST precede the questions-empty check below, or retry-with-no-missed would read as Loading forever.
   if (!ready) {
     return <p className="stage">Loading...</p>;
+  }
+
+  if (reviewedOutResume) {
+    const query = new URLSearchParams({ mode });
+    if (domain) query.set("domain", domain);
+    if (reveal) query.set("reveal", "1");
+    return (
+      <div className="stage">
+        <h2>This session needs a fresh question set</h2>
+        <p>Some questions were removed after review. Your previous answers are preserved.</p>
+        <a href={`${practicePath(meta)}?${query.toString()}`}>Start fresh practice</a>
+      </div>
+    );
   }
 
   if (questions.length === 0) {

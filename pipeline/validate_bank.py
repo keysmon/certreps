@@ -97,6 +97,21 @@ def validate_cert(cert_id):
         if len(set(opts)) != len(opts): errors.append(f"{loc}: duplicate option text")
         blob = q.get("stem", "") + "".join(opts) + q.get("explanation", "")
         if any(ord(ch) > 127 for ch in blob): errors.append(f"{loc}: non-ASCII")
+    by_id = {q.get("id"): q for q in data}
+    for q in data:
+        qid = q.get("id")
+        if "excludedFromPractice" in q and not isinstance(q["excludedFromPractice"], bool):
+            errors.append(f"{qid}: excludedFromPractice must be boolean")
+        if q.get("excludedFromPractice") and not q.get("exclusionReason", "").strip():
+            errors.append(f"{qid}: exclusion requires a reason")
+        if q.get("supersededBy"):
+            successor = by_id.get(q["supersededBy"])
+            if not q.get("excludedFromPractice") or not successor or successor.get("excludedFromPractice") or successor.get("domain") != q.get("domain"):
+                errors.append(f"{qid}: replacement must be an active question in the same domain")
+    for domain in meta.get("domains", []):
+        active = sum(q.get("domain") == domain["name"] and not q.get("excludedFromPractice") for q in data)
+        if active < domain.get("mockCount", 0):
+            errors.append(f"{domain['name']}: insufficient active questions for a full mock")
     return len(data), errors
 
 

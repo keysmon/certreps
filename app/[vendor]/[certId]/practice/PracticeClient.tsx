@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { ExamEngine } from "@/components/engine/ExamEngine";
-import { getMeta } from "@/lib/bank";
+import { getMeta, getBank, attemptUsesActiveQuestions } from "@/lib/bank";
 import { practicePath, resumeParams } from "@/lib/routes";
 import { attemptLabel } from "@/lib/labels";
 import { listInProgress, discardAttempt } from "@/lib/storage";
@@ -41,7 +41,7 @@ export function PracticeClient({ certId }: { certId: string }) {
   useEffect(() => {
     if (resume) return; // an explicit resume link bypasses the chooser; the engine adopts the id
     const match = listInProgress(certId).find(
-      (a) => a.mode === mode && !!a.reveal === reveal && (mode !== "drill" || a.domain === domain),
+      (a) => a.mode === mode && !!a.reveal === reveal && (mode !== "drill" || a.domain === domain) && attemptUsesActiveQuestions(a, getBank(certId)),
     );
     setInProgress(match ?? null);
     setChecked(true);

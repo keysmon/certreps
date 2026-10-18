@@ -1,6 +1,6 @@
 "use client";
 import type { Attempt, CertMeta } from "@/lib/types";
-import { getBank } from "@/lib/bank";
+import { getBank, attemptUsesActiveQuestions } from "@/lib/bank";
 import { gradeAttempt } from "@/lib/scoring";
 import { questionsByIds } from "@/lib/sampler";
 import { readinessRead, type Verdict } from "@/lib/readiness";
@@ -33,7 +33,8 @@ const H3: React.CSSProperties = {
  * is exactly what readinessRead acts on when it skips such mocks for the domain source.
  */
 export function TrendPanel({ attempts, meta }: { attempts: Attempt[]; meta: CertMeta }) {
-  const finishedMocks = attempts.filter((a) => a.mode === "mock" && !a.reveal && a.finishedAt !== null);
+  const bank = getBank(meta.certId);
+  const finishedMocks = attempts.filter((a) => a.mode === "mock" && !a.reveal && a.finishedAt !== null && attemptUsesActiveQuestions(a, bank));
 
   if (finishedMocks.length < 2) {
     return (
@@ -43,7 +44,6 @@ export function TrendPanel({ attempts, meta }: { attempts: Attempt[]; meta: Cert
     );
   }
 
-  const bank = getBank(meta.certId);
   const graded = finishedMocks.map((attempt) => {
     const g = gradeAttempt(attempt, questionsByIds(bank, attempt.questionIds));
     return { attempt, pct: g.pct, byDomain: g.byDomain };
