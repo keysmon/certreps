@@ -38,3 +38,19 @@ export function attemptUsesActiveQuestions(attempt: Pick<Attempt, "questionIds">
   const activeIds = new Set(bank.filter((q) => !q.excludedFromPractice).map((q) => q.id));
   return attempt.questionIds.length > 0 && attempt.questionIds.every((id) => activeIds.has(id));
 }
+
+type ResumeContext = Pick<Attempt, "certId" | "mode" | "domain" | "reveal">;
+
+/** Resume links and the engine share the same active-question/session-context boundary. */
+export function isResumableAttempt(attempt: Attempt, bank: Question[], context?: ResumeContext): boolean {
+  if (attempt.finishedAt !== null || !Array.isArray(attempt.questionIds)) return false;
+  if (!attemptUsesActiveQuestions(attempt, bank)) return false;
+  // Reveal is a mock-only setting; a domain drill without a domain cannot be reconstructed.
+  if ((attempt.reveal && attempt.mode !== "mock") || (attempt.mode === "drill" && !attempt.domain)) return false;
+  return !context || (
+    attempt.certId === context.certId &&
+    attempt.mode === context.mode &&
+    !!attempt.reveal === !!context.reveal &&
+    attempt.domain === context.domain
+  );
+}

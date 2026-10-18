@@ -33,6 +33,7 @@ export function ReportProblem({ questionId }: { questionId: string }) {
   return (
     <div style={{ marginTop: 10 }}>
       <textarea
+        aria-label="Describe the question issue"
         value={note}
         onChange={(e) => setNote(e.target.value)}
         placeholder="What's wrong? (e.g. answer key, outdated service name, typo)"

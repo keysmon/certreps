@@ -161,3 +161,45 @@ describe("PracticeClient interstitial", () => {
     expect(await screen.findByText(/Study Mock in progress/i)).toBeInTheDocument();
   });
 });
+
+
+describe("PracticeClient resume eligibility", () => {
+  it("does not offer a chooser for retired questions", async () => {
+    const a = createAttempt(AIP, "mock", ["aipc01-0001"]);
+    saveAttempt(a);
+    setParams("mode=mock");
+    render(<PracticeClient certId={AIP} />);
+    expect(await screen.findByTestId("engine")).toHaveAttribute("data-resume", "");
+    expect(screen.queryByRole("link", { name: /^resume$/i })).not.toBeInTheDocument();
+    expect(getAttempt(a.attemptId)).toEqual(a);
+  });
+
+  it("preserves the saved drill domain in the chooser resume link", async () => {
+    const domain = getMeta(AIP).domains[0].name;
+    const a = inProgress("drill", 1, domain);
+    setParams(`mode=drill&domain=${encodeURIComponent(domain)}`);
+    render(<PracticeClient certId={AIP} />);
+    const link = await screen.findByRole("link", { name: /^resume$/i });
+    const url = new URL(link.getAttribute("href")!, "https://certreps.test");
+    expect(url.searchParams.get("domain")).toBe(domain);
+    expect(url.searchParams.get("resume")).toBe(a.attemptId);
+  });
+});
+
+
+describe("PracticeClient navigation context", () => {
+  it("checks the new session context after starting fresh in a different mode", async () => {
+    inProgress("quick", 1);
+    const savedMock = inProgress("mock", 2);
+    setParams("mode=quick");
+    const view = render(<PracticeClient certId={AIP} />);
+    await screen.findByRole("link", { name: /^resume$/i });
+    await userEvent.click(screen.getByRole("button", { name: /start fresh/i }));
+    expect(await screen.findByTestId("engine")).toHaveAttribute("data-mode", "quick");
+    setParams("mode=mock");
+    view.rerender(<PracticeClient certId={AIP} />);
+    const link = await screen.findByRole("link", { name: /^resume$/i });
+    expect(link.getAttribute("href")).toContain(`resume=${savedMock.attemptId}`);
+    expect(screen.queryByTestId("engine")).not.toBeInTheDocument();
+  });
+});

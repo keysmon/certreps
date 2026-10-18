@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { ReviewPastClient } from "./ReviewPastClient";
 import { createAttempt, saveAttempt, recordResult, finishAttempt } from "@/lib/storage";
-import { getBank, getMeta } from "@/lib/bank";
+import { getBank, getMeta, getPracticeBank } from "@/lib/bank";
 
 beforeEach(() => localStorage.clear());
 
@@ -50,7 +50,7 @@ describe("ReviewPastClient", () => {
   });
 
   it("shows an in-progress card with a resume link for an unfinished attempt", async () => {
-    const a = createAttempt("aip-c01", "mock", getBank().slice(0, 3).map((q) => q.id));
+    const a = createAttempt("aip-c01", "mock", getPracticeBank().slice(0, 3).map((q) => q.id));
     saveAttempt(a);
     render(<ReviewPastClient id={a.attemptId} />);
     expect(await screen.findByText(/still in progress/i)).toBeInTheDocument();
@@ -63,4 +63,15 @@ describe("ReviewPastClient", () => {
     // The account escape hatch remains.
     expect(screen.getByRole("link", { name: /back to your account/i })).toHaveAttribute("href", "/account");
   });
+});
+
+
+it("preserves an archived unfinished attempt and offers fresh practice rather than resume", async () => {
+  const archived = getBank().find((q) => q.excludedFromPractice)!;
+  const a = createAttempt("aip-c01", "quick", [archived.id]);
+  saveAttempt(a);
+  render(<ReviewPastClient id={a.attemptId} />);
+  expect(await screen.findByText(/question set changed after review/i)).toBeInTheDocument();
+  expect(screen.queryByRole("link", { name: /resume attempt/i })).not.toBeInTheDocument();
+  expect(screen.getByRole("link", { name: /start fresh practice/i })).toHaveAttribute("href", "/aws/aip-c01/practice?mode=quick");
 });

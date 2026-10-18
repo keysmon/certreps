@@ -41,7 +41,7 @@ beforeEach(() => vi.clearAllMocks());
 afterEach(() => vi.clearAllMocks());
 
 describe("TopNav", () => {
-  it("renders the home logo and the cert switcher chip, with no persistent nav links", () => {
+  it("renders the home logo and the cert switcher chip, with local study navigation", () => {
     mockedAvailable.mockReturnValue(false);
     render(<TopNav />);
     expect(screen.getByRole("link", { name: /certreps home/i })).toHaveAttribute("href", "/");
@@ -49,7 +49,7 @@ describe("TopNav", () => {
     expect(screen.getByRole("button", { name: /switch certification/i })).toBeInTheDocument();
     // ...but the redesign dropped the persistent Catalog / My progress text links.
     expect(screen.queryByRole("link", { name: "Catalog" })).not.toBeInTheDocument();
-    expect(screen.queryByRole("link", { name: "My progress" })).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "My progress" })).toHaveAttribute("href", "/account");
   });
 
   it("shows no auth control when Supabase is unavailable", () => {
@@ -106,4 +106,23 @@ describe("TopNav", () => {
   // Theme selection moved out of the bar into Settings (a 5-way picker) with the redesign - the bar
   // no longer carries a light/dark toggle. Theme behaviour is covered by lib/theme.test.ts and
   // SettingsClient.test.tsx.
+});
+
+
+it("lets anonymous users reach their saved progress and settings", () => {
+  mockedAvailable.mockReturnValue(false);
+  render(<TopNav />);
+  expect(screen.getByRole("link", { name: "My progress" })).toHaveAttribute("href", "/account");
+  expect(screen.getByRole("link", { name: "Settings" })).toHaveAttribute("href", "/settings");
+});
+
+
+it("shows sign-out failure feedback in the account menu", async () => {
+  const signOut = vi.fn().mockResolvedValue({ error: new Error("offline") });
+  mockedAvailable.mockReturnValue(true);
+  mockedGetSupabase.mockReturnValue(fakeClient(sessionWith("ada@example.com"), signOut));
+  render(<TopNav />);
+  await userEvent.click(await screen.findByRole("button", { name: /account menu/i }));
+  await userEvent.click(screen.getByRole("menuitem", { name: /sign out/i }));
+  expect(await screen.findByRole("alert")).toHaveTextContent(/Could not sign out/);
 });

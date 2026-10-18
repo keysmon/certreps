@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { CertCard } from "@/components/ui/CertCard";
 import { VENDORS } from "@/components/ui/VendorDot";
 import { certPath } from "@/lib/routes";
+import { useAttemptRevision } from "@/lib/useAttemptRevision";
 import { progressView } from "@/lib/progress-view";
 import "./catalog.css";
 
@@ -40,6 +41,7 @@ const LEVEL_ORDER = ["Foundational", "Associate", "Professional", "Specialty"];
  * card with a finished mock flips to Resume.
  */
 export function CatalogClient({ certs }: { certs: CatalogCert[] }) {
+  const revision = useAttemptRevision();
   const [query, setQuery] = useState("");
   const [level, setLevel] = useState("All");
   const [progress, setProgress] = useState<Record<string, number>>({});
@@ -50,7 +52,7 @@ export function CatalogClient({ certs }: { certs: CatalogCert[] }) {
     // bestMockPct is the one shared derivation (lib/progress-view) so catalog + cert-detail agree.
     for (const c of certs) prog[c.certId] = progressView(c.certId, c.passLinePct).bestMockPct;
     setProgress(prog);
-  }, [certs]);
+  }, [certs, revision]);
 
   // "/" jumps to search, unless focus is already in a field.
   useEffect(() => {
@@ -70,7 +72,7 @@ export function CatalogClient({ certs }: { certs: CatalogCert[] }) {
     const ordered = LEVEL_ORDER.filter((l) => present.has(l));
     const extra = [...present].filter((l) => !LEVEL_ORDER.includes(l));
     return ["All", ...ordered, ...extra];
-  }, [certs]);
+  }, [certs, revision]);
 
   const filtered = useMemo(() => {
     const q = query.toLowerCase().trim();

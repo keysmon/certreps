@@ -3,11 +3,13 @@ import { useEffect, useState, type CSSProperties } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { ScoreRing } from "@/components/ui/ScoreRing";
+import { useAttemptRevision } from "@/lib/useAttemptRevision";
 import { domainReadiness, domainPracticeProgress, progressView } from "@/lib/progress-view";
 import { practicePath, resumeParams } from "@/lib/routes";
 import { attemptLabel } from "@/lib/labels";
 import type { Verdict } from "@/lib/readiness";
 import { listInProgress } from "@/lib/storage";
+import { getBank, isResumableAttempt } from "@/lib/bank";
 import type { Attempt } from "@/lib/types";
 
 // ASCII-source convention (see app/page.tsx / CatalogClient.tsx): typographic glyphs from
@@ -78,11 +80,12 @@ export function PathToReady({
   passLineOfficial?: boolean;
   domains: HeroDomain[];
 }) {
+  const revision = useAttemptRevision();
   const [attempts, setAttempts] = useState<Attempt[]>([]);
   const [domainsOpen, setDomainsOpen] = useState(false);
   useEffect(() => {
-    setAttempts(listInProgress(certId)); // newest first
-  }, [certId]);
+    setAttempts(listInProgress(certId).filter((a) => isResumableAttempt(a, getBank(certId)))); // newest eligible first
+  }, [certId, revision]);
 
   const base = practicePath({ vendorSlug, certId });
   const attempt = attempts[0] ?? null; // newest keeps the primary CTA
@@ -182,12 +185,13 @@ export function DomainRows({
   passLinePct: number;
   domains: HeroDomain[];
 }) {
+  const revision = useAttemptRevision();
   const [reads, setReads] = useState<Record<string, { pct: number; verdict: Verdict }>>({});
   const [practice, setPractice] = useState<ReturnType<typeof domainPracticeProgress>>({});
   useEffect(() => {
     setReads(domainReadiness(certId, passLinePct).domains);
     setPractice(domainPracticeProgress(certId));
-  }, [certId, passLinePct]);
+  }, [certId, passLinePct, revision]);
 
   return (
     <div>
@@ -245,6 +249,8 @@ export function ReadinessPanel({
   passLineOfficial?: boolean;
   bare?: boolean;
 }) {
+  const revision = useAttemptRevision();
+  const [hasMockScore, setHasMockScore] = useState(false);
   const [pct, setPct] = useState(0);
   const [started, setStarted] = useState(false);
   const [weakest, setWeakest] = useState<string | null>(null);
@@ -252,21 +258,23 @@ export function ReadinessPanel({
     const pv = progressView(certId, passLinePct);
     setPct(pv.bestMockPct);
     setStarted(pv.status !== "Not started");
-    const doms = Object.entries(domainReadiness(certId, passLinePct).domains);
+    const read = domainReadiness(certId, passLinePct);
+    setHasMockScore(read.trend.length > 0);
+    const doms = Object.entries(read.domains);
     if (doms.length) {
       const min = doms.reduce((a, b) => (b[1].pct < a[1].pct ? b : a));
       setWeakest(min[0]);
     } else {
       setWeakest(null);
     }
-  }, [certId, passLinePct]);
+  }, [certId, passLinePct, revision]);
 
   // The ring is mock-fed (bestMockPct), so pct 0 has two honest states: never touched vs
   // started-but-no-scored-mock. Only a finished full mock moves this ring (a drill never does).
-  const label = pct === 0 ? (started ? "In progress" : "Not started yet") : pct >= passLinePct ? (certId === "aip-c01" ? "Study target met" : "Ready to book") : "Getting there";
+  const label = !hasMockScore ? (started ? "In progress" : "Not started yet") : pct >= passLinePct ? (certId === "aip-c01" ? "Study target met" : "Ready to book") : "Getting there";
   const passLabel = passLineOfficial === false ? "Study target" : "Pass line";
   const note =
-    pct === 0
+    !hasMockScore
       ? started
         ? "Finish a full mock to get your readiness read."
         : "Take a full mock to get your first read."

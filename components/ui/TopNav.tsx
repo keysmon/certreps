@@ -15,7 +15,7 @@ import "./TopNav.css";
  * focus to the first item on open. Better than the design prototype, which neither traps nor restores
  * focus (same bar the CommandSwitcher holds).
  */
-function AccountMenu({ label, onSignOut }: { label?: string; onSignOut: () => void }) {
+function AccountMenu({ label, onSignOut, signingOut }: { label?: string; onSignOut: () => void; signingOut: boolean }) {
   const [open, setOpen] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
   const btnRef = useRef<HTMLButtonElement>(null);
@@ -71,6 +71,7 @@ function AccountMenu({ label, onSignOut }: { label?: string; onSignOut: () => vo
             type="button"
             role="menuitem"
             className="tn-menu-item tn-menu-signout"
+            disabled={signingOut}
             onClick={() => {
               setOpen(false);
               onSignOut();
@@ -94,11 +95,28 @@ function AccountMenu({ label, onSignOut }: { label?: string; onSignOut: () => vo
  * AccountMenu avatar when signed in. Mounted by every page that owns its own auth surface.
  */
 export function TopNav() {
-  const { session, available } = useSession();
+  const { session, available, loading, error: sessionError } = useSession();
+  const [signingOut, setSigningOut] = useState(false);
+  const [signOutError, setSignOutError] = useState<string | null>(null);
+  async function signOut() {
+    if (signingOut) return;
+    setSigningOut(true);
+    setSignOutError(null);
+    try {
+      const client = getSupabase();
+      if (!client) throw new Error("Account unavailable");
+      const result = await client.auth.signOut();
+      if (result.error) throw result.error;
+    } catch {
+      setSignOutError("Could not sign out. Please try again.");
+    } finally {
+      setSigningOut(false);
+    }
+  }
   const label = session?.user.email ?? (session?.user.user_metadata?.name as string | undefined);
   // Honest, quiet status: local-only until you sign in, then synced. Shown once the auth layer is
   // available so it never contradicts what the auth slot offers.
-  const status = session ? "Synced to your account" : "Progress saved on this device";
+  const status = session ? "Signed in to your account" : "Progress saved on this device";
 
   return (
     <header className="tn-bar">
@@ -125,15 +143,22 @@ export function TopNav() {
           lives, including the practice engine (it binds no conflicting shortcut). */}
       <CommandSwitcher />
       <span className="tn-spacer" />
+      {!session && (
+        <nav className="tn-local-nav" aria-label="Study navigation">
+          <Link href="/account">My progress</Link>
+          <Link href="/settings">Settings</Link>
+        </nav>
+      )}
       {available && <span className="tn-status">{status}</span>}
-      {available &&
+      {available && !loading &&
         (session ? (
-          <AccountMenu label={label} onSignOut={() => getSupabase()?.auth.signOut()} />
+          <AccountMenu label={label} onSignOut={signOut} signingOut={signingOut} />
         ) : (
           <Link href="/login" className="tn-signin">
             Sign in
           </Link>
         ))}
+      {(sessionError || (session && signOutError)) && <span role="alert">{sessionError ?? signOutError}</span>}
     </header>
   );
 }

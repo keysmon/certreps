@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { PathToReady, DomainRows, ReadinessPanel } from "./CertDetailClient";
 import { createAttempt, saveAttempt, recordResult, writeAll } from "@/lib/storage";
@@ -128,6 +128,43 @@ describe("PathToReady", () => {
     expect(olderLink.getAttribute("href")).toContain(`resume=${older.attemptId}`);
   });
 
+  it("offers the newest eligible session while omitting retired, missing and empty sessions", async () => {
+    const ids = getBank(AIP).slice(0, 3).map((q) => q.id);
+    const active = createAttempt(AIP, "mock", ids, undefined, true);
+    active.startedAt = 100;
+    saveAttempt(active);
+    const retired = createAttempt(AIP, "quick", ["aipc01-0001"]);
+    retired.startedAt = 200;
+    saveAttempt(retired);
+    const missing = createAttempt(AIP, "mock", ["missing-question"]);
+    missing.startedAt = 300;
+    saveAttempt(missing);
+    const empty = createAttempt(AIP, "mock", []);
+    empty.startedAt = 400;
+    saveAttempt(empty);
+    renderPath();
+    const url = new URL((await screen.findByRole("link", { name: /resume practicing/i })).getAttribute("href")!, "https://certreps.test");
+    expect(url.searchParams.get("resume")).toBe(active.attemptId);
+    expect(url.searchParams.get("reveal")).toBe("1");
+    expect(screen.queryByRole("link", { name: /Resume Quick Practice/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: /Resume Full Mock/i })).not.toBeInTheDocument();
+  });
+
+  it("starts fresh when all unfinished sessions contain retired questions", () => {
+    saveAttempt(createAttempt(AIP, "mock", ["aipc01-0001"]));
+    renderPath();
+    expect(screen.getByRole("link", { name: /start practicing/i })).toHaveAttribute("href", `/aws/${AIP}/practice?mode=quick`);
+    expect(screen.queryByRole("link", { name: /resume practicing/i })).not.toBeInTheDocument();
+  });
+
+  it("refreshes the resume CTA when a session is saved after the page mounts", async () => {
+    renderPath();
+    const a = createAttempt(AIP, "quick", getBank(AIP).slice(0, 3).map((q) => q.id));
+    act(() => saveAttempt(a));
+    const link = await screen.findByRole("link", { name: /resume practicing/i });
+    expect(link.getAttribute("href")).toContain(`resume=${a.attemptId}`);
+  });
+
   it("offers a study-mode link to the reveal-as-you-go mock in Step 2", () => {
     renderPath();
     const link = screen.getByRole("link", { name: /answers as you go/i });
@@ -227,4 +264,23 @@ describe("ReadinessPanel", () => {
     expect(await screen.findByText(/Study target 70%/i)).toBeInTheDocument();
     expect(screen.queryByText(/Pass line/i)).not.toBeInTheDocument();
   });
+});
+
+
+it("acknowledges a completed zero-percent mock instead of asking for the first mock", () => {
+  writeAll([gradedMock(20, 0)]);
+  render(<ReadinessPanel certId={AIP} passLinePct={75} />);
+  expect(screen.getByText("Getting there")).toBeInTheDocument();
+  expect(screen.queryByText(/Finish a full mock/)).not.toBeInTheDocument();
+});
+
+it("refreshes domain status when progress changes in another open view", () => {
+  const domain = getBank(AIP)[0].domain;
+  render(<DomainRows certId={AIP} vendorSlug="aws" passLinePct={75} domains={[{name: domain, weightPct: 31}]} />);
+  expect(screen.getByText("Not started")).toBeInTheDocument();
+  act(() => {
+    writeAll([attempt({ mode: "drill", domain, finishedAt: 100 })]);
+    window.dispatchEvent(new StorageEvent("storage", { key: "certreps.attempts.v1" }));
+  });
+  expect(screen.getByText("Practiced")).toBeInTheDocument();
 });

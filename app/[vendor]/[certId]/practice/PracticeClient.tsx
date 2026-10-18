@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { ExamEngine } from "@/components/engine/ExamEngine";
-import { getMeta, getBank, attemptUsesActiveQuestions } from "@/lib/bank";
+import { getMeta, getBank, isResumableAttempt } from "@/lib/bank";
 import { practicePath, resumeParams } from "@/lib/routes";
 import { attemptLabel } from "@/lib/labels";
 import { listInProgress, discardAttempt } from "@/lib/storage";
@@ -31,6 +31,18 @@ export function PracticeClient({ certId }: { certId: string }) {
   const resume = params.get("resume") ?? undefined;
   const reveal = mode === "mock" && params.get("reveal") === "1";
 
+  // A Start fresh decision belongs only to the current URL context. Reset the gate before
+  // mounting another mode/domain/study session so it cannot orphan that session's saved attempt.
+  return <PracticeSession key={JSON.stringify([certId, mode, domain, resume, reveal])} certId={certId} mode={mode} domain={domain} resume={resume} reveal={reveal} />;
+}
+
+function PracticeSession({ certId, mode, domain, resume, reveal }: {
+  certId: string;
+  mode: Mode;
+  domain?: string;
+  resume?: string;
+  reveal: boolean;
+}) {
   // Interstitial gate (SSR-safe): the in-progress lookup reads localStorage, so it runs in an effect
   // (never in render or a useState initializer - the hydration lesson) and the first paint is the
   // loading shell. `checked` flips once the effect has resolved whether a resumable attempt exists.
@@ -41,7 +53,7 @@ export function PracticeClient({ certId }: { certId: string }) {
   useEffect(() => {
     if (resume) return; // an explicit resume link bypasses the chooser; the engine adopts the id
     const match = listInProgress(certId).find(
-      (a) => a.mode === mode && !!a.reveal === reveal && (mode !== "drill" || a.domain === domain) && attemptUsesActiveQuestions(a, getBank(certId)),
+      (a) => isResumableAttempt(a, getBank(certId), { certId, mode, domain, reveal }),
     );
     setInProgress(match ?? null);
     setChecked(true);

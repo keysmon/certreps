@@ -58,3 +58,8 @@ describe("POST /api/report", () => {
     expect(res.status).toBe(202);
   });
 });
+
+
+it("rejects valid JSON with a non-object report body without throwing", async () => {
+  for (const body of [null, [], "text", 1]) expect((await POST(req(body))).status).toBe(400);
+});

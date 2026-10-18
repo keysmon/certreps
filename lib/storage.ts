@@ -18,6 +18,7 @@ export function readAll(): Attempt[] {
 export function writeAll(attempts: Attempt[]): void {
   try {
     localStorage.setItem(KEY, JSON.stringify(attempts));
+    window.dispatchEvent(new Event("certreps:attempts-changed"));
   } catch {
     /* storage full or blocked - degrade silently; in-memory state still works */
   }
@@ -28,6 +29,7 @@ export function writeAll(attempts: Attempt[]): void {
 export function clearAll(): void {
   try {
     localStorage.removeItem(KEY);
+    window.dispatchEvent(new Event("certreps:attempts-changed"));
   } catch {
     /* storage blocked - nothing else to do */
   }
@@ -76,14 +78,14 @@ export function listAttempts(certId: string): Attempt[] {
 
 export function recordResult(attemptId: string, r: QuestionResult): void {
   const a = getAttempt(attemptId);
-  if (!a) return;
+  if (!a || a.finishedAt !== null) return;
   a.results[r.questionId] = r;
   saveAttempt(a);
 }
 
 export function finishAttempt(attemptId: string, elapsedSec: number, pauseCount: number): void {
   const a = getAttempt(attemptId);
-  if (!a) return;
+  if (!a || a.finishedAt !== null) return;
   a.finishedAt = Date.now();
   a.elapsedSec = elapsedSec;
   a.pauseCount = pauseCount;
@@ -150,6 +152,7 @@ export function missedQuestionIds(certId: string): string[] {
   const latest: Record<string, { at: number; correct: boolean }> = {};
   for (const a of listAttempts(certId)) {
     for (const r of Object.values(a.results)) {
+      if (r.chosen.length === 0) continue;
       const at = a.finishedAt ?? a.startedAt;
       if (!latest[r.questionId] || at >= latest[r.questionId].at) {
         latest[r.questionId] = { at, correct: r.correct };

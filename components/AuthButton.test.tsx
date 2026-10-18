@@ -157,3 +157,20 @@ describe("AuthButton", () => {
     expect(await screen.findByText("ada@example.com")).toBeInTheDocument();
   });
 });
+
+
+describe("AuthButton sign-out failures", () => {
+  it.each(["returned", "thrown"])("shows retry feedback for a %s failure", async (kind) => {
+    mockedPathname.mockReturnValue("/account/attempts/a1");
+    mockedAvailable.mockReturnValue(true);
+    const signOut = kind === "returned"
+      ? vi.fn().mockResolvedValue({ error: { message: "Offline" } })
+      : vi.fn().mockRejectedValue(new Error("Offline"));
+    mockedGetSupabase.mockReturnValue(fakeClient(sessionWith("ada@example.com"), signOut));
+    render(<AuthButton />);
+    await screen.findByText("ada@example.com");
+    await userEvent.click(screen.getByRole("button", { name: /^sign out$/i }));
+    expect(await screen.findByRole("alert")).toHaveTextContent("Could not sign out. Please try again.");
+    expect(screen.getByRole("button", { name: /^sign out$/i })).toBeEnabled();
+  });
+});

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import type { Attempt } from "@/lib/types";
 import { getAttempt } from "@/lib/storage";
-import { getMeta } from "@/lib/bank";
+import { getMeta, isResumableAttempt } from "@/lib/bank";
 import { getCert } from "@/lib/certs";
 import { certPath, practicePath, resumeParams } from "@/lib/routes";
 import { questionsByIds } from "@/lib/sampler";
@@ -63,6 +63,20 @@ export function ReviewPastClient({ id }: { id: string }) {
     );
   }
   const meta = cert.meta;
+
+  if (attempt.finishedAt === null && !isResumableAttempt(attempt, cert.bank)) {
+    return (
+      <div className="card">
+        <p style={{ margin: "0 0 14px" }}>This question set changed after review. Your previous answers are preserved; start a fresh session to continue practicing.</p>
+        <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+          <Link className="btn btn-primary" href={`${practicePath(meta)}?mode=quick`}>
+            Start fresh practice
+          </Link>
+          <Link className="btn btn-ghost" href="/account">Back to your account</Link>
+        </div>
+      </div>
+    );
+  }
 
   if (attempt.finishedAt === null) {
     // Resume rehydrates the unfinished attempt in the engine (Task 8). Only reachable for a

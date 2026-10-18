@@ -1,7 +1,7 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Attempt, Mode, Question } from "@/lib/types";
-import { getBank, getPracticeBank, getMeta, attemptUsesActiveQuestions } from "@/lib/bank";
+import { getBank, getPracticeBank, getMeta, isResumableAttempt } from "@/lib/bank";
 import { sampleDrill, sampleMock, sampleQuick, questionsByIds } from "@/lib/sampler";
 import { createAttempt, saveAttempt, recordResult, finishAttempt, missedQuestionIds, listAttempts, getAttempt, saveProgress } from "@/lib/storage";
 import { buildWeights } from "@/lib/adaptive";
@@ -11,7 +11,7 @@ import { Timer } from "./Timer";
 import { Results } from "./Results";
 import { ReviewMap } from "./ReviewMap";
 import { VendorDot, VENDORS } from "@/components/ui/VendorDot";
-import { certPath, practicePath } from "@/lib/routes";
+import { certPath, practicePath, resumeParams } from "@/lib/routes";
 import "./engine.css";
 
 const QUICK_N = 10;
@@ -36,6 +36,7 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId, reveal }: { 
   // idiom (SSR the zero-state default, hydrate from localStorage in an effect).
   const [ready, setReady] = useState(false);
   const [reviewedOutResume, setReviewedOutResume] = useState(false);
+  const [mismatchedResume, setMismatchedResume] = useState<Attempt | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
 
   const [index, setIndex] = useState(0);
@@ -64,8 +65,9 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId, reveal }: { 
   const initedRef = useRef(false);
 
   // Sample + adopt/create the attempt once on mount. Reproduces the OLD render-time path verbatim:
-  // resume resolves a STORED, UNFINISHED, mode-matching attempt (else null -> fresh sample); resume
-  // reuses the stored question order (never resamples) and ADOPTS the row as-is (no createAttempt -
+  // A stored unfinished attempt must have active questions and match the entire URL context.
+  // Mismatched links stop before any answer can be exposed or recorded; missing/finished ids
+  // start fresh. A valid resume reuses the saved question order and ADOPTS the row as-is (no createAttempt -
   // that would mint a second id - and no saveAttempt - the row already exists); the fresh path samples
   // per mode and calls createAttempt + saveAttempt exactly once (C1). Then seeds the write-through
   // journal (graded/answers/flags), the clock, and the resume position from the resumed attempt, and
@@ -74,15 +76,14 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId, reveal }: { 
     if (initedRef.current) return;
     initedRef.current = true;
 
-    const resumed: Attempt | null = (() => {
-      if (!resumeAttemptId) return null;
-      const a = getAttempt(resumeAttemptId);
-      if (!a || a.certId !== meta.certId || a.finishedAt !== null || a.mode !== mode) return null;
-      return a;
-    })();
-
-    if (resumed && !attemptUsesActiveQuestions(resumed, getBank(meta.certId))) {
-      setReviewedOutResume(true);
+    const stored = resumeAttemptId ? getAttempt(resumeAttemptId) : null;
+    const resumed = stored?.finishedAt === null ? stored : null;
+    if (resumed && !isResumableAttempt(resumed, getBank(meta.certId), { certId: meta.certId, mode, domain, reveal })) {
+      if (isResumableAttempt(resumed, getBank(meta.certId))) {
+        setMismatchedResume(resumed);
+      } else {
+        setReviewedOutResume(true);
+      }
       setReady(true);
       return;
     }
@@ -220,14 +221,19 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId, reveal }: { 
     return <p className="stage">Loading...</p>;
   }
 
-  if (reviewedOutResume) {
+  if (reviewedOutResume || mismatchedResume) {
     const query = new URLSearchParams({ mode });
     if (domain) query.set("domain", domain);
     if (reveal) query.set("reveal", "1");
     return (
       <div className="stage">
-        <h2>This session needs a fresh question set</h2>
-        <p>Some questions were removed after review. Your previous answers are preserved.</p>
+        <h2>{mismatchedResume ? "This link does not match the saved session" : "This session needs a fresh question set"}</h2>
+        <p>{mismatchedResume
+          ? "The session settings in this link are different. Your saved answers have not been changed."
+          : "Some questions are no longer available for practice. Your previous answers are preserved."}</p>
+        {mismatchedResume && mismatchedResume.certId === meta.certId && (
+          <p><a href={`${practicePath(meta)}?${resumeParams(mismatchedResume)}`}>Resume saved session</a></p>
+        )}
         <a href={`${practicePath(meta)}?${query.toString()}`}>Start fresh practice</a>
       </div>
     );

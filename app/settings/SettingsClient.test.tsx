@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import { renderToString } from "react-dom/server";
 import userEvent from "@testing-library/user-event";
 import type { Session } from "@supabase/supabase-js";
@@ -8,6 +8,8 @@ import { getSupabase, supabaseAvailable } from "@/lib/supabase/client";
 import { readPrefs, writePrefs } from "@/lib/prefs";
 import { readAll, writeAll } from "@/lib/storage";
 import type { Attempt } from "@/lib/types";
+import { queueUpsert, fullSync, _resetTimers } from "@/lib/sync-runtime";
+import { toRow } from "@/lib/sync";
 
 // Session resolves through these two helpers (via useSession); mock the module so no browser
 // client is built and no auth network fires. Same idiom as AuthButton.test.
@@ -30,8 +32,10 @@ function sessionWith(email: string): Session {
 function fakeClient(session: Session | null) {
   const eq = vi.fn().mockResolvedValue({ error: null });
   const del = vi.fn(() => ({ eq }));
-  const from = vi.fn(() => ({ delete: del }));
-  const signOut = vi.fn().mockResolvedValue({ error: null });
+  const upsert = vi.fn((_row: unknown) => Promise.resolve({ error: null }));
+  const select = vi.fn().mockResolvedValue({ data: [], error: null });
+  const from = vi.fn(() => ({ delete: del, upsert, select }));
+  const signOut = vi.fn<() => Promise<{ error: { message: string } | null }>>().mockResolvedValue({ error: null });
   const client = {
     from,
     auth: {
@@ -40,7 +44,7 @@ function fakeClient(session: Session | null) {
       signOut,
     },
   };
-  return { client: client as unknown as ReturnType<typeof getSupabase>, from, del, eq, signOut };
+  return { client: client as unknown as ReturnType<typeof getSupabase>, from, del, eq, signOut, upsert, select };
 }
 
 function attempt(): Attempt {
@@ -60,8 +64,9 @@ function attempt(): Attempt {
 beforeEach(() => {
   vi.clearAllMocks();
   localStorage.clear();
+  _resetTimers();
 });
-afterEach(() => vi.clearAllMocks());
+afterEach(() => { _resetTimers(); vi.useRealTimers(); vi.restoreAllMocks(); });
 
 describe("SettingsClient", () => {
   it("renders defaults in the effect-free (SSR) pass even when a pref is stored on (hydration-safe)", () => {
@@ -200,4 +205,142 @@ describe("SettingsClient", () => {
     expect(router.push).toHaveBeenCalledWith("/");
     confirmSpy.mockRestore();
   });
+});
+
+
+describe("settings auth feedback", () => {
+  it.each(["returned", "thrown"])("reports a %s sign-out failure without claiming success", async (kind) => {
+    mockedAvailable.mockReturnValue(true);
+    const mocks = fakeClient(sessionWith("ada@example.com"));
+    if (kind === "returned") mocks.signOut.mockResolvedValue({ error: { message: "Offline" } });
+    else mocks.signOut.mockRejectedValue(new Error("Offline"));
+    mockedGetSupabase.mockReturnValue(mocks.client);
+    render(<SettingsClient />);
+    await screen.findByText("ada@example.com");
+    await userEvent.click(screen.getByRole("button", { name: /^sign out$/i }));
+    expect(await screen.findByText("Could not sign out. Please try again.")).toBeInTheDocument();
+    expect(screen.queryByText("Signed out")).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /^sign out$/i })).toBeEnabled();
+  });
+
+  it("does not report a completed sync based only on a session", async () => {
+    mockedAvailable.mockReturnValue(true);
+    mockedGetSupabase.mockReturnValue(fakeClient(sessionWith("ada@example.com")).client);
+    render(<SettingsClient />);
+    await screen.findByText("ada@example.com");
+    expect(screen.queryByText(/synced$/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/sync is best effort/i)).toBeInTheDocument();
+  });
+
+  it("keeps sign-out pending until it succeeds", async () => {
+    mockedAvailable.mockReturnValue(true);
+    const mocks = fakeClient(sessionWith("ada@example.com"));
+    let finish!: (value: { error: null }) => void;
+    mocks.signOut.mockImplementation(() => new Promise((resolve) => { finish = resolve; }));
+    mockedGetSupabase.mockReturnValue(mocks.client);
+    render(<SettingsClient />);
+    await screen.findByText("ada@example.com");
+    await userEvent.click(screen.getByRole("button", { name: /^sign out$/i }));
+    expect(screen.getByRole("button", { name: /signing out/i })).toBeDisabled();
+    expect(screen.queryByText("Signed out")).not.toBeInTheDocument();
+    finish({ error: null });
+    expect(await screen.findByText("Signed out")).toBeInTheDocument();
+  });
+});
+
+
+it("prevents deleting before the account lookup has resolved", () => {
+  mockedAvailable.mockReturnValue(true);
+  const mocks = fakeClient(null);
+  vi.mocked(mocks.client!.auth.getSession).mockReturnValue(new Promise(() => {}));
+  mockedGetSupabase.mockReturnValue(mocks.client);
+  render(<SettingsClient />);
+  expect(screen.getByRole("button", { name: "Delete" })).toBeDisabled();
+});
+
+it("prevents an all-data delete when account status could not be checked", async () => {
+  mockedAvailable.mockReturnValue(true);
+  const mocks = fakeClient(null);
+  vi.mocked(mocks.client!.auth.getSession).mockRejectedValue(new Error("Offline"));
+  mockedGetSupabase.mockReturnValue(mocks.client);
+  render(<SettingsClient />);
+  await screen.findByRole("alert");
+  expect(screen.getByRole("button", { name: "Delete" })).toBeDisabled();
+});
+
+
+it("cancels queued sync before deleting while sign-out is still pending", async () => {
+  mockedAvailable.mockReturnValue(true);
+  const mocks = fakeClient(sessionWith("ada@example.com"));
+  let finish!: (value: { error: null }) => void;
+  mocks.signOut.mockImplementation(() => new Promise((resolve) => { finish = resolve; }));
+  mockedGetSupabase.mockReturnValue(mocks.client);
+  vi.spyOn(window, "confirm").mockReturnValue(true);
+  render(<SettingsClient />);
+  await screen.findByText("ada@example.com");
+  vi.useFakeTimers();
+  queueUpsert({ ...attempt(), finishedAt: null });
+  fireEvent.click(screen.getByRole("button", { name: "Delete" }));
+  await vi.advanceTimersByTimeAsync(500);
+  expect(mocks.eq).toHaveBeenCalledTimes(1);
+  expect(screen.getByRole("button", { name: "Deleting..." })).toBeDisabled();
+  fireEvent.click(screen.getByRole("button", { name: "Deleting..." }));
+  expect(window.confirm).toHaveBeenCalledTimes(1);
+  expect(mocks.upsert).not.toHaveBeenCalled();
+  finish({ error: null });
+  await vi.advanceTimersByTimeAsync(0);
+});
+
+it("waits for an issued sync write before deleting cloud rows", async () => {
+  mockedAvailable.mockReturnValue(true);
+  const mocks = fakeClient(sessionWith("ada@example.com"));
+  let finish!: (value: { error: null }) => void;
+  mocks.upsert.mockImplementation(() => new Promise((resolve) => { finish = resolve; }));
+  mockedGetSupabase.mockReturnValue(mocks.client);
+  vi.spyOn(window, "confirm").mockReturnValue(true);
+  render(<SettingsClient />);
+  await screen.findByText("ada@example.com");
+  queueUpsert(attempt());
+  await waitFor(() => expect(mocks.upsert).toHaveBeenCalledTimes(1));
+  await userEvent.click(screen.getByRole("button", { name: "Delete" }));
+  expect(mocks.eq).not.toHaveBeenCalled();
+  finish({ error: null });
+  await waitFor(() => expect(mocks.eq).toHaveBeenCalledTimes(1));
+});
+
+it("does not restore a delayed fullSync pull after Settings deletes local data", async () => {
+  mockedAvailable.mockReturnValue(true);
+  const mocks = fakeClient(sessionWith("ada@example.com"));
+  let finish!: (value: { data: ReturnType<typeof toRow>[]; error: null }) => void;
+  mocks.select.mockImplementation(() => new Promise((resolve) => { finish = resolve; }));
+  mockedGetSupabase.mockReturnValue(mocks.client);
+  vi.spyOn(window, "confirm").mockReturnValue(true);
+  render(<SettingsClient />);
+  await screen.findByText("ada@example.com");
+  const sync = fullSync();
+  await waitFor(() => expect(mocks.select).toHaveBeenCalledTimes(1));
+  await userEvent.click(screen.getByRole("button", { name: "Delete" }));
+  await waitFor(() => expect(router.push).toHaveBeenCalledWith("/"));
+  finish({ data: [toRow(attempt(), "u1")], error: null });
+  await sync;
+  expect(readAll()).toEqual([]);
+});
+
+
+it("keeps sync paused and reports a failed sign-out after deleting", async () => {
+  mockedAvailable.mockReturnValue(true);
+  const mocks = fakeClient(sessionWith("ada@example.com"));
+  mocks.signOut.mockResolvedValue({ error: { message: "Offline" } });
+  mockedGetSupabase.mockReturnValue(mocks.client);
+  vi.spyOn(window, "confirm").mockReturnValue(true);
+  const alert = vi.spyOn(window, "alert").mockImplementation(() => {});
+  render(<SettingsClient />);
+  await screen.findByText("ada@example.com");
+  await userEvent.click(screen.getByRole("button", { name: "Delete" }));
+  await waitFor(() => expect(router.push).toHaveBeenCalledWith("/"));
+  expect(alert).toHaveBeenCalledWith(expect.stringContaining("sign-out did not complete"));
+  queueUpsert(attempt());
+  await fullSync();
+  expect(mocks.upsert).not.toHaveBeenCalled();
+  expect(mocks.select).not.toHaveBeenCalled();
 });

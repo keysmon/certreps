@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { getSupabase } from "@/lib/supabase/client";
@@ -24,7 +25,9 @@ const CERT_PRACTICE_RE = new RegExp(`^/(${VENDOR_SEG})/[^/]+/practice$`);
  * itself there; later tasks migrate interior pages to TopNav too.
  */
 export function AuthButton() {
-  const { session, available } = useSession();
+  const { session, available, loading, error: sessionError } = useSession();
+  const [signingOut, setSigningOut] = useState(false);
+  const [signOutError, setSignOutError] = useState<string | null>(null);
   const pathname = usePathname();
 
   if (!available) return null;
@@ -44,6 +47,24 @@ export function AuthButton() {
   // The login page IS the sign-in call to action - a second "Sign in" strip above it is noise.
   if (pathname === "/login" && !session) return null;
 
+  if (loading) return null;
+  if (sessionError) return <p role="alert" className="container muted">{sessionError}</p>;
+
+  async function signOut() {
+    setSigningOut(true);
+    setSignOutError(null);
+    try {
+      const supabase = getSupabase();
+      if (!supabase) throw new Error("Accounts unavailable");
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+    } catch {
+      setSignOutError("Could not sign out. Please try again.");
+    } finally {
+      setSigningOut(false);
+    }
+  }
+
   const label = session?.user.email ?? (session?.user.user_metadata?.name as string | undefined);
 
   return (
@@ -56,15 +77,17 @@ export function AuthButton() {
           <span className="muted" style={{ fontSize: 13 }}>{label}</span>
           <button
             type="button"
-            onClick={() => getSupabase()?.auth.signOut()}
+            onClick={signOut}
+            disabled={signingOut}
             style={{ background: "none", border: "none", color: "var(--muted)", fontSize: 13, cursor: "pointer", padding: 0, textDecoration: "underline" }}
           >
-            Sign out
+            {signingOut ? "Signing out..." : "Sign out"}
           </button>
         </>
       ) : (
         <Link href="/login" className="muted" style={{ fontSize: 13 }}>Sign in</Link>
       )}
+      {session && signOutError && <span role="alert">{signOutError}</span>}
     </div>
   );
 }

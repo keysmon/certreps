@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import type { Attempt, CertMeta } from "@/lib/types";
-import { getBank } from "@/lib/bank";
+import { getBank, attemptUsesActiveQuestions } from "@/lib/bank";
 import { gradeAttempt } from "@/lib/scoring";
 import { questionsByIds } from "@/lib/sampler";
 import { practicePath } from "@/lib/routes";
@@ -29,8 +29,8 @@ function stamp(ts: number): string {
 /**
  * The user's practice history, newest first. Finished rows carry a score (binary pass
  * colour on meta.passLinePct) and link to the read-only replay; unfinished rows show an
- * "In progress" marker and stay unlinked (there is nothing to review yet). Scores grade
- * against the live bank, so a row for a since-removed question simply drops from its total.
+ * "In progress" marker when their questions remain active. Reviewed-out rows are preserved
+ * and labelled; finished scores resolve against the complete historical archive.
  */
 export function AttemptsList({ attempts, meta }: { attempts: Attempt[]; meta: CertMeta }) {
   if (attempts.length === 0) {
@@ -53,6 +53,7 @@ export function AttemptsList({ attempts, meta }: { attempts: Attempt[]; meta: Ce
     <div className="card" style={{ padding: 0, overflow: "hidden" }}>
       {rows.map((a, i) => {
         const finished = a.finishedAt !== null;
+        const active = attemptUsesActiveQuestions(a, bank);
         const pct = finished ? gradeAttempt(a, questionsByIds(bank, a.questionIds)).pct : null;
         const passed = pct !== null && pct >= meta.passLinePct;
         const last = i === rows.length - 1;
@@ -69,6 +70,7 @@ export function AttemptsList({ attempts, meta }: { attempts: Attempt[]; meta: Ce
           >
             <span style={{ fontSize: 13.5 }}>{stamp(a.startedAt)}</span>
             <span style={chipStyle}>{attemptLabel(a.mode, a.reveal)}</span>
+            {finished && !active && <span style={chipStyle}>Archived question set</span>}
             <span
               style={{
                 marginLeft: "auto",
@@ -78,7 +80,7 @@ export function AttemptsList({ attempts, meta }: { attempts: Attempt[]; meta: Ce
                 color: finished ? (passed ? "var(--emerald)" : "var(--rose)") : "var(--muted)",
               }}
             >
-              {finished ? `${pct}%` : "In progress"}
+              {finished ? `${pct}%` : active ? "In progress" : "Fresh practice required"}
             </span>
           </div>
         );

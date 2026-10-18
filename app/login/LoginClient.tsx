@@ -3,6 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { getSupabase, supabaseAvailable } from "@/lib/supabase/client";
+import { resumeSyncAfterSignIn } from "@/lib/sync-runtime";
 import "./login.css";
 
 /**
@@ -30,9 +31,9 @@ const CHECK = String.fromCharCode(10003); // check
 const DIAMOND = String.fromCharCode(9670); // filled diamond
 
 const FEATURES = [
-  { ic: CYCLE, t: "Progress syncs everywhere", d: "Readiness, streaks, and weak areas on phone, laptop, tablet." },
-  { ic: CHECK, t: "Pick up mid-drill", d: "Start on the train, finish at your desk - same spot." },
-  { ic: DIAMOND, t: `Free forever ${MIDDOT} no spam`, d: "We store your scores. That's it. Export or delete anytime." },
+  { ic: CYCLE, t: "Completed reps across devices", d: "Sign in to sync completed attempts when connected." },
+  { ic: CHECK, t: "Resume on this device", d: "Finish an in-progress drill on the device where you started it." },
+  { ic: DIAMOND, t: `Free forever ${MIDDOT} no spam`, d: "Your account syncs practice attempts and answers. Export or delete practice data in Settings." },
 ];
 
 export function LoginClient({ failed }: { failed: boolean }) {
@@ -54,25 +55,29 @@ export function LoginClient({ failed }: { failed: boolean }) {
     setNotice(null);
     setPending(true);
 
-    const supabase = getSupabase()!;
-    const { data, error } =
-      mode === "signin"
+    let navigating = false;
+    try {
+      const supabase = getSupabase();
+      if (!supabase) throw new Error("Accounts unavailable");
+      const { data, error } = mode === "signin"
         ? await supabase.auth.signInWithPassword({ email, password })
         : await supabase.auth.signUp({ email, password });
-
-    if (error) {
-      setError(error.message);
-      setPending(false);
-      return;
+      if (error) {
+        setError(error.message);
+        return;
+      }
+      if (data.session) {
+        resumeSyncAfterSignIn();
+        router.push("/account?welcome=1");
+        navigating = true;
+        return;
+      }
+      setNotice("Check your email to confirm your account.");
+    } catch {
+      setError("Unable to connect. Please try again.");
+    } finally {
+      if (!navigating) setPending(false);
     }
-    if (data.session) {
-      // Same post-login merge path OAuth used - fullSync() runs on the account page.
-      router.push("/account?welcome=1");
-      return; // keep pending true through the navigation
-    }
-    // signUp with email-confirmation on (autoconfirm off someday) returns no session.
-    setNotice("Check your email to confirm your account.");
-    setPending(false);
   }
 
   function toggleMode() {
@@ -116,7 +121,7 @@ export function LoginClient({ failed }: { failed: boolean }) {
           {isSignin ? "Sign in to sync your progress" : "Create an account to sync your progress"}
         </h1>
         <p className="li-lede">
-          Accounts are optional - your attempts already save on this device. Sign in to sync them across devices.
+          Accounts are optional - your attempts already save on this device. Completed attempts can sync across devices when connected.
         </p>
         {failed && <p className="li-error">Sign-in didn&apos;t complete. Please try again.</p>}
 
@@ -159,7 +164,7 @@ export function LoginClient({ failed }: { failed: boolean }) {
           </button>
         </form>
 
-        <button type="button" onClick={toggleMode} className="li-toggle">
+        <button type="button" onClick={toggleMode} className="li-toggle" disabled={pending}>
           {isSignin ? "New here? Create an account" : "Already have an account? Sign in"}
         </button>
 

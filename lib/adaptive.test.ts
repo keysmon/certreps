@@ -1,3 +1,4 @@
+import { getBank } from "./bank";
 import { describe, it, expect } from "vitest";
 import { buildWeights, ADAPTIVE } from "./adaptive";
 import type { Attempt, Question } from "./types";
@@ -70,4 +71,13 @@ describe("buildWeights", () => {
     expect(w.get("recent")!).toBeCloseTo(ADAPTIVE.MASTERY_BASE ** 1 * ADAPTIVE.RECENT_DAMP, 5);
     expect(w.get("old")!).toBeGreaterThan(w.get("recent")!);
   });
+});
+
+
+it("keeps flagged but unanswered items unseen and out of concept accuracy", () => {
+  const q = getBank()[0];
+  const flagged: Attempt = { attemptId: "flag-only", certId: "aip-c01", mode: "mock", questionIds: [q.id], results: {
+    [q.id]: { questionId: q.id, chosen: [], correct: false, flagged: true },
+  }, startedAt: 1, finishedAt: null, elapsedSec: 0, pauseCount: 0 };
+  expect(buildWeights([flagged], [q]).get(q.id)).toBe(ADAPTIVE.UNSEEN);
 });

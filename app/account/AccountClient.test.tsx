@@ -1,9 +1,13 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { act, render, screen } from "@testing-library/react";
+import { useRouter } from "next/navigation";
+import * as syncRuntime from "@/lib/sync-runtime";
 import type { Session } from "@supabase/supabase-js";
 import { AccountClient } from "./AccountClient";
-import { writeAll } from "@/lib/storage";
-import { getMeta } from "@/lib/bank";
+import { writeAll, listAttempts } from "@/lib/storage";
+import { getMeta, getBank, getPracticeBank } from "@/lib/bank";
+import { sampleMock } from "@/lib/sampler";
 import { getSupabase, supabaseAvailable } from "@/lib/supabase/client";
 import type { Attempt } from "@/lib/types";
 
@@ -85,7 +89,7 @@ describe("AccountClient dashboard", () => {
     expect(await screen.findByText("Certs in progress")).toBeInTheDocument();
     expect(screen.getByText("Questions practiced")).toBeInTheDocument();
     expect(screen.getByText("Best score")).toBeInTheDocument();
-    expect(screen.getByText("Exam-ready")).toBeInTheDocument();
+    expect(screen.getByText("Study target met")).toBeInTheDocument();
 
     // The continue card headlines the cert; the recent-activity row links to its replay.
     expect(screen.getByRole("heading", { level: 3, name: getMeta().title })).toBeInTheDocument();
@@ -127,8 +131,8 @@ describe("AccountClient dashboard", () => {
 
   it("keeps the newest unfinished attempt on the primary CTA and lists older ones as resume links", async () => {
     // Two unfinished sessions for the same cert: an older quick session and a newer mock.
-    const older = attempt({ attemptId: "aip-quick", mode: "quick", questionIds: ["q1", "q2", "q3"], startedAt: 1_700_000_000_000 });
-    const newer = attempt({ attemptId: "aip-mock", mode: "mock", questionIds: ["q1", "q2", "q3", "q4", "q5"], startedAt: 1_700_000_500_000 });
+    const older = attempt({ attemptId: "aip-quick", mode: "quick", questionIds: getPracticeBank().slice(0, 3).map((q) => q.id), startedAt: 1_700_000_000_000 });
+    const newer = attempt({ attemptId: "aip-mock", mode: "mock", questionIds: getPracticeBank().slice(0, 5).map((q) => q.id), startedAt: 1_700_000_500_000 });
     writeAll([older, newer]);
     const { container } = render(<AccountClient welcome={false} />);
     await screen.findByRole("heading", { level: 3, name: getMeta().title });
@@ -151,8 +155,82 @@ describe("AccountClient dashboard", () => {
 
     // The emerald "Syncing on" banner, its Sign out button, and the identity eyebrow are the
     // signed-in surface - none of which render in the signed-out tests above.
-    expect(await screen.findByText(/syncing on/i)).toBeInTheDocument();
+    expect(await screen.findByText(/account backup enabled/i)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /sign out/i })).toBeInTheDocument();
-    expect(screen.getByText(/synced as ada@example.com/i)).toBeInTheDocument();
+    expect(screen.getByText(/^signed in as ada@example.com$/i)).toBeInTheDocument();
   });
+});
+
+
+it("offers fresh practice instead of archived or missing unfinished sessions without deleting them", async () => {
+  const archived = getBank().find((q) => q.excludedFromPractice)!;
+  writeAll([attempt({ attemptId: "archived-open", questionIds: [archived.id] }), attempt({ attemptId: "missing-open", questionIds: ["missing"] })]);
+  const { container } = render(<AccountClient welcome={false} />);
+  await screen.findByRole("heading", { level: 3, name: getMeta().title });
+  expect(container.querySelector("a.btn-primary")).toHaveAttribute("href", "/aws/aip-c01/practice?mode=quick");
+  expect(container.querySelector('a[href*="resume="]')).toBeNull();
+  expect(listAttempts(AIP).map((a) => a.attemptId).sort()).toEqual(["archived-open", "missing-open"]);
+});
+
+it("does not count a certification whose study target is met as in progress", async () => {
+  const questions = sampleMock(getPracticeBank(), getMeta());
+  const results = Object.fromEntries(questions.map((q) => [q.id, { questionId: q.id, chosen: q.correct, correct: true, flagged: false }]));
+  writeAll([attempt({ attemptId: "target-met", questionIds: questions.map((q) => q.id), results, finishedAt: 1_700_000_100_000 })]);
+  render(<AccountClient welcome={false} />);
+  const inProgress = await screen.findByText("Certs in progress");
+  expect(inProgress.previousElementSibling?.textContent).toBe("0");
+  expect(screen.getByText("Study target met").previousElementSibling?.textContent).toBe("1");
+  expect(screen.queryByText("Exam-ready")).not.toBeInTheDocument();
+});
+
+
+it("refreshes saved progress after a cross-tab storage update without remounting", async () => {
+  render(<AccountClient welcome={false} />);
+  await screen.findByText(/no practice yet/i);
+  act(() => {
+    writeAll([attempt({ attemptId: "from-other-tab", mode: "quick", questionIds: [getPracticeBank()[0].id] })]);
+    window.dispatchEvent(new StorageEvent("storage", { key: "certreps.attempts.v1" }));
+  });
+  expect(await screen.findByRole("heading", { level: 3, name: getMeta().title })).toBeInTheDocument();
+  expect(screen.queryByText(/no practice yet/i)).not.toBeInTheDocument();
+});
+
+
+it("keeps local history available when checking the account fails", async () => {
+  mockedAvailable.mockReturnValue(true);
+  const client = fakeClient(null)!;
+  vi.mocked(client.auth.getSession).mockRejectedValue(new Error("offline"));
+  mockedGetSupabase.mockReturnValue(client);
+  render(<AccountClient welcome={false} />);
+  expect(await screen.findByRole("alert")).toHaveTextContent(/Unable to check your account/);
+  expect(await screen.findByText("No practice yet")).toBeInTheDocument();
+});
+
+
+it("finishes post-login navigation even when sync updates the local store before uploads finish", async () => {
+  mockedAvailable.mockReturnValue(true);
+  mockedGetSupabase.mockReturnValue(fakeClient(sessionWith("ada@example.com")));
+  let finishSync!: () => void;
+  const pending = new Promise<void>((resolve) => { finishSync = resolve; });
+  const spy = vi.spyOn(syncRuntime, "fullSync").mockImplementation(async () => {
+    writeAll([attempt({ mode: "quick", finishedAt: 100 })]);
+    await pending;
+  });
+  render(<AccountClient welcome />);
+  await screen.findByText("Continue studying");
+  await act(async () => { finishSync(); await pending; });
+  expect(useRouter().replace).toHaveBeenCalledWith("/account");
+  expect(spy).toHaveBeenCalledTimes(1);
+  spy.mockRestore();
+});
+
+
+it("shows an error if dashboard sign-out fails", async () => {
+  mockedAvailable.mockReturnValue(true);
+  const client = fakeClient(sessionWith("ada@example.com"))!;
+  vi.mocked(client.auth.signOut).mockResolvedValue({ error: new Error("offline") } as never);
+  mockedGetSupabase.mockReturnValue(client);
+  render(<AccountClient welcome={false} />);
+  await userEvent.click(await screen.findByRole("button", { name: "Sign out" }));
+  expect(await screen.findByRole("alert")).toHaveTextContent("Could not sign out");
 });

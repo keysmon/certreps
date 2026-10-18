@@ -129,3 +129,30 @@ describe("createAttempt reveal flag", () => {
     expect("reveal" in exam).toBe(false); // exam rows stay byte-identical to today
   });
 });
+
+
+describe("unanswered flags are not misses", () => {
+  it("does not add a never-answered flag to retry or erase an earlier wrong answer", () => {
+    const old = createAttempt("aip-c01", "quick", ["q1"]);
+    old.startedAt = 1000;
+    saveAttempt(old);
+    recordResult(old.attemptId, { questionId: "q1", chosen: [0], correct: false, flagged: false });
+    const flagged = createAttempt("aip-c01", "mock", ["q1", "q2"]);
+    flagged.startedAt = 2000;
+    saveAttempt(flagged);
+    for (const questionId of flagged.questionIds) recordResult(flagged.attemptId, { questionId, chosen: [], correct: false, flagged: true });
+    expect(missedQuestionIds("aip-c01")).toEqual(["q1"]);
+  });
+});
+
+
+it("keeps a finished attempt sealed against a stale tab recording or finishing it again", () => {
+  const a = createAttempt("aip-c01", "mock", ["q1"]);
+  saveAttempt(a);
+  recordResult(a.attemptId, { questionId: "q1", chosen: [0], correct: false, flagged: false });
+  finishAttempt(a.attemptId, 60, 0);
+  const sealed = getAttempt(a.attemptId);
+  recordResult(a.attemptId, { questionId: "q1", chosen: [1], correct: true, flagged: false });
+  finishAttempt(a.attemptId, 600, 4);
+  expect(getAttempt(a.attemptId)).toEqual(sealed);
+});

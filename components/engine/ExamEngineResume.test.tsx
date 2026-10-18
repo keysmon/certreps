@@ -99,13 +99,15 @@ describe("ExamEngine resume-in-progress", () => {
     }
   });
 
-  it("falls back to fresh when the resume attempt mode does not match the engine mode", () => {
+  it("blocks a resume mode mismatch without creating a new attempt", () => {
     const a = createAttempt("aip-c01", "quick", getBank().slice(0, 3).map((q) => q.id));
     saveAttempt(a);
-    // Engine is mock, stored attempt is quick -> mode mismatch -> fresh sample, new row.
     render(<ExamEngine mode="mock" resumeAttemptId={a.attemptId} />);
-    expect(screen.getByText(/question 1 of 75/i)).toBeInTheDocument();
-    expect(listAttempts("aip-c01").length).toBe(2);
+    expect(screen.queryByRole("button", { name: /submit answer/i })).not.toBeInTheDocument();
+    const url = new URL(screen.getByRole("link", { name: "Resume saved session" }).getAttribute("href")!, "https://certreps.test");
+    expect(url.searchParams.get("mode")).toBe("quick");
+    expect(getAttempt(a.attemptId)).toEqual(a);
+    expect(listAttempts("aip-c01")).toHaveLength(1);
   });
 });
 
@@ -127,5 +129,52 @@ describe("audited exclusions", () => {
     finishAttempt(a.attemptId, 10, 0);
     render(<ExamEngine mode="retry" />);
     expect(screen.getByText(/No missed questions yet/)).toBeInTheDocument();
+  });
+});
+
+
+describe("saved resume context", () => {
+  it.each([
+    { savedReveal: false, requestedReveal: true },
+    { savedReveal: true, requestedReveal: false },
+  ])("blocks reveal mismatch ($savedReveal -> $requestedReveal) without changing the saved attempt", async ({ savedReveal, requestedReveal }) => {
+    const questions = getBank().slice(0, 3);
+    const a = createAttempt("aip-c01", "mock", questions.map((q) => q.id), undefined, savedReveal);
+    saveAttempt(a);
+    recordResult(a.attemptId, { questionId: questions[0].id, chosen: questions[0].correct, correct: true, flagged: false });
+    const before = getAttempt(a.attemptId);
+    render(<ExamEngine mode="mock" reveal={requestedReveal} resumeAttemptId={a.attemptId} />);
+    expect(screen.queryByRole("button", { name: /submit answer/i })).not.toBeInTheDocument();
+    expect(document.querySelector(".explain")).toBeNull();
+    const link = screen.getByRole("link", { name: "Resume saved session" });
+    const url = new URL(link.getAttribute("href")!, "https://certreps.test");
+    expect(url.searchParams.get("resume")).toBe(a.attemptId);
+    expect(url.searchParams.get("reveal")).toBe(savedReveal ? "1" : null);
+    expect(getAttempt(a.attemptId)).toEqual(before);
+    expect(listAttempts("aip-c01")).toHaveLength(1);
+  });
+
+  it("blocks a different drill domain and links back to the saved domain", () => {
+    const domain = getMeta().domains[0].name;
+    const differentDomain = getMeta().domains[1].name;
+    const a = createAttempt("aip-c01", "drill", getBank().filter((q) => q.domain === domain).slice(0, 3).map((q) => q.id), domain);
+    saveAttempt(a);
+    render(<ExamEngine mode="drill" domain={differentDomain} resumeAttemptId={a.attemptId} />);
+    expect(screen.queryByRole("button", { name: /submit answer/i })).not.toBeInTheDocument();
+    const url = new URL(screen.getByRole("link", { name: "Resume saved session" }).getAttribute("href")!, "https://certreps.test");
+    expect(url.searchParams.get("domain")).toBe(domain);
+    expect(getAttempt(a.attemptId)).toEqual(a);
+    expect(listAttempts("aip-c01")).toHaveLength(1);
+  });
+
+  it("resumes a matching drill with its saved question order and domain", () => {
+    const domain = getMeta().domains[0].name;
+    const qs = getBank().filter((q) => q.domain === domain).slice(0, 3).reverse();
+    const a = createAttempt("aip-c01", "drill", qs.map((q) => q.id), domain);
+    saveAttempt(a);
+    render(<ExamEngine mode="drill" domain={domain} resumeAttemptId={a.attemptId} />);
+    expect(screen.getByText(/question 1 of 3/i)).toBeInTheDocument();
+    expect(getAttempt(a.attemptId)?.questionIds).toEqual(qs.map((q) => q.id));
+    expect(listAttempts("aip-c01")).toHaveLength(1);
   });
 });

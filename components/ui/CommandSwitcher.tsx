@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { listCerts } from "@/lib/certs";
 import { certPath } from "@/lib/routes";
 import { VENDORS } from "@/components/ui/VendorDot";
+import { useAttemptRevision } from "@/lib/useAttemptRevision";
 import { progressView } from "@/lib/progress-view";
 import { listAttempts } from "@/lib/storage";
 import "./CommandSwitcher.css";
@@ -78,6 +79,7 @@ export function CommandSwitcher() {
   const registry = useMemo(() => listCerts(), []);
 
   const [open, setOpen] = useState(false);
+  const revision = useAttemptRevision();
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(0);
   // Progress + most-recent hydrate from localStorage in an effect so SSR and the first client render
@@ -99,7 +101,7 @@ export function CommandSwitcher() {
     }
     setProgressByCert(map);
     setRecentId(mostRecentCertId(registry.map((m) => m.certId)));
-  }, [registry]);
+  }, [registry, revision]);
 
   const openSwitcher = useCallback(() => {
     setQuery("");

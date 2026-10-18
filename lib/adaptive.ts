@@ -36,6 +36,7 @@ export function buildWeights(attempts: Attempt[], bank: Question[]): Map<string,
   const cCorrect = new Map<string, number>();
   for (const a of ordered) {
     for (const r of Object.values(a.results)) {
+      if (r.chosen.length === 0) continue;
       let h = history.get(r.questionId);
       if (!h) { h = []; history.set(r.questionId, h); }
       h.push(r.correct);
@@ -47,7 +48,7 @@ export function buildWeights(attempts: Attempt[], bank: Question[]): Map<string,
     }
   }
   const recentSet = new Set<string>(
-    ordered.length ? Object.keys(ordered[ordered.length - 1].results) : [],
+    ordered.length ? Object.values(ordered[ordered.length - 1].results).filter((r) => r.chosen.length > 0).map((r) => r.questionId) : [],
   );
 
   const weights = new Map<string, number>();

@@ -33,3 +33,14 @@
   .tn-bar { padding: 14px 20px; gap: 12px; }
   .tn-status { display: none; }
 }
+
+/* Local progress and preferences are available without an account. */
+.tn-local-nav { display: flex; gap: 14px; white-space: nowrap; }
+.tn-local-nav a { color: var(--muted); font-size: 12px; text-decoration: none; }
+.tn-local-nav a:hover { color: var(--gold); }
+@media (max-width: 1000px) { .tn-status { display: none; } }
+@media (max-width: 600px) {
+  .tn-bar { flex-wrap: wrap; }
+  .tn-local-nav { order: 2; width: 100%; justify-content: flex-end; }
+  .tn-bar .sw-trigger { flex: 1; max-width: calc(100% - 175px); }
+}

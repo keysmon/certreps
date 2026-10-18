@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { AttemptsList } from "./AttemptsList";
-import { getMeta } from "@/lib/bank";
+import { getMeta, getBank, getPracticeBank } from "@/lib/bank";
 import type { Attempt } from "@/lib/types";
 
 const meta = getMeta();
@@ -39,9 +39,25 @@ describe("AttemptsList", () => {
   });
 
   it("marks an unfinished attempt as in progress and does not link it", () => {
-    const a = attempt({ attemptId: "att-open", mode: "mock", finishedAt: null, questionIds: ["aipc01-0001"] });
+    const a = attempt({ attemptId: "att-open", mode: "mock", finishedAt: null, questionIds: [getPracticeBank()[0].id] });
     render(<AttemptsList attempts={[a]} meta={meta} />);
     expect(screen.getByText(/in progress/i)).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: /in progress/i })).not.toBeInTheDocument();
   });
+});
+
+
+it("labels archived unfinished history honestly without removing it", () => {
+  const archived = getBank().find((q) => q.excludedFromPractice)!;
+  render(<AttemptsList attempts={[attempt({ attemptId: "archived", questionIds: [archived.id] })]} meta={meta} />);
+  expect(screen.getByText(/fresh practice required/i)).toBeInTheDocument();
+  expect(screen.queryByText(/^in progress$/i)).not.toBeInTheDocument();
+});
+
+it("keeps finished archived scores reviewable and distinguishes their question set", () => {
+  const archived = getBank().find((q) => q.excludedFromPractice)!;
+  const a = attempt({ attemptId: "archived-finished", questionIds: [archived.id], finishedAt: 10, results: { [archived.id]: { questionId: archived.id, chosen: archived.correct, correct: true, flagged: false } } });
+  render(<AttemptsList attempts={[a]} meta={meta} />);
+  expect(screen.getByText(/archived question set/i)).toBeInTheDocument();
+  expect(screen.getByRole("link", { name: /100%/ })).toHaveAttribute("href", "/account/attempts/archived-finished");
 });

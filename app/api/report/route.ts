@@ -27,6 +27,9 @@ export async function POST(request: Request): Promise<NextResponse> {
   } catch {
     return NextResponse.json({ error: "invalid JSON" }, { status: 400 });
   }
+  if (!body || typeof body !== "object" || Array.isArray(body)) {
+    return NextResponse.json({ error: "invalid report" }, { status: 400 });
+  }
   const questionId = typeof body.questionId === "string" ? body.questionId.trim() : "";
   const note = typeof body.note === "string" ? body.note.trim() : "";
   if (!/^[a-z0-9-]{4,40}$/.test(questionId) || note.length < 3 || note.length > 2000) {

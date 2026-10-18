@@ -2,11 +2,13 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import type { Session } from "@supabase/supabase-js";
 import type { Attempt, CertMeta } from "@/lib/types";
 import { getSupabase, supabaseAvailable } from "@/lib/supabase/client";
 import { fullSync } from "@/lib/sync-runtime";
 import { readAll, listInProgress } from "@/lib/storage";
+import { useSession } from "@/lib/supabase/useSession";
+import { useAttemptRevision } from "@/lib/useAttemptRevision";
+import { isResumableAttempt } from "@/lib/bank";
 import { listCerts, getCert } from "@/lib/certs";
 import { certPath, practicePath, resumeParams } from "@/lib/routes";
 import { attemptLabel } from "@/lib/labels";
@@ -73,7 +75,7 @@ interface DashboardView {
 /**
  * Derive the whole dashboard from the flat attempt store. Everything renders from certs still in
  * the registry (grading needs their bank); attempts from a removed cert are counted only as an
- * honest "no longer available" footnote. Readiness (best mock %, exam-ready, weakest domain) comes
+ * honest "no longer available" footnote. Readiness (best mock %, study target met, weakest domain) comes
  * from lib/progress-view - the SAME mock-only semantics as the catalog card and detail ring, so the
  * dashboard can never contradict them. Best score spans every finished attempt (any mode); questions
  * practiced counts answered questions. Called only client-side (progress-view reads localStorage).
@@ -99,6 +101,7 @@ function computeView(attempts: Attempt[]): DashboardView {
   const cards: CardView[] = [];
   const activity: RecentRow[] = [];
   let readyCount = 0;
+  let inProgressCount = 0;
   let best = 0;
 
   for (const certId of knownIds) {
@@ -108,6 +111,7 @@ function computeView(attempts: Attempt[]): DashboardView {
 
     const pv = progressView(certId, meta.passLinePct);
     if (pv.status === "Ready") readyCount += 1;
+    if (pv.status === "In progress") inProgressCount += 1;
 
     // Weakest domain via the C10 read (recency-first mock verdicts). Empty until a finished mock exists.
     const read = domainReadiness(certId, meta.passLinePct);
@@ -125,7 +129,7 @@ function computeView(attempts: Attempt[]): DashboardView {
     const base = practicePath(meta);
     // One read powers both the primary CTA (newest) and the older-session links (the rest), so the
     // card can never contradict itself. listInProgress[0] is the same attempt getInProgress returned.
-    const inProgress = listInProgress(certId);
+    const inProgress = listInProgress(certId).filter((a) => isResumableAttempt(a, cert.bank));
     const inProg = inProgress[0] ?? null;
     const resumeHref = inProg ? `${base}?${resumeParams(inProg)}` : `${base}?mode=quick`;
     const resumeExtras = inProgress.slice(1).map((a) => {
@@ -172,7 +176,7 @@ function computeView(attempts: Attempt[]): DashboardView {
   activity.sort((x, y) => y.ts - x.ts);
 
   return {
-    stats: { inProgress: knownIds.length, practiced, best, ready: readyCount },
+    stats: { inProgress: inProgressCount, practiced, best, ready: readyCount },
     cards,
     activity: activity.slice(0, 10),
     orphanCount,
@@ -273,29 +277,28 @@ function EmptyState() {
  */
 export function AccountClient({ welcome }: { welcome: boolean }) {
   const router = useRouter();
-  const available = supabaseAvailable();
-  const [session, setSession] = useState<Session | null | undefined>(available ? undefined : null);
+  const revision = useAttemptRevision();
+  const { session: checkedSession, available, loading, error: sessionError } = useSession();
+  const session = loading ? undefined : checkedSession;
   const [attempts, setAttempts] = useState<Attempt[] | null>(null);
   const syncedRef = useRef(false);
-
-  // Subscribe to auth state (same idiom as AuthButton) so the signed-in surfaces track sign-out.
-  useEffect(() => {
-    if (!available) return;
-    const supabase = getSupabase();
-    if (!supabase) {
-      setSession(null);
-      return;
+  const [signOutError, setSignOutError] = useState<string | null>(null);
+  const [signingOut, setSigningOut] = useState(false);
+  async function signOut() {
+    if (signingOut) return;
+    setSigningOut(true);
+    setSignOutError(null);
+    try {
+      const client = getSupabase();
+      if (!client) throw new Error("Account unavailable");
+      const result = await client.auth.signOut();
+      if (result.error) throw result.error;
+    } catch {
+      setSignOutError("Could not sign out. Please try again.");
+    } finally {
+      setSigningOut(false);
     }
-    let live = true;
-    supabase.auth.getSession().then(({ data }) => {
-      if (live) setSession(data.session);
-    });
-    const { data } = supabase.auth.onAuthStateChange((_event, next) => setSession(next));
-    return () => {
-      live = false;
-      data.subscription.unsubscribe();
-    };
-  }, [available]);
+  }
 
   // Post-login merge runs once, then the welcome param is stripped so a re-render never re-syncs.
   // Attempts are (re)loaded from the freshly-merged localStorage afterwards.
@@ -319,6 +322,11 @@ export function AccountClient({ welcome }: { welcome: boolean }) {
     };
   }, [welcome, router]);
 
+  // Store refreshes must not cancel an in-flight post-login sync/navigation.
+  useEffect(() => {
+    setAttempts(readAll());
+  }, [revision]);
+
   const view = attempts ? computeView(attempts) : null;
   const hasAttempts = attempts !== null && attempts.length > 0;
   const email = session?.user.email ?? undefined;
@@ -326,9 +334,11 @@ export function AccountClient({ welcome }: { welcome: boolean }) {
   return (
     <main className="pg-wrap">
       <span className="pg-eyebrow">
-        {session && email ? `Synced as ${email}` : "Progress saved on this device"}
+        {session && email ? `Signed in as ${email}` : "Progress saved on this device"}
       </span>
       <h1 className="pg-h1">Your progress</h1>
+      {sessionError && <p role="alert">{sessionError} Local progress is still available.</p>}
+      {session && signOutError && <p role="alert">{signOutError}</p>}
 
       {available &&
         session !== undefined &&
@@ -336,12 +346,12 @@ export function AccountClient({ welcome }: { welcome: boolean }) {
           <div className="pg-banner emerald">
             <span className="dot" style={{ background: "var(--emerald)" }} aria-hidden="true" />
             <div className="body">
-              <div className="bt">Syncing on</div>
+              <div className="bt">Account backup enabled</div>
               <div className="bs">
                 Your scores back up automatically while you are signed in{email ? ` as ${email}` : ""}.
               </div>
             </div>
-            <button type="button" className="pg-signout" onClick={() => getSupabase()?.auth.signOut()}>
+            <button type="button" className="pg-signout" disabled={signingOut} onClick={signOut}>
               Sign out
             </button>
           </div>
@@ -373,7 +383,7 @@ export function AccountClient({ welcome }: { welcome: boolean }) {
             <Stat v={view.stats.inProgress} l="Certs in progress" />
             <Stat v={view.stats.practiced} l="Questions practiced" />
             <Stat v={`${view.stats.best}%`} l="Best score" />
-            <Stat v={view.stats.ready} l="Exam-ready" />
+            <Stat v={view.stats.ready} l="Study target met" />
           </div>
 
           <div className="pg-sechead">

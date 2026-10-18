@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { getSupabase, supabaseAvailable } from "@/lib/supabase/client";
-import { fullSync, queueUpsert, _resetTimers } from "./sync-runtime";
+import { fullSync, queueUpsert, _resetTimers, pauseAndDrainSync, finishSyncDeletion, resumeSyncAfterSignIn } from "./sync-runtime";
 import { readAll, writeAll } from "./storage";
 import { toRow, type AttemptRow } from "./sync";
 import type { Attempt, QuestionResult } from "./types";
@@ -231,5 +231,151 @@ describe("fullSync", () => {
     expect(localStorage.getItem(STORAGE_KEY)).toBe(before);
     expect(upsert).not.toHaveBeenCalled();
     expect(warnSpy).toHaveBeenCalledWith("sync:", expect.anything());
+  });
+});
+
+
+function deferred<T>() {
+  let resolve!: (value: T) => void;
+  const promise = new Promise<T>((done) => { resolve = done; });
+  return { promise, resolve };
+}
+
+describe("deletion sync boundary", () => {
+  it("cancels pending uploads and keeps ordinary sync paused after deletion", async () => {
+    vi.useFakeTimers();
+    mockedAvailable.mockReturnValue(true);
+    const c = fakeClient({ session: { user: { id: "u1" } } });
+    mockedGetSupabase.mockReturnValue(c.client);
+    queueUpsert(mk());
+    await pauseAndDrainSync();
+    resumeSyncAfterSignIn(); // an active deletion must not be reopened
+    await fullSync();
+    finishSyncDeletion();
+    queueUpsert(mk({ finishedAt: 500 }));
+    await fullSync();
+    await vi.advanceTimersByTimeAsync(400);
+    expect(c.upsert).not.toHaveBeenCalled();
+    expect(c.select).not.toHaveBeenCalled();
+    resumeSyncAfterSignIn(); // a subsequent successful login may enable normal sync
+    queueUpsert(mk({ finishedAt: 500 }));
+    await vi.advanceTimersByTimeAsync(0);
+    expect(c.upsert).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not wait for an unissued upload's session lookup and invalidates its continuation", async () => {
+    mockedAvailable.mockReturnValue(true);
+    const c = fakeClient();
+    const lookup = deferred<{ data: { session: { user: { id: string } } } }>();
+    c.getSession.mockReturnValue(lookup.promise);
+    mockedGetSupabase.mockReturnValue(c.client);
+    queueUpsert(mk({ finishedAt: 500 }));
+    await pauseAndDrainSync();
+    finishSyncDeletion();
+    lookup.resolve({ data: { session: { user: { id: "u1" } } } });
+    await lookup.promise;
+    await Promise.resolve();
+    expect(c.upsert).not.toHaveBeenCalled();
+  });
+
+  it("drains an issued write before the caller deletes cloud data", async () => {
+    mockedAvailable.mockReturnValue(true);
+    const c = fakeClient({ session: { user: { id: "u1" } } });
+    const write = deferred<{ error: null }>();
+    const order: string[] = [];
+    c.upsert.mockImplementation(() => write.promise.then((value) => { order.push("write"); return value; }));
+    mockedGetSupabase.mockReturnValue(c.client);
+    queueUpsert(mk({ finishedAt: 500 }));
+    await vi.waitFor(() => expect(c.upsert).toHaveBeenCalledTimes(1));
+    const deletion = pauseAndDrainSync().then(() => { order.push("delete"); });
+    await Promise.resolve();
+    expect(order).toEqual([]);
+    write.resolve({ error: null });
+    await deletion;
+    expect(order).toEqual(["write", "delete"]);
+    finishSyncDeletion();
+  });
+
+  it("invalidates a slow fullSync pull without waiting or restoring deleted local data", async () => {
+    mockedAvailable.mockReturnValue(true);
+    const c = fakeClient({ session: { user: { id: "u1" } } });
+    const pull = deferred<{ data: AttemptRow[]; error: null }>();
+    c.select.mockReturnValue(pull.promise);
+    mockedGetSupabase.mockReturnValue(c.client);
+    const sync = fullSync();
+    await vi.waitFor(() => expect(c.select).toHaveBeenCalledTimes(1));
+    await pauseAndDrainSync();
+    writeAll([]);
+    finishSyncDeletion();
+    resumeSyncAfterSignIn(); // old generation must remain invalid even after a new login
+    pull.resolve({ data: [toRow(mk({ finishedAt: 500 }), "u1")], error: null });
+    await sync;
+    expect(readAll()).toEqual([]);
+    expect(c.upsert).not.toHaveBeenCalled();
+  });
+
+  it("drains an issued fullSync write and prevents the next upload after the pause", async () => {
+    mockedAvailable.mockReturnValue(true);
+    writeAll([mk({ attemptId: "one" }), mk({ attemptId: "two" })]);
+    const c = fakeClient({ session: { user: { id: "u1" } } });
+    const write = deferred<{ error: null }>();
+    c.upsert.mockReturnValueOnce(write.promise);
+    mockedGetSupabase.mockReturnValue(c.client);
+    const sync = fullSync();
+    await vi.waitFor(() => expect(c.upsert).toHaveBeenCalledTimes(1));
+    let drained = false;
+    const pause = pauseAndDrainSync().then(() => { drained = true; });
+    await Promise.resolve();
+    expect(drained).toBe(false);
+    write.resolve({ error: null });
+    await pause;
+    await sync;
+    writeAll([]);
+    expect(c.upsert).toHaveBeenCalledTimes(1);
+    expect(readAll()).toEqual([]);
+    finishSyncDeletion();
+  });
+});
+
+
+describe("per-attempt upload ordering", () => {
+  it("discards an unfinished snapshot whose auth lookup returns after a newer finish", async () => {
+    vi.useFakeTimers();
+    mockedAvailable.mockReturnValue(true);
+    const c = fakeClient({ session: { user: { id: "u1" } } });
+    const oldLookup = deferred<{ data: { session: { user: { id: string } } } }>();
+    c.getSession.mockReturnValueOnce(oldLookup.promise);
+    mockedGetSupabase.mockReturnValue(c.client);
+    queueUpsert(mk({ results: answered(1) }));
+    await vi.advanceTimersByTimeAsync(400);
+    queueUpsert(mk({ results: answered(2), finishedAt: 500 }));
+    await vi.advanceTimersByTimeAsync(0);
+    expect(c.upsert).toHaveBeenCalledTimes(1);
+    oldLookup.resolve({ data: { session: { user: { id: "u1" } } } });
+    await vi.advanceTimersByTimeAsync(0);
+    expect(c.upsert).toHaveBeenCalledTimes(1);
+    expect(c.upsert.mock.calls[0][0].finished_at).not.toBeNull();
+  });
+
+  it("waits for the issued unfinished write before uploading a later finish", async () => {
+    vi.useFakeTimers();
+    mockedAvailable.mockReturnValue(true);
+    const c = fakeClient({ session: { user: { id: "u1" } } });
+    const oldWrite = deferred<{ error: null }>();
+    let stored: AttemptRow | undefined;
+    c.upsert.mockImplementationOnce((row) => oldWrite.promise.then((result) => { stored = row; return result; }));
+    c.upsert.mockImplementation((row) => { stored = row; return Promise.resolve({ error: null }); });
+    mockedGetSupabase.mockReturnValue(c.client);
+    queueUpsert(mk({ results: answered(1) }));
+    await vi.advanceTimersByTimeAsync(400);
+    expect(c.upsert).toHaveBeenCalledTimes(1);
+    queueUpsert(mk({ results: answered(2), finishedAt: 500 }));
+    await vi.advanceTimersByTimeAsync(0);
+    expect(c.upsert).toHaveBeenCalledTimes(1);
+    oldWrite.resolve({ error: null });
+    await vi.advanceTimersByTimeAsync(0);
+    expect(c.upsert).toHaveBeenCalledTimes(2);
+    expect(stored?.finished_at).not.toBeNull();
+    expect(Object.keys(stored!.results)).toHaveLength(2);
   });
 });

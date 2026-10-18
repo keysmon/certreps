@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { getSupabase } from "@/lib/supabase/client";
 import { useSession } from "@/lib/supabase/useSession";
 import { readAll, clearAll } from "@/lib/storage";
+import { pauseAndDrainSync, finishSyncDeletion } from "@/lib/sync-runtime";
 import { readPrefs, setPref, clearPrefs, type Prefs } from "@/lib/prefs";
 import { getTheme, setTheme, THEMES, THEME_LABELS, type Theme } from "@/lib/theme";
 import { initials } from "@/lib/initials";
@@ -41,14 +42,13 @@ const NOTIF_ROWS: NotifRow[] = [
 /**
  * Account & preferences. Session comes from the shared useSession hook (same subscription as
  * TopNav/AuthButton). Notification prefs persist to lib/prefs (certreps.prefs.v1); the sync row is
- * NOT a stored pref - it reflects the real session (on while signed in, disabled otherwise), so a
- * toggle can never disagree with what sync actually does. Export/Delete move here from the old
+ * NOT a stored pref - it reflects whether a session enables background sync, not whether a sync succeeded. Export/Delete move here from the old
  * account page unchanged: export downloads the local store as JSON; delete removes cloud rows,
  * clears local data, signs out, and returns home (an honest alert if the cloud delete fails).
  */
 export function SettingsClient() {
   const router = useRouter();
-  const { session } = useSession();
+  const { session, loading, error: sessionError } = useSession();
   // SSR-safe: /settings is statically prerendered, so the initial render MUST be deterministic
   // defaults (what the server HTML contains). Reading localStorage in the useState initializer
   // would desync on a hard reload - the prerendered DOM shows OFF while state holds the stored
@@ -59,6 +59,9 @@ export function SettingsClient() {
   // value after mount. The no-flash script already applied the theme visually; this only syncs the picker.
   const [theme, setThemeState] = useState<Theme>("signal");
   const [toast, setToast] = useState("");
+  const [signingOut, setSigningOut] = useState(false);
+  const [deletingData, setDeletingData] = useState(false);
+  const deleteInFlight = useRef(false);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const email = session?.user.email ?? undefined;
 
@@ -100,37 +103,55 @@ export function SettingsClient() {
     showToast("Exported your data");
   }
 
-  // Moved verbatim from the old account page: cloud delete (honest failure alert), then clear local
-  // and sign out, then home. supabase-js v2 resolves with { error } rather than throwing.
+  // Pause this browser's background sync before deleting so old work cannot recreate rows.
   async function onDelete() {
+    if (deleteInFlight.current || loading || sessionError || signingOut) return;
     if (!window.confirm("Delete all your practice data from this device and the cloud? This cannot be undone.")) return;
-    const supabase = getSupabase();
-    const userId = session?.user.id;
+    deleteInFlight.current = true;
+    setDeletingData(true);
     try {
-      if (supabase && userId) {
-        const { error } = await supabase.from("attempts").delete().eq("user_id", userId);
-        if (error) {
-          console.warn("delete:", error);
-          window.alert("Your cloud data could not be deleted right now - it may reappear when you next sign in. Local data was still cleared.");
+      await pauseAndDrainSync();
+      const supabase = getSupabase();
+      const userId = session?.user.id;
+      try {
+        if (supabase && userId) {
+          const { error } = await supabase.from("attempts").delete().eq("user_id", userId);
+          if (error) throw error;
         }
+      } catch (error) {
+        console.warn("delete:", error);
+        window.alert("Your cloud data could not be deleted right now - it may reappear when you next sign in. Local data was still cleared.");
       }
-    } catch (e) {
-      console.warn("delete:", e); // network-level throw: same honest path as above
-      window.alert("Your cloud data could not be deleted right now - it may reappear when you next sign in. Local data was still cleared.");
+      clearAll();
+      clearPrefs();
+      try {
+        const result = await supabase?.auth.signOut();
+        if (result?.error) throw result.error;
+      } catch {
+        window.alert("Practice data was cleared on this device, but sign-out did not complete. Please try signing out again.");
+      }
+      router.push("/");
+    } finally {
+      // A failed sign-out must not restart uploads; only a later successful sign-in may do that.
+      finishSyncDeletion();
+      deleteInFlight.current = false;
+      setDeletingData(false);
     }
-    clearAll();
-    clearPrefs(); // honest to the "Delete all my data" label - wipe preferences too, not just attempts
-    try {
-      await supabase?.auth.signOut();
-    } catch {
-      /* signing out is best-effort - the local data is already gone */
-    }
-    router.push("/");
   }
 
-  function onSignOut() {
-    getSupabase()?.auth.signOut();
-    showToast("Signed out");
+  async function onSignOut() {
+    setSigningOut(true);
+    try {
+      const supabase = getSupabase();
+      if (!supabase) throw new Error("Accounts unavailable");
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      showToast("Signed out");
+    } catch {
+      showToast("Could not sign out. Please try again.");
+    } finally {
+      setSigningOut(false);
+    }
   }
 
   return (
@@ -140,17 +161,17 @@ export function SettingsClient() {
 
       <section className="st-card">
         <h2>Account</h2>
-        {session ? (
+        {loading ? <p className="cd">Checking your account...</p> : sessionError ? <p role="alert">{sessionError}</p> : session ? (
           <>
-            <p className="cd">Signed in - progress syncs automatically.</p>
+            <p className="cd">Signed in. Completed attempts can sync across devices when connected.</p>
             <div className="st-row">
               <span className="st-avatar" aria-hidden="true">{initials(email)}</span>
               <div className="rt">
                 <div className="rl">{email}</div>
-                <div className="rs">Signed in via email {MIDDOT} synced</div>
+                <div className="rs">Signed in via email</div>
               </div>
-              <button type="button" className="btn btn-ghost btn-sm" onClick={onSignOut}>
-                Sign out
+              <button type="button" className="btn btn-ghost btn-sm" onClick={onSignOut} disabled={signingOut || deletingData}>
+                {signingOut ? "Signing out..." : "Sign out"}
               </button>
             </div>
           </>
@@ -202,7 +223,7 @@ export function SettingsClient() {
           <div className="rt">
             <div className="rl">Sync progress across devices</div>
             <div className="rs">
-              {session ? "On while signed in - sign out to stop syncing." : "Requires an account."}
+              {loading ? "Checking your account..." : sessionError ? "Account status unavailable." : session ? "On while signed in. Sync is best effort; this is not a sync confirmation. Finish in-progress drills on the device where you started them." : "Requires an account."}
             </div>
           </div>
           <button
@@ -239,7 +260,7 @@ export function SettingsClient() {
         <div className="st-row">
           <div className="rt">
             <div className="rl">Export my data</div>
-            <div className="rs">Download everything as a JSON file.</div>
+            <div className="rs">Download practice attempts saved on this device as a JSON file.</div>
           </div>
           <button type="button" className="btn btn-ghost btn-sm" onClick={onExport}>
             Export
@@ -250,8 +271,8 @@ export function SettingsClient() {
             <div className="rl danger">Delete all my data</div>
             <div className="rs">Deletes your practice data and preferences on this device, removes your cloud data, then signs you out. Cannot be undone.</div>
           </div>
-          <button type="button" className="btn btn-danger btn-sm" onClick={onDelete}>
-            Delete
+          <button type="button" className="btn btn-danger btn-sm" onClick={onDelete} disabled={loading || !!sessionError || signingOut || deletingData}>
+            {deletingData ? "Deleting..." : "Delete"}
           </button>
         </div>
       </section>

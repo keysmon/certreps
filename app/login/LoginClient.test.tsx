@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { LoginClient } from "./LoginClient";
 import { getSupabase, supabaseAvailable } from "@/lib/supabase/client";
+import * as syncRuntime from "@/lib/sync-runtime";
 
 // The component reaches Supabase only through these two helpers - mock the module
 // so no browser client is built and no auth network happens in tests.
@@ -63,6 +64,7 @@ describe("LoginClient", () => {
   });
 
   it("pushes /account?welcome=1 on a successful sign-in", async () => {
+    const resume = vi.spyOn(syncRuntime, "resumeSyncAfterSignIn");
     mockedAvailable.mockReturnValue(true);
     mockedGetSupabase.mockReturnValue(fakeClient());
     render(<LoginClient failed={false} />);
@@ -70,6 +72,8 @@ describe("LoginClient", () => {
     await userEvent.type(screen.getByLabelText(/password/i), "Test12345!");
     await userEvent.click(screen.getByRole("button", { name: /^sign in$/i }));
     await waitFor(() => expect(push).toHaveBeenCalledWith("/account?welcome=1"));
+    expect(resume).toHaveBeenCalledTimes(1);
+    resume.mockRestore();
   });
 
   it("renders the Supabase error message on a failed sign-in", async () => {
@@ -108,5 +112,32 @@ describe("LoginClient", () => {
     render(<LoginClient failed={false} />);
     expect(screen.getByText("Accounts are not available on this deployment.")).toBeInTheDocument();
     expect(screen.queryByLabelText(/password/i)).not.toBeInTheDocument();
+  });
+});
+
+
+describe("login recovery and accurate sync copy", () => {
+  it("describes completed-attempt sync and keeps unfinished drills on this device", () => {
+    mockedAvailable.mockReturnValue(true);
+    mockedGetSupabase.mockReturnValue(fakeClient());
+    render(<LoginClient failed={false} />);
+    expect(screen.queryByText("Pick up mid-drill")).not.toBeInTheDocument();
+    expect(screen.getByText(/finish an in-progress drill on the device where you started it/i)).toBeInTheDocument();
+  });
+
+  it.each(["signin", "signup"])("recovers from a rejected %s request", async (mode) => {
+    mockedAvailable.mockReturnValue(true);
+    const client = fakeClient();
+    vi.mocked(client.auth.signInWithPassword).mockRejectedValue(new Error("Network unavailable"));
+    vi.mocked(client.auth.signUp).mockRejectedValue(new Error("Network unavailable"));
+    mockedGetSupabase.mockReturnValue(client);
+    render(<LoginClient failed={false} />);
+    if (mode === "signup") await userEvent.click(screen.getByRole("button", { name: /new here/i }));
+    await userEvent.type(screen.getByLabelText(/email/i), "ada@example.com");
+    await userEvent.type(screen.getByLabelText(/password/i), "Test12345!");
+    await userEvent.click(screen.getByRole("button", { name: mode === "signup" ? /^create account$/i : /^sign in$/i }));
+    expect(await screen.findByText("Unable to connect. Please try again.")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: mode === "signup" ? /^create account$/i : /^sign in$/i })).toBeEnabled();
+    expect(push).not.toHaveBeenCalled();
   });
 });
