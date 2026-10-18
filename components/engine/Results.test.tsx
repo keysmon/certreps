@@ -45,7 +45,8 @@ function passedAttempt(): Attempt {
 describe("Results", () => {
   it("shows score, per-domain rows, and the review section", () => {
     render(<Results attempt={makeAttempt(0)} questions={qs} meta={getMeta()} />);
-    expect(screen.getByText("50%")).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: "50%, 2 of 4 correct" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1 })).toHaveFocus();
     expect(screen.getByText(/2 \/ 4 correct/i)).toBeInTheDocument();
     expect(screen.getByText(/performance by domain/i)).toBeInTheDocument();
     expect(screen.getByText(/review answers/i)).toBeInTheDocument();

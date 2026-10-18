@@ -107,13 +107,13 @@ describe("SettingsClient", () => {
     expect(await screen.findByText("Turned on")).toBeInTheDocument();
   });
 
-  it("renders Signal Gold selected in the SSR pass even when an alternate is stored (hydration-safe)", () => {
+  it("renders Industrial selected in the SSR pass even when an alternate is stored (hydration-safe)", () => {
     mockedAvailable.mockReturnValue(false);
-    // Signal Gold is the deterministic SSR default; the real stored theme loads only after mount, so
-    // the prerendered picker shows Signal Gold checked and matches the client's first render.
+    // Industrial is the deterministic SSR default; the real stored theme loads only after mount, so
+    // the prerendered picker shows Industrial checked and matches the client's first render.
     localStorage.setItem("certreps.theme", "ocean");
     const html = renderToString(<SettingsClient />);
-    const signal = html.match(/<button[^>]*aria-label="Signal Gold"[^>]*>/)?.[0] ?? "";
+    const signal = html.match(/<button[^>]*aria-label="Industrial"[^>]*>/)?.[0] ?? "";
     const ocean = html.match(/<button[^>]*aria-label="Deep Ocean"[^>]*>/)?.[0] ?? "";
     expect(signal).toContain('aria-checked="true"');
     expect(ocean).toContain('aria-checked="false"');
@@ -142,9 +142,9 @@ describe("SettingsClient", () => {
     expect(localStorage.getItem("certreps.theme")).toBe("ocean");
     expect(await screen.findByText("Deep Ocean theme on")).toBeInTheDocument();
 
-    // Signal Gold is the default and clears the attribute.
+    // Signal Gold remains a selectable, saved alternate.
     await userEvent.click(screen.getByRole("radio", { name: "Signal Gold" }));
-    expect(document.documentElement.getAttribute("data-theme")).toBeNull();
+    expect(document.documentElement.getAttribute("data-theme")).toBe("signal");
     expect(localStorage.getItem("certreps.theme")).toBe("signal");
   });
 

@@ -400,6 +400,7 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId, reveal, retr
                 across a submit so the recorded choice stays visible and EDITABLE (initialChosen
                 pre-fills on a re-visit). Practice: the card re-renders into its read-only graded
                 state when `graded` is set - no remount needed. */}
+            <div className="practice-heading"><h1>{mode === "mock" ? (reveal ? "Study run." : "Full mock.") : mode === "drill" ? "Domain drill." : mode === "retry" ? "Retry missed questions." : "Quick practice."}</h1><span className="practice-number" aria-hidden="true">{String(index + 1).padStart(2, "0")}<small>/{questions.length}</small></span></div>
             <QuestionCard
               key={q.id}
               question={q}

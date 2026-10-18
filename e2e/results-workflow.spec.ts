@@ -27,7 +27,7 @@ for (const width of [1280, 375]) test(`domain result review, navigation and scop
   await expect(page.getByRole("region", { name: "Suggested practice" })).toHaveCount(0);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   const caption = await page.getByText("11 / 12 correct", { exact: true }).boundingBox();
-  const ring = await page.locator(".result-hero svg").boundingBox();
+  const ring = await page.locator(".result-percentage").boundingBox();
   expect(caption!.y).toBeGreaterThanOrEqual(ring!.y + ring!.height);
   await page.screenshot({ path: `/tmp/certreps-results-${width}.png`, fullPage: true });
   await page.getByRole("button", { name: "Review 1 missed question", exact: true }).click();
@@ -52,5 +52,8 @@ for (const width of [1280, 375]) test(`domain result review, navigation and scop
   await page.getByRole("button", { name: "Submit answer", exact: true }).click();
   await page.getByRole("button", { name: "See results", exact: true }).click();
   await expect(page.getByText("100%", { exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1 })).toBeFocused();
+  const resultHeading = await page.getByRole("heading", { level: 1 }).boundingBox();
+  expect(resultHeading!.y).toBeGreaterThanOrEqual(width <= 760 ? 60 : 0);
   await expect(page.getByRole("link", { name: /retry .* missed/i })).toHaveCount(0);
 });

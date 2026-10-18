@@ -122,19 +122,7 @@ export function TopNav() {
     <header className="tn-bar">
       <Link href="/" className="tn-logo" aria-label="CertReps home">
         <span className="tn-loop" aria-hidden="true">
-          <svg viewBox="0 0 32 32" width="22" height="22">
-            <circle
-              cx="16"
-              cy="16"
-              r="8.5"
-              fill="none"
-              stroke="var(--gold)"
-              strokeWidth="3.5"
-              strokeLinecap="round"
-              strokeDasharray="42 11.4"
-              transform="rotate(-35 16 16)"
-            />
-          </svg>
+          CR
         </span>
         CertReps
       </Link>

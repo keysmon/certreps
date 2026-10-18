@@ -18,6 +18,7 @@ const MIDDOT = String.fromCharCode(183);
 // grounds/accents in globals.css. Day keeps the vibrant gold CTA fill as its accent (bronze is only
 // its text gold), so its swatch reads as "the light form of Signal Gold".
 const THEME_SWATCH: Record<Theme, { bg: string; accent: string }> = {
+  industrial: { bg: "#eeefea", accent: "#c4451f" },
   signal: { bg: "#0a0e15", accent: "#e9b44c" },
   ocean: { bg: "#08131c", accent: "#4aa8f0" },
   violet: { bg: "#120e1c", accent: "#a78bff" },
@@ -55,9 +56,9 @@ export function SettingsClient() {
   // value, and React does not patch hydrated attributes, so the first click flips storage with no
   // visible change. Load the stored prefs in an effect instead (mirrors AccountClient's attempts load).
   const [prefs, setPrefs] = useState<Prefs>({ reminders: false, newCerts: false, weekly: false });
-  // Theme follows the same SSR-safe rule: Signal Gold (the default) on the server/first render, real
+  // Theme follows the same SSR-safe rule: Industrial (the default) on the server/first render, real
   // value after mount. The no-flash script already applied the theme visually; this only syncs the picker.
-  const [theme, setThemeState] = useState<Theme>("signal");
+  const [theme, setThemeState] = useState<Theme>("industrial");
   const [toast, setToast] = useState("");
   const [signingOut, setSigningOut] = useState(false);
   const [deletingData, setDeletingData] = useState(false);
@@ -193,7 +194,7 @@ export function SettingsClient() {
 
       <section className="st-card">
         <h2>Appearance</h2>
-        <p className="cd">Pick a color theme. Signal Gold is the default; your choice is remembered on this device.</p>
+        <p className="cd">Pick a color theme. Industrial is the default; your choice is remembered on this device.</p>
         <div className="st-themes" role="radiogroup" aria-label="Color theme">
           {THEMES.map((t) => (
             <button

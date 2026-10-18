@@ -10,8 +10,8 @@ beforeEach(() => {
 });
 
 describe("theme store", () => {
-  it("defaults to Signal Gold when nothing is stored", () => {
-    expect(getTheme()).toBe("signal");
+  it("defaults to Industrial when nothing is stored", () => {
+    expect(getTheme()).toBe("industrial");
   });
 
   it("reads each stored alternate theme verbatim", () => {
@@ -21,9 +21,9 @@ describe("theme store", () => {
     }
   });
 
-  it("falls back to Signal Gold for an unrecognized stored value", () => {
+  it("falls back to Industrial for an unrecognized stored value", () => {
     localStorage.setItem(KEY, "sepia");
-    expect(getTheme()).toBe("signal");
+    expect(getTheme()).toBe("industrial");
   });
 
   it("migrates the legacy two-theme values (dark -> signal, light -> day)", () => {
@@ -33,13 +33,15 @@ describe("theme store", () => {
     expect(getTheme()).toBe("day");
   });
 
-  it("applyTheme sets data-theme for the alternates and removes it for Signal Gold", () => {
+  it("applyTheme sets data-theme for the alternates and removes it for Industrial", () => {
     applyTheme("ocean");
     expect(attr()).toBe("ocean");
     applyTheme("day");
     expect(attr()).toBe("day");
-    // Signal Gold is the default and carries NO attribute, matching the no-flash inline script.
+    // Signal Gold is explicit; Industrial clears the attribute, matching first paint.
     applyTheme("signal");
+    expect(attr()).toBe("signal");
+    applyTheme("industrial");
     expect(attr()).toBeNull();
   });
 
@@ -50,11 +52,14 @@ describe("theme store", () => {
 
     setTheme("signal");
     expect(localStorage.getItem(KEY)).toBe("signal");
+    expect(attr()).toBe("signal");
+    setTheme("industrial");
+    expect(getTheme()).toBe("industrial");
     expect(attr()).toBeNull();
   });
 
-  it("every theme has a label and the set is exactly the five themes", () => {
-    expect(THEMES).toEqual(["signal", "ocean", "violet", "graphite", "day"]);
+  it("every theme has a label and the set includes the new default and all saved legacy choices", () => {
+    expect(THEMES).toEqual(["industrial", "signal", "ocean", "violet", "graphite", "day"]);
     for (const t of THEMES) expect(THEME_LABELS[t]).toBeTruthy();
   });
 });

@@ -1,9 +1,8 @@
 "use client";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Attempt, CertMeta, Question } from "@/lib/types";
 import { gradeAttempt } from "@/lib/scoring";
 import { HEAVY_PAUSE_THRESHOLD, domainVerdict, type Verdict } from "@/lib/readiness";
-import { ScoreRing } from "@/components/ui/ScoreRing";
 import { VENDORS } from "@/components/ui/VendorDot";
 import { DomainBars } from "@/components/ui/DomainBars";
 import { optionPermutation, viewIndex } from "@/lib/permute";
@@ -65,6 +64,11 @@ export function Results({ attempt, questions, meta }: { attempt: Attempt; questi
     : "Every question in this session was correct. Practice another domain or try a full mock for broader coverage.";
   const targetCopy = meta.passLineOfficial === false ? `Independent study target: ${meta.passLinePct}%.` : `Practice comparison threshold: ${meta.passLinePct}%.`;
   const scopeCopy = isDrill ? "This result covers this domain drill only; it does not measure overall exam readiness." : "This is a practice result, not a prediction of your exam outcome.";
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  useEffect(() => {
+    headingRef.current?.focus({ preventScroll: true });
+    headingRef.current?.parentElement?.scrollIntoView?.({ block: "start" });
+  }, []);
   const recapRef = useRef<HTMLDetailsElement>(null);
   const [missedOnly, setMissedOnly] = useState(false);
   const openMissed = () => {
@@ -80,8 +84,12 @@ export function Results({ attempt, questions, meta }: { attempt: Attempt; questi
     <div className="results">
       <h2 className="sr-only">Results</h2>
 
+      <header className="result-masthead"><span className="eyebrow">{meta.examCode} / SESSION REPORT</span><h1 ref={headingRef} tabIndex={-1}>{isDrill ? "Drill complete." : attempt.mode === "retry" ? "Retry complete." : attempt.mode === "quick" ? "Practice complete." : "Session complete."}</h1></header>
       <section className="result-hero" aria-label={sessionLabel}>
-        <ScoreRing pct={g.pct} size={150} stroke={10} correct={g.score} total={g.total} passLine={meta.passLinePct} />
+        <div className="result-score" role="img" aria-label={`${g.pct}%, ${g.score} of ${g.total} correct`}>
+          <div className="result-percentage" aria-hidden="true">{g.pct}<span>%</span></div>
+          <div className="result-score-caption">{g.score} / {g.total} correct</div>
+        </div>
         <div className="result-copy">
           <span className="eyebrow">{sessionLabel}</span>
           <h3 className="r-verdict">{headline}</h3>
@@ -94,6 +102,7 @@ export function Results({ attempt, questions, meta }: { attempt: Attempt; questi
         </div>
       </section>
 
+      {questions.length <= 12 && <div className="result-answer-log" aria-hidden="true">{questions.map((q, i) => <span key={q.id} className={attempt.results[q.id]?.correct ? "hit" : "miss"}>{attempt.results[q.id]?.correct ? CHECK : CROSS}<small>{String(i + 1).padStart(2, "0")}</small></span>)}</div>}
       <div className="result-actions">
         {wrongCount > 0 && <button type="button" className="btn btn-primary" onClick={openMissed}>Review {wrongCount} missed {wrongCount === 1 ? "question" : "questions"}</button>}
         <a className={`btn ${wrongCount ? "btn-ghost" : "btn-primary"}`} href={`${certPath(meta)}#domains`}>{isDrill ? "Choose another domain" : "Choose a domain to practice"}</a>

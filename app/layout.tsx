@@ -1,19 +1,12 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, JetBrains_Mono } from "next/font/google";
+import { JetBrains_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import { AuthButton } from "@/components/AuthButton";
+import { WorkspaceNav } from "@/components/ui/WorkspaceNav";
 import "./globals.css";
+import "./industrial.css";
 
-// Self-hosted via next/font (downloaded at build, served from /_next/static/media -
-// no runtime Google Fonts CDN dependency). Exposed as CSS variables that globals.css
-// feeds into --font-display / --font-mono.
-const bricolage = Bricolage_Grotesque({
-  subsets: ["latin"],
-  weight: ["500", "600", "700", "800"],
-  variable: "--font-bricolage",
-  display: "swap",
-});
-
+// Self-hosted mono type for technical labels; display text uses the system sans stack.
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   weight: ["400", "500", "600"],
@@ -28,20 +21,21 @@ export const metadata: Metadata = {
     "Free, original, deeply-explained practice exams for IT certifications. No signup required.",
 };
 
-// Applied before first paint so an alternate-theme device never flashes Signal Gold. Inert for the
-// default (Signal Gold) case - it carries no attribute, so an absent/"dark" preference does nothing.
+// Applied before first paint so saved alternate palettes never flash the Industrial default.
+// Industrial carries no attribute; legacy dark/light still map to Signal Gold/Daylight.
 // Mirrors lib/theme (normalize + applyTheme): legacy "dark"->signal, "light"->day, then any of the
-// four alternates sets data-theme. suppressHydrationWarning on <html> below covers the attribute this
+// five alternates sets data-theme. suppressHydrationWarning on <html> below covers the attribute this
 // adds ahead of React hydrating the element.
-const NO_FLASH_THEME = `try{var t=localStorage.getItem('certreps.theme');if(t==='dark')t='signal';else if(t==='light')t='day';if(t&&['ocean','violet','graphite','day'].indexOf(t)>=0)document.documentElement.setAttribute('data-theme',t)}catch(e){}`;
+const NO_FLASH_THEME = `try{var t=localStorage.getItem('certreps.theme');if(t==='dark')t='signal';else if(t==='light')t='day';if(t&&['signal','ocean','violet','graphite','day'].indexOf(t)>=0)document.documentElement.setAttribute('data-theme',t)}catch(e){}`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${bricolage.variable} ${jetbrainsMono.variable}`} suppressHydrationWarning>
+    <html lang="en" className={jetbrainsMono.variable} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: NO_FLASH_THEME }} />
       </head>
-      <body>
+      <body className="industrial-shell">
+        <WorkspaceNav />
         <AuthButton />
         {children}
         <footer className="site">

@@ -43,14 +43,12 @@ const answeredCount = (a: Attempt): number =>
   Object.values(a.results).filter((r) => r.chosen.length > 0).length;
 
 const stepCard = (primary: boolean): CSSProperties => ({
-  display: "flex", gap: "18px", borderRadius: "16px", padding: "22px 24px", marginBottom: "14px",
+  display: "flex", gap: "18px", borderRadius: "var(--radius)", padding: "22px 24px", marginBottom: "14px",
   border: primary ? "1px solid var(--gold-dim)" : "1px solid var(--line)",
-  background: primary
-    ? "linear-gradient(180deg,var(--gold-soft),transparent 70%),var(--panel)"
-    : "var(--panel)",
+  background: "var(--panel)",
 });
 const stepNum = (primary: boolean): CSSProperties => ({
-  flexShrink: 0, width: "34px", height: "34px", borderRadius: "10px", display: "grid", placeItems: "center",
+  flexShrink: 0, width: "34px", height: "34px", borderRadius: "var(--radius-sm)", display: "grid", placeItems: "center",
   fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "16px",
   background: primary ? "var(--gold)" : "var(--panel-3)", color: primary ? "var(--on-gold)" : "var(--muted)",
 });
