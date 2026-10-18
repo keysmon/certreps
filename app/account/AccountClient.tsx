@@ -1,9 +1,9 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { Attempt, CertMeta } from "@/lib/types";
-import { getSupabase, supabaseAvailable } from "@/lib/supabase/client";
+import { getSupabase } from "@/lib/supabase/client";
 import { fullSync } from "@/lib/sync-runtime";
 import { readAll, listInProgress } from "@/lib/storage";
 import { useSession } from "@/lib/supabase/useSession";
@@ -272,8 +272,9 @@ function EmptyState() {
  * The My Progress dashboard. localStorage is the source of truth, so attempts load in an effect
  * (never in render) - the page stays SSR-safe and renders in env-less, local-only mode. The sync
  * banner is a signed-in surface (Supabase configured); `session` stays undefined until auth resolves
- * so neither banner state flashes. welcome=1 runs a one-time post-login fullSync, then strips the
- * param so a re-render never re-syncs. Destructive actions (export/delete) live on Settings now.
+ * so neither banner state flashes. Signed-in visits, focus and reconnect pull cloud history;
+ * overlapping pulls coalesce, and welcome=1 is removed after post-login reconciliation.
+ * Destructive actions (export/delete) live on Settings now.
  */
 export function AccountClient({ welcome }: { welcome: boolean }) {
   const router = useRouter();
@@ -281,7 +282,18 @@ export function AccountClient({ welcome }: { welcome: boolean }) {
   const { session: checkedSession, available, loading, error: sessionError } = useSession();
   const session = loading ? undefined : checkedSession;
   const [attempts, setAttempts] = useState<Attempt[] | null>(null);
-  const syncedRef = useRef(false);
+  const syncInFlight = useRef<{ userId: string; promise: Promise<void> } | null>(null);
+  const userId = session?.user.id;
+  const refreshCloud = useCallback((accountId: string): Promise<void> => {
+    if (syncInFlight.current?.userId === accountId) return syncInFlight.current.promise;
+    const promise = fullSync()
+      .catch((error) => { console.warn("sync:", error); })
+      .finally(() => {
+        if (syncInFlight.current?.promise === promise) syncInFlight.current = null;
+      });
+    syncInFlight.current = { userId: accountId, promise };
+    return promise;
+  }, []);
   const [signOutError, setSignOutError] = useState<string | null>(null);
   const [signingOut, setSigningOut] = useState(false);
   async function signOut() {
@@ -300,27 +312,40 @@ export function AccountClient({ welcome }: { welcome: boolean }) {
     }
   }
 
-  // Post-login merge runs once, then the welcome param is stripped so a re-render never re-syncs.
-  // Attempts are (re)loaded from the freshly-merged localStorage afterwards.
+  // A returning signed-in device must pull cloud history on normal visits too.
+  // Local store events only refresh rendering; they never trigger another cloud pull.
   useEffect(() => {
+    if (!available || !userId) return;
     let live = true;
-    (async () => {
-      try {
-        if (welcome && supabaseAvailable() && !syncedRef.current) {
-          syncedRef.current = true;
-          await fullSync();
-          if (live) router.replace("/account");
-        }
-      } finally {
-        // The history load must never hinge on sync outcome: fullSync honors a never-throws
-        // contract today, but if a refactor ever breaks it, the page must not stick on Loading.
+    const refresh = () => {
+      void refreshCloud(userId).then(() => {
         if (live) setAttempts(readAll());
-      }
-    })();
+      });
+    };
+    const onVisible = () => { if (!document.hidden) refresh(); };
+    refresh();
+    window.addEventListener("focus", refresh);
+    window.addEventListener("online", refresh);
+    window.addEventListener("pageshow", refresh);
+    document.addEventListener("visibilitychange", onVisible);
     return () => {
       live = false;
+      window.removeEventListener("focus", refresh);
+      window.removeEventListener("online", refresh);
+      window.removeEventListener("pageshow", refresh);
+      document.removeEventListener("visibilitychange", onVisible);
     };
-  }, [welcome, router]);
+  }, [available, userId, refreshCloud]);
+
+  // Post-login navigation shares the same in-flight pull as the normal visit.
+  useEffect(() => {
+    if (!welcome || !available || !userId) return;
+    let live = true;
+    void refreshCloud(userId).then(() => {
+      if (live) router.replace("/account");
+    });
+    return () => { live = false; };
+  }, [welcome, available, userId, refreshCloud, router]);
 
   // Store refreshes must not cancel an in-flight post-login sync/navigation.
   useEffect(() => {

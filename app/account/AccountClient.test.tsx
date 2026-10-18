@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
-import { act, render, screen } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import { useRouter } from "next/navigation";
 import * as syncRuntime from "@/lib/sync-runtime";
 import type { Session } from "@supabase/supabase-js";
@@ -32,6 +32,7 @@ function fakeClient(session: Session | null) {
       onAuthStateChange: vi.fn(() => ({ data: { subscription: { unsubscribe: vi.fn() } } })),
       signOut: vi.fn().mockResolvedValue({ error: null }),
     },
+    from: vi.fn(() => ({ select: vi.fn().mockResolvedValue({ data: [], error: null }), upsert: vi.fn().mockResolvedValue({ error: null }) })),
   } as unknown as ReturnType<typeof getSupabase>;
 }
 
@@ -67,7 +68,7 @@ beforeEach(() => {
   mockedAvailable.mockReturnValue(false);
   mockedGetSupabase.mockReturnValue(null);
 });
-afterEach(() => vi.clearAllMocks());
+afterEach(() => { vi.restoreAllMocks(); vi.clearAllMocks(); });
 
 // The multi-cert section headings of the pre-v1d /account page are gone: the dashboard now renders
 // a stat strip, continue-studying cards, and a recent-activity list (grouping semantics moved into
@@ -233,4 +234,45 @@ it("shows an error if dashboard sign-out fails", async () => {
   render(<AccountClient welcome={false} />);
   await userEvent.click(await screen.findByRole("button", { name: "Sign out" }));
   expect(await screen.findByRole("alert")).toHaveTextContent("Could not sign out");
+});
+
+
+it("pulls cloud history on a normal signed-in dashboard visit without welcome=1", async () => {
+  mockedAvailable.mockReturnValue(true);
+  mockedGetSupabase.mockReturnValue(fakeClient(sessionWith("user@example.com")));
+  const ids = getPracticeBank().slice(0, 2).map((q) => q.id);
+  const remote = attempt({ attemptId: "cloud-completed", mode: "quick", questionIds: ids, finishedAt: 100,
+    results: Object.fromEntries(ids.map((id, i) => [id, {questionId:id, chosen:[0], correct:i === 0, flagged:false}])) });
+  const spy = vi.spyOn(syncRuntime, "fullSync").mockImplementation(async () => { writeAll([remote]); });
+  render(<AccountClient welcome={false} />);
+  await waitFor(() => expect(spy).toHaveBeenCalledTimes(1));
+  expect(await screen.findByRole("link", { name: /quick practice.*50%/i })).toHaveAttribute("href", "/account/attempts/cloud-completed");
+});
+
+it("refreshes cloud progress on focus and online recovery without overlapping pulls", async () => {
+  mockedAvailable.mockReturnValue(true);
+  mockedGetSupabase.mockReturnValue(fakeClient(sessionWith("user@example.com")));
+  let complete!: () => void;
+  const spy = vi.spyOn(syncRuntime, "fullSync").mockImplementation(() => new Promise<void>((resolve) => { complete = resolve; }));
+  render(<AccountClient welcome={false} />);
+  await waitFor(() => expect(spy).toHaveBeenCalledTimes(1));
+  act(() => { window.dispatchEvent(new Event("focus")); window.dispatchEvent(new Event("online")); });
+  expect(spy).toHaveBeenCalledTimes(1);
+  await act(async () => { complete(); });
+  act(() => { window.dispatchEvent(new Event("focus")); });
+  expect(spy).toHaveBeenCalledTimes(2);
+  await act(async () => { complete(); });
+  act(() => { window.dispatchEvent(new Event("online")); });
+  expect(spy).toHaveBeenCalledTimes(3);
+  await act(async () => { complete(); });
+});
+
+it("does not start cloud pulls for a signed-out dashboard", async () => {
+  mockedAvailable.mockReturnValue(true);
+  mockedGetSupabase.mockReturnValue(fakeClient(null));
+  const spy = vi.spyOn(syncRuntime, "fullSync").mockResolvedValue();
+  render(<AccountClient welcome={false} />);
+  await screen.findByText("No practice yet");
+  act(() => window.dispatchEvent(new Event("focus")));
+  expect(spy).not.toHaveBeenCalled();
 });
