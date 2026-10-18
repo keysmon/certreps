@@ -16,7 +16,10 @@ export default defineConfig({
     baseURL: "http://localhost:3300",
     trace: "on-first-retry",
   },
-  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
+  projects: [
+    { name: "chromium", testIgnore: /iphone-mobile\.spec\.ts/, use: { ...devices["Desktop Chrome"] } },
+    { name: "iphone-safari", testMatch: /iphone-mobile\.spec\.ts/, use: { ...devices["iPhone 14 Pro Max"], browserName: "webkit", contextOptions: { reducedMotion: "reduce" } } },
+  ],
   webServer: {
     command: "npx next start -p 3300",
     url: "http://localhost:3300",

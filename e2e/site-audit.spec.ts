@@ -23,10 +23,12 @@ for (const meta of listCerts()) {
 test("anonymous mobile navigation reaches progress and settings without overflow", async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
   await page.goto("/catalog");
-  await page.getByRole("link", { name: "My progress", exact: true }).click();
+  await page.getByRole("button", { name: "Open navigation", exact: true }).click();
+  await page.getByRole("navigation", { name: "Mobile workspace navigation" }).getByRole("link", { name: /My progress/ }).click();
   await expect(page.getByRole("heading", { name: "Your progress" })).toBeVisible();
   await expect(page.getByText("No practice yet")).toBeVisible();
-  await page.getByRole("link", { name: "Settings", exact: true }).click();
+  await page.getByRole("button", { name: "Open navigation", exact: true }).click();
+  await page.getByRole("navigation", { name: "Mobile workspace navigation" }).getByRole("link", { name: /Settings/ }).click();
   await expect(page.getByRole("heading", { name: "Account & preferences" })).toBeVisible();
   await expect(page.getByRole("radiogroup", { name: "Color theme" })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);

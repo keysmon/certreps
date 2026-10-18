@@ -56,6 +56,8 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId, reveal, retr
   // every nav/jump/flag/submit handler no-ops so a queued setPhase("question") cannot reopen a
   // sealed exam after onExpire has already moved it to results.
   const finishedRef = useRef(false);
+  const questionHeadingRef = useRef<HTMLDivElement>(null);
+  const scrollToQuestionRef = useRef(false);
   // Contract C1 (Task 5 review): the adopted/created attempt. saveAttempt happens exactly once (in
   // the init effect); recordResult/finishAttempt upsert the SAME id thereafter. NEVER re-save the
   // engine-held copy - it would clobber recorded results.
@@ -189,6 +191,7 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId, reveal, retr
   // One guarded entry point for Prev/Next/jump so the C1b no-op lives in a single place.
   const goTo = useCallback((i: number) => {
     if (finishedRef.current) return;
+    scrollToQuestionRef.current = true;
     setIndex(i);
     setPhase("question");
   }, []);
@@ -223,6 +226,14 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId, reveal, retr
       persist();
     };
   }, []);
+
+  // Reset reading position only after explicit question navigation, never timer ticks or grading.
+  useEffect(() => {
+    if (phase !== "question" || !scrollToQuestionRef.current) return;
+    scrollToQuestionRef.current = false;
+    questionHeadingRef.current?.querySelector("h1")?.focus({ preventScroll: true });
+    questionHeadingRef.current?.scrollIntoView?.({ block: "start" });
+  }, [index, phase]);
 
   // Session not sampled yet (see the deferred-init note): render the loading shell. It matches the
   // page-level Suspense fallback so the static-HTML -> hydrated-shell transition is seamless, and it
@@ -400,7 +411,7 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId, reveal, retr
                 across a submit so the recorded choice stays visible and EDITABLE (initialChosen
                 pre-fills on a re-visit). Practice: the card re-renders into its read-only graded
                 state when `graded` is set - no remount needed. */}
-            <div className="practice-heading"><h1>{mode === "mock" ? (reveal ? "Study run." : "Full mock.") : mode === "drill" ? "Domain drill." : mode === "retry" ? "Retry missed questions." : "Quick practice."}</h1><span className="practice-number" aria-hidden="true">{String(index + 1).padStart(2, "0")}<small>/{questions.length}</small></span></div>
+            <div className="practice-heading" ref={questionHeadingRef}><h1 tabIndex={-1}>{mode === "mock" ? (reveal ? "Study run." : "Full mock.") : mode === "drill" ? "Domain drill." : mode === "retry" ? "Retry missed questions." : "Quick practice."}</h1><span className="practice-number" aria-hidden="true">{String(index + 1).padStart(2, "0")}<small>/{questions.length}</small></span></div>
             <QuestionCard
               key={q.id}
               question={q}

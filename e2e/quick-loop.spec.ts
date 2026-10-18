@@ -18,6 +18,10 @@ test("quick loop: answer two questions, see vendor-correct doc links, then exit"
     await expect(doclink).not.toContainText("AWS");
 
     await page.locator(".practice-actionbar button.btn-primary").click(); // Next question
+    await expect(page.getByRole("heading", { level: 1 })).toBeFocused();
+    const heading = await page.getByRole("heading", { level: 1 }).boundingBox();
+    const bar = await page.locator(".exambar").boundingBox();
+    expect(heading!.y).toBeGreaterThanOrEqual(bar!.y + bar!.height);
   }
 
   await page.locator("a.exit").click();

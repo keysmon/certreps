@@ -190,7 +190,7 @@ body.industrial-shell { padding-left:var(--workspace-width); }
 /* Keep the real engine, including timers, multi-select, flags and review navigation. */
 .industrial-shell .stage { max-width:1180px; padding:30px 40px 100px; }
 .industrial-shell .mode-note { text-transform:uppercase; font-size:10px; letter-spacing:.06em; color:var(--gold); margin-bottom:15px; }
-.practice-heading { display:flex; align-items:center; justify-content:space-between; gap:20px; border-bottom:5px solid var(--line-strong); padding-bottom:23px; margin-bottom:28px; }
+.practice-heading { scroll-margin-top:112px; display:flex; align-items:center; justify-content:space-between; gap:20px; border-bottom:5px solid var(--line-strong); padding-bottom:23px; margin-bottom:28px; }
 .practice-heading h1 { font:600 clamp(32px,4.5vw,58px)/1.05 var(--font-display); letter-spacing:-.05em; margin:0; }
 .practice-number { font:44px/1 var(--font-mono); letter-spacing:-.08em; flex-shrink:0; }
 .practice-number small { font-size:12px; color:var(--faint); letter-spacing:-.05em; margin-left:5px; }
@@ -246,7 +246,7 @@ body.industrial-shell { padding-left:var(--workspace-width); }
  .industrial-shell .exambar .switcher { max-width:320px; flex:1 1 200px; }
  .industrial-shell .pbar-wrap { flex:1 1 160px; }
 }
-@media(max-width:760px) {
+@media(max-width:760px), (max-height:500px) and (pointer:coarse) {
  :root,:root[data-theme] { --workspace-width:0px; --workspace-top:60px; }
  body.industrial-shell { padding-left:0; }
  .workspace-rail { display:none; }
@@ -312,7 +312,59 @@ body.industrial-shell { padding-left:var(--workspace-width); }
 .industrial-shell .li-loop { background:var(--gold-fill); color:var(--on-gold-fill); font:700 12px/1 var(--font-mono); }
 .industrial-shell .ct-seg2 { flex-wrap:wrap; max-width:100%; }
 .industrial-shell .ct-grid { grid-template-columns:repeat(auto-fill,minmax(min(100%,280px),1fr)); }
-@media(max-width:760px) { .industrial-shell .ct-wrap-v2 { padding:30px 20px 70px; } }
+@media(max-width:760px), (max-height:500px) and (pointer:coarse) { .industrial-shell .ct-wrap-v2 { padding:30px 20px 70px; } }
 
 .result-masthead { scroll-margin-top: 24px; }
-@media (max-width: 760px) { .result-masthead { scroll-margin-top: 84px; } }
+@media (max-width: 760px), (max-height:500px) and (pointer:coarse) { .result-masthead { scroll-margin-top: 84px; } }
+
+/* Phone chrome stays compact; safe areas follow Safari as its toolbars change. */
+@media (max-width:760px), (max-height:500px) and (pointer:coarse) {
+ :root,:root[data-theme] {
+  --safe-top:env(safe-area-inset-top,0px);
+  --safe-bottom:env(safe-area-inset-bottom,0px);
+  --phone-left:max(20px,env(safe-area-inset-left,0px));
+  --phone-right:max(20px,env(safe-area-inset-right,0px));
+  --workspace-top:calc(56px + var(--safe-top));
+ }
+ .workspace-mobile { height:var(--workspace-top); padding:var(--safe-top) var(--phone-right) 0 var(--phone-left); }
+ .workspace-mobile nav { top:100%; padding-left:var(--phone-left); padding-right:var(--phone-right); max-height:calc(100dvh - var(--workspace-top)); overflow-y:auto; }
+ .workspace-menu-toggle { min-height:44px; min-width:84px; }
+ .industrial-shell .tn-bar { padding:8px var(--phone-right) 8px var(--phone-left); min-height:60px; flex-wrap:nowrap; }
+ .industrial-shell .tn-local-nav { display:none; }
+ .industrial-shell .tn-bar .sw-trigger { max-width:none; min-width:0; flex:1; min-height:44px; }
+ .industrial-shell :is(.tn-signin,.tn-menu-item) { display:flex; align-items:center; min-height:44px; }
+ .industrial-shell .tn-avatar { width:44px; height:44px; }
+ .industrial-shell :is(.btn,.mapcell,.jumplink,.ct-seg2 button) { min-height:44px; }
+ .industrial-shell .stage { padding:20px var(--phone-right) calc(100px + var(--safe-bottom)) var(--phone-left); }
+ .industrial-shell .exambar { padding:8px var(--phone-right) 8px var(--phone-left); gap:6px 10px; }
+ .industrial-shell .exambar .switcher { flex:1 1 0; min-width:0; padding:0; }
+ .industrial-shell .exambar .sc-name { font-size:12px; }
+ .industrial-shell .exambar .exit { display:inline-flex; align-items:center; justify-content:center; min-width:44px; min-height:44px; }
+ .industrial-shell .exambar .timer { font-size:14px; }
+ .industrial-shell .exambar .exam-review { padding:8px; font-size:12px; }
+ .industrial-shell .pbar-wrap { order:4; flex:1 0 100%; max-width:none; margin:0; }
+ .industrial-shell .practice-heading { scroll-margin-top:calc(var(--workspace-top) + 112px); }
+ .industrial-shell .qstem { font-size:18px; line-height:1.6; overflow-wrap:anywhere; }
+ .industrial-shell .qcard > .options .option { min-height:56px; font-size:16px; }
+ .industrial-shell .practice-actionbar-inner { padding:12px var(--phone-right) calc(12px + var(--safe-bottom)) var(--phone-left); }
+ .industrial-shell .stage:has(.practice-actionbar) { padding-bottom:calc(140px + var(--safe-bottom)); }
+ .industrial-shell .mapgrid { grid-template-columns:repeat(auto-fill,minmax(44px,1fr)); }
+ .industrial-shell .footbar { flex-wrap:wrap; }
+ .industrial-shell .footbar .btn { flex:1; justify-content:center; }
+ .industrial-shell :is(input,select,textarea),
+ .industrial-shell .li-form input,.industrial-shell .ct-search-v2 input { font-size:16px; }
+ .industrial-shell .doclink { display:inline-flex; align-items:center; min-height:44px; }
+ .industrial-shell .st-switch,.industrial-shell .st-switch.on { width:56px; height:44px; border:0; background:transparent; }
+ .industrial-shell .st-switch::before { content:""; position:absolute; inset:9px 0; border-radius:20px; border:1px solid var(--line-strong); background:var(--panel-3); }
+ .industrial-shell .st-switch::after { top:12px; left:3px; }
+ .industrial-shell .st-switch.on::before { background:var(--gold-soft); border-color:var(--gold-dim); }
+ .industrial-shell .st-switch.on::after { left:33px; }
+ .industrial-shell .result-actions { display:grid; grid-template-columns:1fr; }
+ .industrial-shell .result-actions .btn { justify-content:center; text-align:center; min-height:48px; }
+ .industrial-shell .recap-collapse > summary { flex-wrap:wrap; gap:8px !important; }
+ .industrial-shell .pg-stat { min-width:0; padding:20px 14px; }
+ .industrial-shell .pg-stat:nth-child(2) { border-right:0; }
+ .industrial-shell :is(.pg-wrap,.st-wrap,.ct-wrap-v2,.cd-wrap,.lp-wrap,.container) { padding-left:var(--phone-left); padding-right:var(--phone-right); }
+ .industrial-shell .li-form { padding-left:20px; padding-right:20px; }
+ .industrial-shell footer.site { padding-bottom:calc(24px + var(--safe-bottom)); }
+}
