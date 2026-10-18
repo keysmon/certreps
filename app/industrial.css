@@ -368,3 +368,38 @@ body.industrial-shell { padding-left:var(--workspace-width); }
  .industrial-shell .li-form { padding-left:20px; padding-right:20px; }
  .industrial-shell footer.site { padding-bottom:calc(24px + var(--safe-bottom)); }
 }
+
+/* During phone tests, use one toolbar instead of stacked site and exam headers. */
+.exam-review-short { display:none; }
+@media (max-width:760px), (max-height:500px) and (pointer:coarse) {
+ body.industrial-shell:has(.exambar) .workspace-mobile:not(.practice-menu),
+ body.industrial-shell:has(.exambar) .tn-bar { display:none; }
+ .industrial-shell .exambar {
+  top:0; flex-wrap:nowrap; min-height:calc(56px + var(--safe-top));
+  padding-top:calc(6px + var(--safe-top)); padding-bottom:6px; gap:8px;
+ }
+ .industrial-shell .exambar > .switcher,.industrial-shell .exambar .pbar { display:none; }
+ .industrial-shell .exambar .pbar-wrap { order:0; flex:1; margin:0; min-width:0; }
+ .industrial-shell .exambar .exam-review { padding:8px; }
+ .industrial-shell .exam-review-full { display:none; }
+ .industrial-shell .exam-review-short { display:inline; }
+ .industrial-shell .practice-menu {
+  position:static; display:flex; flex:0 0 auto; height:44px; padding:0; background:transparent;
+ }
+ .industrial-shell .practice-menu .workspace-menu-toggle { min-width:64px; padding:6px 8px; color:var(--text); background:var(--panel); border-color:var(--line-strong); }
+ .industrial-shell .practice-menu .workspace-menu-toggle > span { margin-left:6px; }
+ .industrial-shell .practice-menu nav { top:100%; max-height:calc(100dvh - 56px - var(--safe-top)); }
+ .industrial-shell .stage { padding-top:16px; }
+ .industrial-shell .mode-note { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
+ .industrial-shell .practice-heading { border:0; padding:0; margin:0 0 12px; scroll-margin-top:calc(64px + var(--safe-top)); }
+ .industrial-shell .practice-heading h1 { font-size:16px; line-height:1.4; letter-spacing:0; }
+ .industrial-shell .practice-number { display:none; }
+ .industrial-shell .qmeta { margin-bottom:10px; }
+}
+
+@media (max-width:359px) {
+ .industrial-shell .exambar { padding-left:16px; padding-right:16px; gap:6px; }
+ .industrial-shell .exambar .pcount,.industrial-shell .exambar .exam-review { font-size:11px; }
+ .industrial-shell .exambar .timer { font-size:12px; }
+ .industrial-shell .practice-menu .workspace-menu-toggle { min-width:56px; }
+}

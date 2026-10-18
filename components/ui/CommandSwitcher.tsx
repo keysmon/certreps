@@ -1,5 +1,6 @@
 "use client";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import { listCerts } from "@/lib/certs";
 import { certPath } from "@/lib/routes";
@@ -110,8 +111,7 @@ export function CommandSwitcher() {
   }, []);
   const closeSwitcher = useCallback(() => setOpen(false), []);
 
-  // Component-scoped global toggle. Absent from the practice engine (which never mounts TopNav),
-  // so this listener can never reach the exam keyboard.
+  // Keep the global shortcut available even when compact phone chrome hides its trigger.
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
@@ -131,7 +131,11 @@ export function CommandSwitcher() {
   // Focus into the input on open; return focus to the trigger on close.
   useEffect(() => {
     if (open) inputRef.current?.focus();
-    else if (wasOpen.current) triggerRef.current?.focus();
+    else if (wasOpen.current) {
+      const phoneMenu = document.querySelector<HTMLButtonElement>(".practice-menu .workspace-menu-toggle");
+      if (triggerRef.current?.getClientRects().length === 0 && phoneMenu) phoneMenu.focus();
+      else triggerRef.current?.focus();
+    }
     wasOpen.current = open;
   }, [open]);
 
@@ -246,7 +250,7 @@ export function CommandSwitcher() {
         <span className="sw-switch" aria-hidden="true">Switch {CHEV}</span>
       </button>
 
-      {open && (
+      {open && createPortal(
         <div
           className="sw-overlay"
           onClick={(e) => {
@@ -322,7 +326,8 @@ export function CommandSwitcher() {
               </span>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );

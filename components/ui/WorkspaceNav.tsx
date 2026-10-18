@@ -11,7 +11,7 @@ const LINKS = [
 ];
 
 /** Shared navigation is presentation-only; account and practice state stay in their existing owners. */
-export function WorkspaceNav() {
+export function WorkspaceNav({ practice = false }: { practice?: boolean }) {
   const pathname = usePathname() ?? "/";
   const [open, setOpen] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
@@ -23,16 +23,16 @@ export function WorkspaceNav() {
   const links = LINKS.map(link => <Link key={link.href} href={link.href} aria-current={active(link.href) ? "page" : undefined} onClick={() => setOpen(false)}><span aria-hidden="true">{link.index}</span>{link.label}<span className="workspace-nav-arrow" aria-hidden="true">{String.fromCharCode(8599)}</span></Link>);
   const brand = <><span className="workspace-mark" aria-hidden="true">CR</span><span>certreps</span></>;
   return <>
-    <aside className="workspace-rail">
+    {!practice && <aside className="workspace-rail">
       <Link href="/" aria-label="CertReps home" className="workspace-brand">{brand}</Link>
       <p className="workspace-edition">CERTIFICATION<br />PRACTICE SYSTEM</p>
       <nav aria-label="Workspace navigation">{links}</nav>
       <div className="workspace-rail-foot"><span aria-hidden="true" /> ORIGINAL QUESTIONS<br />INDEPENDENT STUDY RESOURCE</div>
-    </aside>
-    <header className="workspace-mobile" onKeyDown={event => { if (event.key === "Escape") { setOpen(false); toggleRef.current?.focus(); } }}>
-      <Link href="/" aria-label="CertReps home" className="workspace-brand">{brand}</Link>
-      <button ref={toggleRef} type="button" className="workspace-menu-toggle" aria-label={open ? "Close navigation" : "Open navigation"} aria-expanded={open} aria-controls="workspace-mobile-menu" onClick={() => setOpen(o => !o)}>Menu <span aria-hidden="true">{open ? "-" : "+"}</span></button>
-      <nav id="workspace-mobile-menu" aria-label="Mobile workspace navigation" hidden={!open}>{links}</nav>
+    </aside>}
+    <header className={`workspace-mobile${practice ? " practice-menu" : ""}`} onKeyDown={event => { if (event.key === "Escape") { setOpen(false); toggleRef.current?.focus(); } }}>
+      {!practice && <Link href="/" aria-label="CertReps home" className="workspace-brand">{brand}</Link>}
+      <button ref={toggleRef} type="button" className="workspace-menu-toggle" aria-label={open ? "Close navigation" : "Open navigation"} aria-expanded={open} aria-controls={practice ? "practice-mobile-menu" : "workspace-mobile-menu"} onClick={() => setOpen(o => !o)}>Menu <span aria-hidden="true">{open ? "-" : "+"}</span></button>
+      <nav id={practice ? "practice-mobile-menu" : "workspace-mobile-menu"} aria-label="Mobile workspace navigation" hidden={!open}>{links}</nav>
     </header>
   </>;
 }

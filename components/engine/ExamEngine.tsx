@@ -10,6 +10,7 @@ import { QuestionCard } from "./QuestionCard";
 import { Timer } from "./Timer";
 import { Results } from "./Results";
 import { ReviewMap } from "./ReviewMap";
+import { WorkspaceNav } from "@/components/ui/WorkspaceNav";
 import { VendorDot, VENDORS } from "@/components/ui/VendorDot";
 import { certPath, practicePath, resumeParams } from "@/lib/routes";
 import "./engine.css";
@@ -344,12 +345,14 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId, reveal, retr
           <button
             type="button"
             className="btn btn-primary btn-sm exam-review"
+            aria-label="Review & submit"
             onClick={() => { if (!finishedRef.current) setPhase("review"); }}
           >
-            Review &amp; submit
+            <span className="exam-review-full">Review &amp; submit</span><span className="exam-review-short" aria-hidden="true">Review</span>
           </button>
         )}
         <a className="exit" href={certPath(meta)}>Exit {TIMES}</a>
+        <WorkspaceNav practice />
       </div>
 
       <div className="stage">

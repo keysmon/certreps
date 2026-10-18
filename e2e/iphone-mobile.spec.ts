@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { getPracticeBank } from "../lib/bank";
 
-for (const viewport of [{ width: 430, height: 740 }, { width: 932, height: 430 }]) {
+for (const viewport of [{ width: 320, height: 568 }, { width: 375, height: 667 }, { width: 430, height: 740 }, { width: 932, height: 430 }]) {
   test(`iPhone pages and touch controls at ${viewport.width}px`, async ({ page }) => {
     await page.setViewportSize(viewport);
     for (const path of ["/", "/catalog", "/aws/aip-c01", "/account", "/settings", "/login", "/guides/aip-c01/exam-week-rapid-review"]) {
@@ -42,7 +42,18 @@ for (const viewport of [{ width: 430, height: 740 }, { width: 932, height: 430 }
     await expect(page.locator("button.option").first()).toBeVisible();
     await page.screenshot({ path: `/tmp/certreps-iphone-question-${viewport.width}.png`, fullPage: true });
     const bar = await page.locator(".exambar").boundingBox();
-    expect(bar!.height).toBeLessThanOrEqual(100);
+    expect(bar!.height).toBeLessThanOrEqual(60);
+    const menuButton = page.getByRole("button", { name: "Open navigation", exact: true });
+    expect(await menuButton.evaluate(el => getComputedStyle(el).color)).toBe(await page.locator("body").evaluate(el => getComputedStyle(el).color));
+    await expect(page.locator(".tn-bar")).not.toBeVisible();
+    await expect(page.locator(".workspace-mobile:not(.practice-menu)")).not.toBeVisible();
+    expect((await page.locator(".qstem").boundingBox())!.y).toBeLessThanOrEqual(165);
+    await page.getByRole("button", { name: "Open navigation", exact: true }).click();
+    const menu = page.getByRole("navigation", { name: "Mobile workspace navigation" });
+    await expect(menu.getByRole("link", { name: /Certifications/ })).toBeVisible();
+    await expect(menu.getByRole("link", { name: /My progress/ })).toBeVisible();
+    await expect(menu.getByRole("link", { name: /Settings/ })).toBeVisible();
+    await page.getByRole("button", { name: "Close navigation", exact: true }).click();
     const stem = await page.locator(".qstem").boundingBox();
     const choices = await page.locator(".qcard > .options").boundingBox();
     expect(choices!.y).toBeGreaterThanOrEqual(stem!.y + stem!.height);
@@ -68,14 +79,14 @@ for (const viewport of [{ width: 430, height: 740 }, { width: 932, height: 430 }
   });
 }
 
-for (const viewport of [{ width: 430, height: 740 }, { width: 932, height: 430 }]) {
+for (const viewport of [{ width: 320, height: 568 }, { width: 375, height: 667 }, { width: 430, height: 740 }, { width: 932, height: 430 }]) {
   test(`iPhone mock review and results at ${viewport.width}px`, async ({ page }) => {
     await page.setViewportSize(viewport);
     await page.goto("/aws/aip-c01/practice?mode=mock");
     await expect(page.getByRole("timer")).toBeVisible();
     const review = page.getByRole("button", { name: "Review & submit", exact: true });
     expect((await review.boundingBox())!.height).toBeGreaterThanOrEqual(44);
-    expect((await page.locator(".exambar").boundingBox())!.height).toBeLessThanOrEqual(112);
+    expect((await page.locator(".exambar").boundingBox())!.height).toBeLessThanOrEqual(60);
     await review.click();
     const jump = page.getByRole("button", { name: /Go to question 2, unanswered/, exact: false });
     expect((await jump.boundingBox())!.width).toBeGreaterThanOrEqual(44);
@@ -98,3 +109,14 @@ for (const viewport of [{ width: 430, height: 740 }, { width: 932, height: 430 }
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   });
 }
+
+test("phone keyboard certification switcher remains visible with compact chrome", async ({ page }) => {
+  await page.setViewportSize({ width: 430, height: 740 });
+  await page.goto("/aws/aip-c01/practice?mode=quick");
+  await expect(page.locator(".qstem")).toBeVisible();
+  await page.keyboard.press("Control+k");
+  await expect(page.getByRole("dialog")).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("dialog")).not.toBeVisible();
+  await expect(page.getByRole("button", { name: "Open navigation", exact: true })).toBeFocused();
+});
