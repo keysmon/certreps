@@ -47,6 +47,8 @@ export function AuthButton() {
   // The login page IS the sign-in call to action - a second "Sign in" strip above it is noise.
   if (pathname === "/login" && !session) return null;
 
+  // These learning surfaces mount TopNav (or the compact incident toolbar).
+  if (pathname === "/learn" || (pathname && /^\/guides\/[^/]+\/[^/]+$/.test(pathname)) || (pathname && new RegExp(`^/(${VENDOR_SEG})/[^/]+/(learn|incidents)(/[^/]+)?$`).test(pathname))) return null;
   if (loading) return null;
   if (sessionError) return <p role="alert" className="container muted">{sessionError}</p>;
 

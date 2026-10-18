@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import type { Attempt, CertMeta, Question } from "@/lib/types";
+import { FirstAnswerPerformance } from "@/components/FirstAnswerPerformance";
 import { AnswerLearning } from "./AnswerLearning";
 import { gradeAttempt } from "@/lib/scoring";
 import { HEAVY_PAUSE_THRESHOLD, domainVerdict, type Verdict } from "@/lib/readiness";
@@ -111,6 +112,7 @@ export function Results({ attempt, questions, meta }: { attempt: Attempt; questi
       </div>
       {wrongCount > 0 && <p className="result-note">Missed questions include incorrect and unanswered questions. Retry includes only active questions from this session.</p>}
 
+      <FirstAnswerPerformance meta={meta} attempt={attempt} />
       {!isDrill && domainRows.length > 0 && <div className="panel result-breakdown"><DomainBars title="Performance by domain" rows={domainRows} /></div>}
       {needsPractice.length > 0 && (
         <section className="result-recommendations" aria-label="Suggested practice">

@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createAttempt, saveAttempt, getAttempt, listAttempts, recordResult, finishAttempt, missedQuestionIds, getInProgress, listInProgress, discardAttempt, saveProgress } from "./storage";
 
 beforeEach(() => localStorage.clear());
@@ -155,4 +155,30 @@ it("keeps a finished attempt sealed against a stale tab recording or finishing i
   recordResult(a.attemptId, { questionId: "q1", chosen: [1], correct: true, flagged: false });
   finishAttempt(a.attemptId, 600, 4);
   expect(getAttempt(a.attemptId)).toEqual(sealed);
+});
+
+
+describe("first answer timestamps", () => {
+  it("timestamps the first nonempty answer and preserves it on flags and overwrites", () => {
+    const a = createAttempt("cert", "quick", ["q1"]); saveAttempt(a);
+    const r = { questionId: "q1", chosen: [], correct: false, flagged: true };
+    recordResult(a.attemptId, r);
+    expect(getAttempt(a.attemptId)!.results.q1).not.toHaveProperty("answeredAt");
+    const now = vi.spyOn(Date, "now").mockReturnValue(a.startedAt + 100);
+    try {
+      recordResult(a.attemptId, { ...r, chosen: [0] });
+      expect(getAttempt(a.attemptId)!.results.q1.answeredAt).toBe(a.startedAt + 100);
+      now.mockReturnValue(a.startedAt + 200);
+      recordResult(a.attemptId, { ...r, chosen: [1], correct: true });
+      expect(getAttempt(a.attemptId)!.results.q1.answeredAt).toBe(a.startedAt + 100);
+      recordResult(a.attemptId, { ...r, chosen: [1], flagged: false });
+      expect(getAttempt(a.attemptId)!.results.q1.answeredAt).toBe(a.startedAt + 100);
+    } finally { now.mockRestore(); }
+  });
+  it("does not invent timestamps when updating existing legacy answers", () => {
+    const a = createAttempt("cert", "quick", ["q1"]);
+    a.results.q1 = { questionId: "q1", chosen: [0], correct: false, flagged: false }; saveAttempt(a);
+    recordResult(a.attemptId, { ...a.results.q1, chosen: [1], answeredAt: Date.now(), flagged: true });
+    expect(getAttempt(a.attemptId)!.results.q1).not.toHaveProperty("answeredAt");
+  });
 });

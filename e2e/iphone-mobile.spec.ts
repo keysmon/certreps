@@ -1,5 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { getPracticeBank } from "../lib/bank";
+import { listIncidents } from "../lib/incidents";
 
 for (const viewport of [{ width: 320, height: 568 }, { width: 375, height: 667 }, { width: 430, height: 740 }, { width: 932, height: 430 }]) {
   test(`iPhone pages and touch controls at ${viewport.width}px`, async ({ page }) => {
@@ -151,4 +152,15 @@ test("long service actions wrap in narrow phone answer review", async ({ page })
   await page.goto("/account/attempts/long-service-action");
   await page.getByRole("button", { name: "Review 1 missed question", exact: true }).click();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});
+
+for(const viewport of [{width:375,height:667},{width:430,height:740},{width:932,height:430}])test(`optional incident checkpoints fit mobile at ${viewport.width}px`,async({page})=>{
+ const incident=listIncidents()[1];await page.setViewportSize(viewport);await page.goto("/aws/aip-c01/incidents");expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.goto(`/aws/aip-c01/incidents/${incident.id}`);await expect(page.locator(".incident-toolbar")).toBeVisible();expect((await page.locator(".incident-toolbar").boundingBox())!.height).toBeLessThanOrEqual(62);
+ for(let i=0;i<3;i++){
+ const step=incident.steps[i];await page.getByRole("radio").nth(step.correct).click();const check=page.getByRole("button",{name:"Check answer",exact:true});await expect(check).toBeInViewport();expect((await check.boundingBox())!.height).toBeGreaterThanOrEqual(44);await check.click();await expect(page.getByRole("status")).toBeVisible();const next=page.getByRole("button",{name:i===2?"View debrief":"Next checkpoint",exact:true});await expect(next).toBeInViewport();await next.click();expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);if(i<2){const heading=page.getByRole("heading",{name:incident.steps[i+1].prompt,exact:true});await expect(heading).toBeFocused();await expect(heading).toBeInViewport();}
+ }
+ await expect(page.getByRole("heading",{name:"Case complete.",exact:true})).toBeVisible();await expect(page.getByRole("button",{name:"Replay this case",exact:true})).toBeVisible();
+ const byDomain=new Map(getPracticeBank().map(q=>[q.domain,q]));const questions=[...byDomain.values()];const at=Date.now()-1000;
+ const saved={attemptId:"mobile-first-answer-fixture",certId:"aip-c01",mode:"quick",questionIds:questions.map(q=>q.id),results:Object.fromEntries(questions.map(q=>[q.id,{questionId:q.id,chosen:q.correct,correct:true,flagged:false,answeredAt:at+100}])),startedAt:at,finishedAt:at+500,elapsedSec:1,pauseCount:0};
+ await page.evaluate(saved=>localStorage.setItem("certreps.attempts.v1",JSON.stringify([saved])),saved);await page.goto("/aws/aip-c01");await expect(page.getByTestId("first-answer-score")).toContainText("5 / 5");await page.getByText("Domain breakdown and how this is counted",{exact:true}).click();expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
 });

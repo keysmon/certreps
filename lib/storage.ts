@@ -79,7 +79,14 @@ export function listAttempts(certId: string): Attempt[] {
 export function recordResult(attemptId: string, r: QuestionResult): void {
   const a = getAttempt(attemptId);
   if (!a || a.finishedAt !== null) return;
-  a.results[r.questionId] = r;
+  const previous = a.results[r.questionId];
+  const next = { ...r };
+  // This write boundary owns timestamps. Preserve legacy uncertainty rather than
+  // dating an older answer when a learner flags or edits it today.
+  delete next.answeredAt;
+  if (previous?.answeredAt !== undefined) next.answeredAt = previous.answeredAt;
+  else if (!previous?.chosen.length && r.chosen.length > 0) next.answeredAt = Date.now();
+  a.results[r.questionId] = next;
   saveAttempt(a);
 }
 

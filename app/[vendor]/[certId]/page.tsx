@@ -8,6 +8,7 @@ import type { CSSProperties } from "react";
 import { getPracticeBank } from "@/lib/bank";
 import aipReview from "@/content/aip-c01/review.json";
 import { getCert, listCerts } from "@/lib/certs";
+import { FirstAnswerPerformance } from "@/components/FirstAnswerPerformance";
 import { ExamDetails } from "@/components/ExamDetails";
 import { PathToReady } from "./CertDetailClient";
 import "./cert-detail.css";
@@ -89,6 +90,7 @@ export default async function CertPage({ params }: { params: Promise<{ vendor: s
         )}
 
         <section className="learning-panel"><h2>Want to learn the topics?</h2><p>Browse the curriculum and available lessons whenever you need them. You can start practicing directly.</p><Link className="btn btn-ghost" href={`/${meta.vendorSlug}/${certId}/learn`}>Explore curriculum</Link></section>
+        {certId === "aip-c01" && <section className="learning-panel"><h2>Try an incident challenge</h2><p>Inspect fictional logs and configurations, diagnose a cause, choose a fix, and verify it. Optional exercises with separate results.</p><Link className="btn btn-ghost" href="/aws/aip-c01/incidents">Explore incident challenges</Link></section>}
         <ExamDetails meta={meta} />
         <div style={eyebrow}>Your practice</div>
 
@@ -102,6 +104,7 @@ export default async function CertPage({ params }: { params: Promise<{ vendor: s
           domains={meta.domains.map((d) => ({ name: d.name, weightPct: d.weightPct }))}
         />
 
+        <FirstAnswerPerformance meta={meta} />
         <p style={{ textAlign: "center", fontFamily: "var(--font-mono)", fontSize: "11.5px", color: "var(--faint)", margin: "30px 0 0" }}>
           {meta.mockQuestionCount}-question mock {DOT} every answer explained with a docs link {DOT} last verified {meta.verified}
         </p>

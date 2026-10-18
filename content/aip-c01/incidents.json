@@ -1,0 +1,390 @@
+[
+  {
+    "id": "outdated-policy-retrieval",
+    "title": "The policy changed; the answer did not",
+    "domain": "Foundation Model Integration & Compliance",
+    "summary": "Synthetic incident: a support assistant cites an expired return window after a policy update. All identifiers and artifacts are fictional. Diagnose from the same evidence at each checkpoint.",
+    "minutes": 6,
+    "evidence": [
+      {
+        "label": "Source change record",
+        "body": "2026-10-17 09:00 UTC\nS3 source: policies/returns.txt\nReplaced revision 7 with revision 8.\nRevision 8: returns within 14 days.\nRevision 7: returns within 30 days."
+      },
+      {
+        "label": "Ingestion history",
+        "body": "Knowledge base: demo-policy-kb\nLast job: COMPLETE\nFinished: 2026-10-16 18:00 UTC\nNo later ingestion job recorded.\nApplication response cache: disabled."
+      },
+      {
+        "label": "Request trace",
+        "body": "2026-10-17 10:00 UTC\nQuery: What is the return window?\nRetrieved: revision=7, window=30 days\nGenerated: Returns are allowed within 30 days.\nCitation: policies/returns.txt"
+      }
+    ],
+    "steps": [
+      {
+        "id": "cause",
+        "prompt": "Cause: Which explanation best fits the source and retrieval timestamps?",
+        "options": [
+          "The model ignored a current 14-day passage.",
+          "The indexed content predates the source update.",
+          "The application served a cached generated response."
+        ],
+        "correct": 1,
+        "explanations": [
+          "The retrieved passage itself says 30 days; there is no evidence the model received the current 14-day passage.",
+          "The latest ingestion finished before the source replacement, and retrieval still returns revision 7. The citation identifies a document location, not proof of its current revision.",
+          "The trace records a fresh retrieval and explicitly disables the application response cache."
+        ]
+      },
+      {
+        "id": "fix",
+        "prompt": "Fix: Which change addresses this incident at the integration boundary?",
+        "options": [
+          "Sync the changed data source and make ingestion completion part of policy publication.",
+          "Lower temperature while keeping the current indexed content.",
+          "Fine-tune the generator on the old return-policy examples."
+        ],
+        "correct": 0,
+        "explanations": [
+          "An S3 object replacement and its indexed representation have separate lifecycles. Syncing incorporates source changes; a publication workflow should track ingestion status and document failures.",
+          "Temperature controls generation variability, not which source revision is indexed.",
+          "Training on old examples reinforces obsolete information and does not update the retrieval index."
+        ]
+      },
+      {
+        "id": "verify",
+        "prompt": "Verify: Which acceptance check provides the strongest evidence of recovery?",
+        "options": [
+          "Confirm that the replacement object exists in S3.",
+          "Confirm that the assistant includes a citation of any revision.",
+          "Inspect ingestion statistics, retrieve revision 8, then check the answer and citation against the 14-day policy."
+        ],
+        "correct": 2,
+        "explanations": [
+          "Source storage alone did not prevent this incident; it does not prove the updated content can be retrieved.",
+          "The failing answer already had a citation. A citation alone does not establish freshness or correctness.",
+          "Check the ingestion outcome and document failures, then test retrieval separately from generation. The revision and policy assertion establish that the updated source reaches the answer."
+        ]
+      }
+    ],
+    "debrief": "A grounded answer can faithfully repeat an obsolete source. Treat source publication, ingestion, retrieval freshness, and generated-answer checks as distinct parts of the content lifecycle. A completed job alone does not establish answer correctness.",
+    "sources": [
+      {
+        "label": "Amazon Bedrock: Sync a data source",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-managed-sync.html"
+      }
+    ],
+    "reviewedOn": "2026-10-18"
+  },
+  {
+    "id": "duplicated-tool-refund-retry",
+    "title": "One refund intent, two ledger entries",
+    "domain": "Implementation & Integration",
+    "summary": "Synthetic incident: an agent requests one refund, but a timeout is followed by two recorded refunds. The payment service and all identifiers are fictional; no real transaction is involved.",
+    "minutes": 6,
+    "evidence": [
+      {
+        "label": "Authorized tool input",
+        "body": "Tool: issue_refund\nApproved intent: demo-intent-42\nOrder: demo-order-17\nAmount: 1200 minor units\nOnly one refund was approved."
+      },
+      {
+        "label": "Application trace",
+        "body": "12:00:00 attempt=1 key=demo-try-A\n12:00:01 payment service commits demo-refund-A\n12:00:03 caller times out before response\n12:00:04 attempt=2 key=demo-try-B\n12:00:05 payment service commits demo-refund-B"
+      },
+      {
+        "label": "Adapter contract",
+        "body": "Application generates a new key on every attempt.\nPayment service deduplicates by key.\nLedger: two entries, each for 1200.\nAgent trace: one approved tool intent."
+      }
+    ],
+    "steps": [
+      {
+        "id": "cause",
+        "prompt": "Cause: What most directly explains the duplicate side effect?",
+        "options": [
+          "The model independently approved two refund intents.",
+          "The payment service committed nothing before the timeout.",
+          "The retry represented the same intent with a new deduplication key."
+        ],
+        "correct": 2,
+        "explanations": [
+          "The agent trace shows one approved intent. Two attempts do not imply two model approvals.",
+          "The service commit is recorded before the caller timeout; a timeout leaves the caller uncertain about the result.",
+          "The service treats different keys as different operations. The trace shows one intent crossing that boundary twice under different keys."
+        ]
+      },
+      {
+        "id": "fix",
+        "prompt": "Fix: Which adapter design best preserves the approved intent during retries?",
+        "options": [
+          "Ask the model to avoid duplicate refunds in its final response.",
+          "Persist one key per approved intent, reuse it on retries, and enforce durable deduplication at the side-effect service.",
+          "Increase the timeout and generate a fresh key if it still expires."
+        ],
+        "correct": 1,
+        "explanations": [
+          "Final response wording does not control whether the payment service performs a side effect.",
+          "The adapter should retain intent identity across attempts. The service must atomically coordinate deduplication with the effect, return the recorded outcome, and reject conflicting parameters for the same key.",
+          "A longer timeout can reduce uncertainty frequency but still permits the same duplicate when a response is lost."
+        ]
+      },
+      {
+        "id": "verify",
+        "prompt": "Verify: Which test exercises the failure boundary shown in the trace?",
+        "options": [
+          "Drop the response after commit, retry and send concurrent duplicates with the same intent key; assert one ledger entry and consistent results.",
+          "Check that the final assistant message mentions only one refund.",
+          "Retry only requests that fail before the payment service receives them."
+        ],
+        "correct": 0,
+        "explanations": [
+          "This reproduces an ambiguous timeout and races at the side-effect boundary. Also verify that a reused key with different parameters is rejected and a new approved intent gets its own key.",
+          "A singular sentence can hide two committed payments. The ledger and service outcomes are the relevant observations.",
+          "Pre-delivery failures do not exercise the observed case where the first side effect already committed."
+        ]
+      }
+    ],
+    "debrief": "A timeout is uncertainty about an outcome. Preserve business-intent identity across retries and enforce idempotency where the effect occurs. Review retention and reconciliation for late requests; an agent prompt or retry policy alone cannot provide that contract.",
+    "sources": [
+      {
+        "label": "Amazon Builders Library: Making retries safe with idempotent APIs",
+        "url": "https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/"
+      }
+    ],
+    "reviewedOn": "2026-10-18"
+  },
+  {
+    "id": "cross-user-retrieval-leak",
+    "title": "A private passage crossed the tenant boundary",
+    "domain": "AI Safety, Security & Governance",
+    "summary": "Synthetic incident: a document assistant returns a passage belonging to another tenant. The tenants, text and requests are fictional. Investigate the retrieval boundary before choosing a remedy.",
+    "minutes": 6,
+    "evidence": [
+      {
+        "label": "Authentication and access policy",
+        "body": "Verified caller tenant: demo-amber\nPolicy: private documents stay within tenant.\nApplication role can query a shared knowledge base.\nEach indexed chunk has tenant_id metadata."
+      },
+      {
+        "label": "Retrieval request and response",
+        "body": "Application Retrieve request:\nquery = shipping schedule\nmetadata filter = absent\nReturned chunk tenant_id = demo-violet\nText = Fictional shipment leaves Friday.\nGenerated answer includes that passage."
+      },
+      {
+        "label": "Application control path",
+        "body": "Caller JSON may contain tenant_id.\nServer does not use verified tenant in retrieval.\nResponse cache: disabled.\nSystem prompt: Only use the caller tenant documents."
+      }
+    ],
+    "steps": [
+      {
+        "id": "cause",
+        "prompt": "Cause: Which boundary failed according to these artifacts?",
+        "options": [
+          "The server retrieved shared private content without enforcing caller authorization scope.",
+          "The model bypassed the S3 bucket permissions to read another tenant directly.",
+          "The application replayed a cached response from a previous user."
+        ],
+        "correct": 0,
+        "explanations": [
+          "The role can query the shared store, but the request omits the caller scope. The unauthorized passage is present before generation; prompt instructions do not create a retrieval access boundary.",
+          "The trace shows the application retrieving a chunk, not the model making an independent S3 request.",
+          "The response cache is disabled and the trace identifies the returned retrieval chunk."
+        ]
+      },
+      {
+        "id": "fix",
+        "prompt": "Fix: Which application control best addresses the demonstrated path?",
+        "options": [
+          "Let the model infer a tenant filter from the query text.",
+          "Ask callers to send their tenant_id and trust that field.",
+          "Derive the permitted tenant from verified identity, enforce its explicit retrieval filter, and reject missing scope or unauthorized returned chunks."
+        ],
+        "correct": 2,
+        "explanations": [
+          "A model-generated filter is not a trusted authorization decision. Query text can be ambiguous or hostile.",
+          "An untrusted caller field permits a caller to select another tenant. Authorization must come from verified identity and server policy.",
+          "The server must enforce scope before content reaches generation and fail closed on invalid scope or chunk metadata. Validate metadata integrity; use separate stores when the required isolation calls for it."
+        ]
+      },
+      {
+        "id": "verify",
+        "prompt": "Verify: Which test suite most directly challenges this access boundary?",
+        "options": [
+          "Run benign questions and confirm that every answer contains a citation.",
+          "Use two tenant identities, forged tenant fields and missing metadata; inspect retrieved chunks and responses for unauthorized content.",
+          "Enable a harmful-content filter and confirm it allows shipment questions."
+        ],
+        "correct": 1,
+        "explanations": [
+          "A citation can point to unauthorized content. Benign wording does not test tenant isolation.",
+          "Exercise cross-tenant attempts and fail-closed paths using synthetic canary passages. Assert authorized retrieval still works and unauthorized chunks never enter the model context or response.",
+          "Content acceptability and document authorization are separate controls. An innocuous shipment passage can still be private."
+        ]
+      }
+    ],
+    "debrief": "Apply authorization before retrieval content reaches the model. Metadata filters are a mechanism that the application must populate from trusted identity and test; they are not an automatic tenant-isolation guarantee. Keep sensitive passages out of unauthorized contexts and logs.",
+    "sources": [
+      {
+        "label": "Amazon Bedrock: Manual metadata filtering",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-config.html"
+      }
+    ],
+    "reviewedOn": "2026-10-18"
+  },
+  {
+    "id": "latency-cost-surge",
+    "title": "The release that multiplied prompt work",
+    "domain": "Operational Efficiency & Optimization",
+    "summary": "Synthetic incident: latency and estimated token spend jump after an assistant release, despite steady traffic. Measurements and configuration are fictional application artifacts, not AWS price quotes.",
+    "minutes": 6,
+    "evidence": [
+      {
+        "label": "Before / after, same replay sample",
+        "body": "Requests per minute: 40 / 40\nModel and Region: unchanged\np95 end-to-end latency: 4 s / 13 s\nMean input tokens: 2500 / 19000\nMean output tokens: 300 / 310\nEstimated token spend/request: 1.0x / 6.4x"
+      },
+      {
+        "label": "Release configuration diff",
+        "body": "retrieved_chunks: 4 -> 24\nconversation_history: last 4 turns -> all turns\noutput_token_limit: unchanged\nStreaming: already enabled\nApplication response cache: disabled"
+      },
+      {
+        "label": "Trace breakdown, after release",
+        "body": "Retrieve: 220 ms; previously 210 ms\nModel invocation: 12 s; previously 3 s\nThrottled requests: 0\nAttempts per request: 1\nLong histories and appended context dominate input."
+      }
+    ],
+    "steps": [
+      {
+        "id": "cause",
+        "prompt": "Cause: Which diagnosis is best supported?",
+        "options": [
+          "A retry storm multiplied otherwise identical requests.",
+          "The release increased input context processed per invocation.",
+          "The vector query became the dominant latency component."
+        ],
+        "correct": 1,
+        "explanations": [
+          "The trace shows one attempt per request and steady request volume.",
+          "The configuration expands both retrieved context and history. Input tokens jump while output size, model and traffic remain similar; model time is the dominant changed component.",
+          "Retrieval time changes by only 10 ms; it does not explain the multi-second increase."
+        ]
+      },
+      {
+        "id": "fix",
+        "prompt": "Fix: Which first change targets the observed regression while retaining a quality constraint?",
+        "options": [
+          "Bound history and retrieved context, preserve relevant passages, and compare candidate settings against the prior release.",
+          "Increase the maximum output-token limit for every response.",
+          "Enable streaming again and leave the expanded context untouched."
+        ],
+        "correct": 0,
+        "explanations": [
+          "Token budgeting addresses the changed inputs. Select context limits using task-quality requirements; dropping useful evidence indiscriminately can make answers cheaper but wrong.",
+          "Output size is nearly unchanged. A larger limit does not address excessive input and can allow more output cost.",
+          "Streaming is already enabled. It can improve perceived responsiveness but does not remove the input-token work shown here."
+        ]
+      },
+      {
+        "id": "verify",
+        "prompt": "Verify: Which comparison demonstrates a useful improvement?",
+        "options": [
+          "Compare the monthly invoice before accounting for traffic changes.",
+          "Check one short prompt until it produces a fast first token.",
+          "Replay short and long sessions at matched load; compare p95 latency, input/output tokens, cost per successful task and grounded-answer quality."
+        ],
+        "correct": 2,
+        "explanations": [
+          "An aggregate bill mixes volume and workload composition with per-request efficiency.",
+          "One short prompt misses the long-history path and does not establish end-to-end latency or task quality.",
+          "Matched workloads isolate the change. Include retrieval quality, answer correctness and error rates so a token reduction is accepted only when the task still succeeds."
+        ]
+      }
+    ],
+    "debrief": "Locate the changed work before choosing an optimization. Track token usage, component latency and task quality together. Prompt caching may help supported models with reusable prefixes, but eligibility, cache hits and economics must be measured; it does not replace a context budget.",
+    "sources": [
+      {
+        "label": "Amazon Bedrock: Monitor the runtime endpoint",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/monitoring.html"
+      },
+      {
+        "label": "Amazon Bedrock: Prompt caching",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-caching.html"
+      }
+    ],
+    "reviewedOn": "2026-10-18"
+  },
+  {
+    "id": "evaluation-production-gap",
+    "title": "A green evaluation missed the live path",
+    "domain": "Testing, Validation & Troubleshooting",
+    "summary": "Synthetic incident: a RAG assistant scores well offline but gives wrong live answers for policy exceptions. The reports and ticket samples are fictional; use the artifacts to distinguish model quality from evaluation coverage.",
+    "minutes": 6,
+    "evidence": [
+      {
+        "label": "Offline evaluation report",
+        "body": "Dataset: 100 curated policy questions\nHarness injects a hand-selected reference passage.\nMetric: generated-answer faithfulness = 0.96\nNo live retriever is called.\nDataset includes no policy exceptions."
+      },
+      {
+        "label": "Synthetic production sample",
+        "body": "Reviewed 20 exception questions.\n15 answers are wrong against approved policy.\nIn all 15, required exception passage is absent from retrieved context.\nAnswers closely repeat general policy context.\nRetriever recently changed from 8 chunks to 2."
+      },
+      {
+        "label": "Acceptance requirements",
+        "body": "Correct exception handling is required.\nAnswers need current supporting evidence.\nRelease gate currently checks only offline faithfulness.\nProduction uses retrieval followed by generation."
+      }
+    ],
+    "steps": [
+      {
+        "id": "cause",
+        "prompt": "Cause: Why can the green offline score coexist with these live failures?",
+        "options": [
+          "Faithfulness proves that all live policy answers are correct.",
+          "The trace establishes that the generator always ignores retrieved text.",
+          "The harness bypasses retrieval and omits the failing question category; faithfulness alone misses the gap."
+        ],
+        "correct": 2,
+        "explanations": [
+          "Faithfulness concerns consistency with supplied context. It does not prove the context contains the necessary exception or represents live traffic.",
+          "The wrong answers closely repeat the general policy context, so this evidence does not establish ignored text.",
+          "The test supplies ideal passages and has no exceptions. Live traces lack required passages, while the gate measures only whether answers follow their context."
+        ]
+      },
+      {
+        "id": "fix",
+        "prompt": "Fix: Which release-gate change best addresses the demonstrated blind spot?",
+        "options": [
+          "Keep the ideal-context harness and raise its faithfulness threshold to 0.99.",
+          "Add held-out exception cases through the deployed retrieval-plus-generation path, with relevance/coverage and policy-correctness criteria.",
+          "Judge only whether answers have polished wording and at least one citation."
+        ],
+        "correct": 1,
+        "explanations": [
+          "A stricter threshold on the same harness still bypasses the retrieval step and absent question category.",
+          "The gate should exercise the actual pipeline and representative failure categories. Separate retrieval evidence from answer correctness so the team can localize regressions.",
+          "Fluent answers and citations can accompany missing exceptions. These signals do not establish policy correctness."
+        ]
+      },
+      {
+        "id": "verify",
+        "prompt": "Verify: What would provide the strongest evidence before widening the release?",
+        "options": [
+          "Compare old and candidate pipelines on held-out slices, inspect retrieved passages and human-reviewed answers, then monitor a bounded rollout against rollback thresholds.",
+          "Rerun the same curated prompts until the average score improves.",
+          "Accept the release once all model API calls return HTTP 200."
+        ],
+        "correct": 0,
+        "explanations": [
+          "Held-out comparisons challenge the coverage gap without selecting only successful examples. Slice-level quality and operational thresholds support a bounded decision; they do not guarantee future performance.",
+          "Repeatedly using the same ideal-context prompts does not exercise the observed production failure path.",
+          "An API success response establishes transport/service success, not retrieval completeness or an answer that follows approved policy."
+        ]
+      }
+    ],
+    "debrief": "Evaluate the system users encounter, and match each metric to the property it measures. Faithfulness can be high when required evidence is missing. Maintain representative held-out slices, separate retrieval and answer metrics, and use production feedback to update the evaluation set without erasing prior regressions.",
+    "sources": [
+      {
+        "label": "Amazon Bedrock: Evaluate RAG sources",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/evaluation-kb.html"
+      },
+      {
+        "label": "Amazon Bedrock: RAG evaluation metrics",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-evaluation-metrics.html"
+      }
+    ],
+    "reviewedOn": "2026-10-18"
+  }
+]

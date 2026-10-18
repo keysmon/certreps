@@ -229,3 +229,14 @@ describe("toRow / fromRow mapping", () => {
     expect(restored).not.toHaveProperty("started_at");
   });
 });
+
+
+it("round-trips optional answer timestamps through JSON results without changing legacy rows", () => {
+  const legacy = mk({ results: { q1: { questionId: "q1", chosen: [0], correct: true, flagged: false } } });
+  const precise = mk({ results: { q1: { ...legacy.results.q1, answeredAt: 1250 } } });
+  for (const attempt of [legacy, precise]) {
+    const serialized = JSON.parse(JSON.stringify(toRow(attempt, "user-1")));
+    expect(fromRow(serialized)).toEqual(attempt);
+  }
+  expect(fromRow(toRow(legacy, "user-1")).results.q1).not.toHaveProperty("answeredAt");
+});

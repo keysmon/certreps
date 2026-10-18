@@ -15,6 +15,7 @@ import { attemptLabel } from "@/lib/labels";
 import { gradeAttempt } from "@/lib/scoring";
 import { questionsByIds } from "@/lib/sampler";
 import { progressView, domainReadiness } from "@/lib/progress-view";
+import { FirstAnswerPerformance } from "@/components/FirstAnswerPerformance";
 import { ScoreRing } from "@/components/ui/ScoreRing";
 import { VendorDot, VENDORS } from "@/components/ui/VendorDot";
 import "./account.css";
@@ -220,6 +221,7 @@ function ContinueCard({ card }: { card: CardView }) {
             Details
           </Link>
         </div>
+        <FirstAnswerPerformance meta={card.meta} />
         {card.resumeExtras.length > 0 && (
           <ul className="pg-resume-more">
             {card.resumeExtras.map((ex) => (

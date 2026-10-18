@@ -72,6 +72,8 @@ export interface QuestionResult {
   chosen: number[];
   correct: boolean;
   flagged: boolean;
+  // First nonempty answer time; absent on legacy rows and unanswered flags.
+  answeredAt?: number;
 }
 
 export interface Attempt {

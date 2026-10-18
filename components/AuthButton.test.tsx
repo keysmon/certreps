@@ -174,3 +174,14 @@ describe("AuthButton sign-out failures", () => {
     expect(screen.getByRole("button", { name: /^sign out$/i })).toBeEnabled();
   });
 });
+
+it("does not duplicate the account controls on optional learning and incident routes", () => {
+  mockedAvailable.mockReturnValue(true);
+  mockedGetSupabase.mockReturnValue(fakeClient(sessionWith("ada@example.com")));
+  for (const route of ["/learn", "/aws/aip-c01/learn", "/guides/aip-c01/implementation-and-integration", "/aws/aip-c01/incidents", "/aws/aip-c01/incidents/duplicate-refund"]) {
+    mockedPathname.mockReturnValue(route);
+    const {container, unmount} = render(<AuthButton />);
+    expect(container).toBeEmptyDOMElement();
+    unmount();
+  }
+});
