@@ -3,6 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { getSupabase, supabaseAvailable } from "@/lib/supabase/client";
+import { resumeIncidentSyncAfterSignIn } from "@/lib/incident-store";
 import { resumeSyncAfterSignIn } from "@/lib/sync-runtime";
 import "./login.css";
 
@@ -68,6 +69,7 @@ export function LoginClient({ failed }: { failed: boolean }) {
       }
       if (data.session) {
         resumeSyncAfterSignIn();
+        resumeIncidentSyncAfterSignIn();
         router.push("/account?welcome=1");
         navigating = true;
         return;

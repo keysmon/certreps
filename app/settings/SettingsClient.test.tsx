@@ -10,6 +10,14 @@ import { readAll, writeAll } from "@/lib/storage";
 import type { Attempt } from "@/lib/types";
 import { queueUpsert, fullSync, _resetTimers } from "@/lib/sync-runtime";
 import { toRow } from "@/lib/sync";
+import { exportIncidentProgress, clearIncidentProgress, pauseAndDrainIncidentSync, finishIncidentSyncDeletion } from "@/lib/incident-store";
+
+vi.mock("@/lib/incident-store", () => ({
+  exportIncidentProgress: vi.fn(() => []),
+  clearIncidentProgress: vi.fn(),
+  pauseAndDrainIncidentSync: vi.fn().mockResolvedValue(undefined),
+  finishIncidentSyncDeletion: vi.fn(),
+}));
 
 // Session resolves through these two helpers (via useSession); mock the module so no browser
 // client is built and no auth network fires. Same idiom as AuthButton.test.
@@ -34,7 +42,7 @@ function fakeClient(session: Session | null) {
   const del = vi.fn(() => ({ eq }));
   const upsert = vi.fn((_row: unknown) => Promise.resolve({ error: null }));
   const select = vi.fn().mockResolvedValue({ data: [], error: null });
-  const from = vi.fn(() => ({ delete: del, upsert, select }));
+  const from = vi.fn((_table: string) => ({ delete: del, upsert, select }));
   const signOut = vi.fn<() => Promise<{ error: { message: string } | null }>>().mockResolvedValue({ error: null });
   const client = {
     from,
@@ -63,6 +71,8 @@ function attempt(): Attempt {
 
 beforeEach(() => {
   vi.clearAllMocks();
+  vi.mocked(exportIncidentProgress).mockReturnValue([]);
+  vi.mocked(pauseAndDrainIncidentSync).mockResolvedValue(undefined);
   localStorage.clear();
   _resetTimers();
 });
@@ -282,7 +292,7 @@ it("cancels queued sync before deleting while sign-out is still pending", async 
   queueUpsert({ ...attempt(), finishedAt: null });
   fireEvent.click(screen.getByRole("button", { name: "Delete" }));
   await vi.advanceTimersByTimeAsync(500);
-  expect(mocks.eq).toHaveBeenCalledTimes(1);
+  expect(mocks.eq).toHaveBeenCalledTimes(2);
   expect(screen.getByRole("button", { name: "Deleting..." })).toBeDisabled();
   fireEvent.click(screen.getByRole("button", { name: "Deleting..." }));
   expect(window.confirm).toHaveBeenCalledTimes(1);
@@ -305,7 +315,7 @@ it("waits for an issued sync write before deleting cloud rows", async () => {
   await userEvent.click(screen.getByRole("button", { name: "Delete" }));
   expect(mocks.eq).not.toHaveBeenCalled();
   finish({ error: null });
-  await waitFor(() => expect(mocks.eq).toHaveBeenCalledTimes(1));
+  await waitFor(() => expect(mocks.eq).toHaveBeenCalledTimes(2));
 });
 
 it("does not restore a delayed fullSync pull after Settings deletes local data", async () => {
@@ -339,6 +349,108 @@ it("keeps sync paused and reports a failed sign-out after deleting", async () =>
   await userEvent.click(screen.getByRole("button", { name: "Delete" }));
   await waitFor(() => expect(router.push).toHaveBeenCalledWith("/"));
   expect(alert).toHaveBeenCalledWith(expect.stringContaining("sign-out did not complete"));
+  queueUpsert(attempt());
+  await fullSync();
+  expect(mocks.upsert).not.toHaveBeenCalled();
+  expect(mocks.select).not.toHaveBeenCalled();
+});
+
+
+describe("incident data controls", () => {
+  async function downloadedJSON() {
+    let contents: BlobPart[] = [];
+    const NativeBlob = globalThis.Blob;
+    vi.stubGlobal("Blob", class extends NativeBlob {
+      constructor(parts: BlobPart[], options?: BlobPropertyBag) { super(parts, options); contents = parts; }
+    });
+    Object.defineProperty(URL, "createObjectURL", { value: vi.fn(() => "blob:export"), configurable: true });
+    Object.defineProperty(URL, "revokeObjectURL", { value: vi.fn(), configurable: true });
+    vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => {});
+    await userEvent.click(screen.getByRole("button", { name: "Export" }));
+    vi.unstubAllGlobals();
+    return JSON.parse(contents.join(""));
+  }
+
+  it("preserves the legacy attempt array when the current scope has no incidents", async () => {
+    mockedAvailable.mockReturnValue(false);
+    writeAll([attempt()]);
+    render(<SettingsClient />);
+    expect(await downloadedJSON()).toEqual([attempt()]);
+    expect(exportIncidentProgress).toHaveBeenCalledWith("guest");
+  });
+
+  it("exports a versioned payload with only the signed-in owner's incident scope", async () => {
+    mockedAvailable.mockReturnValue(true);
+    mockedGetSupabase.mockReturnValue(fakeClient(sessionWith("ada@example.com")).client);
+    const progress = [{ scope: "u1", runs: [{ incidentId: "case-1", runId: "run-1", contentVersion: "v1", answers: {}, cursor: 0, draft: 2, createdAt: "2026-10-18T00:00:00Z", updatedAt: "2026-10-18T00:00:00Z" }] }];
+    vi.mocked(exportIncidentProgress).mockReturnValue(progress as ReturnType<typeof exportIncidentProgress>);
+    writeAll([attempt()]);
+    render(<SettingsClient />);
+    await screen.findByText("ada@example.com");
+    expect(await downloadedJSON()).toEqual({ version: 2, attempts: [attempt()], incidentProgress: progress });
+    expect(exportIncidentProgress).toHaveBeenCalledWith("u1");
+  });
+
+  it("drains incident writes before deleting either cloud table and clearing incident caches", async () => {
+    mockedAvailable.mockReturnValue(true);
+    const mocks = fakeClient(sessionWith("ada@example.com"));
+    mockedGetSupabase.mockReturnValue(mocks.client);
+    let finish!: () => void;
+    vi.mocked(pauseAndDrainIncidentSync).mockImplementation(() => new Promise<void>((resolve) => { finish = resolve; }));
+    vi.spyOn(window, "confirm").mockReturnValue(true);
+    render(<SettingsClient />);
+    await screen.findByText("ada@example.com");
+    await userEvent.click(screen.getByRole("button", { name: "Delete" }));
+    expect(pauseAndDrainIncidentSync).toHaveBeenCalledTimes(1);
+    expect(mocks.eq).not.toHaveBeenCalled();
+    expect(clearIncidentProgress).not.toHaveBeenCalled();
+    finish();
+    await waitFor(() => expect(mocks.eq).toHaveBeenCalledTimes(2));
+    expect(mocks.from).toHaveBeenCalledWith("incident_progress");
+    expect(clearIncidentProgress).toHaveBeenCalledTimes(1);
+    expect(finishIncidentSyncDeletion).toHaveBeenCalledTimes(1);
+  });
+
+  it.each(["attempts", "incident_progress"])("reports a failed %s delete while still attempting both tables", async (table) => {
+    mockedAvailable.mockReturnValue(true);
+    const mocks = fakeClient(sessionWith("ada@example.com"));
+    mocks.from.mockImplementation((name: string) => ({
+      delete: vi.fn(() => ({ eq: vi.fn().mockResolvedValue({ error: name === table ? { message: "Offline" } : null }) })),
+      upsert: mocks.upsert, select: mocks.select,
+    }));
+    mockedGetSupabase.mockReturnValue(mocks.client);
+    vi.spyOn(window, "confirm").mockReturnValue(true);
+    vi.spyOn(console, "warn").mockImplementation(() => {});
+    const alert = vi.spyOn(window, "alert").mockImplementation(() => {});
+    render(<SettingsClient />);
+    await screen.findByText("ada@example.com");
+    await userEvent.click(screen.getByRole("button", { name: "Delete" }));
+    expect(mocks.from).toHaveBeenCalledWith("attempts");
+    expect(mocks.from).toHaveBeenCalledWith("incident_progress");
+    expect(alert).toHaveBeenCalledWith(expect.stringContaining("cloud data could not be deleted"));
+    expect(clearIncidentProgress).toHaveBeenCalledTimes(1);
+    expect(finishIncidentSyncDeletion).toHaveBeenCalledTimes(1);
+  });
+});
+
+
+it("finishes both deletion guards and preserves local data if an incident drain fails", async () => {
+  mockedAvailable.mockReturnValue(true);
+  const mocks = fakeClient(sessionWith("ada@example.com"));
+  mockedGetSupabase.mockReturnValue(mocks.client);
+  writeAll([attempt()]);
+  vi.mocked(pauseAndDrainIncidentSync).mockRejectedValue(new Error("Could not drain"));
+  vi.spyOn(window, "confirm").mockReturnValue(true);
+  const alert = vi.spyOn(window, "alert").mockImplementation(() => {});
+  render(<SettingsClient />);
+  await screen.findByText("ada@example.com");
+  await userEvent.click(screen.getByRole("button", { name: "Delete" }));
+  expect(alert).toHaveBeenCalledWith(expect.stringContaining("has not been deleted"));
+  expect(mocks.eq).not.toHaveBeenCalled();
+  expect(readAll()).toEqual([attempt()]);
+  expect(clearIncidentProgress).not.toHaveBeenCalled();
+  expect(finishIncidentSyncDeletion).toHaveBeenCalledTimes(1);
+  expect(screen.getByRole("button", { name: "Delete" })).toBeEnabled();
   queueUpsert(attempt());
   await fullSync();
   expect(mocks.upsert).not.toHaveBeenCalled();

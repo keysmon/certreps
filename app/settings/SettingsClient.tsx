@@ -6,6 +6,7 @@ import { getSupabase } from "@/lib/supabase/client";
 import { useSession } from "@/lib/supabase/useSession";
 import { readAll, clearAll } from "@/lib/storage";
 import { pauseAndDrainSync, finishSyncDeletion } from "@/lib/sync-runtime";
+import { exportIncidentProgress, clearIncidentProgress, pauseAndDrainIncidentSync, finishIncidentSyncDeletion } from "@/lib/incident-store";
 import { readPrefs, setPref, clearPrefs, type Prefs } from "@/lib/prefs";
 import { getTheme, setTheme, THEMES, THEME_LABELS, type Theme } from "@/lib/theme";
 import { initials } from "@/lib/initials";
@@ -43,8 +44,7 @@ const NOTIF_ROWS: NotifRow[] = [
 /**
  * Account & preferences. Session comes from the shared useSession hook (same subscription as
  * TopNav/AuthButton). Notification prefs persist to lib/prefs (certreps.prefs.v1); the sync row is
- * NOT a stored pref - it reflects whether a session enables background sync, not whether a sync succeeded. Export/Delete move here from the old
- * account page unchanged: export downloads the local store as JSON; delete removes cloud rows,
+ * NOT a stored pref - it reflects whether a session enables background sync, not whether a sync succeeded. Export downloads local attempts and the visible incident scope as JSON; delete removes cloud rows,
  * clears local data, signs out, and returns home (an honest alert if the cloud delete fails).
  */
 export function SettingsClient() {
@@ -90,9 +90,15 @@ export function SettingsClient() {
     showToast(`${THEME_LABELS[next]} theme on`);
   }
 
-  // Moved verbatim from the old account page: local store -> pretty JSON -> download.
+  // Keep legacy attempt-only exports compatible; incident exports include their owner scope.
   function onExport() {
-    const blob = new Blob([JSON.stringify(readAll(), null, 2)], { type: "application/json" });
+    if (loading || sessionError || deletingData) return;
+    const attempts = readAll();
+    const incidentProgress = exportIncidentProgress(session?.user.id ?? "guest");
+    const data = incidentProgress.some(({ runs }) => runs.length > 0)
+      ? { version: 2, attempts, incidentProgress }
+      : attempts;
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement("a");
     anchor.href = url;
@@ -107,23 +113,34 @@ export function SettingsClient() {
   // Pause this browser's background sync before deleting so old work cannot recreate rows.
   async function onDelete() {
     if (deleteInFlight.current || loading || sessionError || signingOut) return;
-    if (!window.confirm("Delete all your practice data from this device and the cloud? This cannot be undone.")) return;
+    if (!window.confirm("Delete all your practice attempts, incident cases and resume data from this device and your account in the cloud? This cannot be undone.")) return;
     deleteInFlight.current = true;
     setDeletingData(true);
     try {
-      await pauseAndDrainSync();
+      const drains = await Promise.allSettled([pauseAndDrainSync(), pauseAndDrainIncidentSync()]);
+      if (drains.some(result => result.status === "rejected")) {
+        window.alert("Could not safely pause data sync. Your data has not been deleted. Please reload and try again.");
+        return;
+      }
       const supabase = getSupabase();
       const userId = session?.user.id;
       try {
         if (supabase && userId) {
-          const { error } = await supabase.from("attempts").delete().eq("user_id", userId);
-          if (error) throw error;
+          const results = await Promise.allSettled(
+            ["attempts", "incident_progress"].map(async table => {
+              const { error } = await supabase.from(table).delete().eq("user_id", userId);
+              if (error) throw error;
+            }),
+          );
+          const failed = results.find(result => result.status === "rejected");
+          if (failed?.status === "rejected") throw failed.reason;
         }
       } catch (error) {
         console.warn("delete:", error);
         window.alert("Your cloud data could not be deleted right now - it may reappear when you next sign in. Local data was still cleared.");
       }
       clearAll();
+      clearIncidentProgress();
       clearPrefs();
       try {
         const result = await supabase?.auth.signOut();
@@ -135,6 +152,7 @@ export function SettingsClient() {
     } finally {
       // A failed sign-out must not restart uploads; only a later successful sign-in may do that.
       finishSyncDeletion();
+      finishIncidentSyncDeletion();
       deleteInFlight.current = false;
       setDeletingData(false);
     }
@@ -164,7 +182,7 @@ export function SettingsClient() {
         <h2>Account</h2>
         {loading ? <p className="cd">Checking your account...</p> : sessionError ? <p role="alert">{sessionError}</p> : session ? (
           <>
-            <p className="cd">Signed in. Completed attempts can sync across devices when connected.</p>
+            <p className="cd">Signed in. Completed attempts and incident case progress can sync across devices when connected.</p>
             <div className="st-row">
               <span className="st-avatar" aria-hidden="true">{initials(email)}</span>
               <div className="rt">
@@ -224,7 +242,7 @@ export function SettingsClient() {
           <div className="rt">
             <div className="rl">Sync progress across devices</div>
             <div className="rs">
-              {loading ? "Checking your account..." : sessionError ? "Account status unavailable." : session ? "On while signed in. Sync is best effort; this is not a sync confirmation. Finish in-progress drills on the device where you started them." : "Requires an account."}
+              {loading ? "Checking your account..." : sessionError ? "Account status unavailable." : session ? "On while signed in. Sync is best effort; this is not a sync confirmation. Incident cases show their own save status. Finish in-progress exam drills on the device where you started them." : "Requires an account."}
             </div>
           </div>
           <button
@@ -261,16 +279,16 @@ export function SettingsClient() {
         <div className="st-row">
           <div className="rt">
             <div className="rl">Export my data</div>
-            <div className="rs">Download practice attempts saved on this device as a JSON file.</div>
+            <div className="rs">Download device-saved attempts and your current account's incident case resume data (guest cases when signed out) as JSON.</div>
           </div>
-          <button type="button" className="btn btn-ghost btn-sm" onClick={onExport}>
+          <button type="button" className="btn btn-ghost btn-sm" onClick={onExport} disabled={loading || !!sessionError || deletingData}>
             Export
           </button>
         </div>
         <div className="st-row">
           <div className="rt">
             <div className="rl danger">Delete all my data</div>
-            <div className="rs">Deletes your practice data and preferences on this device, removes your cloud data, then signs you out. Cannot be undone.</div>
+            <div className="rs">Deletes practice attempts, incident cases, resume data and preferences on this device, removes your account's cloud practice data, then signs you out. Cannot be undone.</div>
           </div>
           <button type="button" className="btn btn-danger btn-sm" onClick={onDelete} disabled={loading || !!sessionError || signingOut || deletingData}>
             {deletingData ? "Deleting..." : "Delete"}

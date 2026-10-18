@@ -3,7 +3,7 @@ import {listIncidents} from "../lib/incidents";
 import {getPracticeBank} from "../lib/bank";
 const storageKey="certreps.attempts.v1";
 test("incident discovery remains optional and every case can be investigated without exam writes",async({page})=>{
- await page.goto("/aws/aip-c01");await expect(page.getByRole("link",{name:/Start practicing/})).toBeVisible();await page.getByRole("link",{name:"Explore incident challenges",exact:true}).click();await expect(page.getByRole("link",{name:"Investigate case",exact:true})).toHaveCount(5);
+ await page.goto("/aws/aip-c01");await expect(page.getByRole("link",{name:/Start practicing/})).toBeVisible();await page.getByRole("link",{name:"Explore incident challenges",exact:true}).click();await expect(page.getByRole("link",{name:"Start case",exact:true})).toHaveCount(5);
  const before=await page.evaluate(key=>localStorage.getItem(key),storageKey);
  for(const incident of listIncidents()){
  await page.goto(`/aws/aip-c01/incidents/${incident.id}`);
@@ -19,4 +19,12 @@ test("first-answer performance uses scored history without letting retakes or un
  const [q1,q2]=getPracticeBank().slice(0,2);const at=Date.now()-100000;
  const make=(id:string,start:number,correct:boolean,mode="quick",finishedAt:number|null=start+1000)=>({attemptId:id,certId:"aip-c01",mode,questionIds:[q1.id],results:{[q1.id]:{questionId:q1.id,chosen:[0],correct,flagged:false,answeredAt:start+100}},startedAt:start,finishedAt,elapsedSec:1,pauseCount:0});
  await page.goto("/aws/aip-c01");await page.evaluate(({key,attempts})=>localStorage.setItem(key,JSON.stringify(attempts)),{key:storageKey,attempts:[make("first-wrong",at,false),make("retry-correct",at+2000,true),{...make("unfinished-mock",at+4000,true,"mock",null),questionIds:[q2.id],results:{[q2.id]:{questionId:q2.id,chosen:[0],correct:true,flagged:false,answeredAt:at+4100}}}]});await page.reload();await expect(page.getByTestId("first-answer-score")).toContainText("0 / 1");await page.goto("/account");await expect(page.getByTestId("first-answer-score")).toContainText("0 / 1");
+});
+
+test("incident drafts, feedback and debrief survive reload and save-and-exit",async({page})=>{
+ const incident=listIncidents()[0];await page.goto(`/aws/aip-c01/incidents/${incident.id}`);await page.getByRole("radio").nth(1).click();await page.reload();await expect(page.getByRole("radio").nth(1)).toHaveAttribute("aria-checked","true");
+ await page.getByRole("button",{name:"Check answer",exact:true}).click();await page.reload();await expect(page.getByRole("status")).toBeVisible();await expect(page.getByRole("radio").nth(1)).toBeDisabled();
+ await page.getByRole("button",{name:"Next checkpoint",exact:true}).click();await page.getByRole("button",{name:"Save & exit",exact:true}).click();await expect(page).toHaveURL(/incidents$/);await page.getByRole("link",{name:"Resume case",exact:true}).click();await expect(page.getByRole("heading",{name:incident.steps[1].prompt,exact:true})).toBeVisible();
+ for(let i=1;i<3;i++){await page.getByRole("radio").nth(0).click();await page.getByRole("button",{name:"Check answer",exact:true}).click();await page.getByRole("button",{name:i===2?"View debrief":"Next checkpoint",exact:true}).click();}
+ await page.reload();await expect(page.getByRole("heading",{name:"Case complete.",exact:true})).toBeVisible();
 });
