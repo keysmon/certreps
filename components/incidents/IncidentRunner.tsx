@@ -34,7 +34,7 @@ export function IncidentRunner({incident}: {incident: Incident}) {
   function next() { if (run) void saved.save({...run,cursor:index+1,draft:null}); }
   function replay() { void saved.replay(); }
   async function exit() { if (await saved.flush()) router.push("/aws/aip-c01/incidents"); else setExitFailed(true); }
-  const saveLabel = saved.status === "loading" ? "Loading saved progress..." : saved.status === "saving" ? "Saving to account..." : saved.status === "synced" ? "Saved to your account" : saved.status === "device" ? "Saved on this device" : "Account sync unavailable";
+  const saveLabel = saved.status === "loading" ? "Loading saved progress..." : saved.status === "saving" ? "Saving to account..." : saved.status === "synced" ? "Saved to your account" : saved.status === "device" ? "Saved on this device" : !saved.run ? "Progress unavailable" : saved.account ? (saved.deviceSaved ? "Saved on this device; account sync unavailable" : "Account sync unavailable") : "Device save unavailable";
   return <div className="incident-stage">
     <header className="incident-toolbar"><span>{done ? "Debrief" : `Step ${index + 1} / ${incident.steps.length}`}</span><button type="button" className="incident-exit" onClick={exit}>Save &amp; exit</button><WorkspaceNav practice /></header>
     <main className="container incident-main" id="maincontent">

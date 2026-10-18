@@ -81,5 +81,5 @@ export function useIncidentProgress(incident: Incident) {
     await save(run);
   },[scope,incident,save]);
   const visible=sessionError ? {scope:null,run:null,status:"error" as const,message:sessionError} : view.scope===scope ? view : {scope,run:null,status:"loading" as const,message:null};
-  return {...visible,account:scope!==null&&scope!=="guest",save,replay,flush,retry:()=>setRetryCount(value=>value+1)};
+  return {...visible,deviceSaved:scope ? incidentDeviceSaved(scope) : false,account:scope!==null&&scope!=="guest",save,replay,flush,retry:()=>setRetryCount(value=>value+1)};
 }

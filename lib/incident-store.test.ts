@@ -21,7 +21,7 @@ it("does not let a delayed pre-save pull undo an acknowledged checkpoint or repl
  const run=newIncidentRun(listIncidents()[0]);writeIncidentRun("alice",run);let release!:(r:Response)=>void;
  vi.stubGlobal("fetch",vi.fn((url:string,init?:RequestInit)=>init?.method==="POST"?Promise.resolve(new Response(JSON.stringify({ownerId:"alice",run:JSON.parse(String(init.body)).run}))):new Promise<Response>(resolve=>{release=resolve;})));
  await flushIncidentRun("alice",run.incidentId);const pull=pullIncidentProgress("alice");const next={...run,answers:{"0":1},cursor:1};writeIncidentRun("alice",next);await flushIncidentRun("alice",run.incidentId);release(new Response(JSON.stringify({ownerId:"alice",runs:[run]})));await pull;expect(readIncidentRuns("alice")[0].cursor).toBe(1);
- const old=readIncidentRuns("alice")[0];const delayed=pullIncidentProgress("alice");const replay={...newIncidentRun(listIncidents()[0]),pendingReset:{expectedRunId:old.runId}};writeIncidentRun("alice",replay);await flushIncidentRun("alice",run.incidentId);release(new Response(JSON.stringify({ownerId:"alice",runs:[old]})));await delayed;expect(readIncidentRuns("alice")[0].runId).toBe(replay.runId);
+ const old=readIncidentRuns("alice")[0];const delayed=pullIncidentProgress("alice");const replay={...newIncidentRun(listIncidents()[0]),pendingReset:{expectedRunId:old.runId}};writeIncidentRun("alice",replay);await flushIncidentRun("alice",run.incidentId);writeIncidentRun("alice",{...readIncidentRuns("alice")[0],draft:1});release(new Response(JSON.stringify({ownerId:"alice",runs:[old]})));await delayed;expect(readIncidentRuns("alice")[0].runId).toBe(replay.runId);expect(readIncidentRuns("alice")[0].draft).toBe(1);
 });
 
 it("retargets a second replay when the first replay is acknowledged in flight",async()=>{
@@ -38,4 +38,10 @@ it("flushes choices and a checkpoint edited while the previous save is in flight
  vi.stubGlobal("fetch",vi.fn((_url:string,init:RequestInit)=>{const payload=JSON.parse(String(init.body));sent.push(payload.run);return sent.length===1?new Promise<Response>(resolve=>{release=resolve;}):Promise.resolve(new Response(JSON.stringify({ownerId:"alice",run:payload.run})));}));
  const saving=flushIncidentRun("alice",run.incidentId);await vi.waitFor(()=>expect(fetch).toHaveBeenCalledOnce());writeIncidentRun("alice",{...run,draft:1});writeIncidentRun("alice",{...run,answers:{"0":1},cursor:1,draft:2});release(new Response(JSON.stringify({ownerId:"alice",run})));await saving;
  expect(sent.at(-1)).toMatchObject({answers:{"0":1},cursor:1,draft:2});expect(readIncidentRuns("alice")[0]).toMatchObject({answers:{"0":1},cursor:1,draft:2});
+});
+
+it("accepts newer cloud checkpoints even when this device clock is ahead",async()=>{
+ const run={...newIncidentRun(listIncidents()[0]),updatedAt:"2099-01-01T00:00:00.000Z"};writeIncidentRun("alice",run);let release!:(r:Response)=>void;
+ vi.stubGlobal("fetch",vi.fn((_url:string,init?:RequestInit)=>init?.method==="POST"?new Promise<Response>(resolve=>{release=resolve;}):Promise.resolve(new Response(JSON.stringify({ownerId:"alice",runs:[{...run,answers:{"0":1},cursor:1,updatedAt:"2026-10-18T00:00:01.000Z"}]})))));
+ const save=flushIncidentRun("alice",run.incidentId);await vi.waitFor(()=>expect(fetch).toHaveBeenCalledOnce());writeIncidentRun("alice",run);release(new Response(JSON.stringify({ownerId:"alice",run:{...run,updatedAt:"2026-10-18T00:00:00.000Z"}})));await save;await pullIncidentProgress("alice");expect(readIncidentRuns("alice")[0].cursor).toBe(1);
 });

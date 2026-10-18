@@ -105,8 +105,7 @@ export async function pullIncidentProgress(scope: string): Promise<IncidentRun[]
   for (const value of payload.runs) {
     const cloud = parseIncidentRun(value); if (!cloud) continue;
     const local = entries(scope).find(entry => entry.run.incidentId === cloud.incidentId);
-    if (local && !local.dirty && local.revision !== revisions.get(cloud.incidentId)) continue;
-    if (local && !local.dirty && Date.parse(local.run.updatedAt) > Date.parse(cloud.updatedAt)) continue;
+    if (local && local.revision !== revisions.get(cloud.incidentId)) continue;
     const merged = local?.dirty ? mergeIncidentRuns(local.run, cloud) : cloud;
     put(scope, merged, !!local?.dirty && !samePosition(merged, cloud));
   }
