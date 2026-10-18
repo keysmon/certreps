@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { progressView, domainReadiness } from "./progress-view";
+import { progressView, domainReadiness, domainPracticeProgress } from "./progress-view";
 import { getPracticeBank as getBank } from "./bank";
 import { writeAll } from "./storage";
 import type { Attempt, QuestionResult } from "./types";
@@ -125,4 +125,20 @@ it("does not count archived question scores towards current readiness", () => {
   } });
   writeAll([old]);
   expect(progressView(AIP, 75)).toEqual({ bestMockPct: 0, status: "In progress" });
+});
+
+
+describe("domain practice history", () => {
+  it("counts completed drills separately for each cert and domain, retaining archived effort", () => {
+    const domain = getBank(AIP)[0].domain;
+    writeAll([
+      attempt({ mode: "drill", domain, questionIds: ["aipc01-0001"], finishedAt: 10 }),
+      attempt({ mode: "drill", domain, finishedAt: 20 }),
+      attempt({ mode: "drill", domain }),
+      attempt({ mode: "quick", domain, finishedAt: 30 }),
+      attempt({ certId: MLA, mode: "drill", domain, finishedAt: 40 }),
+    ]);
+    expect(domainPracticeProgress(AIP)[domain]).toEqual({ completedDrills: 2 });
+    expect(domainReadiness(AIP, 75).domains).toEqual({});
+  });
 });

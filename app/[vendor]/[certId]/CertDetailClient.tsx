@@ -3,7 +3,7 @@ import { useEffect, useState, type CSSProperties } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { ScoreRing } from "@/components/ui/ScoreRing";
-import { domainReadiness, progressView } from "@/lib/progress-view";
+import { domainReadiness, domainPracticeProgress, progressView } from "@/lib/progress-view";
 import { practicePath, resumeParams } from "@/lib/routes";
 import { attemptLabel } from "@/lib/labels";
 import type { Verdict } from "@/lib/readiness";
@@ -169,7 +169,7 @@ export function PathToReady({
  * Domain rows. Each row is a single Link (keyboard/focus native, no nested button) to the
  * per-domain drill. The progress track + verdict hydrate from finished mocks via OUR C10
  * read (domainReadiness -> readinessRead, most-recent non-heavily-paused mock, not an
- * aggregate); SSR / no-data renders an empty track and a muted "Not started".
+ * aggregate). Drill history supplies practice status independently of mock readiness.
  */
 export function DomainRows({
   certId,
@@ -183,8 +183,10 @@ export function DomainRows({
   domains: HeroDomain[];
 }) {
   const [reads, setReads] = useState<Record<string, { pct: number; verdict: Verdict }>>({});
+  const [practice, setPractice] = useState<ReturnType<typeof domainPracticeProgress>>({});
   useEffect(() => {
     setReads(domainReadiness(certId, passLinePct).domains);
+    setPractice(domainPracticeProgress(certId));
   }, [certId, passLinePct]);
 
   return (
@@ -193,7 +195,8 @@ export function DomainRows({
         const read = reads[d.name];
         const pct = read?.pct ?? 0;
         const color = read ? VERDICT_COLOR[read.verdict] : "var(--faint)";
-        const word = read ? VERDICT_WORD[read.verdict] : "Not started";
+        const practiced = practice[d.name];
+        const word = read ? VERDICT_WORD[read.verdict] : practiced ? (practiced.completedDrills ? "Practiced" : "In progress") : "Not started";
         const href = `${practicePath({ vendorSlug, certId })}?mode=drill&domain=${encodeURIComponent(d.name)}`;
         return (
           <Link key={d.name} href={href} className="cd-domain" aria-label={`Drill ${d.name}`}>
@@ -206,9 +209,14 @@ export function DomainRows({
                   {DOT} {d.weightPct}% of exam
                 </span>
               </div>
-              <div className="cd-track">
+              <div className="cd-track" title="Readiness from your latest eligible exam mock">
                 <span style={{ width: `${pct}%`, background: color }} />
               </div>
+              {practiced && practiced.completedDrills > 0 && (
+                <div className="muted" style={{ fontSize: 11, marginTop: 4 }}>
+                  {practiced.completedDrills} {practiced.completedDrills === 1 ? "drill" : "drills"} completed
+                </div>
+              )}
             </div>
             <span className="cd-verd" style={{ color }}>
               {word}

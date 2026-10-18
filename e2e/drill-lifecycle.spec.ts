@@ -28,6 +28,12 @@ test("drill lifecycle: finishing a 12-question drill reads In progress everywher
   await expect(page.locator(".cd-ready-label")).toHaveText("In progress");
   await expect(page.getByText("Not started yet")).toHaveCount(0);
 
+  await page.getByRole("button", { name: /pick a specific domain/i }).click();
+  const practicedDomain = page.getByRole("link", { name: "Drill Applications of Foundation Models" });
+  await expect(practicedDomain).toContainText("Practiced");
+  await expect(practicedDomain).toContainText("1 drill completed");
+  await expect(practicedDomain).not.toContainText("Not started");
+
   // Note: the redesigned catalog dropped the Status facet, and its per-card progress reflects
   // best-mock score only (a drill never moves it), so there is no drill-driven catalog status to
   // assert here - the cert-detail "In progress" check above carries the regression intent.

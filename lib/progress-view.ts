@@ -57,3 +57,18 @@ export function progressView(certId: string, passLinePct: number): ProgressView 
 export function domainReadiness(certId: string, passLinePct: number): ReadinessRead {
   return readinessRead(gradedFinishedMocks(certId), passLinePct);
 }
+
+
+/** Domain practice records effort separately from exam-mock readiness.
+ * Archived attempts still represent completed work; their scores never feed readiness. */
+export function domainPracticeProgress(certId: string): Record<string, { completedDrills: number }> {
+  const progress: Record<string, { completedDrills: number }> = {};
+  const bank = getBank(certId);
+  const knownDomains = new Set(bank.map((q) => q.domain));
+  for (const attempt of listAttempts(certId)) {
+    if (attempt.mode !== "drill" || !attempt.domain || !knownDomains.has(attempt.domain)) continue;
+    const entry = progress[attempt.domain] ??= { completedDrills: 0 };
+    if (attempt.finishedAt !== null) entry.completedDrills++;
+  }
+  return progress;
+}

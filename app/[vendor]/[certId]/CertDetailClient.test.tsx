@@ -157,6 +157,24 @@ describe("DomainRows", () => {
     expect(screen.getByText(/31% of exam/)).toBeInTheDocument();
   });
 
+  it("shows completed domain practice after two drills without requiring a full mock", () => {
+    const domain = DOMAINS[0].name;
+    const ids = getBank(AIP).filter((q) => q.domain === domain).slice(0, 2).map((q) => q.id);
+    writeAll([1, 2].map((n) => attempt({ attemptId: `drill-${n}`, mode: "drill", domain, questionIds: ids, finishedAt: 1_700_000_100_000 + n })));
+    render(<DomainRows certId={AIP} vendorSlug="aws" passLinePct={75} domains={DOMAINS} />);
+    expect(screen.getByText("Practiced")).toBeInTheDocument();
+    expect(screen.getByText("2 drills completed")).toBeInTheDocument();
+    expect(screen.getAllByText("Not started")).toHaveLength(1);
+    expect(screen.queryByText("Above")).not.toBeInTheDocument();
+  });
+
+  it("shows an unfinished domain drill as In progress", () => {
+    writeAll([attempt({ mode: "drill", domain: DOMAINS[0].name })]);
+    render(<DomainRows certId={AIP} vendorSlug="aws" passLinePct={75} domains={DOMAINS} />);
+    expect(screen.getByText("In progress")).toBeInTheDocument();
+    expect(screen.getAllByText("Not started")).toHaveLength(1);
+  });
+
   it("bands a domain from finished-mock accuracy (C10 verdict)", async () => {
     // Grade the first domain's questions all correct -> 'Above'.
     const bank = getBank(AIP);
