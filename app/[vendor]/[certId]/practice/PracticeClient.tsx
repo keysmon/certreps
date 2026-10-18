@@ -6,7 +6,7 @@ import { ExamEngine } from "@/components/engine/ExamEngine";
 import { getMeta, getBank, isResumableAttempt } from "@/lib/bank";
 import { practicePath, resumeParams } from "@/lib/routes";
 import { attemptLabel } from "@/lib/labels";
-import { listInProgress, discardAttempt } from "@/lib/storage";
+import { listInProgress, discardAttempt, getAttempt } from "@/lib/storage";
 import type { Attempt, CertMeta, Mode } from "@/lib/types";
 
 const MODES: Mode[] = ["quick", "drill", "mock", "retry"];
@@ -53,9 +53,18 @@ function PracticeSession({ certId, mode, domain, resume, reveal, retryFrom }: {
   const [startFresh, setStartFresh] = useState(false);
 
   useEffect(() => {
-    if (resume || retryFrom) return; // an explicit resume link bypasses the chooser; the engine adopts the id
+    if (resume) return; // an explicit resume link bypasses the chooser
+    // Scope the resume chooser by the exact retry question set, so refreshing a result-page
+    // retry preserves progress without adopting a different retry from this certification.
+    const bank = getBank(certId);
+    const source = retryFrom ? getAttempt(retryFrom) : null;
+    const activeIds = new Set(bank.filter(q => !q.excludedFromPractice).map(q => q.id));
+    const retryIds = source?.certId === certId && source.finishedAt !== null
+      ? source.questionIds.filter(id => activeIds.has(id) && !source.results[id]?.correct)
+      : [];
     const match = listInProgress(certId).find(
-      (a) => isResumableAttempt(a, getBank(certId), { certId, mode, domain, reveal }),
+      (a) => isResumableAttempt(a, bank, { certId, mode, domain, reveal }) &&
+        (!retryFrom || (a.questionIds.length === retryIds.length && a.questionIds.every((id, i) => id === retryIds[i]))),
     );
     setInProgress(match ?? null);
     setChecked(true);
@@ -77,8 +86,6 @@ function PracticeSession({ certId, mode, domain, resume, reveal, retryFrom }: {
 
   // Explicit resume link -> mount the engine directly (today's adopt-by-id path).
   if (resume) return engine(resume);
-  // A result-page retry explicitly starts a new session for that result, not unrelated saved retries.
-  if (retryFrom) return engine();
   // Pre-check paint matches the page Suspense fallback + the engine's own shell (no hydration flash).
   if (!checked) return <p className="stage">Loading...</p>;
   // Nothing to resume, or the user chose to start fresh -> mount the engine fresh (new attempt).

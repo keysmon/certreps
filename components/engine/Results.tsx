@@ -71,6 +71,7 @@ export function Results({ attempt, questions, meta }: { attempt: Attempt; questi
     setMissedOnly(true);
     if (recapRef.current) {
       recapRef.current.open = true;
+      recapRef.current.querySelector("summary")?.focus({ preventScroll: true });
       recapRef.current.scrollIntoView?.({ behavior: "smooth", block: "start" });
     }
   };

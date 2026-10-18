@@ -44,6 +44,10 @@ for (const width of [1280, 375]) test(`domain result review, navigation and scop
   await expect(page.locator(".qstem")).toContainText(questions[11].stem);
   const retry = await page.evaluate(() => JSON.parse(localStorage.getItem("certreps.attempts.v1")!).find((a: Attempt) => a.mode === "retry"));
   expect(retry.questionIds).toEqual([questions[11].id]);
+  await page.reload();
+  await page.getByRole("link", { name: "Resume", exact: true }).click();
+  await expect(page.locator(".qnum")).toHaveText("Question 1 of 1");
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("certreps.attempts.v1")!).filter((a: Attempt) => a.mode === "retry").length)).toBe(1);
   for (const i of questions[11].correct) await page.locator("button.option").filter({ hasText: questions[11].options[i] }).click();
   await page.getByRole("button", { name: "Submit answer", exact: true }).click();
   await page.getByRole("button", { name: "See results", exact: true }).click();

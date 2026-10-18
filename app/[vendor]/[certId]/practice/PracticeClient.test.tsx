@@ -211,3 +211,16 @@ it("starts a result-scoped retry without offering to resume unrelated retry hist
   expect(await screen.findByTestId("engine")).toHaveAttribute("data-resume", "");
   expect(screen.queryByRole("link", { name: /^Resume$/ })).not.toBeInTheDocument();
 });
+
+it("offers the matching unfinished retry when a session-scoped retry is revisited", async () => {
+  const source = createAttempt(AIP, "quick", IDS);
+  source.finishedAt = 1;
+  for (const id of IDS) source.results[id] = { questionId: id, chosen: [0], correct: false, flagged: false };
+  saveAttempt(source);
+  const retry = inProgress("retry", 2);
+  setParams(`mode=retry&from=${source.attemptId}`);
+  render(<PracticeClient certId={AIP} />);
+  const resume = await screen.findByRole("link", { name: /^Resume$/ });
+  expect(resume.getAttribute("href")).toContain(`resume=${retry.attemptId}`);
+  expect(screen.getByText(/2 of 5 answered/)).toBeInTheDocument();
+});
