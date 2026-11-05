@@ -5,7 +5,7 @@ No signup, no paywall, no brain dumps.
 First cert: AWS Certified Generative AI Developer - Professional (AIP-C01).
 
 - `app/` - Next.js App Router site (static SEO pages + client exam engine)
-- `content/` - question banks (JSON) + study guides (Markdown). Git is the CMS. **Private.**
+- `content/` - question banks (JSON) + study guides (Markdown). Git is the CMS.
 - `pipeline/` - content generation/validation tooling
 - `docs/specs/` + `docs/plans/` - design spec and implementation plans
 
@@ -29,3 +29,16 @@ Unresolved items remain excluded until reviewed. Existing sessions containing
 excluded items must start fresh; their saved history is preserved. Completed mocks
 containing excluded items remain reviewable but do not contribute to readiness.
 The AIP-C01 source review and correction mapping is in `content/aip-c01/review.json`.
+
+
+### AIP-C01 implementation-depth release
+
+The 2026-11-05 release adds 60 original scenarios and replaces 40 weaker records under
+new IDs. Its item-level sources, supersessions and historical-contract checksum are
+in `content/aip-c01/depth-release-2026-11-05.json`. All 100 scenarios include canonical
+option rationales; six optional implementation lessons and a resource/readiness guide
+are available from the AIP-C01 curriculum. Practice scores are not AWS pass guarantees.
+
+Quick practice uses available exam-domain weights before approximate difficulty
+balancing, retaining adaptive item weights within each domain. Depleted domains
+backfill from remaining active content. Full-mock quotas are unchanged.

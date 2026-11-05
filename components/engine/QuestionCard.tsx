@@ -81,7 +81,7 @@ export function QuestionCard({
         )}
       </div>
       <p className="qstem">{question.stem}</p>
-      {isMulti && <p className="qhint">Select TWO</p>}
+      {isMulti && <p className="qhint" aria-live="polite">{graded ? "Select TWO" : `Select TWO · ${chosen.length} of 2 selected`}</p>}
       <div className="options" role="group" aria-label={isMulti ? "Answer choices - choose two" : "Answer choices"}>
         {perm.map((ci, vi) => {
           const text = question.options[ci];
@@ -114,7 +114,7 @@ export function QuestionCard({
       )}
       {!graded && (
         <div className="footbar">
-          <button className="btn btn-primary" style={{ marginLeft: "auto" }} disabled={chosen.length === 0} onClick={() => onSubmit(chosen)}>
+          <button className="btn btn-primary" style={{ marginLeft: "auto" }} disabled={isMulti ? chosen.length !== 2 : chosen.length !== 1} onClick={() => onSubmit(chosen)}>
             {initialChosen?.length ? "Update answer" : "Submit answer"}
           </button>
         </div>

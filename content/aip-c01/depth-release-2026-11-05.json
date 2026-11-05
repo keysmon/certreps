@@ -1,0 +1,2110 @@
+{
+  "releasedOn": "2026-11-05",
+  "baselineRevision": "16608854e6c120e4824bf0dd061ca219f7a141ee",
+  "baselineCount": 679,
+  "baselineContractsSha256": "9d4cd9eb7fd43fe4623702fb5a903cac2a2dcd84fd6fc4766f6866f873c16bb3",
+  "priorExclusions": [
+    {
+      "id": "aipc01-0001",
+      "excludedFromPractice": true,
+      "exclusionReason": "Unresolved after source review: Claude200K is largest among the listed context sizes, so marked answer is defensible. Global-largest framing is stale and pages alone do not determine token count; Nova Micro supports128K. Specific document token count and intended model version are missing. No answer reversal asserted."
+    },
+    {
+      "id": "aipc01-0010",
+      "excludedFromPractice": true,
+      "exclusionReason": "Current Bedrock continued pre-training availability could not be verified against the current customization documentation during the 2026-10-18 lesson review."
+    },
+    {
+      "id": "aipc01-0012",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: The original keyed option and explanation imply one prompt/completion schema for all text models; replacement explicitly tests model-dependent schemas.",
+      "supersededBy": "aipc01-0611"
+    },
+    {
+      "id": "aipc01-0025",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: The original answer promises strict compliance from ordinary tool use without strict:true; replacement uses explicit schema-constrained output.",
+      "supersededBy": "aipc01-0612"
+    },
+    {
+      "id": "aipc01-0030",
+      "excludedFromPractice": true,
+      "exclusionReason": "Unresolved after source review: Memory is the right capability, but raw service APIs need event retrieval/context integration or framework adapters. Cannot tell whether the question assumes a configured adapter."
+    },
+    {
+      "id": "aipc01-0035",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: The original pair includes an opening-brace prefill, which cannot enforce exact schemas. Replacement tests the two supported enforcement mechanisms.",
+      "supersededBy": "aipc01-0613"
+    },
+    {
+      "id": "aipc01-0043",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Logging controls customer logs, not service abuse retention. Select model and eligible ZDR terms explicitly; retain CSAM exception. Current AWS lists model-specific retention up to 30 days.",
+      "supersededBy": "aipc01-0614"
+    },
+    {
+      "id": "aipc01-0047",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Include InvokeModelWithResponseStream (or InvokeModel*) to close streaming/ConverseStream bypass. Scope SCP claim to member accounts; management account is exempt.",
+      "supersededBy": "aipc01-0615"
+    },
+    {
+      "id": "aipc01-0048",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: As of this audit Clarify is closed to new customers. Qualify existing-customer use. Bedrock Evaluations replaces FM evaluation; tabular bias/attribution guidance also includes open-source metrics/SHAP and AWS monitoring solutions.",
+      "supersededBy": "aipc01-0616"
+    },
+    {
+      "id": "aipc01-0051",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Qualifies model/minimum/TTL and removes the universal fine-tuning-requires-PT claim.",
+      "supersededBy": "aipc01-0617"
+    },
+    {
+      "id": "aipc01-0054",
+      "excludedFromPractice": true,
+      "exclusionReason": "Unresolved after source review: Distillation is a means to approach task accuracy, not a guarantee of identical or lossless teacher accuracy."
+    },
+    {
+      "id": "aipc01-0056",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Replaces per-model metrics with an actual team cost-attribution mechanism and narrows scope to one shared account.",
+      "supersededBy": "aipc01-0618"
+    },
+    {
+      "id": "aipc01-0057",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Includes global routing savings in the premise so the cost key remains unique without claiming cross-Region routing never discounts tokens.",
+      "supersededBy": "aipc01-0619"
+    },
+    {
+      "id": "aipc01-0063",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Resolve the source-audited accuracy issue without changing a published answer key.",
+      "supersededBy": "aipc01-0620"
+    },
+    {
+      "id": "aipc01-0066",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Nova Canvas reached EOL before the audit. Replace the AWS-first-party restriction with a verified Active Bedrock image-generation model in its supported Region.",
+      "supersededBy": "aipc01-0621"
+    },
+    {
+      "id": "aipc01-0068",
+      "excludedFromPractice": true,
+      "exclusionReason": "Unresolved after source review: Correct when data is presegmented, or CSV record-based structure metadata is configured. Generic spreadsheet row handling is underspecified; a file-level no-chunk strategy alone does not establish row parsing."
+    },
+    {
+      "id": "aipc01-0074",
+      "excludedFromPractice": true,
+      "exclusionReason": "Unresolved after source review: Serving-mode distinction is documented, but only Claude3Haiku is listed for native Claude fine tuning and it reached EOL September10,2026. New fine-tuning/PT creation is blocked for Legacy models; stem lacks exact model/job date."
+    },
+    {
+      "id": "aipc01-0077",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: The original question has multiple qualifying listed stores and falsely says Neptune requires precreation.",
+      "supersededBy": "aipc01-0622"
+    },
+    {
+      "id": "aipc01-0080",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Cohere Embed English now supports images, so replace that valid competing distractor rather than changing the published key.",
+      "supersededBy": "aipc01-0623"
+    },
+    {
+      "id": "aipc01-0100",
+      "excludedFromPractice": true,
+      "exclusionReason": "Unresolved after source review: It represents session-scoped conversational events, but this is not necessarily deletion at session end; storage retention is separate. Long-term answer is correct. Confirm whether intended phrase means retrieval scope or actual lifetime."
+    },
+    {
+      "id": "aipc01-0105",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Synchronous means each chunk is scanned before release; classifiers can miss harmful content. Say no unmoderated chunks, not no unsafe output.",
+      "supersededBy": "aipc01-0624"
+    },
+    {
+      "id": "aipc01-0114",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Gateway invokes Lambda with its assumed service role. Scope that role and Lambda principal; put confused-deputy SourceArn/SourceAccount conditions on the role trust policy.",
+      "supersededBy": "aipc01-0625"
+    },
+    {
+      "id": "aipc01-0116",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Uses a currently listed supported pair and explicitly limits the router to two configured models.",
+      "supersededBy": "aipc01-0626"
+    },
+    {
+      "id": "aipc01-0130",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Resolve the source-audited accuracy issue without changing a published answer key.",
+      "supersededBy": "aipc01-0627"
+    },
+    {
+      "id": "aipc01-0131",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Replace retired blanket manual-access guidance with an explicit missing Anthropic FTU prerequisite, eliminating other possible causes from the scenario.",
+      "supersededBy": "aipc01-0628"
+    },
+    {
+      "id": "aipc01-0141",
+      "excludedFromPractice": true,
+      "exclusionReason": "Unresolved after source review: The startsWith/stringContains restriction is confirmed for the new managed Knowledge Base, but traditional quick-create OpenSearch is a distinct workflow with different filtering support. Stem must explicitly select managed KB rather than all quick-create stores."
+    },
+    {
+      "id": "aipc01-0154",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: The original unspecified model cannot support a definite PT prerequisite. Replacement explicitly assumes verified eligibility and tests the required deployment step.",
+      "supersededBy": "aipc01-0629"
+    },
+    {
+      "id": "aipc01-0172",
+      "excludedFromPractice": true,
+      "exclusionReason": "Unresolved after source review: AWS documentation says function URLs do not support streaming within a VPC environment and describes a VPC-client endpoint architecture, but does not clearly equate that to public clients invoking a VPC-attached function. Do not assert the broader causal mechanism without service test/support."
+    },
+    {
+      "id": "aipc01-0176",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: The original stem itself promises an indefinite, entirely free wait. Replacement uses bounded callback semantics.",
+      "supersededBy": "aipc01-0630"
+    },
+    {
+      "id": "aipc01-0210",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Grant the profile ARN separately and apply InferenceProfileArn condition to foundation-model resource evaluation; AWS says this context key is not populated for profile resource evaluation.",
+      "supersededBy": "aipc01-0631"
+    },
+    {
+      "id": "aipc01-0211",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: SCPs do not affect management account principals. Say member accounts, and separately control management-account usage.",
+      "supersededBy": "aipc01-0632"
+    },
+    {
+      "id": "aipc01-0212",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Endpoint policies govern calls through that endpoint. Add independently enforced SourceVpce conditions or network egress restrictions to forbid public endpoint calls.",
+      "supersededBy": "aipc01-0633"
+    },
+    {
+      "id": "aipc01-0217",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Current cited Memory encryption page instructs granting the IAM user/role permissions with kms:ViaService. The asserted mandatory service-principal configuration is not supported there.",
+      "supersededBy": "aipc01-0634"
+    },
+    {
+      "id": "aipc01-0221",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Only POST_CHUNKING is supported. To inspect whole parsed documents then chunk, set chunkingStrategy NONE and implement custom chunking, or screen before ingestion.",
+      "supersededBy": "aipc01-0635"
+    },
+    {
+      "id": "aipc01-0228",
+      "excludedFromPractice": true,
+      "exclusionReason": "Unresolved after source review: Foundational GuardDuty management-event plan supplies the model-anomaly capability attributed to current AI Protection page."
+    },
+    {
+      "id": "aipc01-0231",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Corrects the invalid literal value and makes the API parameter distinction explicit.",
+      "supersededBy": "aipc01-0636"
+    },
+    {
+      "id": "aipc01-0232",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Names a documented model/minimum and rules out the unsupported inference that the original stem fixed Region or TTL.",
+      "supersededBy": "aipc01-0637"
+    },
+    {
+      "id": "aipc01-0233",
+      "excludedFromPractice": true,
+      "exclusionReason": "Unresolved after source review: JSON schema constrains visible schema output; strict tool input validation alone does not forbid all surrounding text or hidden reasoning, and model support differs."
+    },
+    {
+      "id": "aipc01-0244",
+      "excludedFromPractice": true,
+      "exclusionReason": "Unresolved after source review: Job concurrency is plausible, but the umbrella batch page links quotas rather than documenting exact queue behavior; no numerical concurrency limit asserted in question."
+    },
+    {
+      "id": "aipc01-0245",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Replaces the hard-cap guarantee with the actual delayed budget-action behavior.",
+      "supersededBy": "aipc01-0638"
+    },
+    {
+      "id": "aipc01-0246",
+      "excludedFromPractice": true,
+      "exclusionReason": "Unresolved after source review: Pinning explicit model version is sound. Absolute immutable-behavior language is stronger than version pinning alone; deterministic output and lifetime availability are separate."
+    },
+    {
+      "id": "aipc01-0247",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Resolve the source-audited accuracy issue without changing a published answer key.",
+      "supersededBy": "aipc01-0639"
+    },
+    {
+      "id": "aipc01-0250",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Resolve the source-audited accuracy issue without changing a published answer key.",
+      "supersededBy": "aipc01-0640"
+    },
+    {
+      "id": "aipc01-0269",
+      "excludedFromPractice": true,
+      "exclusionReason": "Unresolved after source review: Current purchase guide explicitly names both provisioning modes, but retrieved detail/API page only exposes Model Units. By-Tokens eligibility for custom models and exact commitments not established by these pages."
+    },
+    {
+      "id": "aipc01-0273",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Explicitly migrates the modelId before deleting provisioned capacity.",
+      "supersededBy": "aipc01-0641"
+    },
+    {
+      "id": "aipc01-0279",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: The original stem incorrectly treats sentence splitting and complete structure blindness as defining Bedrock behavior; replacement tests documented configuration instead.",
+      "supersededBy": "aipc01-0642"
+    },
+    {
+      "id": "aipc01-0287",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: The original incorrectly excludes Cohere image support. Replacement directly teaches that supported capability with only one valid listed choice.",
+      "supersededBy": "aipc01-0643"
+    },
+    {
+      "id": "aipc01-0296",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: The original option hardcodes a universal prompt/completion schema and redirects to continued pre-training without specifying model support.",
+      "supersededBy": "aipc01-0644"
+    },
+    {
+      "id": "aipc01-0304",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: The original option itself conflates natural-language policy authoring with runtime enforcement; replace with an explicit formal authorization boundary.",
+      "supersededBy": "aipc01-0645"
+    },
+    {
+      "id": "aipc01-0316",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: The original keyed option itself says ordinary tool use provides a structural guarantee, so an explanation-only change would leave a false option.",
+      "supersededBy": "aipc01-0646"
+    },
+    {
+      "id": "aipc01-0318",
+      "excludedFromPractice": true,
+      "exclusionReason": "Unresolved after source review: Correct option states the loop is incomplete. The explanation additionally claims the API does not hard-reject, which can be model/provider dependent; current client-side-tool guide does not establish universal acceptance."
+    },
+    {
+      "id": "aipc01-0352",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Include InvokeModelWithResponseStream (or InvokeModel*) to close streaming/ConverseStream bypass. Scope SCP claim to member accounts; management account is exempt.",
+      "supersededBy": "aipc01-0647"
+    },
+    {
+      "id": "aipc01-0354",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Separate backend permissions limit what each backend does, but do not authorize which caller may invoke refund. Enforce caller/tool Policy or interceptor authorization, or separate gateways. Native target IAM credentials use Gateway service role.",
+      "supersededBy": "aipc01-0648"
+    },
+    {
+      "id": "aipc01-0355",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Include InvokeModelWithResponseStream (or InvokeModel*) to close streaming/ConverseStream bypass. Scope SCP claim to member accounts; management account is exempt.",
+      "supersededBy": "aipc01-0649"
+    },
+    {
+      "id": "aipc01-0364",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Provenance is evidence, not unconditional proof: modified images lower watermark detection accuracy, and removable C2PA metadata may be absent. Perceptual hashes also must not be equated with cryptographic hashes.",
+      "supersededBy": "aipc01-0650"
+    },
+    {
+      "id": "aipc01-0365",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: As of this audit Clarify is closed to new customers. Qualify existing-customer use. Bedrock Evaluations replaces FM evaluation; tabular bias/attribution guidance also includes open-source metrics/SHAP and AWS monitoring solutions.",
+      "supersededBy": "aipc01-0651"
+    },
+    {
+      "id": "aipc01-0377",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Bedrock evaluates enabled input policies and does not charge model inference when input is blocked. ApplyGuardrail can add an earlier application/retrieval gate; explain why existing input checks were disabled or selective.",
+      "supersededBy": "aipc01-0652"
+    },
+    {
+      "id": "aipc01-0389",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Include InvokeModelWithResponseStream (or InvokeModel*) to close streaming/ConverseStream bypass. Scope SCP claim to member accounts; management account is exempt.",
+      "supersededBy": "aipc01-0653"
+    },
+    {
+      "id": "aipc01-0392",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Logging controls customer logs, not service abuse retention. Select model and eligible ZDR terms explicitly; retain CSAM exception. Current AWS lists model-specific retention up to 30 days.",
+      "supersededBy": "aipc01-0654"
+    },
+    {
+      "id": "aipc01-0406",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Provenance is evidence, not unconditional proof: modified images lower watermark detection accuracy, and removable C2PA metadata may be absent. Perceptual hashes also must not be equated with cryptographic hashes.",
+      "supersededBy": "aipc01-0655"
+    },
+    {
+      "id": "aipc01-0407",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: As of this audit Clarify is closed to new customers. Qualify existing-customer use. Bedrock Evaluations replaces FM evaluation; tabular bias/attribution guidance also includes open-source metrics/SHAP and AWS monitoring solutions.",
+      "supersededBy": "aipc01-0656"
+    },
+    {
+      "id": "aipc01-0408",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: As of this audit Clarify is closed to new customers. Qualify existing-customer use. Bedrock Evaluations replaces FM evaluation; tabular bias/attribution guidance also includes open-source metrics/SHAP and AWS monitoring solutions.",
+      "supersededBy": "aipc01-0657"
+    },
+    {
+      "id": "aipc01-0411",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Names a model whose caching minimum is satisfied and removes any suggestion that Batch API and prompt caching can be combined.",
+      "supersededBy": "aipc01-0658"
+    },
+    {
+      "id": "aipc01-0415",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Replaces token-level partial-reuse and standard-write-rate guarantees with model-aware cache behavior.",
+      "supersededBy": "aipc01-0659"
+    },
+    {
+      "id": "aipc01-0424",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Replaces an unsupported duty-cycle conclusion with a complete, explicitly illustrative cost calculation.",
+      "supersededBy": "aipc01-0660"
+    },
+    {
+      "id": "aipc01-0438",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Separates candidate retrieval from final generation context and removes the claim that a reranker recovers unseen chunks.",
+      "supersededBy": "aipc01-0661"
+    },
+    {
+      "id": "aipc01-0439",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Uses the actual metric source and avoids treating request counts as proof of distinct users or excluding retries without evidence. Replaces the unsupported option inference that accepted calls prove more distinct users.",
+      "supersededBy": "aipc01-0662"
+    },
+    {
+      "id": "aipc01-0445",
+      "excludedFromPractice": true,
+      "exclusionReason": "Unresolved after source review: Generic model-free prompt-caching questions use prefixes below 4096 tokens. Some supported Claude models require4096, while others require512 or1024."
+    },
+    {
+      "id": "aipc01-0447",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Retains sensible explicit checkpoint placement but acknowledges implicit caching and model-specific lookback.",
+      "supersededBy": "aipc01-0663"
+    },
+    {
+      "id": "aipc01-0450",
+      "excludedFromPractice": true,
+      "exclusionReason": "Unresolved after source review: Generic model-free prompt-caching questions use prefixes below 4096 tokens. Some supported Claude models require4096, while others require512 or1024."
+    },
+    {
+      "id": "aipc01-0452",
+      "excludedFromPractice": true,
+      "exclusionReason": "Unresolved after source review: Generic model-free prompt-caching questions use prefixes below 4096 tokens. Some supported Claude models require4096, while others require512 or1024."
+    },
+    {
+      "id": "aipc01-0489",
+      "excludedFromPractice": true,
+      "exclusionReason": "Unresolved after source review: Single-app metric attribution requires a distinct app/profile/custom metric setup when multiple applications share one model."
+    },
+    {
+      "id": "aipc01-0492",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Changes the requirement to accepted call volume and explicitly separates it from retry-count confirmation.",
+      "supersededBy": "aipc01-0664"
+    },
+    {
+      "id": "aipc01-0500",
+      "excludedFromPractice": true,
+      "exclusionReason": "Unresolved after source review: Distillation is a means to approach task accuracy, not a guarantee of identical or lossless teacher accuracy."
+    },
+    {
+      "id": "aipc01-0503",
+      "excludedFromPractice": true,
+      "exclusionReason": "Unresolved after source review: Distillation is a means to approach task accuracy, not a guarantee of identical or lossless teacher accuracy."
+    },
+    {
+      "id": "aipc01-0505",
+      "excludedFromPractice": true,
+      "exclusionReason": "Unresolved after source review: Distillation is a means to approach task accuracy, not a guarantee of identical or lossless teacher accuracy."
+    },
+    {
+      "id": "aipc01-0510",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Resolve the source-audited accuracy issue without changing a published answer key.",
+      "supersededBy": "aipc01-0665"
+    },
+    {
+      "id": "aipc01-0512",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Resolve the source-audited accuracy issue without changing a published answer key.",
+      "supersededBy": "aipc01-0666"
+    },
+    {
+      "id": "aipc01-0530",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Resolve the source-audited accuracy issue without changing a published answer key.",
+      "supersededBy": "aipc01-0667"
+    },
+    {
+      "id": "aipc01-0541",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Resolve the source-audited accuracy issue without changing a published answer key.",
+      "supersededBy": "aipc01-0668"
+    },
+    {
+      "id": "aipc01-0543",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Resolve the source-audited accuracy issue without changing a published answer key.",
+      "supersededBy": "aipc01-0669"
+    },
+    {
+      "id": "aipc01-0556",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Resolve the source-audited accuracy issue without changing a published answer key.",
+      "supersededBy": "aipc01-0670"
+    },
+    {
+      "id": "aipc01-0558",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Resolve the source-audited accuracy issue without changing a published answer key.",
+      "supersededBy": "aipc01-0671"
+    },
+    {
+      "id": "aipc01-0561",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Resolve the source-audited accuracy issue without changing a published answer key.",
+      "supersededBy": "aipc01-0672"
+    },
+    {
+      "id": "aipc01-0583",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Resolve the source-audited accuracy issue without changing a published answer key.",
+      "supersededBy": "aipc01-0673"
+    },
+    {
+      "id": "aipc01-0587",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Resolve the source-audited accuracy issue without changing a published answer key.",
+      "supersededBy": "aipc01-0674"
+    },
+    {
+      "id": "aipc01-0589",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Resolve the source-audited accuracy issue without changing a published answer key.",
+      "supersededBy": "aipc01-0675"
+    },
+    {
+      "id": "aipc01-0601",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Resolve the source-audited accuracy issue without changing a published answer key.",
+      "supersededBy": "aipc01-0676"
+    },
+    {
+      "id": "aipc01-0602",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Resolve the source-audited accuracy issue without changing a published answer key.",
+      "supersededBy": "aipc01-0677"
+    },
+    {
+      "id": "aipc01-0606",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Resolve the source-audited accuracy issue without changing a published answer key.",
+      "supersededBy": "aipc01-0678"
+    },
+    {
+      "id": "aipc01-0607",
+      "excludedFromPractice": true,
+      "exclusionReason": "Replaced after source review: Resolve the source-audited accuracy issue without changing a published answer key.",
+      "supersededBy": "aipc01-0679"
+    }
+  ],
+  "addedIds": [
+    "aipc01-0680",
+    "aipc01-0681",
+    "aipc01-0682",
+    "aipc01-0683",
+    "aipc01-0684",
+    "aipc01-0685",
+    "aipc01-0686",
+    "aipc01-0687",
+    "aipc01-0688",
+    "aipc01-0689",
+    "aipc01-0690",
+    "aipc01-0691",
+    "aipc01-0692",
+    "aipc01-0693",
+    "aipc01-0694",
+    "aipc01-0695",
+    "aipc01-0696",
+    "aipc01-0697",
+    "aipc01-0698",
+    "aipc01-0699",
+    "aipc01-0700",
+    "aipc01-0701",
+    "aipc01-0702",
+    "aipc01-0703",
+    "aipc01-0704",
+    "aipc01-0705",
+    "aipc01-0706",
+    "aipc01-0707",
+    "aipc01-0708",
+    "aipc01-0709",
+    "aipc01-0710",
+    "aipc01-0711",
+    "aipc01-0712",
+    "aipc01-0713",
+    "aipc01-0714",
+    "aipc01-0715",
+    "aipc01-0716",
+    "aipc01-0717",
+    "aipc01-0718",
+    "aipc01-0719",
+    "aipc01-0720",
+    "aipc01-0721",
+    "aipc01-0722",
+    "aipc01-0723",
+    "aipc01-0724",
+    "aipc01-0725",
+    "aipc01-0726",
+    "aipc01-0727",
+    "aipc01-0728",
+    "aipc01-0729",
+    "aipc01-0730",
+    "aipc01-0731",
+    "aipc01-0732",
+    "aipc01-0733",
+    "aipc01-0734",
+    "aipc01-0735",
+    "aipc01-0736",
+    "aipc01-0737",
+    "aipc01-0738",
+    "aipc01-0739"
+  ],
+  "replacements": [
+    {
+      "oldId": "aipc01-0015",
+      "newId": "aipc01-0740",
+      "domain": "Foundation Model Integration & Compliance"
+    },
+    {
+      "oldId": "aipc01-0019",
+      "newId": "aipc01-0741",
+      "domain": "Foundation Model Integration & Compliance"
+    },
+    {
+      "oldId": "aipc01-0034",
+      "newId": "aipc01-0742",
+      "domain": "Implementation & Integration"
+    },
+    {
+      "oldId": "aipc01-0082",
+      "newId": "aipc01-0743",
+      "domain": "Foundation Model Integration & Compliance"
+    },
+    {
+      "oldId": "aipc01-0089",
+      "newId": "aipc01-0744",
+      "domain": "Implementation & Integration"
+    },
+    {
+      "oldId": "aipc01-0091",
+      "newId": "aipc01-0745",
+      "domain": "Implementation & Integration"
+    },
+    {
+      "oldId": "aipc01-0112",
+      "newId": "aipc01-0746",
+      "domain": "AI Safety, Security & Governance"
+    },
+    {
+      "oldId": "aipc01-0167",
+      "newId": "aipc01-0747",
+      "domain": "Foundation Model Integration & Compliance"
+    },
+    {
+      "oldId": "aipc01-0169",
+      "newId": "aipc01-0748",
+      "domain": "Foundation Model Integration & Compliance"
+    },
+    {
+      "oldId": "aipc01-0170",
+      "newId": "aipc01-0749",
+      "domain": "Foundation Model Integration & Compliance"
+    },
+    {
+      "oldId": "aipc01-0174",
+      "newId": "aipc01-0750",
+      "domain": "Implementation & Integration"
+    },
+    {
+      "oldId": "aipc01-0193",
+      "newId": "aipc01-0751",
+      "domain": "Implementation & Integration"
+    },
+    {
+      "oldId": "aipc01-0255",
+      "newId": "aipc01-0752",
+      "domain": "Testing, Validation & Troubleshooting"
+    },
+    {
+      "oldId": "aipc01-0259",
+      "newId": "aipc01-0753",
+      "domain": "Testing, Validation & Troubleshooting"
+    },
+    {
+      "oldId": "aipc01-0271",
+      "newId": "aipc01-0754",
+      "domain": "Operational Efficiency & Optimization"
+    },
+    {
+      "oldId": "aipc01-0278",
+      "newId": "aipc01-0755",
+      "domain": "Operational Efficiency & Optimization"
+    },
+    {
+      "oldId": "aipc01-0295",
+      "newId": "aipc01-0756",
+      "domain": "Foundation Model Integration & Compliance"
+    },
+    {
+      "oldId": "aipc01-0299",
+      "newId": "aipc01-0757",
+      "domain": "Foundation Model Integration & Compliance"
+    },
+    {
+      "oldId": "aipc01-0302",
+      "newId": "aipc01-0758",
+      "domain": "Implementation & Integration"
+    },
+    {
+      "oldId": "aipc01-0308",
+      "newId": "aipc01-0759",
+      "domain": "Implementation & Integration"
+    },
+    {
+      "oldId": "aipc01-0313",
+      "newId": "aipc01-0760",
+      "domain": "Implementation & Integration"
+    },
+    {
+      "oldId": "aipc01-0348",
+      "newId": "aipc01-0761",
+      "domain": "AI Safety, Security & Governance"
+    },
+    {
+      "oldId": "aipc01-0351",
+      "newId": "aipc01-0762",
+      "domain": "AI Safety, Security & Governance"
+    },
+    {
+      "oldId": "aipc01-0358",
+      "newId": "aipc01-0763",
+      "domain": "AI Safety, Security & Governance"
+    },
+    {
+      "oldId": "aipc01-0360",
+      "newId": "aipc01-0764",
+      "domain": "AI Safety, Security & Governance"
+    },
+    {
+      "oldId": "aipc01-0416",
+      "newId": "aipc01-0765",
+      "domain": "Operational Efficiency & Optimization"
+    },
+    {
+      "oldId": "aipc01-0431",
+      "newId": "aipc01-0766",
+      "domain": "Operational Efficiency & Optimization"
+    },
+    {
+      "oldId": "aipc01-0441",
+      "newId": "aipc01-0767",
+      "domain": "Operational Efficiency & Optimization"
+    },
+    {
+      "oldId": "aipc01-0443",
+      "newId": "aipc01-0768",
+      "domain": "Operational Efficiency & Optimization"
+    },
+    {
+      "oldId": "aipc01-0509",
+      "newId": "aipc01-0769",
+      "domain": "Testing, Validation & Troubleshooting"
+    },
+    {
+      "oldId": "aipc01-0525",
+      "newId": "aipc01-0770",
+      "domain": "Testing, Validation & Troubleshooting"
+    },
+    {
+      "oldId": "aipc01-0536",
+      "newId": "aipc01-0771",
+      "domain": "Testing, Validation & Troubleshooting"
+    },
+    {
+      "oldId": "aipc01-0538",
+      "newId": "aipc01-0772",
+      "domain": "Testing, Validation & Troubleshooting"
+    },
+    {
+      "oldId": "aipc01-0107",
+      "newId": "aipc01-0773",
+      "domain": "AI Safety, Security & Governance"
+    },
+    {
+      "oldId": "aipc01-0357",
+      "newId": "aipc01-0774",
+      "domain": "AI Safety, Security & Governance"
+    },
+    {
+      "oldId": "aipc01-0219",
+      "newId": "aipc01-0775",
+      "domain": "AI Safety, Security & Governance"
+    },
+    {
+      "oldId": "aipc01-0275",
+      "newId": "aipc01-0776",
+      "domain": "Operational Efficiency & Optimization"
+    },
+    {
+      "oldId": "aipc01-0418",
+      "newId": "aipc01-0777",
+      "domain": "Operational Efficiency & Optimization"
+    },
+    {
+      "oldId": "aipc01-0249",
+      "newId": "aipc01-0778",
+      "domain": "Testing, Validation & Troubleshooting"
+    },
+    {
+      "oldId": "aipc01-0517",
+      "newId": "aipc01-0779",
+      "domain": "Testing, Validation & Troubleshooting"
+    }
+  ],
+  "evidence": {
+    "aipc01-0680": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithSAML.html",
+        "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_use-resources.html"
+      ],
+      "verifiedClaims": [
+        "AssumeRoleWithSAML accepts SAML authentication and returns access key ID, secret access key and security token.",
+        "Temporary AWS credentials sign AWS service requests and require their session token."
+      ],
+      "reviewNotes": "Reviewed against current primary AWS documentation. Scenario and alternatives are original; no unresolved factual claim retained."
+    },
+    "aipc01-0681": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-identity.html",
+        "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_use-resources.html"
+      ],
+      "verifiedClaims": [
+        "Cognito user pools can be an IdP for identity pools.",
+        "Identity pools return temporary AWS credentials associated with IAM roles for signed AWS requests."
+      ],
+      "reviewNotes": "Reviewed against current primary AWS documentation. Scenario and alternatives are original; no unresolved factual claim retained."
+    },
+    "aipc01-0682": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-idp_oidc.html",
+        "https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithWebIdentity.html"
+      ],
+      "verifiedClaims": [
+        "AWS documents GitHub OIDC aud and sub conditions that restrict repository and branch.",
+        "AssumeRoleWithWebIdentity exchanges an identity-provider token without existing AWS credentials."
+      ],
+      "reviewNotes": "Reviewed against current primary AWS documentation. Scenario and alternatives are original; no unresolved factual claim retained."
+    },
+    "aipc01-0683": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html"
+      ],
+      "verifiedClaims": [
+        "Cross-account AssumeRole requires the target role trust relationship and source-account authorization to call AssumeRole.",
+        "A role trust policy identifies who can assume it; its permissions policy governs actions after assumption."
+      ],
+      "reviewNotes": "Reviewed against current primary AWS documentation. Scenario and alternatives are original; no unresolved factual claim retained."
+    },
+    "aipc01-0684": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_use-resources.html"
+      ],
+      "verifiedClaims": [
+        "Calls made with temporary AWS credentials must include the session token returned with those credentials."
+      ],
+      "reviewNotes": "Reviewed against current primary AWS documentation. Scenario and alternatives are original; no unresolved factual claim retained."
+    },
+    "aipc01-0685": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/sdkref/latest/guide/standardized-credentials.html",
+        "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_use-resources.html"
+      ],
+      "verifiedClaims": [
+        "Supported standardized AWS credential providers attempt automatic credential renewal.",
+        "Temporary credentials expire and cannot be extended beyond their original interval."
+      ],
+      "reviewNotes": "Reviewed against current primary AWS documentation. Scenario and alternatives are original; no unresolved factual claim retained."
+    },
+    "aipc01-0686": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithWebIdentity.html",
+        "https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html"
+      ],
+      "verifiedClaims": [
+        "STS role session policies intersect with the role identity-based policy and cannot grant more than that role permits."
+      ],
+      "reviewNotes": "Reviewed against current primary AWS documentation. Scenario and alternatives are original; no unresolved factual claim retained."
+    },
+    "aipc01-0687": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithSAML.html",
+        "https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html",
+        "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_use-resources.html"
+      ],
+      "verifiedClaims": [
+        "AssumeRoleWithSAML session duration is capped by SessionNotOnOrAfter when it is shorter than the requested duration.",
+        "Console federation session duration is distinct from the AssumeRole API credential duration."
+      ],
+      "reviewNotes": "Reviewed against current primary AWS documentation. Scenario and alternatives are original; no unresolved factual claim retained."
+    },
+    "aipc01-0688": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html"
+      ],
+      "verifiedClaims": [
+        "AssumeRole role chaining limits CLI/API sessions to one hour; a request above that limit fails."
+      ],
+      "reviewNotes": "Reviewed against current primary AWS documentation. Scenario and alternatives are original; no unresolved factual claim retained."
+    },
+    "aipc01-0689": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/cognito/latest/developerguide/iam-roles.html"
+      ],
+      "verifiedClaims": [
+        "Cognito identity pool role trust uses cognito-identity.amazonaws.com with aud identifying the pool.",
+        "amr can distinguish authenticated and unauthenticated identity pool sessions."
+      ],
+      "reviewNotes": "Reviewed against current primary AWS documentation. Scenario and alternatives are original; no unresolved factual claim retained."
+    },
+    "aipc01-0690": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_CreateDelivery.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-bases-logging.html",
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_StartIngestionJob.html"
+      ],
+      "verifiedClaims": [
+        "CreateDelivery pairs a delivery source name with a delivery destination ARN.",
+        "Knowledge base ingestion uses APPLICATION_LOGS and supports a CloudWatch Logs destination."
+      ],
+      "reviewNotes": "Reviewed against current primary AWS documentation. Scenario and alternatives are original; no unresolved factual claim retained."
+    },
+    "aipc01-0691": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/AWS-logs-infrastructure-V2-S3.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-bases-logging.html"
+      ],
+      "verifiedClaims": [
+        "Knowledge base logging requires bedrock:AllowVendedLogDeliveryForResource.",
+        "S3 vended log setup requires an appropriate destination bucket resource policy; documented provisioning permissions include GetBucketPolicy and PutBucketPolicy."
+      ],
+      "reviewNotes": "Reviewed against current primary AWS documentation. Scenario and alternatives are original; no unresolved factual claim retained."
+    },
+    "aipc01-0692": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-bases-logging.html",
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_KnowledgeBaseDocumentDetail.html"
+      ],
+      "verifiedClaims": [
+        "Knowledge base resource logs include final PARTIALLY_INDEXED status and chunk_statistics including created and failed_to_create.",
+        "KnowledgeBaseDocumentDetail distinguishes INDEXED from PARTIALLY_INDEXED."
+      ],
+      "reviewNotes": "Reviewed against current primary AWS documentation. Scenario and alternatives are original; no unresolved factual claim retained. Independent peer review prompted more plausible partial-fix alternatives; canonical option rationales were revised in lockstep. Correct indices are unchanged."
+    },
+    "aipc01-0693": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-bases-logging.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-permissions.html"
+      ],
+      "verifiedClaims": [
+        "Resource logs distinguish EMBEDDING_COMPLETED and INDEXING_FAILED and provide status_reasons for processing failures.",
+        "Ingestion uses the service role already bound to the knowledge base; that role needs access to its vector database."
+      ],
+      "reviewNotes": "Reviewed against current primary AWS documentation. Scenario and alternatives are original; no unresolved factual claim retained. Independent peer review prompted more plausible partial-fix alternatives; canonical option rationales were revised in lockstep. Correct indices are unchanged."
+    },
+    "aipc01-0694": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-data-source-sync-ingest.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-bases-logging.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/logging-using-cloudtrail.html"
+      ],
+      "verifiedClaims": [
+        "Metadata sidecar filenames include the source filename and extension followed by .metadata.json.",
+        "RESOURCE_IGNORED includes its reason in status_reasons."
+      ],
+      "reviewNotes": "Reviewed against current primary AWS documentation. Scenario and alternatives are original; no unresolved factual claim retained."
+    },
+    "aipc01-0695": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_GetIngestionJob.html",
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_StartIngestionJob.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-bases-logging.html"
+      ],
+      "verifiedClaims": [
+        "StartIngestionJob returns HTTP 202 and an ingestionJob object.",
+        "GetIngestionJob returns job status, failureReasons and document statistics.",
+        "Resource ingestion logs include ingestion_job_id and document processing outcomes."
+      ],
+      "reviewNotes": "Reviewed against current primary AWS documentation. Scenario and alternatives are original; no unresolved factual claim retained."
+    },
+    "aipc01-0696": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliveryDestinationPolicy.html",
+        "https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_CreateDelivery.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-bases-logging.html"
+      ],
+      "verifiedClaims": [
+        "PutDeliveryDestinationPolicy is applied in the destination account to permit cross-account delivery.",
+        "CreateDelivery connects the authorized source and destination."
+      ],
+      "reviewNotes": "Reviewed against current primary AWS documentation. Scenario and alternatives are original; no unresolved factual claim retained."
+    },
+    "aipc01-0697": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-bases-logging.html"
+      ],
+      "verifiedClaims": [
+        "Resource log events expose ingestion_job_id and status; DELETION_FAILED is a documented resource failure status.",
+        "Job-level ingestion_job_status and resource-level status have distinct meanings."
+      ],
+      "reviewNotes": "Reviewed against current primary AWS documentation. Scenario and alternatives are original; no unresolved factual claim retained."
+    },
+    "aipc01-0698": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_IngestionJob.html",
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_KnowledgeBaseDocumentDetail.html",
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_GetIngestionJob.html"
+      ],
+      "verifiedClaims": [
+        "IngestionJob status values include COMPLETE but not INDEXED.",
+        "KnowledgeBaseDocumentDetail uses INDEXED and other document processing states."
+      ],
+      "reviewNotes": "Reviewed against current primary AWS documentation. Scenario and alternatives are original; no unresolved factual claim retained."
+    },
+    "aipc01-0699": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/logging-using-cloudtrail.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-bases-logging.html"
+      ],
+      "verifiedClaims": [
+        "CloudTrail captures Bedrock API actions with caller and request context.",
+        "Knowledge base APPLICATION_LOGS provide job- and resource-level ingestion records, including status_reasons and chunk_statistics."
+      ],
+      "reviewNotes": "Reviewed against current primary AWS documentation. Scenario and alternatives are original; no unresolved factual claim retained."
+    },
+    "aipc01-0700": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-direct-ingestion.html",
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_DeleteKnowledgeBaseDocuments.html",
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_KnowledgeBaseDocumentDetail.html"
+      ],
+      "verifiedClaims": [
+        "Direct knowledge base changes are not reflected in an S3 data source and can be overwritten by a later sync.",
+        "DeleteKnowledgeBaseDocuments returns asynchronous document status information."
+      ],
+      "reviewNotes": "Reviewed against current primary AWS documentation. Scenario and alternatives are original; no unresolved factual claim retained."
+    },
+    "aipc01-0701": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_StartIngestionJob.html",
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_GetIngestionJob.html"
+      ],
+      "verifiedClaims": [
+        "StartIngestionJob clientToken ensures a request completes no more than once and duplicate matching tokens are ignored without error.",
+        "GetIngestionJob exposes the actual asynchronous job state."
+      ],
+      "reviewNotes": "Reviewed against current primary AWS documentation. Scenario and alternatives are original; no unresolved factual claim retained."
+    },
+    "aipc01-0702": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-direct-ingestion-add.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-direct-ingestion.html",
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_IngestKnowledgeBaseDocuments.html",
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_GetKnowledgeBaseDocuments.html"
+      ],
+      "verifiedClaims": [
+        "Direct ingestion overwrites content for an existing document identifier.",
+        "Custom data sources support inline documents and use document operations without IngestionJob sync operations."
+      ],
+      "reviewNotes": "Reviewed against current primary AWS documentation. Scenario and alternatives are original; no unresolved factual claim retained."
+    },
+    "aipc01-0703": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_GetKnowledgeBaseDocuments.html",
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_IngestKnowledgeBaseDocuments.html",
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_KnowledgeBaseDocumentDetail.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-direct-ingestion-add.html"
+      ],
+      "verifiedClaims": [
+        "GetKnowledgeBaseDocuments accepts up to ten identifiers per request.",
+        "IngestKnowledgeBaseDocuments returns HTTP 202 with document details.",
+        "Eight-document ingestion batches fit both the API reference array maximum of ten and the user-guide stated maximum of twenty-five."
+      ],
+      "reviewNotes": "Reviewed primary AWS API and user guide. They disagree on the global direct-ingestion maximum (10 versus 25). This item deliberately uses an application cap of eight, accepted by both sources; no disputed limit determines its key."
+    },
+    "aipc01-0704": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_DeleteKnowledgeBaseDocuments.html",
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_KnowledgeBaseDocumentDetail.html",
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_GetKnowledgeBaseDocuments.html"
+      ],
+      "verifiedClaims": [
+        "DeleteKnowledgeBaseDocuments returns HTTP 202 with document details.",
+        "Document detail statuses include DELETING and DELETE_IN_PROGRESS; GetKnowledgeBaseDocuments returns document processing status."
+      ],
+      "reviewNotes": "Reviewed against current primary AWS documentation. Scenario and alternatives are original; no unresolved factual claim retained."
+    },
+    "aipc01-0705": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/notification-content-structure.html"
+      ],
+      "verifiedClaims": [
+        "S3 PUT and DELETE notifications include sequencers for same-object event ordering.",
+        "Notifications may arrive out of order; shorter sequencers must be left-padded before lexicographic comparison."
+      ],
+      "reviewNotes": "Reviewed against current primary AWS documentation. Scenario and alternatives are original; no unresolved factual claim retained."
+    },
+    "aipc01-0706": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/lambda/latest/dg/services-sqs-scaling.html",
+        "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/standard-queues-at-least-once-delivery.html",
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_IngestKnowledgeBaseDocuments.html"
+      ],
+      "verifiedClaims": [
+        "SQS event source maximum concurrency limits concurrent function instances and should not exceed available reserved concurrency.",
+        "SQS standard queues can redeliver messages; AWS recommends idempotent applications.",
+        "Direct ingestion can return ThrottlingException and InternalServerException."
+      ],
+      "reviewNotes": "Reviewed against current primary AWS documentation. Scenario and alternatives are original; no unresolved factual claim retained."
+    },
+    "aipc01-0707": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-data-source-sync-ingest.html",
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/notification-how-to-event-types-and-destinations.html"
+      ],
+      "verifiedClaims": [
+        "Bedrock data-source sync incrementally processes added, modified and deleted documents.",
+        "S3 notifications support event-type-specific configuration, including object-removal events."
+      ],
+      "reviewNotes": "Reviewed against current primary AWS documentation. Scenario and alternatives are original; no unresolved factual claim retained."
+    },
+    "aipc01-0708": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-direct-ingestion-prereq.html",
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_IngestKnowledgeBaseDocuments.html"
+      ],
+      "verifiedClaims": [
+        "AWS direct-ingestion prerequisites list IngestKnowledgeBaseDocuments, DeleteKnowledgeBaseDocuments, GetKnowledgeBaseDocuments and ListKnowledgeBaseDocuments permissions scoped to knowledge base ARNs."
+      ],
+      "reviewNotes": "Reviewed against current primary AWS documentation. Scenario and alternatives are original; no unresolved factual claim retained."
+    },
+    "aipc01-0709": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-direct-ingestion.html",
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_StartIngestionJob.html",
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_IngestKnowledgeBaseDocuments.html",
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/notification-content-structure.html"
+      ],
+      "verifiedClaims": [
+        "AWS warns not to submit IngestKnowledgeBaseDocuments and StartIngestionJob at the same time.",
+        "For S3 sources, direct document changes are not reflected in S3 and may be overwritten by subsequent syncs.",
+        "S3 sequencers order PUT and DELETE events for the same object key, which is separate from coordinating knowledge base ingestion workflows."
+      ],
+      "reviewNotes": "Reviewed against current primary AWS documentation. Scenario and alternatives are original; no unresolved factual claim retained. Independent peer review prompted more plausible partial-fix alternatives; canonical option rationales were revised in lockstep. Correct indices are unchanged. The correct coordination option explicitly waits for the active operation to finish; the exact AWS simultaneous-request warning remains separately stated in verifiedClaims."
+    },
+    "aipc01-0710": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://aws.amazon.com/blogs/machine-learning/supercharge-your-llm-performance-with-amazon-sagemaker-large-model-inference-container-v15/",
+        "https://docs.aws.amazon.com/sagemaker/latest/dg/async-inference.html"
+      ],
+      "verifiedClaims": [
+        "LMI v15 documents OPTION_ASYNC_MODE=true, OPTION_ROLLING_BATCH=disable, and djl_python.lmi_vllm.vllm_async_service.",
+        "LMI v15 can be invoked through InvokeEndpoint or InvokeEndpointWithResponseStream.",
+        "SageMaker Asynchronous Inference is a distinct queued hosting option."
+      ],
+      "reviewNotes": "Checked against AWS primary documentation; original hypothetical scenario. No cloud execution performed."
+    },
+    "aipc01-0711": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://aws.amazon.com/blogs/machine-learning/improve-throughput-performance-of-llama-2-models-using-amazon-sagemaker/",
+        "https://aws.amazon.com/blogs/machine-learning/accelerating-llm-inference-with-post-training-weight-and-activation-using-awq-and-gptq-on-amazon-sagemaker-ai/"
+      ],
+      "verifiedClaims": [
+        "AWS describes KV-cache memory as dependent on sequence length.",
+        "AWS documents max_rolling_batch_size as limiting concurrent rolling-batch requests.",
+        "AWS recommends tuning memory and performance with workload-specific sequences."
+      ],
+      "reviewNotes": "Checked against AWS primary documentation; original hypothetical scenario. No cloud execution performed."
+    },
+    "aipc01-0712": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://aws.amazon.com/blogs/machine-learning/inference-llama-2-models-with-real-time-response-streaming-using-amazon-sagemaker/",
+        "https://aws.amazon.com/blogs/machine-learning/boost-inference-performance-for-mixtral-and-llama-2-models-with-new-amazon-sagemaker-containers/"
+      ],
+      "verifiedClaims": [
+        "AWS describes tensor_parallel_degree as the number of GPU partitions and relates it to workers per model.",
+        "AWS documents continuous-batch and tensor-parallel settings as workload-tuning parameters."
+      ],
+      "reviewNotes": "Checked against AWS primary documentation; original hypothetical scenario. No cloud execution performed."
+    },
+    "aipc01-0713": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://aws.amazon.com/blogs/machine-learning/improve-performance-of-falcon-models-with-amazon-sagemaker/",
+        "https://aws.amazon.com/blogs/machine-learning/improve-throughput-performance-of-llama-2-models-using-amazon-sagemaker/"
+      ],
+      "verifiedClaims": [
+        "AWS explains admission of waiting requests at decode iteration boundaries for continuous batching.",
+        "max_rolling_batch_size limits concurrent requests in the documented legacy rolling-batch configuration."
+      ],
+      "reviewNotes": "Legacy-engine scenario is explicitly pinned and already validated; it does not recommend obsolete image defaults for new deployments."
+    },
+    "aipc01-0714": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://aws.amazon.com/blogs/machine-learning/supercharge-your-llm-performance-with-amazon-sagemaker-large-model-inference-container-v15/",
+        "https://aws.amazon.com/blogs/machine-learning/improve-throughput-performance-of-llama-2-models-using-amazon-sagemaker/"
+      ],
+      "verifiedClaims": [
+        "AWS LMI examples configure model-loading timeout separately from container_startup_health_check_timeout.",
+        "AWS documents tuning active batch size and input length to avoid runtime GPU memory failures."
+      ],
+      "reviewNotes": "Checked against AWS primary documentation; original hypothetical scenario. No cloud execution performed."
+    },
+    "aipc01-0715": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://aws.amazon.com/blogs/machine-learning/accelerating-llm-inference-with-post-training-weight-and-activation-using-awq-and-gptq-on-amazon-sagemaker-ai/"
+      ],
+      "verifiedClaims": [
+        "AWS describes reduced memory consumption from post-training quantization and workload-dependent performance.",
+        "AWS advises testing quantized deployments with the actual data, traffic, and input/output lengths."
+      ],
+      "reviewNotes": "Checked against AWS primary documentation; original hypothetical scenario. No cloud execution performed."
+    },
+    "aipc01-0716": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://aws.amazon.com/blogs/machine-learning/supercharge-your-llm-performance-with-amazon-sagemaker-large-model-inference-container-v15/",
+        "https://aws.amazon.com/blogs/machine-learning/accelerating-llm-inference-with-post-training-weight-and-activation-using-awq-and-gptq-on-amazon-sagemaker-ai/"
+      ],
+      "verifiedClaims": [
+        "OPTION_MAX_MODEL_LEN sets the model context length in the documented LMI v15 example.",
+        "AWS discusses input/output sequence lengths as important benchmark and deployment parameters."
+      ],
+      "reviewNotes": "Checked against AWS primary documentation; original hypothetical scenario. No cloud execution performed."
+    },
+    "aipc01-0717": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://aws.amazon.com/blogs/machine-learning/supercharge-your-llm-performance-with-amazon-sagemaker-large-model-inference-container-v15/",
+        "https://aws.amazon.com/blogs/machine-learning/accelerating-llm-inference-with-post-training-weight-and-activation-using-awq-and-gptq-on-amazon-sagemaker-ai/"
+      ],
+      "verifiedClaims": [
+        "AWS documents the tradeoff between higher batch sizes, throughput, and latency.",
+        "AWS distinguishes time to first token from end-to-end latency and aggregate throughput."
+      ],
+      "reviewNotes": "Checked against AWS primary documentation; original hypothetical scenario. No cloud execution performed."
+    },
+    "aipc01-0718": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://aws.amazon.com/blogs/machine-learning/supercharge-your-llm-performance-with-amazon-sagemaker-large-model-inference-container-v15/",
+        "https://aws.amazon.com/blogs/machine-learning/accelerating-llm-inference-with-post-training-weight-and-activation-using-awq-and-gptq-on-amazon-sagemaker-ai/"
+      ],
+      "verifiedClaims": [
+        "LMI v15 supports vLLM V1 and V0 and documents VLLM_USE_V1=0 for V0.",
+        "AWS LMI v15 throughput improvements are tied to the benchmark models and concurrency levels."
+      ],
+      "reviewNotes": "Checked against AWS primary documentation; original hypothetical scenario. No cloud execution performed."
+    },
+    "aipc01-0719": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/sagemaker/latest/dg/model-optimize.html",
+        "https://aws.amazon.com/blogs/machine-learning/introducing-fast-model-loader-in-sagemaker-inference-accelerate-autoscaling-for-your-large-language-models-llms-part-2/"
+      ],
+      "verifiedClaims": [
+        "Fast model loading pre-shards the model and streams weights from S3 directly to GPUs.",
+        "It avoids disk download, host-memory loading, and host-side sharding steps in the normal loading path.",
+        "AWS documents Fast Model Loader integration with compatible LMI containers for GPU instances."
+      ],
+      "reviewNotes": "Checked against AWS primary documentation; original hypothetical scenario. No cloud execution performed."
+    },
+    "aipc01-0720": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/sagemaker/latest/dg/async-inference.html",
+        "https://docs.aws.amazon.com/sagemaker/latest/dg/serverless-endpoints.html",
+        "https://docs.aws.amazon.com/sagemaker/latest/dg/async-inference-invoke-endpoint.html"
+      ],
+      "verifiedClaims": [
+        "Asynchronous Inference supports up to 1 GB payloads and up to one hour of processing.",
+        "Asynchronous endpoints can scale to zero and return results through S3.",
+        "Serverless Inference excludes GPUs."
+      ],
+      "reviewNotes": "Checked against AWS primary documentation; original hypothetical scenario. No cloud execution performed."
+    },
+    "aipc01-0721": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_runtime_InvokeEndpointAsync.html",
+        "https://docs.aws.amazon.com/sagemaker/latest/dg/async-inference-create-endpoint-create-endpoint-config.html"
+      ],
+      "verifiedClaims": [
+        "InvokeEndpointAsync returns HTTP 202 and result locations rather than the prediction.",
+        "NotificationConfig supports SuccessTopic and ErrorTopic under asynchronous OutputConfig."
+      ],
+      "reviewNotes": "Checked against AWS primary documentation; original hypothetical scenario. No cloud execution performed."
+    },
+    "aipc01-0722": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_runtime_InvokeEndpointAsync.html",
+        "https://docs.aws.amazon.com/sagemaker/latest/dg/async-inference-invoke-endpoint.html"
+      ],
+      "verifiedClaims": [
+        "RequestTTLSeconds controls queue age, with a range of 60 to 21600 seconds.",
+        "InvocationTimeoutSeconds controls processing time, with a range of 1 to 3600 seconds."
+      ],
+      "reviewNotes": "Checked against AWS primary documentation; original hypothetical scenario. No cloud execution performed."
+    },
+    "aipc01-0723": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/sagemaker/latest/dg/async-inference-autoscale.html",
+        "https://docs.aws.amazon.com/sagemaker/latest/dg/async-inference-monitor.html"
+      ],
+      "verifiedClaims": [
+        "ApproximateBacklogSizePerInstance is published with EndpointName and used for target tracking.",
+        "RequestDownloadFailures and other delivery metrics use EndpointName and VariantName.",
+        "InvocationsPerInstance is not published for async-enabled endpoints."
+      ],
+      "reviewNotes": "Checked against AWS primary documentation; original hypothetical scenario. No cloud execution performed."
+    },
+    "aipc01-0724": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AsyncInferenceClientConfig.html",
+        "https://docs.aws.amazon.com/sagemaker/latest/dg/async-inference-create-endpoint-create-endpoint-config.html",
+        "https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_runtime_InvokeEndpointAsync.html"
+      ],
+      "verifiedClaims": [
+        "MaxConcurrentInvocationsPerInstance is in AsyncInferenceConfig.ClientConfig.",
+        "The API field controls concurrent requests sent by the SageMaker client to the container.",
+        "RequestTTLSeconds controls queue age rather than active invocation concurrency."
+      ],
+      "reviewNotes": "Checked against AWS primary documentation; original hypothetical scenario. No cloud execution performed."
+    },
+    "aipc01-0725": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/sagemaker/latest/dg/async-inference-monitor.html",
+        "https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AsyncInferenceOutputConfig.html"
+      ],
+      "verifiedClaims": [
+        "ResponseUploadFailures counts response upload failures.",
+        "NotificationFailures counts notification publication failures.",
+        "Both use EndpointName and VariantName dimensions."
+      ],
+      "reviewNotes": "Checked against AWS primary documentation; original hypothetical scenario. No cloud execution performed."
+    },
+    "aipc01-0726": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/sagemaker/latest/dg/batch-transform.html",
+        "https://docs.aws.amazon.com/sagemaker/latest/dg/serverless-endpoints.html",
+        "https://docs.aws.amazon.com/sagemaker/latest/dg/async-inference.html"
+      ],
+      "verifiedClaims": [
+        "AWS recommends batch transform for large datasets and when a persistent endpoint is not needed.",
+        "Batch transform distributes S3 input objects across job instances.",
+        "Serverless Inference excludes GPUs."
+      ],
+      "reviewNotes": "Checked against AWS primary documentation; original hypothetical scenario. No cloud execution performed."
+    },
+    "aipc01-0727": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://aws.amazon.com/blogs/machine-learning/supercharge-your-llm-performance-with-amazon-sagemaker-large-model-inference-container-v15/",
+        "https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_runtime_InvokeEndpointAsync.html",
+        "https://docs.aws.amazon.com/sagemaker/latest/dg/serverless-endpoints.html"
+      ],
+      "verifiedClaims": [
+        "AWS LMI v15 examples use InvokeEndpointWithResponseStream for real-time streaming.",
+        "InvokeEndpointAsync returns acceptance and result locations rather than prediction content.",
+        "Serverless Inference excludes GPUs."
+      ],
+      "reviewNotes": "Checked against AWS primary documentation; original hypothetical scenario. No cloud execution performed."
+    },
+    "aipc01-0728": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/sagemaker/latest/dg/async-inference-autoscale.html",
+        "https://docs.aws.amazon.com/sagemaker/latest/dg/async-inference-monitor.html"
+      ],
+      "verifiedClaims": [
+        "AWS documents a HasBacklogWithoutCapacity step-scaling policy as a supplement to target tracking.",
+        "HasBacklogWithoutCapacity equals 1 when requests are queued and instance count is zero.",
+        "Scale-from-zero requests wait for capacity to become available."
+      ],
+      "reviewNotes": "Checked against AWS primary documentation; original hypothetical scenario. No cloud execution performed."
+    },
+    "aipc01-0729": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_runtime_InvokeEndpointAsync.html",
+        "https://docs.aws.amazon.com/sagemaker/latest/dg/async-inference-invoke-endpoint.html",
+        "https://docs.aws.amazon.com/sagemaker/latest/dg/async-inference.html"
+      ],
+      "verifiedClaims": [
+        "Current InvokeEndpointAsync supports Body up to 128000 bytes.",
+        "Body and InputLocation are mutually exclusive.",
+        "The response remains an asynchronous acknowledgment with result locations."
+      ],
+      "reviewNotes": "Current AWS API and developer guide both checked for inline Body support on 2026-11-05; explicitly avoids the older all-inputs-must-be-S3 assumption."
+    },
+    "aipc01-0730": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html",
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_GuardrailConfiguration.html",
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_GuardrailTraceAssessment.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-use-independent-api.html"
+      ],
+      "verifiedClaims": [
+        "Converse guardrailConfig contains trace with enabled_full supported.",
+        "Converse trace.guardrail contains inputAssessment and outputAssessments maps.",
+        "Policy assessments distinguish content, topic, sensitive-information, and other checks."
+      ],
+      "reviewNotes": "Checked against AWS primary documentation; original hypothetical scenario. No cloud execution performed."
+    },
+    "aipc01-0731": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_InvokeModel.html",
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_GuardrailConfiguration.html",
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ApplyGuardrail.html"
+      ],
+      "verifiedClaims": [
+        "InvokeModel maps trace, guardrailIdentifier, and guardrailVersion to headers.",
+        "InvokeModel trace accepts ENABLED_FULL and requires application/json for guardrail use.",
+        "Providing a guardrail identifier without a version is an error."
+      ],
+      "reviewNotes": "Checked against AWS primary documentation; original hypothetical scenario. No cloud execution performed."
+    },
+    "aipc01-0732": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ApplyGuardrail.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-use-independent-api.html"
+      ],
+      "verifiedClaims": [
+        "ApplyGuardrail accepts outputScope=FULL and source INPUT or OUTPUT.",
+        "Full output includes detected and non-detected entries for supported policies.",
+        "The full-output expansion excludes word filters and regex sensitive-information filters."
+      ],
+      "reviewNotes": "Checked against AWS primary documentation; original hypothetical scenario. No cloud execution performed."
+    },
+    "aipc01-0733": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_GuardrailContentFilter.html",
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_GuardrailAssessment.html"
+      ],
+      "verifiedClaims": [
+        "GuardrailContentFilter has distinct confidence, filterStrength, detected, and action fields.",
+        "Content-filter actions include BLOCKED and NONE.",
+        "The INSULTS category is a content-filter type."
+      ],
+      "reviewNotes": "Checked against AWS primary documentation; original hypothetical scenario. No cloud execution performed."
+    },
+    "aipc01-0734": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_GuardrailPiiEntityFilter.html",
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ApplyGuardrail.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-use-independent-api.html"
+      ],
+      "verifiedClaims": [
+        "PII entity filter actions include ANONYMIZED, BLOCKED, and NONE.",
+        "ApplyGuardrail returns a top-level action, policy assessments, and outputs.",
+        "ApplyGuardrail evaluates content independently of a foundation-model invocation."
+      ],
+      "reviewNotes": "Checked against AWS primary documentation; original hypothetical scenario. No cloud execution performed."
+    },
+    "aipc01-0735": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-use-converse-api.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-use-independent-api.html"
+      ],
+      "verifiedClaims": [
+        "Converse guardrails do not evaluate toolResult, toolSpec descriptions/input schemas, or toolUse.input.",
+        "ApplyGuardrail can evaluate supplied content independently in the application flow."
+      ],
+      "reviewNotes": "Checked against AWS primary documentation; original hypothetical scenario. No cloud execution performed."
+    },
+    "aipc01-0736": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_GuardrailContextualGroundingFilter.html",
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_GuardrailAssessment.html"
+      ],
+      "verifiedClaims": [
+        "Contextual grounding filters report GROUNDING or RELEVANCE with score, threshold, action, and detection.",
+        "A score below its corresponding threshold is a detected contextual-check failure."
+      ],
+      "reviewNotes": "Checked against AWS primary documentation; original hypothetical scenario. No cloud execution performed."
+    },
+    "aipc01-0737": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_GuardrailStreamConfiguration.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-streaming.html"
+      ],
+      "verifiedClaims": [
+        "ConverseStream guardrailConfig supports streamProcessingMode sync or async.",
+        "Synchronous mode buffers and assesses chunks before delivery.",
+        "Asynchronous mode can deliver content before the guardrail assessment completes."
+      ],
+      "reviewNotes": "Checked against AWS primary documentation; original hypothetical scenario. No cloud execution performed."
+    },
+    "aipc01-0738": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html",
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_GuardrailAssessment.html",
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_GuardrailTraceAssessment.html"
+      ],
+      "verifiedClaims": [
+        "Converse supports selective guardContent evaluation.",
+        "GuardrailAssessment includes appliedGuardrailDetails with identifier and version information.",
+        "Guardrail trace distinguishes inputAssessment and outputAssessments."
+      ],
+      "reviewNotes": "Checked against AWS primary documentation; original hypothetical scenario. No cloud execution performed."
+    },
+    "aipc01-0739": {
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_GuardrailInvocationMetrics.html",
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ApplyGuardrail.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-use-converse-api.html"
+      ],
+      "verifiedClaims": [
+        "GuardrailInvocationMetrics contains guardrailCoverage and guardrailProcessingLatency.",
+        "Coverage includes textCharacters with guarded and total counts.",
+        "Converse guardContent can select only part of the message content for assessment."
+      ],
+      "reviewNotes": "Checked against AWS primary documentation; original hypothetical scenario. No cloud execution performed."
+    },
+    "aipc01-0740": {
+      "oldId": "aipc01-0015",
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/inference-profiles-support.html"
+      ],
+      "verifiedClaims": [
+        "Geographic profiles route within their geography; global profiles have broader destinations.",
+        "SCP permissions must allow the destinations required by a geographic profile."
+      ],
+      "reviewNotes": "Reviewed against current AWS documentation; alternatives assessed against all stated constraints."
+    },
+    "aipc01-0741": {
+      "oldId": "aipc01-0019",
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-config.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/rerank-use.html"
+      ],
+      "verifiedClaims": [
+        "Hybrid search combines raw-text and semantic retrieval for supported vector stores with a filterable text field.",
+        "Knowledge base retrieval supports metadata filtering."
+      ],
+      "reviewNotes": "Reviewed against current AWS documentation; alternatives assessed against all stated constraints."
+    },
+    "aipc01-0742": {
+      "oldId": "aipc01-0034",
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/quotas-token-burndown.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/quotas.html"
+      ],
+      "verifiedClaims": [
+        "Upfront token reservations can depend on the output-token maximum.",
+        "Effective account quotas may differ from published defaults and increases are not automatic."
+      ],
+      "reviewNotes": "Reviewed against current AWS documentation; alternatives assessed against all stated constraints."
+    },
+    "aipc01-0743": {
+      "oldId": "aipc01-0082",
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/evaluation-kb.html"
+      ],
+      "verifiedClaims": [
+        "Supervised fine-tuning adjusts model parameters using labeled examples.",
+        "RAG evaluations can assess retrieved context and generated responses against ground truth."
+      ],
+      "reviewNotes": "Reviewed against current AWS documentation; alternatives assessed against all stated constraints."
+    },
+    "aipc01-0744": {
+      "oldId": "aipc01-0089",
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html",
+        "https://docs.aws.amazon.com/sdkref/latest/guide/feature-retry-behavior.html"
+      ],
+      "verifiedClaims": [
+        "SQS-triggered Lambda processing can repeat messages and requires retry-safe handlers.",
+        "SDK retry strategies support bounded attempts and backoff; application deadlines and fallback policy remain application responsibilities."
+      ],
+      "reviewNotes": "Reviewed against current AWS documentation; alternatives assessed against all stated constraints."
+    },
+    "aipc01-0745": {
+      "oldId": "aipc01-0091",
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-header-allowlist.html",
+        "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/gateway-fine-grained-access-control.html"
+      ],
+      "verifiedClaims": [
+        "Runtime custom-header propagation is configured with a request-header allowlist and deployed configuration.",
+        "Allowlisted arbitrary headers can be read from context.request.headers.",
+        "Tool access can be validated and scoped in trusted code."
+      ],
+      "reviewNotes": "Reviewed against current AWS documentation; alternatives assessed against all stated constraints."
+    },
+    "aipc01-0746": {
+      "oldId": "aipc01-0112",
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/gateway-fine-grained-access-control.html"
+      ],
+      "verifiedClaims": [
+        "Gateway REQUEST interceptors execute before target calls and can reject unauthorized tools or validate parameters.",
+        "AWS recommends minimum necessary permissions and fail-safe access defaults."
+      ],
+      "reviewNotes": "Reviewed against current AWS documentation; alternatives assessed against all stated constraints."
+    },
+    "aipc01-0747": {
+      "oldId": "aipc01-0167",
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/data-retention.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/abuse-detection.html"
+      ],
+      "verifiedClaims": [
+        "Retention configuration is regional.",
+        "For mantle requests the first non-inherit setting in project, account, then model default determines the effective mode.",
+        "An effective none mode blocks models requiring incompatible retention."
+      ],
+      "reviewNotes": "Scoped to documented text-model retention controls and bedrock-mantle projects; does not assert a blanket exemption from documented abuse/CSAM exceptions."
+    },
+    "aipc01-0748": {
+      "oldId": "aipc01-0169",
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/model-distillation.html"
+      ],
+      "verifiedClaims": [
+        "Supervised fine-tuning uses labeled input/output examples.",
+        "Bedrock distillation uses teacher-generated responses to fine-tune a smaller student for a use case."
+      ],
+      "reviewNotes": "Reviewed against current AWS documentation; alternatives assessed against all stated constraints."
+    },
+    "aipc01-0749": {
+      "oldId": "aipc01-0170",
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/inference-profiles-support.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html"
+      ],
+      "verifiedClaims": [
+        "Inference profiles have model and Region support constraints.",
+        "A profile determines possible processing Regions rather than pinning processing to the source Region."
+      ],
+      "reviewNotes": "Reviewed against current AWS documentation; alternatives assessed against all stated constraints."
+    },
+    "aipc01-0750": {
+      "oldId": "aipc01-0174",
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html",
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.ConditionExpressions.html"
+      ],
+      "verifiedClaims": [
+        "SQS/Lambda handlers must tolerate multiple processing attempts.",
+        "DynamoDB conditional writes can reject creation of an existing keyed item."
+      ],
+      "reviewNotes": "No exactly-once generation guarantee. Claim recovery is explicitly left as an application requirement; the sole published side effect is the keyed DynamoDB result."
+    },
+    "aipc01-0751": {
+      "oldId": "aipc01-0193",
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-http-protocol-contract.html",
+        "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-service-contract.html"
+      ],
+      "verifiedClaims": [
+        "The default HTTP protocol uses port 8080 and POST /invocations.",
+        "GET /ping provides health/readiness status."
+      ],
+      "reviewNotes": "The stem explicitly uses defaults with no override because current Runtime supports configurable serving ports and invocation paths."
+    },
+    "aipc01-0752": {
+      "oldId": "aipc01-0255",
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/monitoring-runtime-otps.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/monitoring-runtime-metrics.html"
+      ],
+      "verifiedClaims": [
+        "For streaming inference, OTPS can be estimated from OutputTokenCount divided by InvocationLatency minus TimeToFirstToken.",
+        "Longer output can raise invocation latency without a throughput regression."
+      ],
+      "reviewNotes": "Reviewed against current AWS documentation; alternatives assessed against all stated constraints."
+    },
+    "aipc01-0753": {
+      "oldId": "aipc01-0259",
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/observability.html"
+      ],
+      "verifiedClaims": [
+        "AgentCore observability exposes workflow steps, intermediate outputs, durations, token usage, and errors."
+      ],
+      "reviewNotes": "Iteration budget and non-progress detection are application design recommendations inferred from the stated trace, not claimed built-in AgentCore enforcement."
+    },
+    "aipc01-0754": {
+      "oldId": "aipc01-0271",
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/deploy-custom-model-on-demand.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/custom-model-use-pt.html"
+      ],
+      "verifiedClaims": [
+        "Supported custom models can use on-demand deployments invoked by deployment ARN after activation.",
+        "Provisioned custom-model inference uses purchased Provisioned Throughput."
+      ],
+      "reviewNotes": "Model support is explicitly supplied as validated scenario evidence; no universal claim that all customized models require Provisioned Throughput."
+    },
+    "aipc01-0755": {
+      "oldId": "aipc01-0278",
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/prov-thru-supported.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html"
+      ],
+      "verifiedClaims": [
+        "Provisioned Throughput availability is listed by model and Region.",
+        "GovCloud (US-West) supports Provisioned Throughput only for custom models with no commitment.",
+        "Inference profiles do not support Provisioned Throughput."
+      ],
+      "reviewNotes": "Reviewed against current AWS documentation; alternatives assessed against all stated constraints."
+    },
+    "aipc01-0756": {
+      "oldId": "aipc01-0295",
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-retrieve-generate.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-metadata.html"
+      ],
+      "verifiedClaims": [
+        "RetrieveAndGenerate returns source references/citations.",
+        "S3 document metadata can carry application-defined attributes."
+      ],
+      "reviewNotes": "Release metadata, preserved source versions, and answer audit records are explicit application design; native citations are not represented as immutable version archival."
+    },
+    "aipc01-0757": {
+      "oldId": "aipc01-0299",
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/data-protection.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/model-invocation-logging.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/abuse-detection.html"
+      ],
+      "verifiedClaims": [
+        "Model providers do not have access to Bedrock deployment accounts or customer prompts/completions there.",
+        "Customer invocation logging can deliver payload data to S3 or CloudWatch.",
+        "Service-side abuse detection and retention are separate documented controls."
+      ],
+      "reviewNotes": "Reviewed against current AWS documentation; alternatives assessed against all stated constraints."
+    },
+    "aipc01-0758": {
+      "oldId": "aipc01-0302",
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-use-converse-api.html",
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ApplyGuardrail.html"
+      ],
+      "verifiedClaims": [
+        "guardContent selection excludes other unwrapped message content from assessment.",
+        "Converse guardrails do not assess tool definitions, toolResult, or toolUse.input.",
+        "ApplyGuardrail assesses explicitly supplied content."
+      ],
+      "reviewNotes": "Reviewed against current AWS documentation; alternatives assessed against all stated constraints."
+    },
+    "aipc01-0759": {
+      "oldId": "aipc01-0308",
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/step-functions/latest/dg/concepts-error-handling.html",
+        "https://docs.aws.amazon.com/step-functions/latest/dg/connect-bedrock.html"
+      ],
+      "verifiedClaims": [
+        "Step Functions supports error-specific Retry and Catch policies.",
+        "Retry configuration supports backoff, attempt limits, and jitter."
+      ],
+      "reviewNotes": "Uses the actual recorded integration error rather than inventing a universal Bedrock integration exception prefix."
+    },
+    "aipc01-0760": {
+      "oldId": "aipc01-0313",
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/titan-embedding-models.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/evaluation-kb.html"
+      ],
+      "verifiedClaims": [
+        "Titan Text Embeddings V2 supports output dimensions 1024, 512, and 256.",
+        "RAG evaluation can compare retrieved context against ground-truth text."
+      ],
+      "reviewNotes": "Index rebuilding and matching query/document settings are implementation consequences of the explicit dimension mismatch; no assumption that padding preserves semantic space."
+    },
+    "aipc01-0761": {
+      "oldId": "aipc01-0348",
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-deploy.html"
+      ],
+      "verifiedClaims": [
+        "Guardrail versions are point-in-time snapshots.",
+        "Applications invoke a specified guardrail version and can switch configurations."
+      ],
+      "reviewNotes": "Reviewed against current AWS documentation; alternatives assessed against all stated constraints."
+    },
+    "aipc01-0762": {
+      "oldId": "aipc01-0351",
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management-deploy.html",
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_CreatePromptVersion.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/security_iam_service-with-iam.html"
+      ],
+      "verifiedClaims": [
+        "CreatePromptVersion creates a static prompt snapshot.",
+        "IAM policies control allowed actions and resources."
+      ],
+      "reviewNotes": "Approval binding, release-role separation, and evidence retention are customer-implemented governance controls, not a claim that Prompt management supplies native human approvals."
+    },
+    "aipc01-0763": {
+      "oldId": "aipc01-0358",
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/model-invocation-logging.html"
+      ],
+      "verifiedClaims": [
+        "S3 invocation-log destinations must be in the same account and Region.",
+        "For SSE-KMS logging, the documented key policy grants bedrock.amazonaws.com kms:GenerateDataKey with source conditions."
+      ],
+      "reviewNotes": "Reviewed against current AWS documentation; alternatives assessed against all stated constraints."
+    },
+    "aipc01-0764": {
+      "oldId": "aipc01-0360",
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-prompt-attack.html",
+        "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/gateway-fine-grained-access-control.html"
+      ],
+      "verifiedClaims": [
+        "Prompt injection attempts to override developer instructions.",
+        "Trusted execution controls can restrict tools, operations, and parameter scope."
+      ],
+      "reviewNotes": "Data/instruction separation and adversarial test selection are design recommendations; neither is presented as a complete prevention guarantee."
+    },
+    "aipc01-0765": {
+      "oldId": "aipc01-0416",
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-caching.html"
+      ],
+      "verifiedClaims": [
+        "Explicit caching uses supported cache controls/checkpoints on prompt prefixes.",
+        "Changing a prompt prefix causes a cache miss for that prefix.",
+        "Eligible checkpoints have model-specific minimums and TTL."
+      ],
+      "reviewNotes": "Reviewed against current AWS documentation; alternatives assessed against all stated constraints."
+    },
+    "aipc01-0766": {
+      "oldId": "aipc01-0431",
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/latency-optimized-inference.html"
+      ],
+      "verifiedClaims": [
+        "Optimized-latency quota exhaustion can cause fallback to standard inference.",
+        "The served latency configuration is visible in the API response and standard-served calls use standard rates."
+      ],
+      "reviewNotes": "Reviewed against current AWS documentation; alternatives assessed against all stated constraints."
+    },
+    "aipc01-0767": {
+      "oldId": "aipc01-0441",
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/model-distillation.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/evaluation.html"
+      ],
+      "verifiedClaims": [
+        "Distillation transfers teacher behavior to a student for a specific use case.",
+        "Bedrock supports custom evaluation datasets."
+      ],
+      "reviewNotes": "All metrics and release thresholds are fictional scenario evidence. The question does not claim a native automatic slice router or a student quality guarantee."
+    },
+    "aipc01-0768": {
+      "oldId": "aipc01-0443",
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/model-distillation.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/prequisites-model-distillation.html"
+      ],
+      "verifiedClaims": [
+        "Distillation uses task prompts and teacher responses to fine-tune a student.",
+        "Data synthesis can incur additional on-demand teacher inference charges."
+      ],
+      "reviewNotes": "Budgeting is a scenario recommendation; no prices, automatic stopping feature, or unsupported teacher/student pair is asserted."
+    },
+    "aipc01-0769": {
+      "oldId": "aipc01-0509",
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/model-evaluation-type-human.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/evaluation-judge.html"
+      ],
+      "verifiedClaims": [
+        "Human model evaluations can use subject-matter experts and rating metrics.",
+        "LLM-as-judge evaluations use an evaluator model to score responses and provide explanations."
+      ],
+      "reviewNotes": "Human review is required by the fictional organization policy in the stem; no claim about a particular regulator's legal approval standard."
+    },
+    "aipc01-0770": {
+      "oldId": "aipc01-0525",
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management-deploy.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/evaluation-judge.html"
+      ],
+      "verifiedClaims": [
+        "Prompt versions are static deployable snapshots.",
+        "Model evaluations can use custom data and selected or custom quality metrics."
+      ],
+      "reviewNotes": "CI gates, approvals, canary traffic, and rollback criteria are application delivery design, not built-in automatic Prompt management capabilities."
+    },
+    "aipc01-0771": {
+      "oldId": "aipc01-0536",
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-config.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-chunking.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-metadata.html"
+      ],
+      "verifiedClaims": [
+        "Knowledge base metadata supports distinct data types and filters.",
+        "Ingestion parses and chunks documents before embeddings are indexed."
+      ],
+      "reviewNotes": "Filter syntax in the stem is explanatory pseudocode. Both mismatches are stated evidence; the answer does not infer that all retrieval misses are caused by chunking."
+    },
+    "aipc01-0772": {
+      "oldId": "aipc01-0538",
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/observability.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/rerank-use.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/prov-throughput.html"
+      ],
+      "verifiedClaims": [
+        "Observability traces can identify workflow bottlenecks.",
+        "Reranking operates on supplied candidate documents.",
+        "Provisioned Throughput provisions model capacity, not custom orchestration stages."
+      ],
+      "reviewNotes": "Reviewed against current AWS documentation; alternatives assessed against all stated constraints."
+    },
+    "aipc01-0773": {
+      "oldId": "aipc01-0107",
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-tiers.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-cross-region.html"
+      ],
+      "verifiedClaims": [
+        "Standard safeguard tier offers broader language coverage than Classic for the stated policies.",
+        "Standard tier guardrails use cross-Region inference and should be evaluated during migration."
+      ],
+      "reviewNotes": "Reviewed against current AWS documentation; alternatives assessed against all stated constraints."
+    },
+    "aipc01-0774": {
+      "oldId": "aipc01-0357",
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/macie/latest/user/discovery-jobs.html"
+      ],
+      "verifiedClaims": [
+        "Macie jobs support scope selection for S3 object analysis.",
+        "Discovery results record analysis details, including objects that cannot be analyzed; findings record detected sensitive data."
+      ],
+      "reviewNotes": "Reviewed against current AWS documentation; alternatives assessed against all stated constraints."
+    },
+    "aipc01-0775": {
+      "oldId": "aipc01-0219",
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://aws.amazon.com/blogs/architecture/secure-multi-tenant-rag-with-amazon-bedrock-and-verified-permissions/",
+        "https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorized.html"
+      ],
+      "verifiedClaims": [
+        "Verified Permissions evaluates authorization over a principal, action, resource, and context and returns ALLOW or DENY.",
+        "The application must implement enforcement and deny-by-default handling."
+      ],
+      "reviewNotes": "No automatic knowledge-base integration or implicit enforcement is assumed. Both independent decision and trusted application enforcement are explicit."
+    },
+    "aipc01-0776": {
+      "oldId": "aipc01-0275",
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/prov-throughput.html"
+      ],
+      "verifiedClaims": [
+        "A Model Unit has model-specific input-token and output-token throughput specifications."
+      ],
+      "reviewNotes": "All numeric capacity rates are explicitly hypothetical. Three units is an arithmetic lower bound without safety headroom, not a production purchase recommendation."
+    },
+    "aipc01-0777": {
+      "oldId": "aipc01-0418",
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/prov-throughput.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/model-customization-use.html"
+      ],
+      "verifiedClaims": [
+        "Batch inference is asynchronous and reads/writes data through S3.",
+        "Provisioned Throughput is billed hourly and billing continues until deletion under applicable commitment terms."
+      ],
+      "reviewNotes": "No universal discount or batch-completion guarantee. Support and observed completion are supplied as scenario evidence."
+    },
+    "aipc01-0778": {
+      "oldId": "aipc01-0249",
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/evaluation.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/model-invocation-logging.html"
+      ],
+      "verifiedClaims": [
+        "Bedrock model evaluation supports customer-supplied datasets.",
+        "Invocation logging captures configured request/response data, rather than automatically evaluating historical quality."
+      ],
+      "reviewNotes": "Scheduling, fixed-set retention, slice comparison, and traffic-set versioning are customer implementation recommendations. The scenario does not assert that drift proves a model update."
+    },
+    "aipc01-0779": {
+      "oldId": "aipc01-0517",
+      "checkedOn": "2026-11-05",
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-eval-llm-results.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-config.html"
+      ],
+      "verifiedClaims": [
+        "Context relevance evaluates how relevant retrieved chunks are to the query.",
+        "Faithfulness evaluates whether generated responses are supported by retrieved context."
+      ],
+      "reviewNotes": "Reviewed against current AWS documentation; alternatives assessed against all stated constraints."
+    }
+  },
+  "reviewStatus": "All 100 original scenarios independently peer-reviewed against current primary AWS documentation; material findings resolved before release.",
+  "limitations": [
+    "Original CertReps scenarios, not copied AWS exam items.",
+    "Source checks and technical reviews do not establish statistical difficulty equivalence to the AWS exam.",
+    "Practice percentages do not convert to AWS scaled scores or guarantee certification."
+  ],
+  "reviewMethod": "AI-assisted authorship plus separate documentation-based technical/content review; no independent human review, live AWS execution or psychometric exam calibration claimed.",
+  "peerReviews": {
+    "platform": {
+      "itemsReviewed": 30,
+      "reportSha256": "b6bb88f7b8df5fc3a95cf6ebccb141d466c9000d0ad5075358b11d2654119c81",
+      "unresolvedMaterialFindings": 0
+    },
+    "inference": {
+      "itemsReviewed": 30,
+      "reportSha256": "534ac21f3af59d48b953a4c4489e099f144064c66b1bf99754e8e46251da0f5f",
+      "unresolvedMaterialFindings": 0
+    },
+    "rewrites": {
+      "itemsReviewed": 40,
+      "reportSha256": "96ea5516621c4b9fcc74d2f26b68d5761085997bc3b370a68b01b3f16e1b8bc0",
+      "unresolvedMaterialFindings": 0
+    }
+  },
+  "qualityMetrics": {
+    "newOrRewritten": 100,
+    "single": 61,
+    "multi": 39,
+    "correctStrictlyLongestSingle": 8,
+    "note": "Word-count diagnostic on the 100 released scenarios only; not an estimate of real-exam difficulty."
+  }
+}

@@ -21,15 +21,40 @@
       "Multiple choice",
       "Multiple response"
     ],
-    "checkedOn": "2026-10-18"
+    "checkedOn": "2026-11-05"
   },
   "seoTitle": "Free AIP-C01 Practice Exam - AWS Certified Generative AI Developer",
   "seoDescription": "Free AIP-C01 practice exam with {n} original scenario questions, explanations, and per-domain readiness scoring. No signup. Not affiliated with AWS.",
   "domains": [
-    { "name": "Foundation Model Integration & Compliance", "tag": "Domain 1", "weightPct": 31, "mockCount": 23 },
-    { "name": "Implementation & Integration", "tag": "Domain 2", "weightPct": 26, "mockCount": 20 },
-    { "name": "AI Safety, Security & Governance", "tag": "Domain 3", "weightPct": 20, "mockCount": 15 },
-    { "name": "Operational Efficiency & Optimization", "tag": "Domain 4", "weightPct": 12, "mockCount": 9 },
-    { "name": "Testing, Validation & Troubleshooting", "tag": "Domain 5", "weightPct": 11, "mockCount": 8 }
+    {
+      "name": "Foundation Model Integration & Compliance",
+      "tag": "Domain 1",
+      "weightPct": 31,
+      "mockCount": 23
+    },
+    {
+      "name": "Implementation & Integration",
+      "tag": "Domain 2",
+      "weightPct": 26,
+      "mockCount": 20
+    },
+    {
+      "name": "AI Safety, Security & Governance",
+      "tag": "Domain 3",
+      "weightPct": 20,
+      "mockCount": 15
+    },
+    {
+      "name": "Operational Efficiency & Optimization",
+      "tag": "Domain 4",
+      "weightPct": 12,
+      "mockCount": 9
+    },
+    {
+      "name": "Testing, Validation & Troubleshooting",
+      "tag": "Domain 5",
+      "weightPct": 11,
+      "mockCount": 8
+    }
   ]
 }

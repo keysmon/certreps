@@ -1,3 +1,4 @@
+import { chooseFirstAnswer } from "./answer-helpers";
 import { test, expect } from "@playwright/test";
 
 // Real-user path through the v1h mock-mode exam navigation: answer a few questions, jump
@@ -14,7 +15,7 @@ test("exam navigation: palette jump, edit, flag, leave, resume via interstitial,
 
   // Answer questions 1-3, advancing with the mock nav's "Next" after each submit.
   for (let i = 0; i < 3; i++) {
-    await page.locator("button.option").first().click();
+    await chooseFirstAnswer(page);
     await page.locator("div.footbar button.btn-primary").click(); // Submit answer
     await page.getByRole("button", { name: "Next", exact: true }).click();
   }
@@ -28,11 +29,13 @@ test("exam navigation: palette jump, edit, flag, leave, resume via interstitial,
   // The previously-recorded choice pre-fills, so the footbar offers to update it, not submit fresh.
   await expect(page.locator("div.footbar button.btn-primary")).toHaveText("Update answer");
 
-  // Change the answer: deselect option A (no-op if this was a single-select replace, but clears a
-  // multi-select's first pick), then select option B, so the recorded choice ends up as exactly
-  // option B regardless of question type.
-  await page.locator("button.option").nth(0).click();
+  // Edit to another complete response: B for a single, B+C for a multi.
+  const editingMulti=(await page.locator("button.option").first().getAttribute("class"))?.split(" ").includes("multi");
+  if(editingMulti){
+    for(const chosen of await page.locator('button.option[aria-pressed="true"]').all()) await chosen.click();
+  }
   await page.locator("button.option").nth(1).click();
+  if(editingMulti) await page.locator("button.option").nth(2).click();
   const editedOptionText = await page.locator("button.option").nth(1).locator("span:not(.marker)").innerText();
   await page.locator("div.footbar button.btn-primary").click(); // Update answer
 

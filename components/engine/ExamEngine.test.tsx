@@ -12,6 +12,7 @@ describe("ExamEngine quick mode", () => {
     for (let i = 0; i < 10; i++) {
       const optionButtons = screen.getAllByRole("button").filter((b) => b.className.includes("option"));
       await userEvent.click(optionButtons[0]);
+      if (optionButtons[0].classList.contains("multi")) await userEvent.click(optionButtons[1]);
       await userEvent.click(screen.getByRole("button", { name: /submit answer/i }));
       // getAllByText (mirrors drill mode's idiom below): the verdict <p> AND the explanation <p>
       // both match /correct/i for questions whose explanation copy contains "correct" - getByText

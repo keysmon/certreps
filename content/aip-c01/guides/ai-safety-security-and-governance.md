@@ -92,3 +92,11 @@ Avoid “a filter blocks all injection,” “encrypted means compliant,” “a
 - [Model invocation logging and endpoint coverage](https://docs.aws.amazon.com/bedrock/latest/userguide/model-invocation-logging.html)
 
 Continue when useful with a [Domain 3 drill](/aws/aip-c01/practice?mode=drill&domain=AI%20Safety%2C%20Security%20%26%20Governance) or the [mock exam](/aws/aip-c01/practice?mode=mock). Reading is optional; practice remains available directly.
+
+
+## Implementation follow-up
+
+The following optional lessons were added and reviewed on 2026-11-05. Use them to test concrete decisions beyond recognizing service names. Existing practice remains available at any time.
+
+- [Review trust and authorization boundaries](/guides/aip-c01/federated-access-and-temporary-credentials).
+- [Investigate policy outcomes without weakening controls](/guides/aip-c01/guardrail-diagnostics).

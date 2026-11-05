@@ -99,3 +99,13 @@ Do not confuse a tool request with execution, agent memory with document retriev
 - [API Gateway response streaming](https://docs.aws.amazon.com/apigateway/latest/developerguide/response-transfer-mode.html)
 
 Continue when useful with a [Domain 2 drill](/aws/aip-c01/practice?mode=drill&domain=Implementation%20%26%20Integration) or the [mock exam](/aws/aip-c01/practice?mode=mock). Reading is optional; practice remains available directly.
+
+
+## Implementation follow-up
+
+The following optional lessons were added and reviewed on 2026-11-05. Use them to test concrete decisions beyond recognizing service names. Existing practice remains available at any time.
+
+- [Trace federation and temporary credentials](/guides/aip-c01/federated-access-and-temporary-credentials).
+- [Choose an asynchronous hosting contract](/guides/aip-c01/asynchronous-model-hosting).
+
+For AgentCore, separate framework code from the Runtime hosting contract. Current Python direct-code deployment requires a compatible entrypoint and dependencies. The Runtime SDK can provide the service wrapper; a custom server must implement the required invocation and health endpoints. Pin the deployment method and toolkit version rather than mixing commands from different generations. See [AWS Python direct-code deployment](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-get-started-code-deploy-python.html).

@@ -418,3 +418,6 @@ body.industrial-shell { padding-left:var(--workspace-width); }
  .industrial-shell .recap { overflow-wrap:anywhere; }
  .industrial-shell .recap-body .option > span:last-child { min-width:0; }
 }
+
+/* Implementation options can contain long API identifiers and compact JSON. */
+.industrial-shell .qcard > .options .option > span:last-child { min-width:0; overflow-wrap:anywhere; }

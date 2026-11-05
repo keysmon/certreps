@@ -1,3 +1,4 @@
+import { chooseFirstAnswer } from "./answer-helpers";
 import { test, expect } from "@playwright/test";
 
 // Real-user path: complete a full 12-question domain drill start to finish. Pins the
@@ -13,7 +14,7 @@ test("drill lifecycle: finishing a 12-question drill reads In progress everywher
   await expect(page).toHaveURL(/mode=drill&domain=/);
 
   for (let i = 0; i < 12; i++) {
-    await page.locator("button.option").first().click();
+    await chooseFirstAnswer(page);
     await page.locator("div.footbar button.btn-primary").click(); // Submit answer
     await expect(page.locator(".explain")).toBeVisible();
     await page.locator(".practice-actionbar button.btn-primary").click(); // Next question / See results

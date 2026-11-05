@@ -3,7 +3,7 @@
   "baselineCommit": "a9a59df4d75d3fb2cbc2a44fea164719c3f6e4b1",
   "baselineBankSha256": "4b86fbc56b0dbb54d259aa44736feb09180cd0679e51130b199da79e2b6905c2",
   "reviewedOriginalCount": 610,
-  "activeCount": 588,
+  "activeCount": 648,
   "corrections": [
     {
       "id": "aipc01-0012",
@@ -968,5 +968,6 @@
     "Reachable references do not prove that the keyed answer follows from the page."
   ],
   "publishedContractsSha256": "ad3a69f22400d1de29f97ed0d9de91418a3260c36299d9aac2ce353ef0f9a7ed",
-  "followupReviewedOn": "2026-10-18"
+  "followupReviewedOn": "2026-10-18",
+  "depthRelease": "depth-release-2026-11-05.json"
 }

@@ -19,12 +19,18 @@ describe("ExamEngine mock navigation (v1h)", () => {
 
     // Record a first choice on Q1.
     await userEvent.click(optionButtons()[0]);
+    if (optionButtons()[0].classList.contains("multi")) await userEvent.click(optionButtons()[1]);
     await userEvent.click(screen.getByRole("button", { name: /submit answer/i }));
     const first = getAttempt(attemptId)!.results[qid].chosen;
     expect(first.length).toBeGreaterThan(0);
 
-    // The submit control now reads "Update answer" (a recorded choice exists) - change it.
-    await userEvent.click(optionButtons()[1]);
+    // Edit to another complete response, including both choices for a multi.
+    if (optionButtons()[0].classList.contains("multi")) {
+      await userEvent.click(optionButtons()[0]);
+      await userEvent.click(optionButtons()[2]);
+    } else {
+      await userEvent.click(optionButtons()[1]);
+    }
     await userEvent.click(screen.getByRole("button", { name: /update answer/i }));
     const second = getAttempt(attemptId)!.results[qid].chosen;
     expect(second).not.toEqual(first); // journal overwrote with the last choice
@@ -46,6 +52,7 @@ describe("ExamEngine mock navigation (v1h)", () => {
     render(<ExamEngine mode="mock" />);
     // Answer Q1, then flag Q2 while unanswered.
     await userEvent.click(optionButtons()[0]);
+    if (optionButtons()[0].classList.contains("multi")) await userEvent.click(optionButtons()[1]);
     await userEvent.click(screen.getByRole("button", { name: /submit answer/i }));
     await userEvent.click(screen.getByRole("button", { name: /^next$/i }));
     await userEvent.click(screen.getByRole("button", { name: /flag for review/i }));
@@ -109,6 +116,7 @@ describe("ExamEngine practice navigation (redesign)", () => {
     expect(screen.queryAllByRole("button", { name: /^go to question/i })).toHaveLength(0);
 
     await userEvent.click(optionButtons()[0]);
+    if (optionButtons()[0].classList.contains("multi")) await userEvent.click(optionButtons()[1]);
     await userEvent.click(screen.getByRole("button", { name: /submit answer/i }));
     expect(document.querySelector(".explain")).not.toBeNull(); // graded (instant feedback)
 

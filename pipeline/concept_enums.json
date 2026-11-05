@@ -5,7 +5,8 @@
     "vector-stores-and-embeddings",
     "retrieval-quality-and-access-control",
     "customization-ladder",
-    "data-protection-and-compliance"
+    "data-protection-and-compliance",
+    "knowledge-base-document-lifecycle"
   ],
   "Implementation & Integration": [
     "converse-api-tool-use-structured-output",
@@ -14,7 +15,9 @@
     "streaming-responses",
     "orchestration-and-event-driven-pipelines",
     "resilience-throttling-failure",
-    "embeddings-pipelines"
+    "embeddings-pipelines",
+    "enterprise-identity-federation",
+    "asynchronous-model-hosting"
   ],
   "AI Safety, Security & Governance": [
     "guardrails-policy-toolbox",
@@ -29,7 +32,8 @@
     "throughput-modes",
     "latency-levers",
     "cost-monitoring-control",
-    "model-distillation"
+    "model-distillation",
+    "gpu-serving-configuration"
   ],
   "Testing, Validation & Troubleshooting": [
     "evaluation-job-types",
@@ -37,6 +41,8 @@
     "prompt-regression-discipline",
     "bedrock-exception-taxonomy",
     "debugging-agents-retrieval-latency",
-    "reproducibility-production-monitoring"
+    "reproducibility-production-monitoring",
+    "knowledge-base-ingestion-observability",
+    "guardrail-diagnostics"
   ]
 }

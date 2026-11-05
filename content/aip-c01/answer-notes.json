@@ -272,5 +272,944 @@
       "An application-added logo is a separate visible mark, not Titan's built-in invisible watermark or Content Credentials.",
       "Ordinary application-added EXIF tags are separate editable metadata and are not the signed Content Credentials specified here."
     ]
+  },
+  "aipc01-0680": {
+    "takeaway": "Exchange the enterprise assertion for a role session before signing AWS service calls.",
+    "options": [
+      "A SAML assertion authenticates the federation exchange. It is not the credential used to sign ordinary Bedrock API requests.",
+      "This uses the SAML federation API and includes the session token required with temporary AWS credentials.",
+      "ExternalId is a condition value for AssumeRole, not a SAML assertion exchange. Omitting the session token also breaks temporary credential use.",
+      "A console sign-in token creates console access; it is not the AWS credential set used to sign CLI service requests."
+    ]
+  },
+  "aipc01-0681": {
+    "takeaway": "Application JWTs and AWS request-signing credentials serve different authorization paths.",
+    "options": [
+      "A longer JWT lifetime does not convert the token into AWS request-signing credentials.",
+      "An identity pool provides the documented bridge from user pool identity tokens to temporary AWS credentials.",
+      "Role claims can inform role selection, but a claim containing a role does not itself supply temporary AWS signing credentials.",
+      "The authenticated role defines AWS permissions; the returned credential set supplies the AWS signing material.",
+      "User pool OAuth scopes authorize application token use; they do not turn an access token into the AWS access key, secret and session token required here."
+    ]
+  },
+  "aipc01-0682": {
+    "takeaway": "Diagnose OIDC trust claims separately from the permissions of the resulting role session.",
+    "options": [
+      "This aligns the actual subject with the intended production trust boundary without expanding who can deploy.",
+      "The Bedrock action matters after role assumption; it cannot satisfy the mismatched OIDC subject condition.",
+      "This expands trust to other repositories and branches, violating the main-only production requirement.",
+      "AssumeRole uses AWS credentials; AssumeRoleWithWebIdentity is the appropriate exchange for the OIDC token."
+    ]
+  },
+  "aipc01-0683": {
+    "takeaway": "Cross-account AssumeRole needs both source permission and target trust.",
+    "options": [
+      "The source principal needs permission to call AssumeRole for the target role.",
+      "That grants the opposite assumption direction; it does not authorize the engineer in A to assume the target in B.",
+      "The target trust relationship must admit the source principal or allow the source account to delegate access.",
+      "PassRole permits passing a role to a service; it does not authorize assuming a cross-account role session.",
+      "GetSessionToken is not the cross-account exchange and cannot replace the two required policy relationships."
+    ]
+  },
+  "aipc01-0684": {
+    "takeaway": "Preserve the session token whenever temporary AWS credentials cross an application boundary.",
+    "options": [
+      "The request already has an authorized role; changing a resource policy does not supply its missing session token.",
+      "The AWS session token must be the value issued with the temporary credentials, not the SAML assertion used to obtain them.",
+      "This preserves the complete credential set required to authenticate the assumed role session.",
+      "The credentials are still valid. A longer lifetime cannot repair a request missing its session token."
+    ]
+  },
+  "aipc01-0685": {
+    "takeaway": "Credential refresh means acquiring a new session through a valid provider, not extending an expired key.",
+    "options": [
+      "Changing a local timestamp cannot change the server-side expiration of an STS credential set.",
+      "Backoff helps transient service failures, but it cannot make an expired credential valid or extend its lifetime.",
+      "A supported provider lets the client resolve and renew credentials rather than retaining a static expired snapshot.",
+      "An application access token cannot renew an STS credential set. The provider must obtain a new valid AWS session.",
+      "The provider must still be able to authenticate its refresh exchange; an expired upstream login can require renewal."
+    ]
+  },
+  "aipc01-0686": {
+    "takeaway": "Use session policies to reduce a role session's permissions, not to expand them.",
+    "options": [
+      "Session policies do not replace the role with an independent permission grant; they cannot exceed its identity permissions.",
+      "Trust policy conditions govern assumption, while service permissions belong in authorization policies.",
+      "These policies intersect rather than union. The denial is expected and is not evidence of service unavailability.",
+      "Only A is allowed by both policies, so the observed A/B behavior matches the configured session boundary."
+    ]
+  },
+  "aipc01-0687": {
+    "takeaway": "Check both role duration and SAML assertion expiration when sizing a federated API session.",
+    "options": [
+      "The role already permits the requested duration; the assertion still limits the session to 10:00.",
+      "A renewed authorized exchange can obtain replacement credentials rather than relying on the expiring session.",
+      "The API explicitly honors the shorter assertion lifetime, so the original credentials do not last until 13:00.",
+      "Console session settings do not extend the existing API credential set issued by STS."
+    ]
+  },
+  "aipc01-0688": {
+    "takeaway": "A target role's maximum duration does not override the one-hour role-chaining limit.",
+    "options": [
+      "Changing the source role duration does not remove the target chained session's one-hour limit.",
+      "A session policy controls permissions, not the STS role-chaining duration limit.",
+      "This keeps the chained request within the documented limit and provides a path for continued authorized work.",
+      "AssumeRole expects the target IAM role ARN; a session ARN does not bypass the duration rule."
+    ]
+  },
+  "aipc01-0689": {
+    "takeaway": "Match identity pool role trust to both the intended pool and the intended authentication state.",
+    "options": [
+      "This admits signed-in identities through the correct role while preserving the identity pool restriction.",
+      "This expands guest access and leaves the authenticated role trust mismatch unresolved.",
+      "For the identity pool principal, aud identifies the identity pool, not the user pool app client.",
+      "The aud restriction is required for identity pool role trust; an email domain is not a substitute pool identifier."
+    ]
+  },
+  "aipc01-0690": {
+    "takeaway": "Provision the delivery connection as well as the logging source and destination.",
+    "options": [
+      "CloudTrail audits API activity; its trail configuration is not the connection between a vended log source and destination.",
+      "Model invocation logs describe a different logging path and do not complete this ingestion delivery configuration.",
+      "CreateDelivery explicitly connects the existing source and destination; active delivery is the relevant configuration check.",
+      "StartIngestionJob accepts a client token and description, not a logGroupName that creates logging delivery."
+    ]
+  },
+  "aipc01-0691": {
+    "takeaway": "Source permission and destination policy setup are separate parts of ingestion log provisioning.",
+    "options": [
+      "This is the documented source-side permission for allowing knowledge base log delivery.",
+      "Reading source documents is different from authorizing vended logs to the destination bucket; broad source access does not fix these gaps.",
+      "Invoking a model is unrelated to granting permission to configure delivery for the knowledge base resource.",
+      "Direct writes to a CloudWatch log group do not configure the required S3 destination bucket permissions for vended delivery.",
+      "The documented S3 delivery setup uses these permissions on the destination bucket to establish its resource policy."
+    ]
+  },
+  "aipc01-0692": {
+    "takeaway": "Validate final document status and chunk outcomes; a single successful retrieval cannot establish complete ingestion.",
+    "options": [
+      "A successful query covers surviving chunks; treating failures only as a quality warning does not establish complete document ingestion.",
+      "Changing chunking may be an experiment after diagnosis, but retry acceptance does not establish that the failed chunks were successfully indexed.",
+      "The final PARTIALLY_INDEXED status and failed chunk creations are document coverage evidence, not merely a batch-throughput measurement.",
+      "This respects the final document outcome and uses the logged failures to drive targeted recovery."
+    ]
+  },
+  "aipc01-0693": {
+    "takeaway": "Use stage-specific failure records and their reasons to select the next diagnostic step.",
+    "options": [
+      "This follows both the failed stage and the explicit write-authorization reason in the scenario.",
+      "Read access for the query client does not fix the write rejection reported for the knowledge base ingestion path.",
+      "Changing the application caller session does not repair vector-store access for the role already bound to the knowledge base ingestion job.",
+      "Capacity tuning is appropriate for throughput pressure, but the supplied failure reason identifies an authorization rejection that unchanged permissions will preserve."
+    ]
+  },
+  "aipc01-0694": {
+    "takeaway": "Trace ignored-resource reasons and validate metadata sidecar naming before changing retrieval behavior.",
+    "options": [
+      "The problem is ingestion of metadata; returning more chunks does not correct an ignored metadata resource.",
+      "This uses the relevant diagnostic record and the documented sidecar naming convention.",
+      "There is a direct metadata configuration clue; changing the generation model does not repair that input.",
+      "CloudTrail captures API activity and attribution, not a replacement stream of file-level ingestion decisions."
+    ]
+  },
+  "aipc01-0695": {
+    "takeaway": "Gate on ingestion outcomes tied to the run, not on acceptance of the start request.",
+    "options": [
+      "202 accepts asynchronous work; it does not prove indexing completion.",
+      "The API returns the job status, failure reasons and document counters needed for run-level verification.",
+      "Job-correlated resource records identify document and chunk failures for the specific release being evaluated.",
+      "A model can generate fluent text without demonstrating that the new documents were indexed.",
+      "HTTP 200 means the status lookup succeeded, not that the returned ingestion job succeeded."
+    ]
+  },
+  "aipc01-0696": {
+    "takeaway": "Cross-account log delivery needs destination-account authorization in addition to the source configuration.",
+    "options": [
+      "Source-side permission alone does not create the destination-account authorization that the scenario says is missing.",
+      "Changing ingestion service trust can break knowledge base operation and does not configure destination delivery authorization.",
+      "This installs the documented cross-account permission at the correct logical delivery destination.",
+      "Model invocation logging is a different configuration and does not grant the missing cross-account delivery permission."
+    ]
+  },
+  "aipc01-0697": {
+    "takeaway": "Use the resource status field and a run identifier together when selecting ingestion failures.",
+    "options": [
+      "Both predicates target the required run and the specific resource failure stage.",
+      "ingestion_job_status is the job-level status field; DELETION_FAILED belongs to the resource event.status field.",
+      "OR admits all J-new records and deletion failures from old runs, producing the mixed evidence the incident must exclude.",
+      "This selects a different failure stage and misses the deletion failures under investigation."
+    ]
+  },
+  "aipc01-0698": {
+    "takeaway": "Model job states and document states separately, and inspect outcome details at the appropriate level.",
+    "options": [
+      "A successful lookup can return a failed or active job; the status field remains necessary.",
+      "COMPLETE is a documented ingestion-job terminal state, not a lookup failure.",
+      "Initial acceptance is represented by the start response; COMPLETE does not mean the monitor should await a document-only state.",
+      "This fixes the enum mismatch while retaining meaningful job and document outcome checks."
+    ]
+  },
+  "aipc01-0699": {
+    "takeaway": "Combine API attribution with ingestion execution logs when an incident spans both initiation and processing.",
+    "options": [
+      "CloudTrail is the documented source for who made an API request, when and from which request context.",
+      "Ingestion log examples identify the resource and job; they are not a substitute for CloudTrail API caller attribution.",
+      "The audit event records the API action, while downstream asynchronous ingestion can still fail.",
+      "File status, status_reasons and chunk_statistics are the relevant ingestion diagnostics.",
+      "Management API auditing does not replace resource-level processing transitions emitted by APPLICATION_LOGS."
+    ]
+  },
+  "aipc01-0700": {
+    "takeaway": "Keep S3 source state consistent with direct knowledge base changes so later syncs preserve the intended lifecycle.",
+    "options": [
+      "A retrieval threshold does not remove obsolete source content or prevent re-ingestion.",
+      "A prompt instruction does not repair the source-index mismatch or reliably establish document removal.",
+      "Direct deletion does not create a permanent exclusion for an object that remains in the S3 source.",
+      "This removes the source that can reintroduce the content and distinguishes requested deletion from verified completion."
+    ]
+  },
+  "aipc01-0701": {
+    "takeaway": "Persist an idempotency token before sending; reuse it for uncertain retries of that operation.",
+    "options": [
+      "This uses the documented idempotency mechanism without treating the network outcome as ingestion completion.",
+      "A new token identifies new work and defeats deduplication of the uncertain original submission.",
+      "A later intentional refresh is new work; reusing a previous token can suppress it.",
+      "Transmission is not acceptance or completion, and omitting the saved token loses the available idempotency protection."
+    ]
+  },
+  "aipc01-0702": {
+    "takeaway": "Use a stable custom document identifier for updates and verify the replacement outcome.",
+    "options": [
+      "Random IDs create distinct documents and leave obsolete copies unless the application separately removes them.",
+      "The submitted dataSourceType must match the connected source, and S3 source content is not supplied inline this way.",
+      "The stable identifier updates the intended document instead of adding another identity for the same procedure.",
+      "Custom sources use document operations without a sync; StartIngestionJob does not accept a document ID as described."
+    ]
+  },
+  "aipc01-0703": {
+    "takeaway": "Batch within a verified contract and track each document through its actual processing outcome.",
+    "options": [
+      "Idempotency tokens do not bypass request-size or schema rules, and one batch violates the stated application contract.",
+      "202 acknowledges asynchronous ingestion; pending or active document states are not final success.",
+      "This respects the eight-document contract and preserves identities for later outcome tracking.",
+      "GetKnowledgeBaseDocuments supports these bounded lookups and exposes the document states needed by the contract.",
+      "A shared custom identifier causes overwrites instead of representing 24 independent documents."
+    ]
+  },
+  "aipc01-0704": {
+    "takeaway": "Deletion has a request phase and a verified outcome; preserve document identity across both.",
+    "options": [
+      "202 accepts asynchronous work, and the returned DELETE_IN_PROGRESS explicitly says processing is active.",
+      "This preserves the mapping between the retention request and the documents still being removed.",
+      "A new identifier creates another document identity; it does not remove the eight originals.",
+      "TopK truncates query results and cannot establish that a document is absent from the index.",
+      "Document-state and reconciliation evidence let the workflow distinguish processing, failures and confirmed removal."
+    ]
+  },
+  "aipc01-0705": {
+    "takeaway": "Use durable per-key sequencer checks to stop stale events from undoing newer index state.",
+    "options": [
+      "Arrival order is not guaranteed to match operation order, which is the exact failure demonstrated.",
+      "Sequencers are comparable for the same key, not a global ordering across different objects.",
+      "The incoming PUT precedes the applied delete, so skipping it preserves the later intended state.",
+      "Unequal-length raw string comparison is unsafe; left-padding produces 00ff, which sorts before 0100."
+    ]
+  },
+  "aipc01-0706": {
+    "takeaway": "Buffer bursts, bound consumer concurrency, and make retries safe; concurrency limits alone do not provide exactly-once processing.",
+    "options": [
+      "This implements the stated two-consumer budget without creating a lower reserved-concurrency bottleneck.",
+      "The settings conflict with both the two-invocation budget and the documented requirement to provision enough function concurrency.",
+      "Standard queues can deliver duplicates, and a larger batch alone does not make downstream mutations safe.",
+      "Early deletion can lose updates when the downstream request fails; an empty queue would hide dropped work.",
+      "Idempotent processing protects against redelivery while retry handling preserves work during transient ingestion failures."
+    ]
+  },
+  "aipc01-0707": {
+    "takeaway": "Design refresh scheduling for deletes as well as creates and updates.",
+    "options": [
+      "Incremental sync explicitly handles removed documents, so a full vector-store rebuild is unnecessary.",
+      "This closes the missing deletion path while preserving the existing incremental refresh architecture.",
+      "Invocation logging records a different activity and does not create the missing source-removal trigger.",
+      "A generation prompt does not propagate storage changes into the knowledge base index."
+    ]
+  },
+  "aipc01-0708": {
+    "takeaway": "Authorize document lifecycle APIs explicitly and scope them to the knowledge bases the worker manages.",
+    "options": [
+      "Model invocation is separate from the document lifecycle actions and does not resolve this denied operation.",
+      "PassRole is not the permission to ingest or delete knowledge base documents, and all-role scope is unnecessary.",
+      "Full service access exceeds the stated one-knowledge-base lifecycle requirement.",
+      "These actions match the worker's write and inspection responsibilities at the intended resource scope."
+    ]
+  },
+  "aipc01-0709": {
+    "takeaway": "Coordinate ingestion writers and preserve the source of truth before reconciliation runs.",
+    "options": [
+      "Distinct tokens identify distinct requests; they do not prevent simultaneous direct-ingestion and sync submissions or keep S3 consistent.",
+      "This conservative coordination rule prevents execution overlap, rather than merely sequencing HTTP submissions while asynchronous processing continues.",
+      "Per-key event ordering can reject stale updates, but it does not satisfy the separate rule against overlapping these ingestion methods.",
+      "This prevents a later sync from reconciling against stale S3 content that contradicts intended direct changes.",
+      "Outcome monitoring is useful, but a successful direct change still needs consistent S3 source state before later syncs reconcile it."
+    ]
+  },
+  "aipc01-0710": {
+    "takeaway": "An asynchronous serving engine and a SageMaker asynchronous endpoint are separate configuration decisions.",
+    "options": [
+      "Disabling async mode and changing dynamic batch delay does not select the async integration.",
+      "These settings select the documented LMI v15 async integration while retaining real-time endpoint invocation.",
+      "This combines the historical lmi-dist rolling-batch path with the different v15 async path rather than selecting the required entrypoint.",
+      "AsyncInferenceConfig changes the hosting mode and result contract; it is not required for a real-time endpoint to use vLLM async internally."
+    ]
+  },
+  "aipc01-0711": {
+    "takeaway": "Budget GPU inference memory for active sequences and tokens, as well as the model weights.",
+    "options": [
+      "A longer external queue can absorb waiting work but does not lower memory per active sequence.",
+      "Fewer active requests reduce simultaneous runtime-state demand; the throughput tradeoff must be measured.",
+      "Bounding both input and generated tokens bounds sequence growth and helps establish a repeatable memory envelope.",
+      "A loading timeout changes allowed startup duration, not the GPU memory needed by running requests.",
+      "Longer accepted contexts increase potential KV-cache demand instead of relieving it."
+    ]
+  },
+  "aipc01-0712": {
+    "takeaway": "Choose tensor-parallel degree from model fit and measured service objectives, not GPU count alone.",
+    "options": [
+      "More participating GPUs do not establish an unconditional cost or throughput advantage for a particular workload.",
+      "The weights still do not fit on one GPU; waiting longer does not partition them.",
+      "Independent full-model workers do not partition a model that cannot fit on a single GPU.",
+      "Both candidates satisfy the stated fit constraint; measurement resolves the communication, concurrency, and latency tradeoffs."
+    ]
+  },
+  "aipc01-0713": {
+    "takeaway": "Iteration-level admission reduces the occupancy loss caused by mixed generation lengths.",
+    "options": [
+      "This changes the current request-level scheduler to a supported iteration-level scheduler and tests its active concurrency limit.",
+      "Longer collection delay can change initial batch fullness but leaves the longest-request completion barrier intact.",
+      "Startup timeout does not alter how running decode sequences admit waiting work.",
+      "An entrypoint from a different container generation cannot be assumed compatible with the pinned legacy runtime."
+    ]
+  },
+  "aipc01-0714": {
+    "takeaway": "Align startup deadlines with measured loading; diagnose warm-request failures using runtime resource evidence.",
+    "options": [
+      "A larger active-batch ceiling does not accelerate weight download or fix a startup deadline.",
+      "Larger accepted contexts do not reduce either allocation demand or download time.",
+      "These are startup allowances; they are relevant once logs establish the model can load successfully within an appropriate deadline.",
+      "Concurrency and token growth are relevant to runtime memory pressure and should be tested with the failing workload.",
+      "Startup health checks do not control memory available during normal generation."
+    ]
+  },
+  "aipc01-0715": {
+    "takeaway": "Validate quantization as a task-quality and serving-performance change together.",
+    "options": [
+      "A readable example is weak coverage, and benchmark speedups are specific to the tested configurations.",
+      "High utilization can coexist with slower responses or wrong outputs; it is not the release objective.",
+      "This tests the stated correctness risks and measures whether memory savings improve the actual service objective.",
+      "Checkpoint size does not establish generated-answer fidelity or preserve the earlier runtime performance profile."
+    ]
+  },
+  "aipc01-0716": {
+    "takeaway": "Apply the token budget to the complete rendered input plus reserved generation.",
+    "options": [
+      "Only counting the raw user message omits other tokens that the model receives.",
+      "The configured context is not two independent 8,192-token allowances for prompt and generation.",
+      "The 8,500-token requested total exceeds the stated context; a startup timeout does not change it.",
+      "The arithmetic reserves 600 tokens inside the 8,192-token context and includes all rendered input content."
+    ]
+  },
+  "aipc01-0717": {
+    "takeaway": "Optimize useful throughput subject to latency constraints, using comparable measurements.",
+    "options": [
+      "A satisfies both supplied constraints; B may still be useful where the latency objective differs.",
+      "B misses the explicit p95 limit even though it has higher aggregate throughput.",
+      "Changing the reported statistic does not satisfy or measure the required p95 objective.",
+      "A already has measured throughput above demand; doubling its batch ceiling invalidates the provided evidence."
+    ]
+  },
+  "aipc01-0718": {
+    "takeaway": "Pin the serving image and vary one supported engine choice when isolating an engine regression.",
+    "options": [
+      "This is the documented LMI v15 engine-generation opt-out, subject to validating the intended feature support.",
+      "A comparison must establish both correctness and the service objectives that the candidate needs to meet.",
+      "Simultaneous changes prevent attributing the result to the engine generation.",
+      "Published results cover particular tested models and loads, not a universal outcome.",
+      "Changing to a distinct legacy handler changes the serving path and does not create the requested control."
+    ]
+  },
+  "aipc01-0719": {
+    "takeaway": "Target model-loading optimizations when scale-out readiness is dominated by loading rather than warm inference.",
+    "options": [
+      "Extra permanent warm capacity can help bursts, but it violates the explicit instance-floor constraint.",
+      "Batch concurrency affects active inference scheduling and does not remove the disk and host-side loading stages identified here.",
+      "This addresses the measured startup stages using the compatible fast-loading path; readiness still needs measurement.",
+      "A smaller quantized model can reduce memory and loading demands, but it violates the requirement to retain FP16 precision."
+    ]
+  },
+  "aipc01-0720": {
+    "takeaway": "Use asynchronous GPU hosting when large per-request work can tolerate queueing and delayed results.",
+    "options": [
+      "Provisioned concurrency does not add GPU support to SageMaker Serverless Inference.",
+      "A long-held synchronous prediction request is not the appropriate contract for the stated long-running workload.",
+      "Nightly batching is useful for offline collections but violates the requested per-upload processing schedule.",
+      "This combines a supported payload path, long processing allowance, and asynchronous delivery with idle-capacity scaling."
+    ]
+  },
+  "aipc01-0721": {
+    "takeaway": "Treat asynchronous acceptance and successful model completion as separate states.",
+    "options": [
+      "Changing to the real-time invocation operation does not preserve the asynchronous endpoint protocol.",
+      "The request acknowledgment is not completion; the application must observe and handle the eventual outcome.",
+      "These endpoint configuration topics provide the requested success and failure notifications.",
+      "The service returns a location for the future output even when processing has not completed.",
+      "InferenceId identifies the request; it is not the prediction payload."
+    ]
+  },
+  "aipc01-0722": {
+    "takeaway": "Configure queue expiry and execution timeout independently.",
+    "options": [
+      "Processing timeout does not replace queue TTL or impose the intended maximum queue age.",
+      "This maps each interval to its documented control and keeps the requested values within supported ranges.",
+      "These values reverse the queue and processing requirements.",
+      "A longer queue TTL does not extend the default processing timeout."
+    ]
+  },
+  "aipc01-0723": {
+    "takeaway": "Match the exact metric dimensions to the asynchronous endpoint signal being used.",
+    "options": [
+      "Model latency is a duration and is not the count of queued items per instance.",
+      "The async monitoring guide states that InvocationsPerInstance is not published for async-enabled endpoints.",
+      "This matches the documented target-tracking metric and its EndpointName dimension.",
+      "Adding VariantName does not match the documented backlog metric dimensions."
+    ]
+  },
+  "aipc01-0724": {
+    "takeaway": "Control per-instance asynchronous admission separately from fleet size and container internals.",
+    "options": [
+      "An instance-count cap does not reduce the concurrent invocations sent to each existing instance.",
+      "Output paths organize results and do not regulate model invocation concurrency.",
+      "TTL controls waiting-request age, not the number of concurrent requests already executing in the container.",
+      "This is the documented ClientConfig field for concurrent requests sent to each model container."
+    ]
+  },
+  "aipc01-0725": {
+    "takeaway": "An inference result, its S3 delivery, and its notification are separate observable stages.",
+    "options": [
+      "This counter identifies notification publication issues and uses the documented variant-level dimensions.",
+      "Oldest-request age measures queue waiting and uses EndpointName rather than the stated dimension set.",
+      "Input download failures concern reading request payloads; they do not prove SNS delivery.",
+      "GPU utilization does not distinguish the two downstream delivery operations.",
+      "This counter identifies failed S3 response uploads and uses the documented variant-level dimensions."
+    ]
+  },
+  "aipc01-0726": {
+    "takeaway": "Choose batch transform for a bounded offline collection that does not need an endpoint.",
+    "options": [
+      "Provisioned concurrency does not make GPU hosting supported by Serverless Inference.",
+      "This matches the fixed-dataset, offline-deadline, and no-endpoint requirements.",
+      "A permanent endpoint and per-record connections are unnecessary for the stated offline job.",
+      "This can support asynchronous work but adds per-request and endpoint management without a requirement that needs it."
+    ]
+  },
+  "aipc01-0727": {
+    "takeaway": "Choose the hosting mode from the required result-delivery contract, as well as compute needs.",
+    "options": [
+      "Batch output objects do not implement the live prediction response contract described here.",
+      "Provisioned concurrency does not add GPU support or establish real-time feature parity.",
+      "This is the documented real-time streaming operation, provided the model container supports the required response format.",
+      "The async acknowledgment does not contain a live generated-token stream."
+    ]
+  },
+  "aipc01-0728": {
+    "takeaway": "Use a zero-capacity wake signal in addition to the normal asynchronous backlog target.",
+    "options": [
+      "This is the documented target-tracking signal for normal async endpoint scaling.",
+      "This explicitly handles the pending-work-with-no-capacity condition described in the scenario.",
+      "With no GPU instance running there is no busy-instance utilization signal that represents the queued request.",
+      "The async monitoring guide states that InvocationsPerInstance is not published for async-enabled endpoints.",
+      "A longer queue lifetime does not itself create a scaling policy or provision an instance."
+    ]
+  },
+  "aipc01-0729": {
+    "takeaway": "Apply the current inline Body limit separately from the asynchronous payload-size capability.",
+    "options": [
+      "This respects the 128,000-byte inline limit and the mutually exclusive payload-source rule.",
+      "The API requires exactly one payload source; both together are invalid.",
+      "The 1-GB asynchronous capability does not mean Body accepts 1 GB; its documented limit is 128,000 bytes.",
+      "Inline input does not change the asynchronous acknowledgment or result-delivery semantics."
+    ]
+  },
+  "aipc01-0730": {
+    "takeaway": "Enable tracing in the API-specific configuration and inspect input/output policy assessments.",
+    "options": [
+      "Generation length does not identify the policy that intervened.",
+      "This uses the documented Converse configuration and trace structure to identify the intervening side and policy.",
+      "Guardrail tracing is a Converse guardrailConfig setting, not a model inference parameter or a token-usage interpretation.",
+      "outputScope belongs to ApplyGuardrail; Converse uses its own trace setting and response structure."
+    ]
+  },
+  "aipc01-0731": {
+    "takeaway": "Converse, InvokeModel, and ApplyGuardrail use different guardrail request shapes.",
+    "options": [
+      "These are standalone ApplyGuardrail request controls, not replacements for the native invocation guardrail parameters.",
+      "InvokeModel requires a guardrail version when a guardrail identifier is provided.",
+      "These are the documented InvokeModel parameters, trace enum spelling, and required JSON content type.",
+      "A Converse configuration object in a provider-native body does not substitute for the InvokeModel guardrail parameters."
+    ]
+  },
+  "aipc01-0732": {
+    "takeaway": "Use outputScope=FULL for standalone assessments and preserve its documented word/regex exceptions.",
+    "options": [
+      "ApplyGuardrail does not use the Converse guardrailConfig.trace request object.",
+      "The InvokeModel trace header does not replace ApplyGuardrail outputScope.",
+      "FULL does not promise non-detected word or regex entries, so the stated inference is unsupported.",
+      "This is the standalone operation request shape and the documented full-output control.",
+      "The requested word and regex negative-record guarantee is specifically excluded from full output."
+    ]
+  },
+  "aipc01-0733": {
+    "takeaway": "Keep classifier confidence, configured strength, detection, and action as separate diagnostic fields.",
+    "options": [
+      "This preserves the schema meanings and supports an evidence-based review of the false positives.",
+      "The field meanings do not swap when the filter blocks content.",
+      "detected indicates a breach of the configuration, not a replacement for the reported confidence level.",
+      "The record is in contentPolicy and names INSULTS; it does not identify a denied-topic rule."
+    ]
+  },
+  "aipc01-0734": {
+    "takeaway": "An intervention can mean masking; use the assessed actions and sanitized result to decide delivery.",
+    "options": [
+      "The standalone guardrail call is not a replacement model generation, and other policy actions still matter.",
+      "This preserves useful permitted content while honoring the actual policy actions and returned sanitized output.",
+      "It discards the distinction between the documented anonymization and blocking actions.",
+      "An anonymization action changes the text to be delivered; returning the original would bypass the masking."
+    ]
+  },
+  "aipc01-0735": {
+    "takeaway": "Tool-use fields need explicit content checks and command validation beyond Converse guardrail attachment.",
+    "options": [
+      "Tool arguments are outside the documented guardrail coverage and need application-level execution validation.",
+      "Full trace changes diagnostic scope, not which tool fields Converse guardrails evaluate.",
+      "There is no documented setting that turns a denied-topic policy into automatic tool-field assessment and authorization.",
+      "Request metadata is not a content-assessment or tool-authorization mechanism.",
+      "Standalone assessment lets the application deliberately evaluate relevant text outside Converse implicit coverage."
+    ]
+  },
+  "aipc01-0736": {
+    "takeaway": "Grounded content can still be irrelevant; diagnose the specific contextual check that failed.",
+    "options": [
+      "Relevance is about the query, not a second name for grounding against the reference.",
+      "The schema reports independent filter actions; a passing grounding check does not override a blocked relevance check.",
+      "These records belong to contextualGroundingPolicy, with GROUNDING and RELEVANCE types.",
+      "The two records and scenario jointly support a query-alignment failure rather than unsupported source claims."
+    ]
+  },
+  "aipc01-0737": {
+    "takeaway": "Choose synchronous guardrail streaming when assessment must precede response-chunk delivery.",
+    "options": [
+      "This is the documented mode and placement for assessing buffered response chunks before delivery.",
+      "Trace provides diagnostics but does not change asynchronous assessment timing.",
+      "A later intervention cannot certify or retract fragments the user has already seen.",
+      "ApplyGuardrail outputScope is not a ConverseStream inference parameter or buffering control."
+    ]
+  },
+  "aipc01-0738": {
+    "takeaway": "Compare guardrail outcomes under the same policy version and guarded content scope.",
+    "options": [
+      "An explicit version and assessment details establish which policy was actually evaluated during the comparison.",
+      "Selective guardContent changes evaluated scope; input/output traces help locate the source of the intervention difference.",
+      "Both policy configuration and evaluation scope can change the outcome independently of the model.",
+      "A draft that changes during evaluation prevents a stable policy comparison.",
+      "Removing scope controls while hiding input evidence introduces another change rather than isolating the model."
+    ]
+  },
+  "aipc01-0739": {
+    "takeaway": "Use guardrail-specific latency and coverage measurements when diagnosing guardrail behavior.",
+    "options": [
+      "An unchanged block rate can hide changes in which text was evaluated and does not measure guarded character coverage.",
+      "Stable aggregate request and latency distributions do not establish that the same input fragments were assessed per invocation.",
+      "These fields directly address the suspected processing and coverage changes and can be correlated with the actual guarded request.",
+      "Model usage and overall latency are real telemetry, but they do not break out guarded characters or guardrail processing time."
+    ]
+  },
+  "aipc01-0740": {
+    "takeaway": "Check routing scope and authorization together before enabling cross-Region inference.",
+    "options": [
+      "Repeated calls do not turn an SCP denial into a supported destination-selection policy.",
+      "This aligns enforced permissions with the already approved geography and preserves cross-Region routing.",
+      "Application configuration does not redefine the destinations of a global system-defined profile.",
+      "A regional endpoint can satisfy residency but does not retain the cross-Region routing benefit."
+    ]
+  },
+  "aipc01-0741": {
+    "takeaway": "Use lexical retrieval for exact identifiers and metadata for explicit eligibility constraints.",
+    "options": [
+      "More candidates might help recall, but leaving revision and product ambiguity unresolved misses the stated precision problem.",
+      "Hybrid search uses the filterable text field alongside vector similarity, preserving exact identifier evidence.",
+      "Reranking may improve ordering, but leaves the observed exact-identifier and revision eligibility gaps unresolved.",
+      "The known metadata provides a direct way to exclude wrong products and revisions.",
+      "A reranker can reorder supplied candidates, but discarding the identifier weakens this query."
+    ]
+  },
+  "aipc01-0742": {
+    "takeaway": "Size output allowances from measured requirements and plan capacity from effective quotas.",
+    "options": [
+      "Testing preserves required answers while reducing an oversized reservation rather than arbitrarily truncating output.",
+      "A longer timeout does not release token reservations or increase admitted throughput.",
+      "These runtime APIs do not provide separate capacity for this same model invocation path.",
+      "The account's effective quota is the relevant capacity ceiling; an increase is appropriate for residual sustained demand.",
+      "Immediate synchronized retries can add pressure and still lack sustained capacity."
+    ]
+  },
+  "aipc01-0743": {
+    "takeaway": "Customize behavior while keeping changing, traceable facts in a governed retrieval source.",
+    "options": [
+      "The reviewed examples fit supervised fine-tuning; held-out testing checks whether the style improvement transfers.",
+      "Weekly factual updates and source traceability are poorly served by relying only on parameter updates.",
+      "Current approved passages support factual freshness and references independently of learned style.",
+      "An unsuitable teacher and unrelated prompts do not target the observed style failure.",
+      "An assertion in instructions neither updates the facts nor establishes their documentary provenance."
+    ]
+  },
+  "aipc01-0744": {
+    "takeaway": "Choose waiting, backpressure, and fallback policies separately for each request class.",
+    "options": [
+      "Queue durability does not make a 20-minute waiting policy compatible with a 4-second response deadline.",
+      "More consumers can send more calls into the same bottleneck and increase throttling.",
+      "This preserves the required model for background work and smooths temporary demand spikes.",
+      "The preview deadline remains 4 seconds even when the background objective is longer.",
+      "The approved quality floor permits fallback, while bounded attempts protect the live deadline."
+    ]
+  },
+  "aipc01-0745": {
+    "takeaway": "Header forwarding is a transport setting; tenant authorization remains a trusted-code responsibility.",
+    "options": [
+      "The model and user message would control a security-critical argument, violating the required trust boundary.",
+      "Changing transport does not establish trust in an arbitrary caller's tenant claim.",
+      "This fixes propagation while enforcing tenant identity outside the prompt and model-generated arguments.",
+      "Forwarding works, but inserting the header into the system prompt violates the stated exclusion."
+    ]
+  },
+  "aipc01-0746": {
+    "takeaway": "Reduce the tool surface and enforce permissions at execution boundaries.",
+    "options": [
+      "This removes both unnecessary tool exposure and the broad authorization that made the induced action effective.",
+      "An instruction can be bypassed and leaves the same executable refund capability available.",
+      "Post-execution detection does not prevent the unwanted action or reduce broad authority.",
+      "Approval may help a necessary high-impact action, but unused cancellation and broad credentials remain."
+    ]
+  },
+  "aipc01-0747": {
+    "takeaway": "Approve the effective retention mode for each endpoint, Region, and project path.",
+    "options": [
+      "The recovery Region retains its own configuration; the primary setting is not propagated.",
+      "store=false does not by itself establish zero data retention for all models.",
+      "This covers the regional scope, project precedence, and configuration-change permissions described in the scenario.",
+      "Customer-controlled invocation logging is separate from service-side retention and model requirements."
+    ]
+  },
+  "aipc01-0748": {
+    "takeaway": "Match the customization method to the available supervision and verify unseen-task performance.",
+    "options": [
+      "Retrieval supplies context at inference time; it does not train weights from report examples.",
+      "Task-specific teacher responses provide the supervision used to create a distilled student.",
+      "The reviewed input/output examples match supervised fine-tuning and the held-out check tests generalization.",
+      "Size and cost do not establish the smaller model's task accuracy.",
+      "Training-set reuse hides memorization and cannot establish independent acceptance performance."
+    ]
+  },
+  "aipc01-0749": {
+    "takeaway": "Filter model candidates by end-to-end capability and residency before ranking quality or price.",
+    "options": [
+      "An output allowance cannot supply a missing image-input capability.",
+      "This checks that the intended model and API can execute the required multimodal tool flow.",
+      "Inference-profile availability and routing scope must be verified independently of regional availability.",
+      "This verifies the actual possible processing locations rather than relying on the source Region.",
+      "Price does not make an unsupported production path eligible."
+    ]
+  },
+  "aipc01-0750": {
+    "takeaway": "Coordinate duplicate workers by logical job identity and reuse durable completed results.",
+    "options": [
+      "Random keys hide duplicates rather than coordinating the same logical job.",
+      "A conditional DynamoDB write lets one worker acquire the logical claim; other workers must honor its state.",
+      "Publishing both results preserves duplicate side effects and makes completion order determine user-visible behavior.",
+      "The existing committed record is authoritative for this retry and removes unnecessary repeated generation.",
+      "Visibility settings manage redelivery timing but do not remove the need for idempotent processing."
+    ]
+  },
+  "aipc01-0751": {
+    "takeaway": "Validate the deployed runtime protocol contract before diagnosing downstream model behavior.",
+    "options": [
+      "This fixes invocation routing but leaves the runtime health contract unsatisfied.",
+      "This can satisfy the ping route while leaving the default invocation path unable to reach the handler.",
+      "A catch-all success can mask route errors without implementing the runtime invocation contract.",
+      "These are the default HTTP contract routes; testing both isolates readiness from request handling."
+    ]
+  },
+  "aipc01-0752": {
+    "takeaway": "Separate first-token delay, decode speed, and output length when investigating latency.",
+    "options": [
+      "The arithmetic supports unchanged approximate decode speed and a workload-length change.",
+      "The observed decode rate is similar; this conclusion confuses more generated tokens with slower token generation.",
+      "The first token arrives at the same time, but users wait longer for the complete answer.",
+      "InvocationLatency extends to completion, so longer generated responses can increase it."
+    ]
+  },
+  "aipc01-0753": {
+    "takeaway": "Trace repeated steps and enforce progress and iteration limits in the agent application.",
+    "options": [
+      "Longer lifetime allows more non-progressing work and does not resolve the invalid warehouse.",
+      "Normal per-call duration and repeated identical steps point to orchestration behavior, not a demonstrated capacity shortage.",
+      "Explicit error handling and a finite budget stop the observed loop and provide a controlled unresolved result.",
+      "The tool already returns promptly; a longer timeout does not change its semantic error."
+    ]
+  },
+  "aipc01-0754": {
+    "takeaway": "Choose a supported serving resource and invoke that resource, not the training artifact.",
+    "options": [
+      "A completed training job establishes an artifact, not an active serving deployment.",
+      "This follows the supported custom-model on-demand deployment lifecycle and uses the serving ARN.",
+      "Inference profiles are not a substitute for the custom model's required provisioning path.",
+      "This creates the serving capacity required by Model B and addresses it correctly.",
+      "The base-model ID selects the base model rather than the team's customized artifact."
+    ]
+  },
+  "aipc01-0755": {
+    "takeaway": "Validate model, Region, serving resource, and permitted commitment together before buying capacity.",
+    "options": [
+      "Regional eligibility and resource planning prevent assuming capacity or support transfers between Regions.",
+      "Inference profiles do not support Provisioned Throughput and do not pool a regional purchase.",
+      "This matches the documented GovCloud (US-West) restriction at the check date.",
+      "A shared API name does not imply identical model or commitment availability.",
+      "Longer commitment does not create support and conflicts with the stated GovCloud restriction."
+    ]
+  },
+  "aipc01-0756": {
+    "takeaway": "Keep changing facts in approved sources and preserve the source release used for each answer.",
+    "options": [
+      "A base-model ID does not identify the approved factual source release used for a particular answer.",
+      "This supplies current evidence and retains a traceable link to the approved release.",
+      "Retraining can update behavior, but generated citations without preserved source releases do not establish reconstructable lineage.",
+      "A mutable URI can identify a source location while failing to preserve which approved release supplied the answer."
+    ]
+  },
+  "aipc01-0757": {
+    "takeaway": "Document network, provider-access, customer-log, and service-retention controls separately.",
+    "options": [
+      "Private connectivity does not authorize readers or set the lifecycle of objects already written to S3.",
+      "This matches the documented separation between Bedrock-operated model accounts and model providers.",
+      "Customer-controlled logging settings do not define all service-side model retention requirements.",
+      "This preserves the distinction between a customer archive and service-specific retention behavior.",
+      "Throughput mode does not automatically disable the customer's logging configuration."
+    ]
+  },
+  "aipc01-0758": {
+    "takeaway": "Test guardrail coverage at field boundaries and keep tool validation in trusted code.",
+    "options": [
+      "Explicitly selected message content is the scope when guardContent is present.",
+      "Generated toolUse.input is not covered by the integrated Converse guardrail.",
+      "Descriptions guide the model but are not enforcement of permissions or tool-argument validity.",
+      "This addresses tool authorization/validation separately and can add explicit content assessment where needed.",
+      "Removing content selection does not add integrated assessment of tool-specific fields."
+    ]
+  },
+  "aipc01-0759": {
+    "takeaway": "Budget retries around the deadline and preserve unresolved work through an explicit catch path.",
+    "options": [
+      "A larger retry count does not guarantee either capacity or completion within two minutes.",
+      "A wrapper adds another layer but leaves the unbounded pressure and missing recovery behavior unchanged.",
+      "Implicitly missing answers are weaker recovery evidence than a recorded unresolved job.",
+      "This targets transient failures, limits waiting, and provides an explicit recovery record when retries are exhausted."
+    ]
+  },
+  "aipc01-0760": {
+    "takeaway": "Treat an embedding-configuration change as an index migration with retrieval validation.",
+    "options": [
+      "Zero padding does not recreate the old embedding representation or establish meaningful similarity compatibility.",
+      "This aligns the stored and query vector dimensions under the same chosen embedding configuration.",
+      "A retrieval benchmark tests whether the smaller representation preserves task-relevant results.",
+      "The test would still use a query representation with the wrong dimension for the new index.",
+      "Training-query performance does not establish independent retrieval acceptance for the migration."
+    ]
+  },
+  "aipc01-0761": {
+    "takeaway": "Publish and select a tested guardrail version; retain the prior version for rollback.",
+    "options": [
+      "DRAFT can be useful while testing, but a mutable production target bypasses the required controlled release.",
+      "Deleting the selected version does not mean callers transparently select a replacement.",
+      "This activates the intended snapshot and preserves a known rollback configuration.",
+      "Edits to the working draft do not change the snapshot referenced as version 3."
+    ]
+  },
+  "aipc01-0762": {
+    "takeaway": "Bind approval to an exact prompt snapshot and enforce who may promote that snapshot.",
+    "options": [
+      "This combines immutable review evidence with a separate enforced promotion permission.",
+      "More saves do not establish independent approval or prevent the same bypass of production settings.",
+      "Approving one snapshot does not authorize a different snapshot to be deployed.",
+      "A prompt name and current draft do not identify the exact content that reviewers evaluated."
+    ]
+  },
+  "aipc01-0763": {
+    "takeaway": "Check destination scope and service-principal encryption access when payload log delivery fails.",
+    "options": [
+      "Co-locating the S3 bucket with the account and Region of the logging configuration corrects the unsupported destination scope.",
+      "The log-delivery service needs permission to use the destination encryption path, scoped to the expected source.",
+      "The delivering principal is Bedrock, and broad user write access does not fix the cross-Region destination.",
+      "Management-event auditing is not a substitute for the missing configured payload delivery.",
+      "Inference capacity selection does not change the destination's location or encryption policy."
+    ]
+  },
+  "aipc01-0764": {
+    "takeaway": "Treat external documents as data and remove actions the summarization task does not require.",
+    "options": [
+      "Making attacker-supplied instructions more privileged increases the trust-boundary violation.",
+      "This targets the document-to-instruction confusion and verifies behavior on representative attacks.",
+      "Visible-text screening alone misses other attack forms and leaves the unnecessary exfiltration action available.",
+      "This removes the unused action and constrains any required access independently of generated instructions.",
+      "Formatting removal does not turn arbitrary applicant text into trusted application instructions."
+    ]
+  },
+  "aipc01-0765": {
+    "takeaway": "Put stable context first and checkpoint it before dynamic request content.",
+    "options": [
+      "An unchanged beginning enables prefix matching for the shared policy.",
+      "Every later prefix still contains the unique leading ID, so extra late checkpoints do not solve the mismatch.",
+      "This ends the cached candidate before the per-request ID and question vary.",
+      "Output allowance does not create reuse of a mismatched input prefix.",
+      "This request path requires explicit controls and does not promise arbitrary substring caching."
+    ]
+  },
+  "aipc01-0766": {
+    "takeaway": "Measure the actual served inference mode rather than treating a requested optimization as guaranteed.",
+    "options": [
+      "The response describes how the request was served; the requested preference does not override that evidence.",
+      "Excluding fallback calls hides user-visible performance instead of validating an objective for the whole supported request path.",
+      "Fallback does not imply invalid content, and unconditional retries can increase load and cost.",
+      "This matches the documented fallback and supports an evidence-based latency objective."
+    ]
+  },
+  "aipc01-0767": {
+    "takeaway": "Evaluate critical slices separately before accepting a distilled model's aggregate cost-quality tradeoff.",
+    "options": [
+      "Overall accuracy and urgent recall are different measures; the specified recall gate still fails.",
+      "This respects the unmet slice-level criterion while allowing a verified remediation or retained teacher path.",
+      "Low frequency does not waive the explicitly approved risk-based release requirement.",
+      "Selecting a passing repeat conceals uncertainty rather than establishing sustained quality."
+    ]
+  },
+  "aipc01-0768": {
+    "takeaway": "Plan distillation around representative task coverage and full teacher-to-student cost.",
+    "options": [
+      "Missing workload coverage makes equivalence an assumption, not acceptance evidence.",
+      "AWS documents additional teacher-inference charges for synthesis; they must be considered in the budget.",
+      "This directly tests formats absent from the proposed narrow dataset.",
+      "This includes the documented synthesis cost and the rest of the experiment lifecycle.",
+      "A cheaper serving token does not bound training, synthesis, or total experiment spend."
+    ]
+  },
+  "aipc01-0769": {
+    "takeaway": "Use automated evaluation for repeatability and retain the expert review required by the release policy.",
+    "options": [
+      "This produces the specialist review explicitly required for the high-consequence cases.",
+      "A model-generated explanation is automated evidence, not the required specialist observation.",
+      "This meets the repeatability goal without replacing the separate human-review requirement.",
+      "Only reusing prompt-tuning examples gives weak evidence of performance on independent routine cases.",
+      "An aggregate score does not satisfy a missing required review record."
+    ]
+  },
+  "aipc01-0770": {
+    "takeaway": "Gate on critical failures before release, then evaluate a controlled rollout of the exact approved version.",
+    "options": [
+      "This exposes the known failure to all users before evaluating the missing requirements.",
+      "This catches the known regression first and limits exposure to any remaining unseen failures.",
+      "A better average in one metric does not satisfy the separate isolation requirement.",
+      "Selective retries conceal instability, and a mutable draft weakens the connection to tested evidence."
+    ]
+  },
+  "aipc01-0771": {
+    "takeaway": "Debug filters and parsed content independently using controlled Retrieve tests.",
+    "options": [
+      "The stored attribute type and supplied filter value disagree; the replay isolates that exclusion.",
+      "Retrieve candidate selection does not depend on the generation output allowance.",
+      "This investigates the residual content/chunk problem demonstrated after removing only the test filter.",
+      "Production authorization is a separate requirement and must not be removed for a relevance experiment.",
+      "Sampling and style concern generation, not the missing retrieval result."
+    ]
+  },
+  "aipc01-0772": {
+    "takeaway": "Optimize the measured dominant stage and recheck both quality and end-to-end latency.",
+    "options": [
+      "This targets the dominant measured stage while testing the stated relevance constraint.",
+      "Provisioned model capacity does not automatically parallelize custom reranking or application retrieval.",
+      "Removing a relevance step without quality evaluation does not satisfy the acceptance constraint.",
+      "More output work increases cost and can increase latency without addressing the bottleneck."
+    ]
+  },
+  "aipc01-0773": {
+    "takeaway": "Treat a safeguard-tier change as a multilingual quality and routing migration.",
+    "options": [
+      "Changing generation language does not expand the guardrail policy's demonstrated multilingual coverage.",
+      "Translation introduces another behavior dependency and cannot replace target-language guardrail validation.",
+      "This uses the broader tier while checking routing, permissions, false positives, and adversarial behavior.",
+      "A lower block rate can reflect weaker protection and says little about the new languages' safety."
+    ]
+  },
+  "aipc01-0774": {
+    "takeaway": "Interpret sensitive-data findings together with object-level analysis coverage and errors.",
+    "options": [
+      "Objects outside scope or blocked by access were not established clean by the job.",
+      "This addresses missing analysis and preserves an accurate statement of the resulting evidence.",
+      "Object Lock controls changes and retention; it does not detect sensitive content.",
+      "A future logging setting does not analyze any existing archived payload."
+    ]
+  },
+  "aipc01-0775": {
+    "takeaway": "Deny failed scoping and enforce independent authorization before assembling model context.",
+    "options": [
+      "The unauthorized text has already crossed the required boundary before redaction is attempted.",
+      "This removes the explicit fail-open path, including missing or invalid authorization evidence.",
+      "An independent decision and enforcement boundary can prevent disallowed content from reaching generation.",
+      "An answer without names does not prove that unauthorized content was not accessed or supplied.",
+      "Repeating the same logic duplicates its failure mode instead of creating an independent control."
+    ]
+  },
+  "aipc01-0776": {
+    "takeaway": "Size model units against input and output rates separately, then use the binding requirement.",
+    "options": [
+      "Separate input and output constraints cannot be satisfied by pooling their unused capacity into one blended figure.",
+      "Comparing input with output counts does not determine the number of units; each has its own rate.",
+      "400 times 150 equals 60,000 output tokens/minute, requiring three units at the hypothetical output rate.",
+      "No request-count-per-unit rule was supplied; the exercise defines token-rate capacities."
+    ]
+  },
+  "aipc01-0777": {
+    "takeaway": "Match asynchronous work to batch and evaluate reserved capacity against actual utilization.",
+    "options": [
+      "This fits sparse variable traffic without assuming purchased capacity is economical.",
+      "The stated support and overnight benchmark make asynchronous S3-based batch processing appropriate.",
+      "Batch inference does not support provisioned models and also does not fit interactive chat.",
+      "Assuming full utilization ignores the sparse workload and does not establish that reserved capacity meets the cost goal.",
+      "Provisioned Throughput billing does not automatically pause when the model is idle."
+    ]
+  },
+  "aipc01-0778": {
+    "takeaway": "Keep a stable regression baseline and separately evolve coverage for new production traffic.",
+    "options": [
+      "Changing and discarding the baseline prevents a like-for-like comparison of behavior over time.",
+      "A fixed application prompt does not guarantee a static workload or stable quality.",
+      "Payload logging does not itself run recurring quality evaluation or regrade old answers.",
+      "This preserves comparability while adding evidence about newly important production cases."
+    ]
+  },
+  "aipc01-0779": {
+    "takeaway": "Grounded answers can still be irrelevant; evaluate retrieval relevance and answer quality separately.",
+    "options": [
+      "Different sampling cannot supply leave evidence absent from the selected context.",
+      "Support in parking passages does not make the answer relevant to leave carryover.",
+      "Removing authorization violates a separate requirement, and confidence is not correctness evidence.",
+      "This tests the retrieval failure using authorized ground truth and verifies the resulting answer quality."
+    ]
   }
 }

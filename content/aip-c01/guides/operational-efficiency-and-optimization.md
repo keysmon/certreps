@@ -94,3 +94,11 @@ Avoid optimizing averages alone, assuming a cache hit, treating longer context a
 - [Bedrock runtime monitoring](https://docs.aws.amazon.com/bedrock/latest/userguide/monitoring.html)
 
 Continue when useful with a [Domain 4 drill](/aws/aip-c01/practice?mode=drill&domain=Operational%20Efficiency%20%26%20Optimization) or the [mock exam](/aws/aip-c01/practice?mode=mock). Reading is optional; practice remains available directly.
+
+
+## Implementation follow-up
+
+The following optional lessons were added and reviewed on 2026-11-05. Use them to test concrete decisions beyond recognizing service names. Existing practice remains available at any time.
+
+- [Right-size GPU serving and batching](/guides/aip-c01/gpu-serving-and-batching).
+- [Compare queue latency and idle capacity](/guides/aip-c01/asynchronous-model-hosting).

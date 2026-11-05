@@ -104,7 +104,7 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId, reveal, retr
     const sampled: Question[] = resumed
       ? questionsByIds(bank, resumed.questionIds)
       : mode === "quick"
-      ? sampleQuick(bank, QUICK_N, buildWeights(listAttempts(meta.certId), bank))
+      ? sampleQuick(bank, QUICK_N, buildWeights(listAttempts(meta.certId), bank), meta)
       : mode === "drill" && domain
       ? sampleDrill(bank, domain, DRILL_N, buildWeights(listAttempts(meta.certId), bank))
       : mode === "retry"

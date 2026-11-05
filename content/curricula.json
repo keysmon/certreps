@@ -77,7 +77,7 @@
     "reviewedOn": "2026-10-18"
   },
   "aip-c01": {
-    "overview": "Study all five AIP-C01 domains through domain lessons, decision-focused topic outlines, and offline architecture and evaluation exercises.",
+    "overview": "Study all five AIP-C01 domains through optional lessons, implementation scenarios, and offline architecture and evaluation exercises. Passing practice does not guarantee an AWS exam pass; use unfamiliar official practice and hands-on reasoning alongside your saved results.",
     "prerequisites": [
       "HTTP APIs, JSON, and basic application architecture",
       "IAM roles, storage, and networking fundamentals",
@@ -91,10 +91,12 @@
           "Prompting, retrieval, and customization",
           "Ingestion and chunking",
           "Retrieval quality and metadata",
-          "Data provenance and permissions"
+          "Data provenance and permissions",
+          "Document create/update/delete synchronization and reconciliation",
+          "Source lineage, citations and reviewer evidence"
         ],
         "objective": "Design a model and retrieval approach that satisfies business, data, and compliance constraints.",
-        "exercise": "Using a fictional support manual, specify chunk boundaries, metadata filters, an access rule, and five evaluation questions. Explain how you would handle conflicting or missing evidence.",
+        "exercise": "Trace a fictional document through create, update, removal, duplicate events and a missed event. Specify a durable queue, an idempotency key, completed-ingestion evidence, deletion verification and query-time access control while the index catches up.",
         "guideSlug": "foundation-model-integration-and-compliance"
       },
       {
@@ -104,10 +106,13 @@
           "Controlled tool execution",
           "Agent orchestration",
           "Enterprise integrations",
-          "Deployment and asynchronous jobs"
+          "Deployment and asynchronous jobs",
+          "Federated credentials and role trust boundaries",
+          "AgentCore deployment contracts",
+          "SageMaker asynchronous GPU hosting"
         ],
         "objective": "Trace a complete model-to-tool workflow with authorization, retries, and explicit failure handling.",
-        "exercise": "Write pseudocode for a refund assistant: validate the request, request approval, execute one authorized tool, deduplicate retries, and return the result. Walk through a timeout after the refund succeeds.",
+        "exercise": "Draw an IdP-to-temporary-credentials flow and separate trust-policy failures from model-permission failures. Then compare interactive serving with an asynchronous GPU job, including acceptance, result storage, notification and scale-to-zero delay.",
         "guideSlug": "implementation-and-integration"
       },
       {
@@ -117,10 +122,12 @@
           "Prompt injection and tool risks",
           "IAM and network boundaries",
           "Sensitive data protection",
-          "Audit trails and governance"
+          "Audit trails and governance",
+          "Prompt release approvals and retained invocation evidence",
+          "Guardrail enforcement versus diagnostics"
         ],
         "objective": "Select layered controls for an AI workflow and identify what each control cannot guarantee.",
-        "exercise": "Threat-model a document assistant. Write one malicious retrieved passage, then specify input separation, retrieval authorization, tool restrictions, and audit events that contain its effects.",
+        "exercise": "Threat-model a document assistant, then write a prompt-approval and audit-retention workflow. Separate API audit from prompt/response logging and define which identity may release an approved version.",
         "guideSlug": "ai-safety-security-and-governance"
       },
       {
@@ -130,10 +137,12 @@
           "Model routing and right-sizing",
           "Caching",
           "Batch and provisioned inference",
-          "Operational metrics"
+          "Operational metrics",
+          "GPU memory, tensor parallelism and continuous batching",
+          "Engine-specific serving configuration"
         ],
         "objective": "Compare inference options against measured traffic, latency, quality, and budget requirements.",
-        "exercise": "Create a spreadsheet or paper estimate for 1,000 fictional requests. Vary input tokens, output tokens, cache hit rate, and model price assumptions; label assumed prices and identify the largest cost driver.",
+        "exercise": "Compare three offline serving configurations using a fixed representative token-length distribution. State the container/backend version, memory budget, parallelism, concurrency, p95 latency target and rollback condition; do not assume more GPUs or a larger batch is always better.",
         "guideSlug": "operational-efficiency-and-optimization"
       },
       {
@@ -143,10 +152,12 @@
           "Reference metrics and model judges",
           "Retrieval vs generation failures",
           "Regression gates",
-          "API and operational troubleshooting"
+          "API and operational troubleshooting",
+          "Knowledge Base ingestion APPLICATION_LOGS",
+          "Guardrail traces and policy-specific interventions"
         ],
         "objective": "Use a repeatable evaluation to isolate a failure and decide whether a change is safe to release.",
-        "exercise": "Build a six-case evaluation table including missing evidence, conflicting evidence, unsafe requests, and malformed tool results. Define pass criteria and a rollback trigger before proposing a prompt change.",
+        "exercise": "Build a six-case evaluation table, then diagnose one file-ingestion failure and one false-positive guardrail intervention. Identify the exact resource/version, relevant log or trace, missing evidence and a safe next experiment.",
         "guideSlug": "testing-validation-and-troubleshooting"
       }
     ],
@@ -158,9 +169,33 @@
       {
         "label": "Official exam overview and availability",
         "url": "https://aws.amazon.com/certification/certified-generative-ai-developer-professional/"
+      },
+      {
+        "label": "AWS official preparation resources and practice exams",
+        "url": "https://aws.amazon.com/certification/certification-prep/"
+      },
+      {
+        "label": "Official AIP-C01 practice exam (Skill Builder access may be required)",
+        "url": "https://skillbuilder.aws/learn/HNPB91W7JE/official-practice-exam-aws-certified-generative-ai-developer--professional-aipc01--english/WQAJK2UA19"
+      },
+      {
+        "label": "Cognito identity pools and temporary credentials",
+        "url": "https://docs.aws.amazon.com/cognito/latest/developerguide/getting-started-with-identity-pools.html"
+      },
+      {
+        "label": "Knowledge Base ingestion logging",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-bases-logging.html"
+      },
+      {
+        "label": "SageMaker asynchronous inference",
+        "url": "https://docs.aws.amazon.com/sagemaker/latest/dg/async-inference.html"
+      },
+      {
+        "label": "Guardrail testing and traces",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-test.html"
       }
     ],
-    "reviewedOn": "2026-10-18"
+    "reviewedOn": "2026-11-05"
   },
   "ans-c01": {
     "overview": "Review advanced AWS networking through all four ANS-C01 domains. AWS has announced exam retirement after December 31, 2026; this outline remains useful for networking study.",

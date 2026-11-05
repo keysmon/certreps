@@ -1,13 +1,14 @@
 import { test, expect } from "@playwright/test";
 import bank from "../content/aip-c01/questions.json";
+import release from "../content/aip-c01/depth-release-2026-11-05.json";
 
 const key = "certreps.attempts.v1";
 const excluded = new Set(bank.filter((q) => "excludedFromPractice" in q && q.excludedFromPractice).map((q) => q.id));
 
-test("reviewed AIP bank blocks stale resumes and starts a clean 75-question mock", async ({ page }) => {
+for (const retiredId of ["aipc01-0001", release.replacements[0].oldId]) test(`reviewed AIP bank blocks ${retiredId} resumes and starts a clean 75-question mock`, async ({ page }) => {
   await page.goto("/aws/aip-c01");
-  await expect(page.getByText(/588 active practice questions/)).toBeVisible();
-  const old = { attemptId: "retired-session", certId: "aip-c01", mode: "mock", questionIds: ["aipc01-0001"], results: {}, startedAt: Date.now(), finishedAt: null, elapsedSec: 0, pauseCount: 0 };
+  await expect(page.getByText(new RegExp(`${bank.length-excluded.size} active practice questions`))).toBeVisible();
+  const old = { attemptId: "retired-session", certId: "aip-c01", mode: "mock", questionIds: [retiredId], results: {}, startedAt: Date.now(), finishedAt: null, elapsedSec: 0, pauseCount: 0 };
   await page.evaluate(({ key, old }) => localStorage.setItem(key, JSON.stringify([old])), { key, old });
   await page.goto("/aws/aip-c01/practice?mode=mock&resume=retired-session");
   await expect(page.getByRole("heading", { name: "This session needs a fresh question set" })).toBeVisible();

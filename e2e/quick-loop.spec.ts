@@ -1,3 +1,4 @@
+import { chooseFirstAnswer } from "./answer-helpers";
 import { test, expect } from "@playwright/test";
 
 // Real-user path: start a quick session on a NON-AWS cert and answer two questions. The
@@ -9,7 +10,7 @@ test("quick loop: answer two questions, see vendor-correct doc links, then exit"
   await expect(page).toHaveURL(/\/nvidia\/nca-genl\/practice\?mode=quick/);
 
   for (let i = 0; i < 2; i++) {
-    await page.locator("button.option").first().click();
+    await chooseFirstAnswer(page);
     await page.locator("div.footbar button.btn-primary").click(); // Submit answer
 
     const doclink = page.locator(".doclink");

@@ -102,3 +102,11 @@ Do not compare candidates on different datasets, trust aggregate averages alone,
 - [Runtime monitoring and diagnostic options](https://docs.aws.amazon.com/bedrock/latest/userguide/monitoring.html)
 
 Continue when useful with a [Domain 5 drill](/aws/aip-c01/practice?mode=drill&domain=Testing%2C%20Validation%20%26%20Troubleshooting) or the [mock exam](/aws/aip-c01/practice?mode=mock). Reading is optional; practice remains available directly.
+
+
+## Implementation follow-up
+
+The following optional lessons were added and reviewed on 2026-11-05. Use them to test concrete decisions beyond recognizing service names. Existing practice remains available at any time.
+
+- [Diagnose document ingestion](/guides/aip-c01/knowledge-base-ingestion-observability).
+- [Inspect guardrail evaluation evidence](/guides/aip-c01/guardrail-diagnostics).

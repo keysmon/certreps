@@ -15,6 +15,7 @@ describe("ExamEngine study mock (reveal)", () => {
 
     const opts = screen.getAllByRole("button").filter((b) => b.className.includes("option"));
     await userEvent.click(opts[0]);
+    if (opts[0].classList.contains("multi")) await userEvent.click(opts[1]);
     await userEvent.click(screen.getByRole("button", { name: /submit answer/i }));
 
     // Reveal: the .explain feedback block appears (it is null for the exam mock).

@@ -13,6 +13,7 @@ describe("ExamEngine mock mode", () => {
     // Answer Q1 - no correctness feedback should appear
     const opts = screen.getAllByRole("button").filter((b) => b.className.includes("option"));
     await userEvent.click(opts[0]);
+    if (opts[0].classList.contains("multi")) await userEvent.click(opts[1]);
     await userEvent.click(screen.getByRole("button", { name: /submit answer/i }));
     // Deviation D1 (pre-authorized): structural check for the feedback UI instead of queryByText
     // (/correct|not quite/i collides with stem/option copy AND queryByText throws on multi-match).

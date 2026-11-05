@@ -1,3 +1,4 @@
+import { chooseFirstAnswer } from "./answer-helpers";
 import { test, expect } from "@playwright/test";
 import { getPracticeBank } from "../lib/bank";
 import { listIncidents } from "../lib/incidents";
@@ -99,7 +100,7 @@ for (const viewport of [{ width: 320, height: 568 }, { width: 375, height: 667 }
     await page.goto("/aws/aip-c01/practice?mode=mock");
     await expect(page.getByRole("timer")).toBeVisible();
     await expect(page.getByRole("button", { name: "Submit answer", exact: true })).toBeInViewport();
-    await page.locator("button.option").first().click();
+    await chooseFirstAnswer(page);
     await page.getByRole("button", { name: "Submit answer", exact: true }).click();
     await expect(page.getByRole("button", { name: "Update answer", exact: true })).toBeInViewport();
     const review = page.getByRole("button", { name: "Review & submit", exact: true });
@@ -164,3 +165,37 @@ for(const viewport of [{width:375,height:667},{width:430,height:740},{width:932,
  const saved={attemptId:"mobile-first-answer-fixture",certId:"aip-c01",mode:"quick",questionIds:questions.map(q=>q.id),results:Object.fromEntries(questions.map(q=>[q.id,{questionId:q.id,chosen:q.correct,correct:true,flagged:false,answeredAt:at+100}])),startedAt:at,finishedAt:at+500,elapsedSec:1,pauseCount:0};
  await page.evaluate(saved=>localStorage.setItem("certreps.attempts.v1",JSON.stringify([saved])),saved);await page.goto("/aws/aip-c01");await expect(page.getByTestId("first-answer-score")).toContainText("5 / 5");await page.getByText("Domain breakdown and how this is counted",{exact:true}).click();expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
 });
+
+for (const viewport of [{width:375,height:667},{width:430,height:932},{width:932,height:430}]) {
+ test(`implementation lessons and detailed questions fit mobile at ${viewport.width}px`, async ({page})=>{
+  await page.setViewportSize(viewport);
+  const slugs=['federated-access-and-temporary-credentials','knowledge-base-ingestion-observability','resilient-knowledge-base-synchronization','gpu-serving-and-batching','asynchronous-model-hosting','guardrail-diagnostics','study-resources-and-readiness'];
+  for(const slug of slugs){
+   await page.goto(`/guides/aip-c01/${slug}`);
+   await expect(page.locator('article.guide h1')).toBeVisible();
+   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),slug).toBe(true);
+  }
+  const additions=getPracticeBank().filter(q=>Number(q.id.split('-').at(-1))>=680);
+  const single=additions.filter(q=>q.type==='single').sort((a,b)=>b.options.join('').length-a.options.join('').length)[0];
+  const multi=additions.filter(q=>q.type==='multi').sort((a,b)=>b.options.join('').length-a.options.join('').length)[0];
+  for(const q of [single,multi]){
+   expect(q).toBeDefined();
+   const attemptId=`mobile-depth-${q.id}`;
+   await page.evaluate(({attemptId,questionId})=>localStorage.setItem('certreps.attempts.v1',JSON.stringify([{attemptId,certId:'aip-c01',mode:'quick',questionIds:[questionId],results:{},startedAt:Date.now(),finishedAt:null,elapsedSec:0,pauseCount:0}])),{attemptId,questionId:q.id});
+   await page.goto(`/aws/aip-c01/practice?mode=quick&resume=${attemptId}`);
+   await expect(page.locator('.qstem')).toHaveText(q.stem);
+   const submit=page.getByRole('button',{name:'Submit answer',exact:true});
+   await expect(submit).toBeInViewport();
+   for(const [index,canonical] of q.correct.entries()){
+    await page.locator('button.option').filter({hasText:q.options[canonical]}).click();
+    if(q.type==='multi' && index===0)await expect(submit).toBeDisabled();
+   }
+   await expect(submit).toBeEnabled();await submit.click();
+   await expect(page.getByRole('button',{name:'See results',exact:true})).toBeInViewport();
+   await page.locator('.answer-learning summary').click();
+   await expect(page.locator('.answer-learning li')).toHaveCount(q.options.length);
+   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),q.id).toBe(true);
+   if(viewport.width===430)await page.screenshot({path:`/tmp/certreps-depth-${q.type}-iphone.png`,fullPage:true});
+  }
+ });
+}

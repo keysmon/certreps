@@ -1,3 +1,4 @@
+import { chooseFirstAnswer } from "./answer-helpers";
 import { test, expect } from "@playwright/test";
 
 const STORAGE_KEY = "certreps.attempts.v1";
@@ -25,7 +26,7 @@ test("resume: leave mid-drill, resume it, then discard removes only that attempt
   // An unrelated in-progress attempt on the same cert, started first (so it is the OLDER
   // of the two and ends up in HeroCtas' "extras" list once the drill below is newer).
   await page.getByRole("link", { name: /Start practicing/ }).click();
-  await page.locator("button.option").first().click();
+  await chooseFirstAnswer(page);
   await page.locator("div.footbar button.btn-primary").click();
   await page.goto("/aws/aif-c01");
 
@@ -36,7 +37,7 @@ test("resume: leave mid-drill, resume it, then discard removes only that attempt
   await expect(page).toHaveURL(/mode=drill&domain=/); // wait for the navigation to land before reading it
   const drillUrl = page.url();
   for (let i = 0; i < 2; i++) {
-    await page.locator("button.option").first().click();
+    await chooseFirstAnswer(page);
     await page.locator("div.footbar button.btn-primary").click();
     await page.locator(".practice-actionbar button.btn-primary").click();
   }

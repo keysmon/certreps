@@ -88,3 +88,10 @@ Do not treat RAG as a truth guarantee, a reranker as a substitute for permission
 - [Model customization methods](https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html)
 
 Continue when useful with a [Domain 1 drill](/aws/aip-c01/practice?mode=drill&domain=Foundation%20Model%20Integration%20%26%20Compliance) or the [mock exam](/aws/aip-c01/practice?mode=mock). Reading is optional; practice remains available directly.
+
+
+## Implementation follow-up
+
+The following optional lessons were added and reviewed on 2026-11-05. Use them to test concrete decisions beyond recognizing service names. Existing practice remains available at any time.
+
+- [Practice source changes, deletion propagation and reconciliation](/guides/aip-c01/resilient-knowledge-base-synchronization).

@@ -304,7 +304,10 @@
     "id": "aipc01-0015",
     "difficulty": "hard",
     "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html",
-    "concept": "data-protection-and-compliance"
+    "concept": "data-protection-and-compliance",
+    "excludedFromPractice": true,
+    "exclusionReason": "Replaced with an original implementation-focused scenario in the 2026-11-05 depth release; retained for historical grading.",
+    "supersededBy": "aipc01-0740"
   },
   {
     "domain": "Foundation Model Integration & Compliance",
@@ -390,7 +393,10 @@
     "id": "aipc01-0019",
     "difficulty": "hard",
     "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base.html",
-    "concept": "retrieval-quality-and-access-control"
+    "concept": "retrieval-quality-and-access-control",
+    "excludedFromPractice": true,
+    "exclusionReason": "Replaced with an original implementation-focused scenario in the 2026-11-05 depth release; retained for historical grading.",
+    "supersededBy": "aipc01-0741"
   },
   {
     "domain": "Foundation Model Integration & Compliance",
@@ -699,7 +705,10 @@
     "id": "aipc01-0034",
     "difficulty": "hard",
     "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/quotas.html",
-    "concept": "resilience-throttling-failure"
+    "concept": "resilience-throttling-failure",
+    "excludedFromPractice": true,
+    "exclusionReason": "Replaced with an original implementation-focused scenario in the 2026-11-05 depth release; retained for historical grading.",
+    "supersededBy": "aipc01-0742"
   },
   {
     "domain": "Implementation & Integration",
@@ -1716,7 +1725,10 @@
     "difficulty": "hard",
     "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html",
     "id": "aipc01-0082",
-    "concept": "customization-ladder"
+    "concept": "customization-ladder",
+    "excludedFromPractice": true,
+    "exclusionReason": "Replaced with an original implementation-focused scenario in the 2026-11-05 depth release; retained for historical grading.",
+    "supersededBy": "aipc01-0743"
   },
   {
     "domain": "Foundation Model Integration & Compliance",
@@ -1870,7 +1882,10 @@
     "difficulty": "hard",
     "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/quotas.html",
     "id": "aipc01-0089",
-    "concept": "resilience-throttling-failure"
+    "concept": "resilience-throttling-failure",
+    "excludedFromPractice": true,
+    "exclusionReason": "Replaced with an original implementation-focused scenario in the 2026-11-05 depth release; retained for historical grading.",
+    "supersededBy": "aipc01-0744"
   },
   {
     "domain": "Implementation & Integration",
@@ -1910,7 +1925,10 @@
     "difficulty": "hard",
     "docUrl": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-header-allowlist.html",
     "id": "aipc01-0091",
-    "concept": "agentcore"
+    "concept": "agentcore",
+    "excludedFromPractice": true,
+    "exclusionReason": "Replaced with an original implementation-focused scenario in the 2026-11-05 depth release; retained for historical grading.",
+    "supersededBy": "aipc01-0745"
   },
   {
     "domain": "Implementation & Integration",
@@ -2235,7 +2253,10 @@
     "explanation": "Bedrock Guardrails offers a <b>Standard tier</b> and a <b>Classic tier</b> for content filters and denied topics; the <b>Standard tier</b> provides higher detection accuracy and broader multilingual coverage, making it the right choice for a global, many-language workload. The <b>Classic tier</b> is the older baseline with narrower language support. <b>Pre-translating to English</b> adds a fragile dependency and can distort meaning. <b>Lowering filter strengths</b> weakens protection rather than improving cross-language accuracy.",
     "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails.html",
     "id": "aipc01-0107",
-    "concept": "guardrails-policy-toolbox"
+    "concept": "guardrails-policy-toolbox",
+    "excludedFromPractice": true,
+    "exclusionReason": "Replaced with an original implementation-focused scenario in the 2026-11-05 depth release; retained for historical grading.",
+    "supersededBy": "aipc01-0773"
   },
   {
     "domain": "AI Safety, Security & Governance",
@@ -2335,7 +2356,10 @@
     "explanation": "The root cause is <b>excessive functionality</b>: the agent can invoke high-impact tools it never needs. <b>Scoping the Gateway to expose only the two read-only tools</b>, and denying the rest with an <b>AgentCore Policy</b> that is evaluated on every tool call at the Gateway boundary, removes the dangerous operations at the source. A <b>system-prompt instruction</b> is not an enforced control and can be overridden by prompt injection. <b>Observability</b> is detective, not preventive. <b>Confirming every call</b> addresses excessive autonomy, not the presence of dangerous tools, and degrades usability without closing the gap.",
     "docUrl": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/gateway-fine-grained-access-control.html",
     "id": "aipc01-0112",
-    "concept": "owasp-llm-risks-agent-safety"
+    "concept": "owasp-llm-risks-agent-safety",
+    "excludedFromPractice": true,
+    "exclusionReason": "Replaced with an original implementation-focused scenario in the 2026-11-05 depth release; retained for historical grading.",
+    "supersededBy": "aipc01-0746"
   },
   {
     "domain": "AI Safety, Security & Governance",
@@ -3464,7 +3488,10 @@
     "id": "aipc01-0167",
     "difficulty": "hard",
     "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/data-retention.html",
-    "concept": "data-protection-and-compliance"
+    "concept": "data-protection-and-compliance",
+    "excludedFromPractice": true,
+    "exclusionReason": "Replaced with an original implementation-focused scenario in the 2026-11-05 depth release; retained for historical grading.",
+    "supersededBy": "aipc01-0747"
   },
   {
     "domain": "Foundation Model Integration & Compliance",
@@ -3508,7 +3535,10 @@
     "id": "aipc01-0169",
     "difficulty": "hard",
     "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html",
-    "concept": "customization-ladder"
+    "concept": "customization-ladder",
+    "excludedFromPractice": true,
+    "exclusionReason": "Replaced with an original implementation-focused scenario in the 2026-11-05 depth release; retained for historical grading.",
+    "supersededBy": "aipc01-0748"
   },
   {
     "domain": "Foundation Model Integration & Compliance",
@@ -3530,7 +3560,10 @@
     "id": "aipc01-0170",
     "difficulty": "hard",
     "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/inference-profiles-support.html",
-    "concept": "choosing-a-foundation-model"
+    "concept": "choosing-a-foundation-model",
+    "excludedFromPractice": true,
+    "exclusionReason": "Replaced with an original implementation-focused scenario in the 2026-11-05 depth release; retained for historical grading.",
+    "supersededBy": "aipc01-0749"
   },
   {
     "domain": "Implementation & Integration",
@@ -3614,7 +3647,10 @@
     "difficulty": "hard",
     "docUrl": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/WorkingWithItems.html",
     "id": "aipc01-0174",
-    "concept": "orchestration-and-event-driven-pipelines"
+    "concept": "orchestration-and-event-driven-pipelines",
+    "excludedFromPractice": true,
+    "exclusionReason": "Replaced with an original implementation-focused scenario in the 2026-11-05 depth release; retained for historical grading.",
+    "supersededBy": "aipc01-0750"
   },
   {
     "domain": "Implementation & Integration",
@@ -3999,7 +4035,10 @@
     "difficulty": "hard",
     "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/custom-model-use-pt.html",
     "id": "aipc01-0193",
-    "concept": "resilience-throttling-failure"
+    "concept": "resilience-throttling-failure",
+    "excludedFromPractice": true,
+    "exclusionReason": "Replaced with an original implementation-focused scenario in the 2026-11-05 depth release; retained for historical grading.",
+    "supersededBy": "aipc01-0751"
   },
   {
     "domain": "Implementation & Integration",
@@ -4535,7 +4574,10 @@
     "explanation": "Adding an <b>independent authorization layer such as Amazon Verified Permissions with Cedar policies</b> creates a second, externally governed enforcement point that does not depend on the middleware's filter-construction code being correct. Separately, making the middleware <b>fail closed</b>, denying or returning no results when it cannot confidently build a valid tenant-scoped filter, removes the specific fail-open failure mode described. <b>Keeping only the existing filter as the sole control</b> is the single point of failure the question is warning about, not a fix. A <b>larger chunk size</b> has nothing to do with authorization. <b>Trusting the middleware exclusively</b> is the fail-open risk itself, not a mitigation.",
     "docUrl": "https://aws.amazon.com/blogs/architecture/secure-multi-tenant-rag-with-amazon-bedrock-and-verified-permissions/",
     "id": "aipc01-0219",
-    "concept": "owasp-llm-risks-agent-safety"
+    "concept": "owasp-llm-risks-agent-safety",
+    "excludedFromPractice": true,
+    "exclusionReason": "Replaced with an original implementation-focused scenario in the 2026-11-05 depth release; retained for historical grading.",
+    "supersededBy": "aipc01-0775"
   },
   {
     "domain": "AI Safety, Security & Governance",
@@ -5166,7 +5208,10 @@
     "id": "aipc01-0249",
     "difficulty": "hard",
     "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/evaluation.html",
-    "concept": "reproducibility-production-monitoring"
+    "concept": "reproducibility-production-monitoring",
+    "excludedFromPractice": true,
+    "exclusionReason": "Replaced with an original implementation-focused scenario in the 2026-11-05 depth release; retained for historical grading.",
+    "supersededBy": "aipc01-0778"
   },
   {
     "domain": "Testing, Validation & Troubleshooting",
@@ -5289,7 +5334,10 @@
     "id": "aipc01-0255",
     "difficulty": "hard",
     "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/monitoring-runtime-metrics.html",
-    "concept": "debugging-agents-retrieval-latency"
+    "concept": "debugging-agents-retrieval-latency",
+    "excludedFromPractice": true,
+    "exclusionReason": "Replaced with an original implementation-focused scenario in the 2026-11-05 depth release; retained for historical grading.",
+    "supersededBy": "aipc01-0752"
   },
   {
     "domain": "Testing, Validation & Troubleshooting",
@@ -5369,7 +5417,10 @@
     "id": "aipc01-0259",
     "difficulty": "hard",
     "docUrl": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/observability.html",
-    "concept": "debugging-agents-retrieval-latency"
+    "concept": "debugging-agents-retrieval-latency",
+    "excludedFromPractice": true,
+    "exclusionReason": "Replaced with an original implementation-focused scenario in the 2026-11-05 depth release; retained for historical grading.",
+    "supersededBy": "aipc01-0753"
   },
   {
     "domain": "Testing, Validation & Troubleshooting",
@@ -5615,7 +5666,10 @@
     "explanation": "Amazon Bedrock supports <b>on-demand inference for custom model deployments</b> of specific base models, including Amazon Nova (e.g. Nova Pro) and Meta Llama 3.3 70B Instruct, customized after the feature's eligibility date, so those do not need Provisioned Throughput. Anthropic Claude custom models are not in that supported list and still require Provisioned Throughput. It is false that every customized model qualifies for on-demand deployment, false that Provisioned Throughput applies only to base models (the general rule is the opposite), and the on-demand exception for eligible customized models does not remove the need for Provisioned Throughput elsewhere on the account.",
     "difficulty": "hard",
     "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/deploy-custom-model-on-demand.html",
-    "id": "aipc01-0271"
+    "id": "aipc01-0271",
+    "excludedFromPractice": true,
+    "exclusionReason": "Replaced with an original implementation-focused scenario in the 2026-11-05 depth release; retained for historical grading.",
+    "supersededBy": "aipc01-0754"
   },
   {
     "domain": "Operational Efficiency & Optimization",
@@ -5698,7 +5752,10 @@
     "explanation": "A <b>Model Unit</b>'s throughput level specifies the input tokens per minute and the output tokens per minute it can deliver separately, and these rates are specific to the model; an output-heavy workload can hit the output-token ceiling of its purchased Model Units while still well under the input-token ceiling, so sizing on a single blended tokens-per-minute number risks under-provisioning and throttling. Model Units meter both input and output tokens, and there is no separate always-on-demand pathway for output tokens once a model is served through Provisioned Throughput.",
     "difficulty": "hard",
     "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/prov-throughput.html",
-    "id": "aipc01-0275"
+    "id": "aipc01-0275",
+    "excludedFromPractice": true,
+    "exclusionReason": "Replaced with an original implementation-focused scenario in the 2026-11-05 depth release; retained for historical grading.",
+    "supersededBy": "aipc01-0776"
   },
   {
     "domain": "Operational Efficiency & Optimization",
@@ -5760,7 +5817,10 @@
     "explanation": "Provisioned Throughput capacity is <b>Region-specific</b>: a purchase in one Region only serves inference there, so a multi-Region deployment needs a separate purchase per Region. In <b>AWS GovCloud (US-West)</b>, Provisioned Throughput support is limited to custom models purchased with no commitment; base models and other commitment terms are not supported there. Capacity does not automatically extend to other Regions or pool across Regions, and GovCloud (US-West) is not identical to commercial Regions in what it supports.",
     "difficulty": "hard",
     "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/prov-thru-supported.html",
-    "id": "aipc01-0278"
+    "id": "aipc01-0278",
+    "excludedFromPractice": true,
+    "exclusionReason": "Replaced with an original implementation-focused scenario in the 2026-11-05 depth release; retained for historical grading.",
+    "supersededBy": "aipc01-0755"
   },
   {
     "type": "single",
@@ -6110,7 +6170,10 @@
     "domain": "Foundation Model Integration & Compliance",
     "tag": "Domain 1",
     "concept": "customization-ladder",
-    "id": "aipc01-0295"
+    "id": "aipc01-0295",
+    "excludedFromPractice": true,
+    "exclusionReason": "Replaced with an original implementation-focused scenario in the 2026-11-05 depth release; retained for historical grading.",
+    "supersededBy": "aipc01-0756"
   },
   {
     "type": "single",
@@ -6195,7 +6258,10 @@
     "domain": "Foundation Model Integration & Compliance",
     "tag": "Domain 1",
     "concept": "data-protection-and-compliance",
-    "id": "aipc01-0299"
+    "id": "aipc01-0299",
+    "excludedFromPractice": true,
+    "exclusionReason": "Replaced with an original implementation-focused scenario in the 2026-11-05 depth release; retained for historical grading.",
+    "supersededBy": "aipc01-0757"
   },
   {
     "type": "multi",
@@ -6259,7 +6325,10 @@
     "domain": "Implementation & Integration",
     "tag": "Domain 2",
     "concept": "prompt-caching-structure-guardrails",
-    "id": "aipc01-0302"
+    "id": "aipc01-0302",
+    "excludedFromPractice": true,
+    "exclusionReason": "Replaced with an original implementation-focused scenario in the 2026-11-05 depth release; retained for historical grading.",
+    "supersededBy": "aipc01-0758"
   },
   {
     "type": "multi",
@@ -6386,7 +6455,10 @@
     "domain": "Implementation & Integration",
     "tag": "Domain 2",
     "concept": "orchestration-and-event-driven-pipelines",
-    "id": "aipc01-0308"
+    "id": "aipc01-0308",
+    "excludedFromPractice": true,
+    "exclusionReason": "Replaced with an original implementation-focused scenario in the 2026-11-05 depth release; retained for historical grading.",
+    "supersededBy": "aipc01-0759"
   },
   {
     "type": "multi",
@@ -6492,7 +6564,10 @@
     "domain": "Implementation & Integration",
     "tag": "Domain 2",
     "concept": "embeddings-pipelines",
-    "id": "aipc01-0313"
+    "id": "aipc01-0313",
+    "excludedFromPractice": true,
+    "exclusionReason": "Replaced with an original implementation-focused scenario in the 2026-11-05 depth release; retained for historical grading.",
+    "supersededBy": "aipc01-0760"
   },
   {
     "type": "single",
@@ -7203,7 +7278,10 @@
     "domain": "AI Safety, Security & Governance",
     "tag": "Domain 3",
     "concept": "guardrails-at-scale",
-    "id": "aipc01-0348"
+    "id": "aipc01-0348",
+    "excludedFromPractice": true,
+    "exclusionReason": "Replaced with an original implementation-focused scenario in the 2026-11-05 depth release; retained for historical grading.",
+    "supersededBy": "aipc01-0761"
   },
   {
     "type": "multi",
@@ -7267,7 +7345,10 @@
     "domain": "AI Safety, Security & Governance",
     "tag": "Domain 3",
     "concept": "iam-and-account-governance",
-    "id": "aipc01-0351"
+    "id": "aipc01-0351",
+    "excludedFromPractice": true,
+    "exclusionReason": "Replaced with an original implementation-focused scenario in the 2026-11-05 depth release; retained for historical grading.",
+    "supersededBy": "aipc01-0762"
   },
   {
     "type": "single",
@@ -7400,7 +7481,10 @@
     "domain": "AI Safety, Security & Governance",
     "tag": "Domain 3",
     "concept": "logging-auditing-data-protection",
-    "id": "aipc01-0357"
+    "id": "aipc01-0357",
+    "excludedFromPractice": true,
+    "exclusionReason": "Replaced with an original implementation-focused scenario in the 2026-11-05 depth release; retained for historical grading.",
+    "supersededBy": "aipc01-0774"
   },
   {
     "type": "multi",
@@ -7422,7 +7506,10 @@
     "domain": "AI Safety, Security & Governance",
     "tag": "Domain 3",
     "concept": "logging-auditing-data-protection",
-    "id": "aipc01-0358"
+    "id": "aipc01-0358",
+    "excludedFromPractice": true,
+    "exclusionReason": "Replaced with an original implementation-focused scenario in the 2026-11-05 depth release; retained for historical grading.",
+    "supersededBy": "aipc01-0763"
   },
   {
     "type": "single",
@@ -7464,7 +7551,10 @@
     "domain": "AI Safety, Security & Governance",
     "tag": "Domain 3",
     "concept": "owasp-llm-risks-agent-safety",
-    "id": "aipc01-0360"
+    "id": "aipc01-0360",
+    "excludedFromPractice": true,
+    "exclusionReason": "Replaced with an original implementation-focused scenario in the 2026-11-05 depth release; retained for historical grading.",
+    "supersededBy": "aipc01-0764"
   },
   {
     "type": "single",
@@ -8622,7 +8712,10 @@
     "domain": "Operational Efficiency & Optimization",
     "tag": "Domain 4",
     "concept": "prompt-caching",
-    "id": "aipc01-0416"
+    "id": "aipc01-0416",
+    "excludedFromPractice": true,
+    "exclusionReason": "Replaced with an original implementation-focused scenario in the 2026-11-05 depth release; retained for historical grading.",
+    "supersededBy": "aipc01-0765"
   },
   {
     "type": "single",
@@ -8664,7 +8757,10 @@
     "domain": "Operational Efficiency & Optimization",
     "tag": "Domain 4",
     "concept": "throughput-modes",
-    "id": "aipc01-0418"
+    "id": "aipc01-0418",
+    "excludedFromPractice": true,
+    "exclusionReason": "Replaced with an original implementation-focused scenario in the 2026-11-05 depth release; retained for historical grading.",
+    "supersededBy": "aipc01-0777"
   },
   {
     "type": "single",
@@ -8937,7 +9033,10 @@
     "domain": "Operational Efficiency & Optimization",
     "tag": "Domain 4",
     "concept": "latency-levers",
-    "id": "aipc01-0431"
+    "id": "aipc01-0431",
+    "excludedFromPractice": true,
+    "exclusionReason": "Replaced with an original implementation-focused scenario in the 2026-11-05 depth release; retained for historical grading.",
+    "supersededBy": "aipc01-0766"
   },
   {
     "type": "multi",
@@ -9149,7 +9248,10 @@
     "domain": "Operational Efficiency & Optimization",
     "tag": "Domain 4",
     "concept": "model-distillation",
-    "id": "aipc01-0441"
+    "id": "aipc01-0441",
+    "excludedFromPractice": true,
+    "exclusionReason": "Replaced with an original implementation-focused scenario in the 2026-11-05 depth release; retained for historical grading.",
+    "supersededBy": "aipc01-0767"
   },
   {
     "type": "multi",
@@ -9193,7 +9295,10 @@
     "domain": "Operational Efficiency & Optimization",
     "tag": "Domain 4",
     "concept": "model-distillation",
-    "id": "aipc01-0443"
+    "id": "aipc01-0443",
+    "excludedFromPractice": true,
+    "exclusionReason": "Replaced with an original implementation-focused scenario in the 2026-11-05 depth release; retained for historical grading.",
+    "supersededBy": "aipc01-0768"
   },
   {
     "type": "single",
@@ -10537,7 +10642,10 @@
     "domain": "Testing, Validation & Troubleshooting",
     "tag": "Domain 5",
     "concept": "evaluation-job-types",
-    "id": "aipc01-0509"
+    "id": "aipc01-0509",
+    "excludedFromPractice": true,
+    "exclusionReason": "Replaced with an original implementation-focused scenario in the 2026-11-05 depth release; retained for historical grading.",
+    "supersededBy": "aipc01-0769"
   },
   {
     "type": "single",
@@ -10707,7 +10815,10 @@
     "domain": "Testing, Validation & Troubleshooting",
     "tag": "Domain 5",
     "concept": "rag-evaluation-metrics",
-    "id": "aipc01-0517"
+    "id": "aipc01-0517",
+    "excludedFromPractice": true,
+    "exclusionReason": "Replaced with an original implementation-focused scenario in the 2026-11-05 depth release; retained for historical grading.",
+    "supersededBy": "aipc01-0779"
   },
   {
     "type": "single",
@@ -10871,7 +10982,10 @@
     "domain": "Testing, Validation & Troubleshooting",
     "tag": "Domain 5",
     "concept": "prompt-regression-discipline",
-    "id": "aipc01-0525"
+    "id": "aipc01-0525",
+    "excludedFromPractice": true,
+    "exclusionReason": "Replaced with an original implementation-focused scenario in the 2026-11-05 depth release; retained for historical grading.",
+    "supersededBy": "aipc01-0770"
   },
   {
     "type": "multi",
@@ -11104,7 +11218,10 @@
     "domain": "Testing, Validation & Troubleshooting",
     "tag": "Domain 5",
     "concept": "debugging-agents-retrieval-latency",
-    "id": "aipc01-0536"
+    "id": "aipc01-0536",
+    "excludedFromPractice": true,
+    "exclusionReason": "Replaced with an original implementation-focused scenario in the 2026-11-05 depth release; retained for historical grading.",
+    "supersededBy": "aipc01-0771"
   },
   {
     "type": "single",
@@ -11144,7 +11261,10 @@
     "domain": "Testing, Validation & Troubleshooting",
     "tag": "Domain 5",
     "concept": "debugging-agents-retrieval-latency",
-    "id": "aipc01-0538"
+    "id": "aipc01-0538",
+    "excludedFromPractice": true,
+    "exclusionReason": "Replaced with an original implementation-focused scenario in the 2026-11-05 depth release; retained for historical grading.",
+    "supersededBy": "aipc01-0772"
   },
   {
     "type": "multi",
@@ -14026,5 +14146,2083 @@
     "tag": "Domain 5",
     "concept": "reproducibility-production-monitoring",
     "id": "aipc01-0679"
+  },
+  {
+    "id": "aipc01-0680",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "concept": "enterprise-identity-federation",
+    "type": "single",
+    "stem": "An internal document-search CLI receives a signed SAML assertion from the corporate IdP. The account has an IAM SAML provider and a retrieval role that trusts it. The CLI must call AWS APIs without IAM user keys. Which implementation correctly connects enterprise sign-in to AWS API access?",
+    "options": [
+      "Place the SAML assertion in the Authorization header of each Bedrock request; let the retrieval role validate it.",
+      "Exchange the assertion through AssumeRoleWithSAML, then sign AWS requests with the complete returned credential set.",
+      "Call AssumeRole with the SAML assertion as its ExternalId, then use the returned access key without a session token.",
+      "Obtain a console sign-in URL from the federation endpoint and use its sign-in token to sign the CLI's Bedrock API requests."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "AssumeRoleWithSAML exchanges an assertion from a trusted provider for an access key ID, secret access key and session token. Those credentials sign AWS API calls; the role permissions determine which calls are allowed.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithSAML.html"
+  },
+  {
+    "id": "aipc01-0681",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "concept": "enterprise-identity-federation",
+    "type": "multi",
+    "stem": "A browser search tool already signs users in through a Cognito user pool federated with the enterprise IdP. It now needs direct, IAM-authorized AWS API access. Sending the user pool ID token as a Bedrock bearer token fails. Which TWO changes provide scoped AWS access without embedding long-term keys? (Choose TWO.)",
+    "options": [
+      "Increase the user pool ID token lifetime so Bedrock can validate the token throughout each search session.",
+      "Configure a Cognito identity pool to accept the user pool and exchange the authenticated identity for temporary AWS credentials.",
+      "Use the user pool group-to-role claims as signing credentials, without an identity-pool credential exchange.",
+      "Assign the identity pool an authenticated IAM role with the required actions and use its temporary credentials for signed requests.",
+      "Add Bedrock OAuth scopes to the user pool app client and use the resulting access token as the AWS request-signing credential."
+    ],
+    "correct": [
+      1,
+      3
+    ],
+    "explanation": "User pool sign-in produces application tokens. An identity pool can accept that identity and issue a scoped IAM role session. AWS API requests then use temporary AWS credentials and request signing.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-identity.html"
+  },
+  {
+    "id": "aipc01-0682",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "concept": "enterprise-identity-federation",
+    "type": "single",
+    "stem": "A document-ingestion deployment runs in GitHub Actions using OIDC. Its role trust policy requires aud=sts.amazonaws.com and sub=repo:acme/search:ref:refs/heads/main. The failing run has the expected aud but sub=repo:acme/search:ref:refs/heads/test. Only main is approved for production deployment. What is the appropriate fix?",
+    "options": [
+      "Keep the branch restriction and run the production deployment from main after the approved change is merged.",
+      "Add bedrock:StartIngestionJob to the role permissions so the failing OIDC role-assumption request can succeed.",
+      "Replace the subject condition with repo:acme/*:* while keeping the audience condition and existing deployment permissions.",
+      "Change the trust action to sts:AssumeRole and continue submitting the same GitHub OIDC token as the credential."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "The run fails the trust policy subject condition before it receives role credentials. Running the approved deployment from main satisfies the intended boundary. Changing Bedrock permissions cannot fix a failed federation exchange.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-idp_oidc.html"
+  },
+  {
+    "id": "aipc01-0683",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "concept": "enterprise-identity-federation",
+    "type": "multi",
+    "stem": "A federated engineer has a role session in account A. A separate retrieval role in account B already allows the required Bedrock calls. Cross-account AssumeRole is denied. There are no explicit denies, boundaries or organization restrictions. Which TWO policy relationships are needed for this cross-account assumption? (Choose TWO.)",
+    "options": [
+      "The engineer's source role in A must allow sts:AssumeRole on the target role ARN in B.",
+      "Grant the target role sts:AssumeRole on the source role in A while leaving the target trust policy unchanged.",
+      "The target role in B must trust the intended source principal or its account under the required conditions.",
+      "The source role in A must allow iam:PassRole on the target role ARN in B.",
+      "The target role in B must allow sts:GetSessionToken so the existing session can become a cross-account session."
+    ],
+    "correct": [
+      0,
+      2
+    ],
+    "explanation": "Cross-account role assumption requires trust from the target account and an authorization to assume that target role from the source account. The target role's Bedrock permissions govern later service calls.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html"
+  },
+  {
+    "id": "aipc01-0684",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "concept": "enterprise-identity-federation",
+    "type": "single",
+    "stem": "A custom signer works with an IAM user test key but fails after the application switches to enterprise-federated STS credentials. The code copies AccessKeyId and SecretAccessKey into its credential object and discards SessionToken. The credentials have not expired and the role permits the operation. What should the engineer change first?",
+    "options": [
+      "Add a Bedrock resource policy that treats the corporate IdP as the direct service caller.",
+      "Set the signer's AWS session token to the original SAML assertion while keeping the issued access key and secret key.",
+      "Pass the returned SessionToken with the access key and secret key through the AWS signing implementation.",
+      "Increase the IAM role maximum session duration so a request made immediately after federation is accepted."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "Temporary AWS credentials are a three-part set. Requests must include the session token as required by the AWS signing path. A signer that retains only the two long-term-key fields loses essential session information.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_use-resources.html"
+  },
+  {
+    "id": "aipc01-0685",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "concept": "enterprise-identity-federation",
+    "type": "multi",
+    "stem": "A long-running ingestion worker obtains federated credentials at startup and places their literal values in a client configuration. Calls work initially, then fail after the recorded expiration. The worker must keep operating without permanent AWS keys. Which TWO changes address credential lifecycle correctly? (Choose TWO.)",
+    "options": [
+      "Keep the original secret access key and update only the client's expiration timestamp when a call fails.",
+      "Retry expired credentials indefinitely with exponential backoff until STS extends the original session.",
+      "Use a supported refreshable credential provider instead of freezing the initial credential values in the client.",
+      "Replace the expired AWS session token with a current user pool access token while keeping the original STS access key.",
+      "Preserve or renew the upstream identity needed by the provider so it can obtain a new authorized session."
+    ],
+    "correct": [
+      2,
+      4
+    ],
+    "explanation": "An expired temporary credential set cannot be extended. A supported credential provider can obtain replacement credentials, but it still needs a valid source identity or federation input to do so.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/sdkref/latest/guide/standardized-credentials.html"
+  },
+  {
+    "id": "aipc01-0686",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "concept": "enterprise-identity-federation",
+    "type": "single",
+    "stem": "A federation broker assumes a retrieval role whose identity policy allows bedrock:Retrieve on knowledge bases A and B. For one session it supplies a session policy allowing Retrieve only on A. No resource policy grants access, and there are no other applicable restrictions. Calls to A succeed and calls to B are denied. Which diagnosis is correct?",
+    "options": [
+      "The session policy replaces the role identity policy, so it could also grant access to any third knowledge base.",
+      "The broker must move the knowledge base ARNs into the role trust policy to enable access to B.",
+      "The session policy and role permissions are unioned, so the denial must prove that B is unavailable.",
+      "Session and role permissions intersect, so this session allows Retrieve on A but does not allow it on B."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "For this policy setup, session permissions are the intersection of the role identity policy and the session policy. A session policy can restrict the role's allowed access but cannot grant actions or resources beyond it.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithWebIdentity.html"
+  },
+  {
+    "id": "aipc01-0687",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "concept": "enterprise-identity-federation",
+    "type": "single",
+    "stem": "At 09:00, a broker calls AssumeRoleWithSAML with DurationSeconds=14400. The role permits a four-hour maximum session. The accepted SAML assertion has SessionNotOnOrAfter=10:00. The workflow expects to use the credentials until 13:00. Which adjustment addresses the actual lifetime constraint?",
+    "options": [
+      "Keep the assertion unchanged and increase the role maximum session duration to twelve hours.",
+      "Renew the enterprise authentication and obtain another permitted session before the assertion-limited credentials expire.",
+      "Continue using the same credentials until 13:00 because DurationSeconds takes precedence over the assertion.",
+      "Use the federation endpoint's console SessionDuration to extend these existing AWS API credentials to 13:00."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "AssumeRoleWithSAML limits the session to the requested duration or the assertion's SessionNotOnOrAfter, whichever is shorter. Increasing only the role maximum does not remove the assertion limit.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithSAML.html"
+  },
+  {
+    "id": "aipc01-0688",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "concept": "enterprise-identity-federation",
+    "type": "single",
+    "stem": "A support engineer federates into role A, then uses its temporary credentials to AssumeRole into role B for an extended document audit. Role B has a twelve-hour maximum, but DurationSeconds=7200 is rejected. Trust and permissions are correct. Which change fits the documented STS limit?",
+    "options": [
+      "Increase role A's maximum to twelve hours and keep requesting a two-hour chained session in role B.",
+      "Set a session policy on role B that grants sts:AssumeRole for longer than one hour.",
+      "Request at most 3600 seconds for role B and renew sessions through the authorized credential flow.",
+      "Replace the target role ARN with its assumed-role session ARN and retry the same two-hour request."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "Role chaining through AssumeRole has a one-hour maximum API/CLI session, even when the target role permits longer sessions. Respect that limit and renew through the authorized flow when needed.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html"
+  },
+  {
+    "id": "aipc01-0689",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "concept": "enterprise-identity-federation",
+    "type": "single",
+    "stem": "A search portal uses a Cognito identity pool for both guests and signed-in employees. Its authenticated role trusts cognito-identity.amazonaws.com with the correct identity pool aud condition, but its amr condition permits only unauthenticated. Employee credential acquisition fails; the role's Bedrock permission policy is already correct. What is the focused correction?",
+    "options": [
+      "Change the role trust amr condition to authenticated while keeping the intended identity pool aud restriction.",
+      "Keep the unauthenticated trust condition and copy the employee Bedrock permissions onto the guest role.",
+      "Change the aud condition to the user pool app client ID and keep the identity pool principal unchanged.",
+      "Remove the aud condition and use only the enterprise email domain to identify the permitted identity pool."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "Identity pool role trust can restrict both the pool through aud and authentication state through amr. The authenticated path needs a trust condition admitting authenticated identities, with the pool boundary retained.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/cognito/latest/developerguide/iam-roles.html"
+  },
+  {
+    "id": "aipc01-0690",
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "concept": "knowledge-base-ingestion-observability",
+    "type": "single",
+    "stem": "An engineer configures ingestion logging for a vector-store-backed Bedrock knowledge base. PutDeliverySource uses the knowledge base ARN and APPLICATION_LOGS; PutDeliveryDestination points to the correct log group. Both calls succeed, permissions are in place, but no delivery connects them. What configuration step is missing?",
+    "options": [
+      "Create a CloudTrail trail with the log group ARN as its event source and the knowledge base ID as its log type.",
+      "Set model invocation logging to the same log group so it can forward knowledge base file-processing events.",
+      "Call CreateDelivery with the delivery source name and delivery destination ARN, then verify delivery is active.",
+      "Call StartIngestionJob with a logGroupName parameter so each sync creates the missing delivery automatically."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "A source and destination are separate logical resources. CreateDelivery pairs them to establish the delivery. CloudTrail and model invocation logging do not replace the knowledge base ingestion log delivery.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_CreateDelivery.html"
+  },
+  {
+    "id": "aipc01-0691",
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "concept": "knowledge-base-ingestion-observability",
+    "type": "multi",
+    "stem": "A provisioning role can create CloudWatch Logs delivery resources, but enabling knowledge base ingestion logs to an existing S3 bucket is denied. Review shows it lacks bedrock:AllowVendedLogDeliveryForResource and cannot read or update that bucket's policy. No administrator has installed the required log-delivery bucket policy. Which TWO scoped changes address these gaps? (Choose TWO.)",
+    "options": [
+      "Grant the provisioning role bedrock:AllowVendedLogDeliveryForResource for the intended knowledge base.",
+      "Grant the ingestion service role s3:GetObject on all account buckets and leave the log destination policy unchanged.",
+      "Grant the provisioning role bedrock:InvokeModel so log records can be generated by the selected embedding model.",
+      "Grant the provisioning role logs:PutLogEvents on a log group instead of changing the destination bucket policy.",
+      "Permit s3:GetBucketPolicy and s3:PutBucketPolicy for the required policy setup on that destination bucket."
+    ],
+    "correct": [
+      0,
+      4
+    ],
+    "explanation": "Enabling knowledge base vended logging requires permission on the source resource and destination-specific log-delivery permissions. For this S3 setup, the provisioning flow also needs access to install the required bucket resource policy.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/AWS-logs-infrastructure-V2-S3.html"
+  },
+  {
+    "id": "aipc01-0692",
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "concept": "knowledge-base-ingestion-observability",
+    "type": "single",
+    "stem": "A release gate checks an ingestion run containing a large handbook. Resource logs show INDEXING_COMPLETED for some work, then a final PARTIALLY_INDEXED status for that handbook with created=180 and failed_to_create=12 in chunk_statistics. A smoke query retrieves one handbook passage. What should the gate conclude?",
+    "options": [
+      "Approve the full-ingestion gate from the smoke query and track failed chunks only as a retrieval-quality warning.",
+      "Re-ingest the handbook with smaller chunks and approve once the retry is accepted, without checking its final state.",
+      "Use INDEXING_COMPLETED as the handbook verdict and track failed_to_create only for later batch-throughput tuning.",
+      "Investigate failed chunk creation and repair it before declaring the handbook fully indexed."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "A final PARTIALLY_INDEXED status and failed chunk creations explicitly indicate incomplete processing. Retrieving one surviving passage proves neither full coverage nor success for the failed chunks.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-bases-logging.html"
+  },
+  {
+    "id": "aipc01-0693",
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "concept": "knowledge-base-ingestion-observability",
+    "type": "single",
+    "stem": "Ingestion logs for a source document show EMBEDDING_COMPLETED followed by INDEXING_FAILED. The associated status_reasons reports that the vector store rejected an index write for insufficient permission. Other documents fail at the same stage. Which investigation is best supported by this evidence?",
+    "options": [
+      "Inspect vector-store write permissions and access policy, correct the denial, then retry ingestion.",
+      "Grant the query client vector-store read access and renew its session; keep the knowledge base ingestion role unchanged.",
+      "Retry with a newly assumed application role that has broader Bedrock API permissions, preserving the backend vector-store policies.",
+      "Increase vector-store write capacity and retry with unchanged permissions, treating the failed indexing stage as backpressure."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "The logs isolate failure after embedding and identify vector-store write authorization as the reported cause. Investigate that boundary rather than changing generation or retrieval settings.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-bases-logging.html"
+  },
+  {
+    "id": "aipc01-0694",
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "concept": "knowledge-base-ingestion-observability",
+    "type": "single",
+    "stem": "After a sync, the PDF permit.pdf is searchable but its new department metadata is absent. Logs show a related RESOURCE_IGNORED event. The S3 objects are permit.pdf and permit.metadata.json; the team has not read status_reasons. Which next action addresses the evidence most directly?",
+    "options": [
+      "Increase retrieval topK and assume that missing metadata is caused by too few retrieved chunks.",
+      "Inspect status_reasons and check the sidecar name; this source needs permit.pdf.metadata.json.",
+      "Recreate the knowledge base with a different generation model before inspecting the ignored resource details.",
+      "Enable only CloudTrail read events because they contain every ingestion parser decision and metadata rejection reason."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "RESOURCE_IGNORED provides a reason to inspect. S3 metadata sidecars must retain the source filename and extension before .metadata.json, so the supplied name is also a concrete configuration defect to check.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-data-source-sync-ingest.html"
+  },
+  {
+    "id": "aipc01-0695",
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "concept": "knowledge-base-ingestion-observability",
+    "type": "multi",
+    "stem": "A deployment pipeline marks a knowledge base refresh successful whenever StartIngestionJob returns HTTP 202. On a failing release, the stored job ID later shows FAILED and several document failures. Which TWO observations should the pipeline collect to make its ingestion gate meaningful? (Choose TWO.)",
+    "options": [
+      "Check the HTTP response code only; a 202 guarantees that the source documents are indexed.",
+      "Poll GetIngestionJob using the knowledge base, data source and returned job ID; evaluate terminal status and document statistics.",
+      "Correlate file-level ingestion logs with that job and inspect failed or partial document outcomes before approving coverage.",
+      "Call the text generation model once; treat fluent output without citations as proof that the refresh finished.",
+      "Increase the polling rate until GetIngestionJob returns 200, then ignore its status field because HTTP 200 means ingestion succeeded."
+    ],
+    "correct": [
+      1,
+      2
+    ],
+    "explanation": "HTTP 202 acknowledges the start request, while GetIngestionJob reports the actual job state and statistics. File-level ingestion evidence identifies failures that an acceptance-only gate or one generated answer cannot establish.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_GetIngestionJob.html"
+  },
+  {
+    "id": "aipc01-0696",
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "concept": "knowledge-base-ingestion-observability",
+    "type": "single",
+    "stem": "An application account must deliver knowledge base ingestion logs to a security account. The source and destination resources exist, and same-account delivery works in a test. Cross-account CreateDelivery fails because the destination has no policy admitting delivery from the application account. Which change addresses this missing relationship?",
+    "options": [
+      "Add source-account permission for CreateDelivery only, leaving the security account's destination policy unchanged.",
+      "Change the knowledge base service role trust principal from bedrock.amazonaws.com to the security account root.",
+      "Apply PutDeliveryDestinationPolicy in the security account to authorize delivery, then create it.",
+      "Copy the knowledge base ARN into the model invocation logging configuration of the security account."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "Cross-account vended log delivery requires a policy on the delivery destination in its owning account. That policy is separate from the knowledge base retrieval permissions and service role trust.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliveryDestinationPolicy.html"
+  },
+  {
+    "id": "aipc01-0697",
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "concept": "knowledge-base-ingestion-observability",
+    "type": "single",
+    "stem": "A knowledge base log group contains several ingestion runs. An incident concerns documents that failed deletion in run J-new. Run J-old also contains deletion failures, and embedding errors are unrelated. Which CloudWatch Logs Insights filter best selects the relevant resource failure records?",
+    "options": [
+      "filter event.ingestion_job_id = \"J-new\" and event.status = \"DELETION_FAILED\"",
+      "filter event.ingestion_job_id = \"J-new\" and event.ingestion_job_status = \"DELETION_FAILED\"",
+      "filter event.status = \"DELETION_FAILED\" or event.ingestion_job_id = \"J-new\"",
+      "filter event.ingestion_job_id = \"J-new\" and event.status = \"EMBEDDING_FAILED\""
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "DELETION_FAILED is a resource status in event.status. Combining it with the relevant ingestion_job_id excludes older deletion failures and unrelated failures from the current run.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-bases-logging.html"
+  },
+  {
+    "id": "aipc01-0698",
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "concept": "knowledge-base-ingestion-observability",
+    "type": "single",
+    "stem": "A dashboard polls GetIngestionJob and waits for status=INDEXED before marking a run finished. The API repeatedly returns HTTP 200 with status=COMPLETE, while document records separately show INDEXED. The dashboard stays pending forever. Which implementation change is correct?",
+    "options": [
+      "Treat every HTTP 200 from GetIngestionJob as successful ingestion and remove all status checks.",
+      "Convert COMPLETE to FAILED because only document status INDEXED is a successful terminal job state.",
+      "Keep waiting for INDEXED because COMPLETE indicates only that the initial request was accepted.",
+      "Track job completion with job status values and evaluate document outcomes with document states."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "Job and document status vocabularies differ. GetIngestionJob uses states including COMPLETE, FAILED and STOPPED; INDEXED is a document state. The dashboard must not compare one resource type against another's terminal value.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_IngestionJob.html"
+  },
+  {
+    "id": "aipc01-0699",
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "concept": "knowledge-base-ingestion-observability",
+    "type": "multi",
+    "stem": "A security review asks who initiated a suspicious knowledge base sync and why two source files failed to index. The team retained both CloudTrail API audit events and knowledge base APPLICATION_LOGS. Which TWO uses of this evidence match the documented logging responsibilities? (Choose TWO.)",
+    "options": [
+      "Use the CloudTrail event to investigate the initiating caller, request time and API request context.",
+      "Use APPLICATION_LOGS as the sole authority for the IAM principal and originating IP of every Bedrock API call.",
+      "Use a successful CloudTrail StartIngestionJob event as proof that every file completed indexing.",
+      "Use resource-level APPLICATION_LOGS for the affected run to inspect file status, failure reasons and chunk outcomes.",
+      "Use CloudTrail management events instead of resource logs to recover every document's embedding and indexing stage transitions."
+    ],
+    "correct": [
+      0,
+      3
+    ],
+    "explanation": "CloudTrail provides API activity and caller context. Knowledge base ingestion logs provide job and file processing evidence. A successful start API call does not establish successful indexing of each document.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/logging-using-cloudtrail.html"
+  },
+  {
+    "id": "aipc01-0700",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "concept": "knowledge-base-document-lifecycle",
+    "type": "single",
+    "stem": "A policy team directly deletes an obsolete document from an S3-backed Bedrock knowledge base. The S3 object remains in the connected source prefix. A scheduled sync later makes the obsolete content searchable again. Which lifecycle change prevents this recurrence?",
+    "options": [
+      "Increase the retrieval similarity threshold so the old object is less likely to appear after the next sync.",
+      "Change the generation prompt to ignore obsolete policies while leaving both source and index unchanged.",
+      "Keep deleting only the indexed document; each direct deletion permanently excludes its S3 URI from future syncs.",
+      "Remove the obsolete S3 object as well and verify the knowledge base deletion outcome before reporting completion."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "Direct deletion from an S3-backed knowledge base does not delete the S3 object. The source must reflect the intended deletion or a future sync can reintroduce it. The delete request also needs outcome verification.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-direct-ingestion.html"
+  },
+  {
+    "id": "aipc01-0701",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "concept": "knowledge-base-document-lifecycle",
+    "type": "single",
+    "stem": "An orchestrator submits StartIngestionJob for a planned source refresh. The network connection drops before it records the response, so it cannot tell whether the service accepted the call. The orchestrator saved the request body and a valid clientToken before sending. How should it retry this same logical start operation?",
+    "options": [
+      "Resend the same request with the saved clientToken, then recover and monitor the job outcome.",
+      "Generate a new clientToken for every network retry so each request is guaranteed to create a distinct job.",
+      "Reuse the source's first-ever clientToken for this retry and for every later scheduled refresh.",
+      "Remove clientToken and declare success after the retry is transmitted, without checking for an ingestion job."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "clientToken provides request idempotency: a repeated token identifies a previously submitted operation. Preserve it for retries of the same logical request, while giving a genuinely new refresh its own token and monitoring the result.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_StartIngestionJob.html"
+  },
+  {
+    "id": "aipc01-0702",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "concept": "knowledge-base-document-lifecycle",
+    "type": "single",
+    "stem": "A custom-data-source knowledge base stores approved procedure text from a publishing service. Procedure P-42 is already indexed. The next approved revision must replace P-42 without accumulating a new searchable copy on every edit. Which approach matches the direct-ingestion model?",
+    "options": [
+      "Create a new random document ID for every revision and retain all prior copies in the same retrieval collection.",
+      "Write the revision inline with dataSourceType=S3 even though the connected data source is CUSTOM.",
+      "Ingest the new content using the same custom document identifier P-42, then verify its document status.",
+      "Call StartIngestionJob with P-42 as a document ID so the custom source crawls the latest revision automatically."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "For a custom data source, direct ingestion can use inline content and a stable custom document identifier. Re-ingesting an existing identifier overwrites that document. Custom sources do not require the sync job operations.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-direct-ingestion-add.html"
+  },
+  {
+    "id": "aipc01-0703",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "concept": "knowledge-base-document-lifecycle",
+    "type": "multi",
+    "stem": "A publishing service has 24 independent custom-source documents ready for direct ingestion. Its own integration contract caps every request at eight documents and requires per-document completion records. Which TWO implementation choices meet that contract using the documented APIs? (Choose TWO.)",
+    "options": [
+      "Put all 24 documents into one request because a clientToken removes document-array validation requirements.",
+      "Treat a 202 response for each batch as final success and discard any returned PENDING or IN_PROGRESS document states.",
+      "Send three IngestKnowledgeBaseDocuments batches of eight, retaining each batch's document identifiers for tracking.",
+      "Read document details in batches of at most eight and evaluate each processing outcome before marking it complete.",
+      "Use a single random custom document identifier for every item so all 24 documents share one tracking state."
+    ],
+    "correct": [
+      2,
+      3
+    ],
+    "explanation": "Batches of eight stay within both the application contract and documented API shapes. Document lookups return per-document states; request acceptance does not establish that all documents were indexed.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_GetKnowledgeBaseDocuments.html"
+  },
+  {
+    "id": "aipc01-0704",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "concept": "knowledge-base-document-lifecycle",
+    "type": "multi",
+    "stem": "A custom-source knowledge base contains eight documents under a retention-removal request. DeleteKnowledgeBaseDocuments returns HTTP 202 and DELETE_IN_PROGRESS for the identifiers. A developer marks the removal complete immediately. Which TWO changes make the deletion workflow defensible? (Choose TWO.)",
+    "options": [
+      "Consider the request complete because HTTP 202 guarantees all document vectors have already been removed.",
+      "Retain the exact custom identifiers and represent the removal as pending while document processing is still active.",
+      "Use one fresh custom identifier in a follow-up ingest request to overwrite all eight original documents at once.",
+      "Change retrieval topK to one and use the absence of a document in that single result as the only deletion check.",
+      "Follow the returned identifiers with document-status checks and reconciliation evidence before recording completed removal."
+    ],
+    "correct": [
+      1,
+      4
+    ],
+    "explanation": "The delete API is asynchronous and can return an in-progress document state. Keep the request pending, retain document identity, and verify the subsequent outcome rather than equating acceptance or a weak retrieval probe with removal.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_DeleteKnowledgeBaseDocuments.html"
+  },
+  {
+    "id": "aipc01-0705",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "concept": "knowledge-base-document-lifecycle",
+    "type": "single",
+    "stem": "An S3 event consumer maintains a knowledge base index. For the same bucket and key, it has already applied a delete with sequencer 0100. A delayed PUT event arrives with sequencer ff. Replaying the PUT would restore obsolete content. What event-handling rule prevents this stale operation?",
+    "options": [
+      "Apply events in arrival order because S3 guarantees notifications arrive in the same order as object operations.",
+      "Compare event sequencers across all bucket keys and use a single global high-water mark for the entire index.",
+      "Compare same-key sequencers as hexadecimal values and reject ff as older than the stored 0100 watermark.",
+      "Compare the raw strings without padding; apply ff because the character f sorts after the character 0."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "S3 notifications can arrive out of order. Sequencers order PUT and DELETE events for the same object key; ff is hexadecimal 255, below 0100, which is 256. Store and compare per-key values, normalizing their lengths when using string comparison.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/notification-content-structure.html"
+  },
+  {
+    "id": "aipc01-0706",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "concept": "knowledge-base-document-lifecycle",
+    "type": "multi",
+    "stem": "An event-driven document updater receives bursty S3 notifications through an SQS standard queue. Its Lambda consumer overwhelms the downstream ingestion API as concurrency grows. Operations has set an application budget of two concurrent consumer invocations, and duplicate work must be harmless. Which TWO changes address these requirements? (Choose TWO.)",
+    "options": [
+      "Use a maximum concurrency of two on the SQS event source mapping and provide at least that much available function concurrency.",
+      "Set the function reserved concurrency to one and the event source maximum concurrency to ten to increase throughput.",
+      "Increase the queue batch size and remove all deduplication because SQS standard delivery is exactly once.",
+      "Delete queued messages before issuing ingestion requests so downstream throttles cannot produce a backlog.",
+      "Make document operations idempotent and retry transient failures without losing the queued work or replaying stale state."
+    ],
+    "correct": [
+      0,
+      4
+    ],
+    "explanation": "An SQS event source maximum concurrency bounds simultaneous consumer invocations; its allocation must fit the function's concurrency. Standard queues can redeliver messages, so bounded consumption still needs safe replay and failure handling.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/lambda/latest/dg/services-sqs-scaling.html"
+  },
+  {
+    "id": "aipc01-0707",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "concept": "knowledge-base-document-lifecycle",
+    "type": "single",
+    "stem": "A team uses S3 as the source of truth and refreshes its knowledge base only through StartIngestionJob. The event rule triggers a sync for object creates and overwrites but ignores object removals. New content appears correctly, while deleted source documents remain searchable until the next manual sync. What is the focused lifecycle fix?",
+    "options": [
+      "Rebuild the whole vector store after each upload because incremental sync cannot process source deletions.",
+      "Include the relevant object-removal events in refresh scheduling and run an incremental sync that reconciles the source changes.",
+      "Enable model invocation logging so every removed S3 object automatically triggers knowledge base re-indexing.",
+      "Change the generation prompt to avoid missing S3 objects; deletion propagation does not require a sync in this design."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "This design relies on source syncs, which incrementally process added, modified and deleted documents. A removal must schedule reconciliation just as an upload does; otherwise the index can retain the older source state.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-data-source-sync-ingest.html"
+  },
+  {
+    "id": "aipc01-0708",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "concept": "knowledge-base-document-lifecycle",
+    "type": "single",
+    "stem": "A publishing worker can call Retrieve successfully but receives AccessDeniedException on IngestKnowledgeBaseDocuments. It must add, update, delete and inspect documents in one designated knowledge base. The data source connection and content format are already valid. Which IAM change fits the worker's required lifecycle?",
+    "options": [
+      "Add bedrock:InvokeModel only; retrieval permission implies document mutation permission once embeddings are enabled.",
+      "Grant iam:PassRole on every account role and rely on the existing Retrieve permission for document deletion.",
+      "Give the worker AmazonBedrockFullAccess on all resources so document status checks can share its retrieval permission.",
+      "Grant the required document ingest, delete, get and list actions scoped to the designated knowledge base."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "Retrieval authorization does not authorize document mutation. The direct-ingestion prerequisite policy lists distinct document actions, which can be scoped to specified knowledge base resources instead of granting account-wide service access.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-direct-ingestion-prereq.html"
+  },
+  {
+    "id": "aipc01-0709",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "concept": "knowledge-base-document-lifecycle",
+    "type": "multi",
+    "stem": "An S3-backed knowledge base has completed its initial sync. A rapid-update worker uses IngestKnowledgeBaseDocuments, while a scheduled worker launches StartIngestionJob over the same source. They sometimes run simultaneously, and rapid edits are not consistently reflected in S3 before later syncs. Which TWO coordination rules address both documented hazards? (Choose TWO.)",
+    "options": [
+      "Use separate clientTokens for direct ingestion and sync requests, but let both workers launch whenever source events arrive.",
+      "Prevent overlapping direct-ingestion and sync workflows; wait for the active operation to finish before starting the other.",
+      "Order events per S3 object key before dispatch, but allow the two ingestion methods to overlap on the same data source.",
+      "Ensure S3 reflects intended direct document changes before subsequent syncs can reconcile against the source.",
+      "Poll both operations until completion, but leave S3 unchanged when a direct document edit finishes successfully."
+    ],
+    "correct": [
+      1,
+      3
+    ],
+    "explanation": "AWS warns against submitting IngestKnowledgeBaseDocuments and StartIngestionJob at the same time. It also warns that direct changes are not written back to S3 and can be overwritten by later syncs. Coordination must cover both execution overlap and source consistency.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-direct-ingestion.html"
+  },
+  {
+    "id": "aipc01-0710",
+    "domain": "Operational Efficiency & Optimization",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A museum guide serves a GPU-hosted model through SageMaker real-time inference. Its approved target image is LMI v15 with the vLLM async integration. A migration draft keeps the older DJL rolling-batch path and also enables async mode. Which configuration best follows the documented v15 async path without changing the client to SageMaker Asynchronous Inference?",
+    "options": [
+      "Set OPTION_ASYNC_MODE=false and raise the DJL dynamic batch delay; this activates the v15 async request loop while preserving the legacy handler.",
+      "Set OPTION_ASYNC_MODE=true, OPTION_ROLLING_BATCH=disable, and OPTION_ENTRYPOINT=djl_python.lmi_vllm.vllm_async_service; keep the real-time invocation API.",
+      "Set OPTION_ASYNC_MODE=true, OPTION_ROLLING_BATCH=lmi-dist, and engine=MPI; use the historical rolling-batch handler as the v15 async entrypoint.",
+      "Set AsyncInferenceConfig on the endpoint and use InvokeEndpointAsync; this is required to activate the vLLM async integration inside LMI v15."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "LMI v15 documents a dedicated vLLM async integration with its own entrypoint and with the older DJL rolling-batch implementation disabled. That engine-level async processing can serve a SageMaker real-time endpoint. SageMaker Asynchronous Inference is a separate hosting contract with queued requests and asynchronous result delivery. Mixing the lmi-dist rolling-batch configuration into this migration does not reproduce the documented v15 async setup.",
+    "difficulty": "hard",
+    "docUrl": "https://aws.amazon.com/blogs/machine-learning/supercharge-your-llm-performance-with-amazon-sagemaker-large-model-inference-container-v15/",
+    "concept": "gpu-serving-configuration"
+  },
+  {
+    "id": "aipc01-0711",
+    "domain": "Operational Efficiency & Optimization",
+    "tag": "Domain 4",
+    "type": "multi",
+    "stem": "A repair-manual assistant uses a pinned, supported LMI rolling-batch container. The model loads, but GPU memory failures appear when many long conversations generate long answers together. Short requests at low concurrency succeed. The team must retain the model and precision while establishing a safe operating envelope. Which TWO changes directly address the growing inference-memory demand?",
+    "options": [
+      "Increase only the front-end queue capacity so each GPU can retain a larger set of active decode sequences.",
+      "Reduce the supported rolling-batch concurrency ceiling and remeasure throughput and tail latency on the long-conversation workload.",
+      "Enforce tested prompt-plus-generation token budgets so concurrently active sequences cannot grow without a bound.",
+      "Increase only the model-loading timeout so decode-stage KV-cache allocation has more GPU memory available.",
+      "Increase the accepted context length and keep the same concurrency to spread attention memory across more tokens."
+    ],
+    "correct": [
+      1,
+      2
+    ],
+    "explanation": "The successful load and the sequence-length/concurrency correlation point to runtime memory pressure rather than insufficient startup time. Attention KV cache grows with active token sequences. Lowering simultaneous active requests and bounding their token budgets are direct controls to test. More waiting-room capacity does not create GPU memory, and allowing longer contexts increases the demand being investigated. The safe values still require representative measurements.",
+    "difficulty": "hard",
+    "docUrl": "https://aws.amazon.com/blogs/machine-learning/improve-throughput-performance-of-llama-2-models-using-amazon-sagemaker/",
+    "concept": "gpu-serving-configuration"
+  },
+  {
+    "id": "aipc01-0712",
+    "domain": "Operational Efficiency & Optimization",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A model must remain FP16 and does not fit on one GPU. It fits with measured headroom when partitioned over two GPUs on a four-GPU instance. A team proposes four-way tensor parallelism solely because four GPUs are present. The objective is lowest cost per completed request while meeting a latency limit. Which decision is best supported?",
+    "options": [
+      "Choose four-way tensor parallelism immediately because the largest possible degree always produces the greatest requests per dollar.",
+      "Choose one-way tensor parallelism and increase the loading timeout because partition count changes startup timing rather than model placement.",
+      "Choose four independent one-GPU workers because independent workers share the model weights across all GPUs without partitioning.",
+      "Compare two-way and four-way tensor-parallel candidates under matched traffic, measuring latency, throughput, and total instance cost."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "Tensor parallelism partitions a model across devices and solves the stated single-GPU fit problem. It also changes communication and worker layout, so the largest degree is not a universal throughput or cost optimum. Two-way and four-way candidates both deserve controlled comparison when the model and container support them. One-way full-precision replicas still have the original fit problem; extra startup time cannot solve insufficient GPU memory.",
+    "difficulty": "hard",
+    "docUrl": "https://aws.amazon.com/blogs/machine-learning/inference-llama-2-models-with-real-time-response-streaming-using-amazon-sagemaker/",
+    "concept": "gpu-serving-configuration"
+  },
+  {
+    "id": "aipc01-0713",
+    "domain": "Operational Efficiency & Optimization",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A team pins a validated LMI release that supports conventional dynamic batching and MPI/lmi-dist rolling batching. Its current deployment uses conventional request-level batches. Generation lengths vary, so a long answer leaves short-answer capacity idle until the batch completes. Which supported change most directly improves occupancy?",
+    "options": [
+      "Select the supported MPI/lmi-dist rolling-batch configuration with a tested option.max_rolling_batch_size to admit waiting requests between decode iterations.",
+      "Increase conventional max_batch_delay while preserving the rule that every request in a batch must complete before admitting another batch.",
+      "Increase option.model_loading_timeout while preserving the same request-level scheduler and the same active-batch behavior.",
+      "Replace the existing handler with the LMI v15 async entrypoint while retaining this legacy image and assuming matching engine dependencies."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "Continuous or rolling batching can admit waiting sequences at decode iteration boundaries instead of waiting for the longest sequence in a request-level batch. For this pinned release, switching from the current dynamic-batch path to the supported MPI/lmi-dist path enables that behavior, with a separately tested concurrency limit. Longer dynamic-batch waiting or startup time does not change the completion barrier. A v15 entrypoint requires a compatible image and is not a safe handler-only substitution into the stated legacy container.",
+    "difficulty": "medium",
+    "docUrl": "https://aws.amazon.com/blogs/machine-learning/improve-performance-of-falcon-models-with-amazon-sagemaker/",
+    "concept": "gpu-serving-configuration"
+  },
+  {
+    "id": "aipc01-0714",
+    "domain": "Operational Efficiency & Optimization",
+    "tag": "Domain 4",
+    "type": "multi",
+    "stem": "A team has two separate incidents in a pinned LMI deployment. First, startup logs show a healthy model load completes only after the configured loading deadline. Second, an already-warm endpoint fails only under high-concurrency long-context traffic. Which TWO responses correctly separate these failure modes?",
+    "options": [
+      "For the startup incident, double rolling-batch concurrency so the model weights can finish downloading before the loading deadline.",
+      "For both incidents, raise the maximum context length because a larger token ceiling reduces model-loading and decode allocations.",
+      "Adjust the supported model-loading timeout and the SageMaker container startup health-check allowance for the measured startup duration.",
+      "For the warm-endpoint incident, test lower concurrent sequence and token budgets while examining GPU memory use and request failures.",
+      "For the warm-endpoint incident, extend only the container startup health-check allowance to increase available decode memory."
+    ],
+    "correct": [
+      2,
+      3
+    ],
+    "explanation": "Startup deadlines and runtime resource capacity are different controls. When logs establish that a valid load exceeds the configured allowance, the relevant loading and health-check deadlines need alignment. Failures after warm startup under large concurrent sequences require investigation of runtime memory and admission limits. Increasing a deadline cannot supply additional GPU memory, and increasing a context or concurrency ceiling can worsen the second failure mode.",
+    "difficulty": "hard",
+    "docUrl": "https://aws.amazon.com/blogs/machine-learning/supercharge-your-llm-performance-with-amazon-sagemaker-large-model-inference-container-v15/",
+    "concept": "gpu-serving-configuration"
+  },
+  {
+    "id": "aipc01-0715",
+    "domain": "Operational Efficiency & Optimization",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A field-report generator uses a supported GPU container. Weight memory is preventing deployment on a smaller instance. An AWQ candidate fits, but the reports contain rare equipment codes and numerical safety limits. What release gate best evaluates whether the quantized candidate is an improvement?",
+    "options": [
+      "Approve the candidate if one short prompt produces readable text, then apply the vendor benchmark speedup to all production request lengths.",
+      "Compare only peak GPU utilization at maximum concurrency, then deploy the configuration with the highest utilization regardless of task errors.",
+      "Compare code and numerical accuracy with the full-precision baseline, plus latency, throughput, memory, and cost under matched traffic.",
+      "Approve the candidate from its smaller checkpoint size alone, then keep the full-precision performance estimates for the new serving configuration."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "Post-training quantization can reduce weight memory and change performance, but those gains do not establish task correctness. This application has specific numerical and code-preservation risks, so a representative quality comparison is necessary alongside serving measurements. AWS emphasizes testing with the actual data, traffic, and sequence lengths rather than treating published benchmark results as guaranteed for every model and workload.",
+    "difficulty": "hard",
+    "docUrl": "https://aws.amazon.com/blogs/machine-learning/accelerating-llm-inference-with-post-training-weight-and-activation-using-awq-and-gptq-on-amazon-sagemaker-ai/",
+    "concept": "gpu-serving-configuration"
+  },
+  {
+    "id": "aipc01-0716",
+    "domain": "Operational Efficiency & Optimization",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A zoning assistant uses an LMI v15 configuration with OPTION_MAX_MODEL_LEN=8192. The application sometimes sends 7,900 tokens after applying the chat template and requests up to 600 output tokens. The team wants predictable acceptance while preserving up to 600 output tokens. Which boundary should the application enforce before invocation?",
+    "options": [
+      "Keep the raw user message at or below 8,192 tokens and exclude system, retrieval, and template tokens from the input budget.",
+      "Keep the final input at or below 8,192 tokens and treat the 600 output tokens as a separate context window with no shared limit.",
+      "Keep the final input at 7,900 tokens and raise the model-loading timeout so the extra 308 tokens fit within the same context limit.",
+      "Limit final tokenized input, including template overhead, to 7,592 tokens when reserving the full 600-token output allowance."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "The configured maximum model length is the context boundary, so admission must account for the tokenized prompt and the planned generation together. Reserving 600 tokens leaves 8,192 - 600 = 7,592 input tokens. The count must include the rendered template and all prompt content. This conservative reservation supports the requested output allowance; merely extending startup time cannot change the model context bound.",
+    "difficulty": "medium",
+    "docUrl": "https://aws.amazon.com/blogs/machine-learning/supercharge-your-llm-performance-with-amazon-sagemaker-large-model-inference-container-v15/",
+    "concept": "gpu-serving-configuration"
+  },
+  {
+    "id": "aipc01-0717",
+    "domain": "Operational Efficiency & Optimization",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A team compares two validated batch limits on the same GPU model, image, instance, and request mix. Limit A completes 150 requests per minute with p95 time to first token of 0.8 seconds. Limit B completes 190 with p95 of 2.1 seconds. The interactive service requires p95 below 1.2 seconds and sustained demand is 130 requests per minute. Which deployment decision follows these measurements?",
+    "options": [
+      "Use limit A for this service and retain B as a candidate for a different throughput-focused workload or after a new capacity experiment.",
+      "Use limit B for this service because higher aggregate throughput proves the interactive latency requirement is also satisfied.",
+      "Use limit B and report average latency instead of p95 because the original tail-latency requirement can be inferred from throughput.",
+      "Use limit A only after doubling its batch limit because a lower tested limit cannot serve demand below its measured completion rate."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "The supplied evidence makes A the feasible measured candidate: its throughput exceeds the stated arrival rate and its p95 meets the interactive limit. B improves aggregate throughput but violates the latency objective. AWS describes batching as a throughput/latency tradeoff. These results establish a decision for this workload and test, not universal production capacity; traffic changes or different sequence distributions would need renewed measurement.",
+    "difficulty": "medium",
+    "docUrl": "https://aws.amazon.com/blogs/machine-learning/supercharge-your-llm-performance-with-amazon-sagemaker-large-model-inference-container-v15/",
+    "concept": "gpu-serving-configuration"
+  },
+  {
+    "id": "aipc01-0718",
+    "domain": "Operational Efficiency & Optimization",
+    "tag": "Domain 4",
+    "type": "multi",
+    "stem": "A team pins an LMI v15 image that supports both vLLM V1 and V0. A model-specific regression appears after enabling the v15 async path. The rollback must preserve the image while isolating whether the vLLM engine generation is involved. Which TWO actions form a defensible comparison?",
+    "options": [
+      "Run an otherwise matched candidate with VLLM_USE_V1=0, after checking support for the model and features required by that candidate.",
+      "Compare representative correctness, latency, throughput, and failures between the engine configurations before selecting a production setting.",
+      "Change the instance family, model precision, batch ceiling, and engine generation simultaneously to isolate the engine as the cause.",
+      "Assume V1 must win because a published maximum speedup applies equally to every supported model and concurrency level.",
+      "Keep V1 and replace its entrypoint with a legacy lmi-dist handler while treating the resulting stack as the unchanged control."
+    ],
+    "correct": [
+      0,
+      1
+    ],
+    "explanation": "For LMI v15, AWS documents the V0 opt-out through VLLM_USE_V1=0. That provides a useful comparison when the candidate supports the needed model features. The experiment still needs a matched workload and both functional and performance evidence. Changing many serving variables obscures the cause, and a published benchmark is not a correctness guarantee or a prediction for every deployment.",
+    "difficulty": "hard",
+    "docUrl": "https://aws.amazon.com/blogs/machine-learning/supercharge-your-llm-performance-with-amazon-sagemaker-large-model-inference-container-v15/",
+    "concept": "gpu-serving-configuration"
+  },
+  {
+    "id": "aipc01-0719",
+    "domain": "Operational Efficiency & Optimization",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A GPU real-time service uses an FP16 model and an LMI image compatible with SageMaker Fast Model Loader. Scale-out logs show that disk download, host-memory loading, and model sharding dominate readiness time; warm inference already meets its targets. The team must retain the model precision and avoid increasing the permanent instance floor. Which candidate targets the measured bottleneck?",
+    "options": [
+      "Increase the minimum running instance count so more complete model copies stay warm throughout idle periods, then compare burst response time.",
+      "Increase the rolling-batch concurrency ceiling on each running instance and retain the current model artifact loading path, then compare tokens per second.",
+      "Prepare Fast Model Loader artifacts with compatible GPU sharding and stream weights from S3 to GPUs, then compare scale-out readiness time.",
+      "Quantize the FP16 weights to a smaller low-bit checkpoint and keep the existing loading path, then compare warm inference throughput."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "Fast model loading pre-shards the model and streams its weights from S3 directly onto GPUs. It targets the disk, host-memory, and host-side sharding steps identified in the startup evidence, while preserving the stated model precision. Increasing warm capacity can reduce exposure to cold loading but violates the permanent-floor constraint. Quantization changes precision, and a larger batch ceiling targets warm inference rather than the measured readiness path.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/model-optimize.html",
+    "concept": "gpu-serving-configuration"
+  },
+  {
+    "id": "aipc01-0720",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A wildlife laboratory receives individual 350-MB acoustic recordings at unpredictable times. A required CUDA model needs 12-25 minutes per recording. Analysts can wait for a result notification, but processing should start after each upload rather than wait for a nightly collection. Idle GPU capacity should be released. Which SageMaker hosting design best matches these constraints?",
+    "options": [
+      "Use Serverless Inference with provisioned concurrency so the same CUDA model can keep GPU capacity warm during idle periods.",
+      "Use a GPU real-time endpoint and hold a synchronous prediction request open for every recording until its full 25-minute inference completes.",
+      "Create a separate scheduled batch transform job each night so all uploaded recordings wait for the next daily input manifest.",
+      "Use a GPU asynchronous endpoint with S3 input references, result notifications, and a tested scale-to-zero policy that accounts for model startup delay."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "Asynchronous Inference supports queued requests with payloads up to 1 GB and processing up to one hour, and can scale instances to zero. It fits per-upload work whose consumers accept delayed results. The S3 path avoids the small inline-input limit. Serverless Inference does not support GPUs. A nightly batch workflow delays the per-upload start, while a long-held synchronous prediction call does not match the asynchronous service contract needed here.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/async-inference.html",
+    "concept": "asynchronous-model-hosting"
+  },
+  {
+    "id": "aipc01-0721",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "multi",
+    "stem": "A mineral-survey application submits an S3 input to InvokeEndpointAsync and immediately receives HTTP 202, an InferenceId, and output locations. Its UI currently labels this response as a completed successful prediction. The application also needs completion events without polling every second. Which TWO changes implement the asynchronous result contract?",
+    "options": [
+      "Switch the request to InvokeEndpoint while preserving the asynchronous endpoint configuration so the call blocks until the SNS event arrives.",
+      "Store the request as accepted or pending, and mark it successful only after observing the inference outcome and retrieving the output.",
+      "Configure AsyncInferenceConfig.OutputConfig.NotificationConfig with success and error SNS topics, then process the corresponding outcome events.",
+      "Keep marking HTTP 202 as model success because the presence of OutputLocation guarantees the prediction object already exists.",
+      "Read the final generated prediction directly from InferenceId because that field contains the serialized model response after acceptance."
+    ],
+    "correct": [
+      1,
+      2
+    ],
+    "explanation": "InvokeEndpointAsync acknowledges queuing; its response describes where to locate results rather than carrying the prediction. An accepted request can still fail during download, inference, or output delivery, so the UI needs a pending state. Success and error SNS topics are optional endpoint-output configuration that supports event-driven completion handling. OutputLocation is a destination, not evidence that processing has already completed.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_runtime_InvokeEndpointAsync.html",
+    "concept": "asynchronous-model-hosting"
+  },
+  {
+    "id": "aipc01-0722",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A mapping service can leave a request queued for at most 5 minutes before it becomes useless. Once started, its GPU model legitimately needs up to 40 minutes. The team wants these as separate per-request limits on InvokeEndpointAsync. Which settings express those limits?",
+    "options": [
+      "Set InvocationTimeoutSeconds=300 and omit RequestTTLSeconds, so the processing deadline limits queue waiting and inference together.",
+      "Set RequestTTLSeconds=300 and InvocationTimeoutSeconds=2400, while measuring whether capacity can meet the short queue-age requirement.",
+      "Set RequestTTLSeconds=2400 and InvocationTimeoutSeconds=300, so the larger value reserves enough execution time after a short wait.",
+      "Set RequestTTLSeconds=2700 and omit InvocationTimeoutSeconds, so the queue limit automatically extends the default processing deadline."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "The two controls measure different intervals. RequestTTLSeconds is the maximum queue age, while InvocationTimeoutSeconds limits processing duration. Five minutes is 300 seconds and 40 minutes is 2,400 seconds; both values are within the documented ranges. These settings bound failure conditions, but they do not create capacity or guarantee a request will start within five minutes. Queue age and scaling still need observation.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_runtime_InvokeEndpointAsync.html",
+    "concept": "asynchronous-model-hosting"
+  },
+  {
+    "id": "aipc01-0723",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "An asynchronous GPU endpoint has warm instances, but jobs are waiting longer during bursts. The team wants target tracking based on queued work per instance. Its new CloudWatch widget shows no data because it copied the dimensions from a variant-level delivery-failure metric. Which metric specification matches the documented asynchronous scaling signal?",
+    "options": [
+      "AWS/SageMaker, ModelLatency, dimension EndpointName, using a target interpreted as the number of queued requests per instance.",
+      "AWS/SageMaker, InvocationsPerInstance, dimensions EndpointName and VariantName, because asynchronous endpoints publish this real-time traffic metric.",
+      "AWS/SageMaker, ApproximateBacklogSizePerInstance, dimension EndpointName, using Average and a workload-tested target.",
+      "AWS/SageMaker, ApproximateBacklogSizePerInstance, dimensions EndpointName and VariantName, using the delivery-failure dimension set."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "AWS lists the asynchronous backlog metrics with EndpointName alone and uses ApproximateBacklogSizePerInstance for target tracking. Variant-level delivery-failure metrics use a different dimension set. A metric name with the wrong dimension combination can select no time series. ModelLatency describes model response time rather than queue depth, and the async monitoring guide explicitly excludes InvocationsPerInstance from asynchronous endpoint metrics.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/async-inference-autoscale.html",
+    "concept": "asynchronous-model-hosting"
+  },
+  {
+    "id": "aipc01-0724",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A GPU model container processes two simultaneous requests safely. At four concurrent invocations per instance, its runtime memory fails. The queue should retain excess work until capacity is available. Which endpoint configuration directly controls how many asynchronous requests SageMaker sends concurrently to each instance?",
+    "options": [
+      "Set the Application Auto Scaling maximum instance count to 2 and leave per-instance invocation concurrency unchanged at four.",
+      "Set AsyncInferenceConfig.OutputConfig.S3OutputPath to a distinct prefix for each pair of requests and leave invocation concurrency unchanged.",
+      "Set RequestTTLSeconds=120 and retain four concurrent invocations, so waiting requests expire before excess work can exhaust container memory.",
+      "Set AsyncInferenceConfig.ClientConfig.MaxConcurrentInvocationsPerInstance=2 and verify the container and internal workers stay within tested memory bounds."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "MaxConcurrentInvocationsPerInstance controls the number of requests the SageMaker client sends concurrently to a model container on an instance. It is distinct from instance count, output destinations, and queue expiry. Setting it to the tested safe value addresses the stated admission problem, while confirming the container worker behavior checks for additional internal duplication or memory use. Scale-out can increase total capacity without raising the per-instance limit.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AsyncInferenceClientConfig.html",
+    "concept": "asynchronous-model-hosting"
+  },
+  {
+    "id": "aipc01-0725",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "multi",
+    "stem": "After an asynchronous endpoint IAM change, two failures occur. Some completed model requests cannot write their S3 response. Other requests produce output objects, but subscribers receive no completion notification. Which TWO metric checks most directly separate these delivery stages?",
+    "options": [
+      "Inspect NotificationFailures with EndpointName and VariantName for failures publishing the configured completion notifications.",
+      "Inspect ApproximateAgeOfOldestRequest with EndpointName and VariantName as the dedicated count of failed response uploads.",
+      "Inspect RequestDownloadFailures with EndpointName alone as proof that completion notifications were accepted by SNS.",
+      "Inspect GPU utilization alone because a low utilization sample identifies whether S3 upload or SNS publication failed.",
+      "Inspect ResponseUploadFailures with EndpointName and VariantName for failures writing completed response payloads to S3."
+    ],
+    "correct": [
+      0,
+      4
+    ],
+    "explanation": "Async monitoring separates response upload and notification publication failures. Those two counters have EndpointName and VariantName dimensions, enabling the team to inspect each delivery stage rather than labeling both as model execution failures. Queue age and GPU utilization cannot identify which downstream operation failed. The metrics guide diagnosis; logs and the changed S3/SNS permissions are still needed to establish the exact authorization defect.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/async-inference-monitor.html",
+    "concept": "asynchronous-model-hosting"
+  },
+  {
+    "id": "aipc01-0726",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "An analytics team must rescore a fixed overnight collection of 180,000 small text records with a GPU-compatible model. Every input is already in S3, outputs are needed by the next morning, and no individual result needs a callback. The team wants a managed inference job without keeping an endpoint. Which choice most directly fits?",
+    "options": [
+      "Create a Serverless Inference endpoint with the same GPU requirement and use provisioned concurrency for the entire nightly window.",
+      "Create a SageMaker batch transform job over appropriately partitioned S3 inputs and write its result objects to the output prefix.",
+      "Create a permanent real-time GPU endpoint and have every record hold an individual synchronous connection throughout the night.",
+      "Create an asynchronous endpoint solely to submit 180,000 individually tracked requests and retain its endpoint lifecycle afterward."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "Batch transform is intended for inference over datasets when a persistent endpoint is unnecessary. It matches a fixed overnight input collection and object-based output consumption. Asynchronous hosting is valuable for independently arriving requests and per-request completion, but those capabilities add unnecessary request and endpoint management here. Serverless Inference does not support the required GPUs. Input partitioning matters because batch transform distributes S3 objects across instances.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/batch-transform.html",
+    "concept": "asynchronous-model-hosting"
+  },
+  {
+    "id": "aipc01-0727",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A public terminal runs a GPU language model with continuous daytime demand. The product requires streaming tokens during the live request and cannot accept an S3-result retrieval workflow. Capacity remains warm for the service window. Which SageMaker design preserves this client contract?",
+    "options": [
+      "Use batch transform and read each unfinished output object as the synchronous HTTP token stream for the current terminal session.",
+      "Use Serverless Inference with provisioned concurrency and assume it supplies the same GPU model and streaming contract as a real-time endpoint.",
+      "Use a compatible GPU real-time endpoint and InvokeEndpointWithResponseStream, then size and scale it against the interactive latency objective.",
+      "Use InvokeEndpointAsync and stream tokens from its HTTP 202 response while the queued GPU request is still processing."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "A real-time endpoint with a compatible serving container can stream model output through InvokeEndpointWithResponseStream. Asynchronous endpoint acceptance returns request metadata and result locations, rather than a live generated-token stream. The continuous demand and warm capacity are consistent with the real-time choice. A batch job serves offline objects, and Serverless Inference cannot satisfy the required GPU deployment merely by adding provisioned concurrency.",
+    "difficulty": "medium",
+    "docUrl": "https://aws.amazon.com/blogs/machine-learning/supercharge-your-llm-performance-with-amazon-sagemaker-large-model-inference-container-v15/",
+    "concept": "asynchronous-model-hosting"
+  },
+  {
+    "id": "aipc01-0728",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "multi",
+    "stem": "An asynchronous endpoint is registered with Application Auto Scaling using MinCapacity=0. Requests arriving after a long idle period sometimes wait until enough work accumulates to exceed the normal backlog target. The service must wake for even one queued request and still scale proportionally during sustained bursts. Which TWO policies match the documented design?",
+    "options": [
+      "Use target tracking on ApproximateBacklogSizePerInstance for normal queued work per instance once capacity is running.",
+      "Add a step-scaling policy triggered by a HasBacklogWithoutCapacity alarm so pending work can bring capacity up from zero.",
+      "Use target tracking only on GPU utilization, because a stopped fleet publishes a busy GPU sample as soon as the first request is queued.",
+      "Use the real-time InvocationsPerInstance metric as the only wake signal, because async endpoints publish it while no instances exist.",
+      "Increase RequestTTLSeconds to its maximum as the only scaling policy so requests automatically provision one instance before queue expiry."
+    ],
+    "correct": [
+      0,
+      1
+    ],
+    "explanation": "The AWS async autoscaling guide combines backlog-per-instance target tracking with an optional zero-capacity wake policy. HasBacklogWithoutCapacity indicates pending requests while the endpoint has no instances, so it covers isolated work that may not trigger the normal target soon enough. Queue TTL only controls request expiry. This design still incurs model startup time; waking promptly is not a promise of immediate inference after scaling from zero.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/async-inference-autoscale.html",
+    "concept": "asynchronous-model-hosting"
+  },
+  {
+    "id": "aipc01-0729",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A current SageMaker Runtime integration sends 80,000-byte JSON tasks and occasional 2-MB tasks to the same asynchronous endpoint. A reviewer claims every input must be uploaded to S3. The team wants to avoid that upload when the current API permits inline input. Which implementation follows the documented request contract?",
+    "options": [
+      "Send small tasks using Body only, send larger tasks using InputLocation only after S3 upload, and keep asynchronous outcome handling for both.",
+      "Send Body and InputLocation together for every task so SageMaker can choose the payload source after comparing their sizes.",
+      "Send every task, including the 2-MB payload, through Body because asynchronous endpoints accept up to 1 GB of inline request content.",
+      "Send small tasks through Body and mark the prediction complete from HTTP 202 because inline input changes async invocation to synchronous output."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "The current API supports inline Body up to 128,000 bytes and requires exactly one of Body or InputLocation. The 80,000-byte tasks fit inline; the 2-MB tasks need an S3 input reference. The broader async payload-size capability does not raise the inline Body limit. Selecting inline input avoids a preliminary upload but does not change acceptance into completed prediction delivery.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_runtime_InvokeEndpointAsync.html",
+    "concept": "asynchronous-model-hosting"
+  },
+  {
+    "id": "aipc01-0730",
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A greenhouse assistant using Converse returns stopReason=guardrail_intervened for a benign plant-care question. The response text alone does not reveal whether the input, generated output, denied topic, or sensitive-information policy caused it. Which diagnostic change is most appropriate?",
+    "options": [
+      "Enable only a longer maxTokens setting and infer the triggering policy from whether the model can produce a longer refusal message.",
+      "Set guardrailConfig.trace=enabled_full with the ID and version; inspect inputAssessment and outputAssessments in trace.guardrail.",
+      "Put trace=ENABLED_FULL in additionalModelRequestFields and inspect model token usage as the policy-level record of the intervention.",
+      "Put outputScope=FULL inside guardrailConfig and parse the response as an ApplyGuardrail assessments array instead of a Converse trace."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "Converse takes trace configuration inside guardrailConfig and returns the guardrail trace under trace.guardrail. Its inputAssessment map and outputAssessments map distinguish the evaluated sides and expose policy-specific assessments. enabled_full can help inspect non-detected entries as well, subject to documented exceptions. A stop reason identifies an intervention but does not itself name the responsible policy; token limits and model-specific parameters do not supply that diagnosis.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html",
+    "concept": "guardrail-diagnostics"
+  },
+  {
+    "id": "aipc01-0731",
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A service uses the native InvokeModel operation with a model-specific JSON body. A developer copies a working Converse guardrailConfig object into that body and assumes it enables detailed guardrail diagnostics. Which request construction follows the InvokeModel API contract?",
+    "options": [
+      "Pass outputScope=FULL and source=INPUT beside the prompt in the native model JSON body, because those fields replace InvokeModel guardrail headers.",
+      "Pass only guardrailIdentifier as an InvokeModel parameter and let Bedrock infer the guardrailVersion and full trace behavior from the model ID.",
+      "Pass guardrailIdentifier, guardrailVersion, trace=ENABLED_FULL, and contentType=application/json as InvokeModel parameters; retain the model body.",
+      "Pass the Converse guardrailConfig object only inside the native model JSON body, with trace=enabled_full, and omit the operation-level guardrail parameters."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "InvokeModel expresses the guardrail identifier, version, and trace choice as operation parameters that map to HTTP headers. Its trace enum uses uppercase ENABLED_FULL, unlike Converse guardrailConfig.trace. The native JSON body remains specific to the selected model, with optional guardrail body settings governed separately. The identifier requires a supplied version. ApplyGuardrail fields do not replace the InvokeModel header contract.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_InvokeModel.html",
+    "concept": "guardrail-diagnostics"
+  },
+  {
+    "id": "aipc01-0732",
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "multi",
+    "stem": "A team evaluates a third-party model with ApplyGuardrail rather than invoking a Bedrock model. It wants a diagnostic record of both detected and non-detected content-filter and PII-detector entries, and also expects negative records for every custom word and regex rule. Which TWO conclusions follow the current API?",
+    "options": [
+      "Set guardrailConfig.trace=enabled_full on ApplyGuardrail, because it accepts the same configuration object and response trace as Converse.",
+      "Set the InvokeModel trace header to ENABLED_FULL on ApplyGuardrail and omit outputScope because the two operations share their trace headers.",
+      "Treat every configured rule missing from the FULL response as an infrastructure failure because FULL guarantees non-detected entries for words and regex.",
+      "Set outputScope=FULL on ApplyGuardrail while providing the guardrail identifier, version, content, and appropriate source.",
+      "Treat the absence of negative word-filter or regex entries as a documented scope limitation, rather than proof that the whole guardrail did not execute."
+    ],
+    "correct": [
+      3,
+      4
+    ],
+    "explanation": "ApplyGuardrail uses outputScope=FULL for enhanced diagnostic output. The AWS documentation explicitly excludes word filters and regex sensitive-information filters from the non-detected-entry expansion, while supporting it for other policies including PII detectors. This is a response-scope detail, not a reason to conclude that a missing negative word record means no guardrail ran. Converse and InvokeModel have different trace configuration mechanisms.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ApplyGuardrail.html",
+    "concept": "guardrail-diagnostics"
+  },
+  {
+    "id": "aipc01-0733",
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A support assistant has an unexpectedly high block rate. In a full guardrail assessment, one content filter reports type=INSULTS, confidence=LOW, filterStrength=HIGH, detected=true, and action=BLOCKED. A dashboard labels HIGH as the classifier confidence and blames a high-confidence insult detector. Which interpretation should replace it?",
+    "options": [
+      "Display LOW as the classification confidence, HIGH as the configured filter strength, and BLOCKED as the policy action; review benign failures before changing the strength.",
+      "Display HIGH as classification confidence and LOW as policy strength, because the two fields swap meanings when action is BLOCKED.",
+      "Display detected=true as proof that a high-confidence violation occurred, and omit confidence because it no longer matters after an intervention.",
+      "Display action=BLOCKED as a denied-topic intervention and discard the contentPolicy category, because policy strength applies only to monitoring records that take no action."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "The schema separates confidence, filterStrength, detected, and action. Here the confidence is LOW while the configured strength is HIGH; BLOCKED identifies the action for this content-filter record. Combining those fields into a single confidence label obscures why benign content may be blocked under a stricter threshold. Policy tuning should use a representative benign and harmful evaluation set, rather than relabeling the evidence.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_GuardrailContentFilter.html",
+    "concept": "guardrail-diagnostics"
+  },
+  {
+    "id": "aipc01-0734",
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A tenant-feedback summarizer calls ApplyGuardrail with source=OUTPUT before displaying text. The result action is GUARDRAIL_INTERVENED, and a sensitiveInformationPolicy PII entry has action=ANONYMIZED for EMAIL. The service currently discards every intervened result and returns an error. The product allows masking and wants useful summaries to remain visible. Which handler best uses the response?",
+    "options": [
+      "Read outputs as a new model generation that repaired the email, then skip checking the other policy assessments for blocking interventions.",
+      "Inspect all policy actions and outputs; if only permitted masking intervened, display the sanitized content instead of the original model text.",
+      "Treat GUARDRAIL_INTERVENED as equivalent to BLOCKED in every policy and discard all output even when the recorded action is ANONYMIZED.",
+      "Treat ANONYMIZED as a monitoring-only action and display the original generated text because no content-filter BLOCKED action appears."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "A top-level intervention is broader than a universal block. The sensitive-information schema includes ANONYMIZED, BLOCKED, and NONE. Masking can provide sanitized content, so the handler should evaluate the policy actions and use the returned outputs when its release rules permit. It must not display the unmodified response or assume another policy did not block. ApplyGuardrail evaluates supplied content; it is not a new foundation-model generation.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_GuardrailPiiEntityFilter.html",
+    "concept": "guardrail-diagnostics"
+  },
+  {
+    "id": "aipc01-0735",
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "multi",
+    "stem": "A maintenance assistant uses Converse tool calling. Its guardrail checks user-facing text, but a test inserts prohibited prose inside a toolResult and the application later uses a model-generated toolUse.input to issue an equipment command. The team wants to close these gaps. Which TWO changes are justified by the documented coverage?",
+    "options": [
+      "Validate model-generated tool arguments against the allowed command schema and authorization rules before execution, because Converse guardrails do not evaluate toolUse.input.",
+      "Enable guardrailConfig.trace=enabled_full and assume toolResult and toolUse.input are now included in every policy assessment.",
+      "Increase the denied-topic filter coverage setting and assume it changes Converse to inspect all tool definitions, tool results, and structured command fields.",
+      "Copy the tool argument JSON into requestMetadata and rely on metadata filtering to perform content assessment and command authorization.",
+      "Explicitly assess relevant tool-result text with ApplyGuardrail before using it, selecting the source according to where that text is being evaluated in the application flow."
+    ],
+    "correct": [
+      0,
+      4
+    ],
+    "explanation": "AWS documents that Converse guardrails do not evaluate tool results, tool definitions, or generated tool call arguments. A standalone content assessment can cover the relevant textual material at an explicit point in the application. Structured commands still need schema and authorization checks before side effects. Trace enables diagnostics for evaluated content; it does not expand the operation coverage or grant permission to execute a command.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-use-converse-api.html",
+    "concept": "guardrail-diagnostics"
+  },
+  {
+    "id": "aipc01-0736",
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A transit-information RAG test uses contextual grounding checks. The assessment reports GROUNDING score 0.92 with threshold 0.80 and action NONE, but RELEVANCE score 0.44 with threshold 0.70 and action BLOCKED. The answer accurately discusses a different route from the supplied timetable. Which diagnosis is best supported?",
+    "options": [
+      "The response is unsupported by the reference because the RELEVANCE score is another measure of factual grounding in the source.",
+      "The response passes both checks because a high GROUNDING score overrides every lower contextual-grounding policy score.",
+      "The response is blocked by a sensitive-information rule because contextual scores below threshold are reported only in the PII policy.",
+      "The answer is supported by the reference but fails query relevance; inspect query/answer alignment before tuning grounding."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "Grounding asks whether the answer is supported by the reference source, whereas relevance asks whether it addresses the query. The reported actions and scores identify relevance as the failing check. An accurate description of the wrong route illustrates why both checks matter. Raising or lowering a grounding threshold would not directly address the observed query mismatch, and one passing contextual check does not erase another blocking action.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_GuardrailContextualGroundingFilter.html",
+    "concept": "guardrail-diagnostics"
+  },
+  {
+    "id": "aipc01-0737",
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A streaming tutoring application using ConverseStream exposes unsafe fragments before a later guardrail intervention stops the response. The request currently uses guardrailConfig.streamProcessingMode=async. The product accepts additional guardrail latency to have response chunks assessed before they are released. Which change directly addresses this behavior?",
+    "options": [
+      "Use guardrailConfig.streamProcessingMode=sync, retain tracing, and verify chunk delivery and intervention in representative tests.",
+      "Keep streamProcessingMode=async and enable trace=enabled_full, because detailed trace makes the client wait for every chunk assessment.",
+      "Keep streamProcessingMode=async and treat a later intervention as evidence that previously displayed chunks were safe when sent.",
+      "Set the ApplyGuardrail outputScope=FULL field inside ConverseStream inferenceConfig, because full assessment output buffers the model stream."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "Synchronous guardrail streaming buffers chunks for assessment before delivery, trading additional latency for assessment before release. Asynchronous processing can deliver chunks while assessment is still running and stop subsequent content only after detection. Trace verbosity does not change that timing contract. The stream processing mode belongs in ConverseStream guardrailConfig; ApplyGuardrail outputScope is a different request control.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_GuardrailStreamConfiguration.html",
+    "concept": "guardrail-diagnostics"
+  },
+  {
+    "id": "aipc01-0738",
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "multi",
+    "stem": "A release comparison finds more guardrail interventions in a canary than production. The canary selects DRAFT, production selects version 7, and the prompt builder changed which message fragments are wrapped in guardContent. Which TWO checks should precede a claim that the new model is less safe?",
+    "options": [
+      "Replay a matched evaluation set with an explicitly pinned guardrail version and inspect the applied guardrail/version details in the assessments.",
+      "Compare the actual guarded input scope, including guardContent placement, and separate input from output interventions using the trace.",
+      "Compare only the total blocked-response count, because a guardrail version or evaluated text change cannot affect intervention rates.",
+      "Change production to DRAFT and keep editing that draft during the replay so both deployments automatically track the newest policy.",
+      "Remove guardContent and disable input tracing in both deployments, then attribute any remaining count difference directly to the model."
+    ],
+    "correct": [
+      0,
+      1
+    ],
+    "explanation": "The policy version and evaluated content changed along with the model, so the current comparison cannot isolate model behavior. Pinning the guardrail and matching the input scope removes major confounders. Guardrail assessments expose applied guardrail details, while Converse tracing separates input and output assessments. A mutable draft and changing message scope undermine reproducibility; total intervention counts alone do not establish the cause of a difference.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html",
+    "concept": "guardrail-diagnostics"
+  },
+  {
+    "id": "aipc01-0739",
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A guardrail-enabled application shows a latency increase after a prompt-builder change. Aggregate model token counts stayed similar. The team also suspects some retrieved text is no longer being evaluated. Which diagnostic record most directly supports investigation of both guardrail processing time and assessed-content coverage?",
+    "options": [
+      "Compare policy intervention counts and threshold settings across matched requests, inferring assessed text coverage from an unchanged block rate.",
+      "Compare request-token distributions and aggregate end-to-end latency percentiles, using aggregate stability to rule out selective-content coverage changes.",
+      "Capture invocationMetrics.guardrailProcessingLatency and guardrailCoverage; compare with the rendered input and guardContent scope.",
+      "Compare Converse.metrics.latencyMs and model usage across matched requests, treating these totals as a breakdown of guardrail time and assessed text."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "Guardrail invocation metrics explicitly expose processing latency and coverage, including guarded and total text-character counts where provided. Those measurements can be compared with the rendered input and selective evaluation scope to investigate the prompt-builder change. They do not by themselves prove semantic quality, and a difference still needs tracing to the actual request. Model totals and aggregate intervention rates are not equivalent per-invocation guardrail coverage or processing-time measurements.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_GuardrailInvocationMetrics.html",
+    "concept": "guardrail-diagnostics"
+  },
+  {
+    "id": "aipc01-0740",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A Bedrock assistant calls an EU geographic inference profile from Frankfurt. Compliance permits processing in every EU destination listed in that profile, but an organizational SCP denies one listed destination. Calls fail with AccessDenied. The team needs cross-Region capacity while keeping processing inside the approved geography. Which change addresses both constraints?",
+    "options": [
+      "Keep the SCP and retry against the same profile until a permitted destination is selected.",
+      "Allow the profile's approved EU destinations in the SCP and retain the EU geographic profile.",
+      "Use a global inference profile and deny non-EU Regions only in the application configuration.",
+      "Replace the profile with a Frankfurt model endpoint and preserve the existing cross-Region capacity."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "A geographic profile defines a set of possible processing Regions. Access must permit the destinations required by the selected profile; a denied destination can block use of that profile instead of becoming a routing exclusion. Because every listed EU destination is approved here, correcting the organizational restriction is consistent with the residency requirement. A global profile broadens the routing geography, and a single-Region endpoint gives up the requested cross-Region capacity.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html",
+    "concept": "data-protection-and-compliance"
+  },
+  {
+    "id": "aipc01-0741",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "multi",
+    "stem": "A parts assistant uses an OpenSearch Serverless knowledge base with a filterable text field. Searches for exact identifiers such as AX-470 return similar products and obsolete revisions. Each document already has validated productId and revision metadata. The generation model must stay unchanged. Which TWO retrieval changes best address these observed errors? (Select TWO.)",
+    "options": [
+      "Increase numberOfResults and pass all revisions to generation without a product filter.",
+      "Set HYBRID search to combine identifier text matching with vector similarity.",
+      "Rerank the current semantic candidates without adding product or revision eligibility constraints.",
+      "Filter candidates by the requested productId and applicable revision before ranking.",
+      "Rerank the current candidates after removing identifier text from the query."
+    ],
+    "correct": [
+      1,
+      3
+    ],
+    "explanation": "Exact identifiers benefit from lexical matching alongside embedding similarity, and hybrid search is available for the stated store configuration. Metadata filters can remove other products and obsolete revisions before they compete for rank. These changes address distinct failures in the evidence: identifier matching and candidate eligibility. More unfiltered context can retain the same ambiguity. A generation setting cannot repair candidate selection, and removing the identifier discards the strongest distinguishing signal.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-config.html",
+    "concept": "retrieval-quality-and-access-control"
+  },
+  {
+    "id": "aipc01-0742",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "multi",
+    "stem": "A Bedrock text-generation service uses a model whose quota accounting reserves input tokens plus the configured output allowance. It sends max_tokens=12000 although measured successful answers use fewer than 700 output tokens. Bursts produce ThrottlingException while average completed-token metrics appear modest. Which TWO changes address capacity without removing required answer content? (Select TWO.)",
+    "options": [
+      "Test a smaller output allowance with headroom for required answers, then apply it.",
+      "Double client timeout while keeping request concurrency and output reservations unchanged.",
+      "Switch from Converse to InvokeModel for the same model and Region without changing reservations.",
+      "Check the effective model quota and request an increase for remaining sustained demand.",
+      "Retry every throttled call immediately from all workers until one request succeeds."
+    ],
+    "correct": [
+      0,
+      3
+    ],
+    "explanation": "The configured output ceiling participates in admission accounting, so completed-token averages can understate the reservation pressure at burst time. A tested ceiling with sufficient answer headroom can reduce unnecessary reservations. If demand still exceeds the effective quota after this correction, an approved quota increase supplies sustained headroom. Retries need bounds and backoff, but do not create capacity. Client timeouts and a change between runtime APIs do not solve the measured reservation mismatch.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/quotas-token-burndown.html",
+    "concept": "resilience-throttling-failure"
+  },
+  {
+    "id": "aipc01-0743",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "multi",
+    "stem": "A claims-writing pilot has 18,000 reviewed examples of a distinctive report style. Prompt experiments still miss the style rubric. Its policy limits change weekly and every factual limit must be traceable to a current approved document. Which TWO design decisions address these separate requirements? (Select TWO.)",
+    "options": [
+      "Fine-tune a supported model on the reviewed style examples and evaluate on held-out reports.",
+      "Include weekly policy limits in the style dataset and make retraining the sole update mechanism.",
+      "Use retrieved current policy passages with source references when composing each report.",
+      "Distill from a teacher that has not met the style rubric, using generic public writing prompts.",
+      "Replace source retrieval with a system prompt asserting that every numeric limit is current."
+    ],
+    "correct": [
+      0,
+      2
+    ],
+    "explanation": "Fine-tuning can learn task-specific output behavior from labeled examples when tested prompting has been insufficient. It does not supply a source-of-truth update path for frequently changing policy facts. Retrieval keeps those facts external and provides source material for traceable answers. Held-out evaluation is still necessary because customization is an improvement method, not a guarantee of exact style or factual correctness. The two mechanisms solve different measured requirements and can be combined.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html",
+    "concept": "customization-ladder"
+  },
+  {
+    "id": "aipc01-0744",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "multi",
+    "stem": "A document service accepts background jobs with a 20-minute completion objective and offers a separate live preview with a 4-second deadline. Bedrock bursts exhaust the primary model's capacity. An approved smaller model meets the preview quality floor; background jobs must retain the primary model. Which TWO measures fit the requirements? (Select TWO.)",
+    "options": [
+      "Put every preview on the background queue and keep the browser connection open until completion.",
+      "Increase background Lambda concurrency without considering the downstream model capacity.",
+      "Queue background jobs in SQS; drain with bounded retries and capacity-aware concurrency.",
+      "Retry live previews on the primary model for the entire 20-minute background objective.",
+      "Bound primary preview attempts, then use the approved fallback within the live deadline."
+    ],
+    "correct": [
+      2,
+      4
+    ],
+    "explanation": "The two paths have different latency and quality constraints. A durable queue lets background work survive short capacity shortages while the consumer controls downstream pressure. Preview cannot inherit that waiting policy: its approved fallback allows a bounded attempt strategy within the live deadline. Queuing alone does not guarantee a 20-minute objective, so backlog age and drain capacity must also be monitored. Raising concurrency without capacity control can worsen throttling.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html",
+    "concept": "resilience-throttling-failure"
+  },
+  {
+    "id": "aipc01-0745",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "An authenticated backend invokes AgentCore Runtime. It sets X-Tenant-Id from verified identity, but the deployed runtime has an empty requestHeaderAllowlist. The handler expects context.request.headers[\"X-Tenant-Id\"]. The tenant value must reach a database wrapper without entering model messages, and direct clients must not select another tenant. Which implementation fits?",
+    "options": [
+      "Add tenantId to the tool schema and let the model copy the value from the user's message.",
+      "Put X-Tenant-Id in the payload and trust any incoming caller to supply its own tenant value.",
+      "Allowlist X-Tenant-Id, redeploy, and bind the validated header to tools in trusted code.",
+      "Allowlist X-Tenant-Id, then place the propagated header in the system prompt for every turn."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "AgentCore forwards custom headers only when configured for propagation; reading a header in code is not sufficient by itself. The deployed allowlist and handler must agree. Propagation also does not authenticate a tenant claim: the application must restrict callers and bind the value to verified identity before enforcing it at the database boundary. Passing that trusted value directly through a wrapper keeps it outside model-controlled arguments and messages.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-header-allowlist.html",
+    "concept": "agentcore"
+  },
+  {
+    "id": "aipc01-0746",
+    "domain": "AI Safety, Security & Governance",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "An order-status agent needs lookupOrder and listShipments. Its AgentCore Gateway also exposes cancelOrder and issueRefund from the same backend. A red-team document induced a refund call; the backend accepted it because all four tools share broad credentials. Which remediation most directly removes the unused capability and prevents recurrence?",
+    "options": [
+      "Expose only the lookup tools and enforce authorization before target execution with narrowly scoped backend access.",
+      "Keep the full schema, but add a stronger instruction that refunds require a customer request.",
+      "Keep all four tools and alert on refunds after execution while retaining shared backend credentials.",
+      "Require approval for refunds but retain cancellation access without changing the backend permission scope."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "The agent has capabilities beyond its task, and the backend currently accepts those capabilities under broad access. Removing unused mutations from the exposed tool surface reduces what the model can select. Enforcing authorization before target execution and narrowing backend access close the actual execution boundary. Prompt instructions are useful guidance but cannot substitute for those controls. Detection after a refund and approval limited to one mutation leave other unnecessary operations available.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/gateway-fine-grained-access-control.html",
+    "concept": "owasp-llm-risks-agent-safety"
+  },
+  {
+    "id": "aipc01-0747",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A team uses bedrock-mantle projects in two Regions. The primary Region has account retention mode none; the recovery Region is unconfigured. One project explicitly sets default. The approved text-model path must fail rather than silently adopt retention that the team has not approved. Which configuration review is necessary before recovery testing?",
+    "options": [
+      "Confirm the primary account setting, because account retention settings automatically propagate to recovery Regions.",
+      "Set store=false on each request and leave project modes and the recovery account setting unchanged.",
+      "Configure none in each used Region, resolve project overrides, and restrict unauthorized retention-setting changes.",
+      "Disable customer invocation logging and treat all project and model retention defaults as zero retention."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "Retention settings are regional, and a non-inherited project setting takes precedence over the account setting on the mantle endpoint. The current primary-account value therefore does not establish the effective configuration for every listed path. The review must cover each Region, project override, and who can change those settings. Under an effective none setting, incompatible requests are blocked. Customer logging and request storage preferences do not replace this retention-policy review.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/data-retention.html",
+    "concept": "data-protection-and-compliance"
+  },
+  {
+    "id": "aipc01-0748",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "multi",
+    "stem": "A team has two pilots. Pilot A must reproduce an approved report style and has reviewed input/output examples. Pilot B has a costly teacher that already meets a narrow routing task's quality target and representative prompts, but needs cheaper serving. Which TWO implementation plans fit the evidence? (Select TWO.)",
+    "options": [
+      "For Pilot A, replace labeled reports with unlabeled retrieval passages and expect the weights to learn the output style.",
+      "For Pilot B, select a supported teacher/student pair and train the student using task-specific teacher responses.",
+      "For Pilot A, run supported supervised fine-tuning on the labeled examples and evaluate held-out report behavior.",
+      "For Pilot B, choose any smaller model and assume model size alone establishes equivalent routing accuracy.",
+      "For both pilots, use production examples as the only final acceptance set after training on those same examples."
+    ],
+    "correct": [
+      1,
+      2
+    ],
+    "explanation": "Pilot A supplies the input/output supervision suited to supervised fine-tuning. Pilot B supplies an effective teacher and a focused workload suited to distillation, subject to supported model combinations and student evaluation. Neither method makes training data a valid independent acceptance set. The intended behavior has to transfer to unseen examples, and a smaller student is not automatically equivalent merely because it is cheaper.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html",
+    "concept": "customization-ladder"
+  },
+  {
+    "id": "aipc01-0749",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "multi",
+    "stem": "A model-selection proof of concept needs image input, a specific tool-use flow, and inference restricted to an approved geography. A text-only benchmark ranks Model X first, but its currently supported configuration does not provide the required image path. Which TWO checks should determine the production shortlist? (Select TWO.)",
+    "options": [
+      "Treat the text benchmark winner as eligible and move image parsing into a larger output-token budget.",
+      "Verify modality and API/tool compatibility for each candidate on the intended request path.",
+      "Assume an available regional model automatically has an equivalent geographic inference profile.",
+      "Validate available model/profile destination Regions against the approved processing geography.",
+      "Choose the lowest token price and defer functional compatibility testing until after rollout."
+    ],
+    "correct": [
+      1,
+      3
+    ],
+    "explanation": "Eligibility is constrained by the actual model, API, modality, and deployment path, rather than by a single benchmark score. Image support and the required tool workflow must be tested with the intended interface. Regional model availability also does not establish inference-profile support or destination geography. Only candidates meeting those constraints should enter quality and cost comparisons. More output tokens cannot add an unsupported input modality.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html",
+    "concept": "choosing-a-foundation-model"
+  },
+  {
+    "id": "aipc01-0750",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "multi",
+    "stem": "An SQS-triggered summary worker stores its only published result in DynamoDB under jobId. Duplicate messages can arrive concurrently, and a retry can arrive after the result was committed but before the original invocation returned. Which TWO application changes make these cases safer without claiming exactly-once model execution? (Select TWO.)",
+    "options": [
+      "Use a fresh random result key for every invocation so concurrent writes do not conflict.",
+      "Claim jobId conditionally before generation; handle an existing in-progress claim.",
+      "Publish a second result when a duplicate arrives, then let the client choose the latest completion.",
+      "Return the durable completed result for an already completed jobId instead of regenerating it.",
+      "Extend the visibility timeout and remove duplicate-handling code from the worker."
+    ],
+    "correct": [
+      1,
+      3
+    ],
+    "explanation": "SQS delivery and Lambda processing can repeat, so uniqueness must be based on the logical job rather than the individual execution. A conditional claim arbitrates concurrent workers, while a durable completed-result check avoids repeating already committed work. The implementation still needs a recovery policy for abandoned in-progress claims. A crash after a model call but before result persistence can remain ambiguous; these controls do not make an external generation transaction exactly once.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html",
+    "concept": "orchestration-and-event-driven-pipelines"
+  },
+  {
+    "id": "aipc01-0751",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "An agent container works locally at POST /chat and GET /health on port 8080. It is deployed to AgentCore Runtime using the default HTTP protocol configuration, with no serving-path override. Runtime health checks receive 404 and invocations never reach the handler. Which change should be tested first?",
+    "options": [
+      "Add POST /invocations but retain GET /health; infer readiness from successful local model calls.",
+      "Add GET /ping with status 200 but keep the invocation handler exposed only at POST /chat.",
+      "Return status 200 from every unknown route and leave model request handling only at POST /chat.",
+      "Implement the default POST /invocations and GET /ping contract, then test readiness and invocation separately."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "The failure occurs at the hosting protocol boundary before a model call is attempted. Under the stated default configuration, AgentCore expects both its HTTP invocation route and its ping health route. Fixing only one route leaves the other failure unresolved, while returning success for unknown routes can mask a broken contract. Test readiness and request handling separately before investigating downstream model behavior. A deliberate supported serving-path override is another design option, but none is configured here.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-http-protocol-contract.html",
+    "concept": "agentcore"
+  },
+  {
+    "id": "aipc01-0752",
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A ConverseStream workload shows these per-request medians before and after a prompt edit: output tokens 300 -> 900, time to first token 1 second -> 1 second, total invocation latency 7 seconds -> 19 seconds. Model and Region are unchanged. What is the strongest initial interpretation?",
+    "options": [
+      "Decode throughput is roughly stable; investigate why the new prompt elicits three times as much output.",
+      "The service became three times slower at decoding; request Provisioned Throughput before reviewing the prompt.",
+      "The unchanged first-token time proves the application's entire end-to-end latency is unchanged.",
+      "Output length cannot affect InvocationLatency, so the changed measurements indicate a logging defect."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "Approximate decode throughput is output tokens divided by time after the first token. The values give about 50 tokens per second in both periods: 300/6 and 900/18. Longer output therefore explains the higher total invocation latency without evidence of slower decoding. These medians provide a useful initial comparison rather than proof about every request. Review response-length requirements and per-request traces before purchasing capacity or declaring a service regression.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/monitoring-runtime-otps.html",
+    "concept": "debugging-agents-retrieval-latency"
+  },
+  {
+    "id": "aipc01-0753",
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "AgentCore traces for a slow request repeat this sequence 24 times: model selects inventoryLookup; tool returns {\"error\":\"unknown warehouse\"}; model selects inventoryLookup with the same warehouse. Individual model and tool spans have normal duration. Which response addresses the evidence most directly?",
+    "options": [
+      "Increase the runtime lifetime so identical attempts can continue until the warehouse becomes valid.",
+      "Buy more model capacity because normal per-call duration proves aggregate inference capacity is insufficient.",
+      "Handle the tool error explicitly and enforce an application iteration budget with a safe unresolved outcome.",
+      "Increase tool timeout and keep retrying the same arguments because no individual call timed out."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "The trace shows repeated orchestration, not a single slow service. Each normal-duration model/tool pair adds another round of tokens and elapsed time without new information. The application should represent the error clearly, prevent the same non-progressing action from looping, and terminate safely when its budget is reached. AgentCore observability provides evidence about the execution path; it does not replace framework or application controls over iteration and tool-error handling.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/observability.html",
+    "concept": "debugging-agents-retrieval-latency"
+  },
+  {
+    "id": "aipc01-0754",
+    "domain": "Operational Efficiency & Optimization",
+    "tag": "Domain 4",
+    "type": "multi",
+    "stem": "A team has two Bedrock custom models. The current model/Region support check confirms Model A supports custom-model on-demand deployment; Model B must use Provisioned Throughput. Traffic for A is sporadic, while B has sustained demand. Which TWO invocation plans are valid? (Select TWO.)",
+    "options": [
+      "Invoke Model A using its training-job ARN immediately after the training job completes.",
+      "Create an on-demand deployment for A and invoke its deployment ARN after it becomes Active.",
+      "Create a geographic inference profile from B's custom-model ARN instead of provisioning it.",
+      "Purchase supported Provisioned Throughput for B and invoke the provisioned-model resource.",
+      "Invoke both using their original base-model IDs and expect Bedrock to select the custom weights."
+    ],
+    "correct": [
+      1,
+      3
+    ],
+    "explanation": "A trained model artifact and a serving resource are different stages. For a supported custom model, on-demand inference uses a custom-model deployment and its ARN after activation. A model on the provisioned path instead requires the provisioned resource for inference. The support check in the stem is essential because not all custom models share the same serving options. Calling the original base model does not select the customized weights.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/deploy-custom-model-on-demand.html",
+    "concept": "throughput-modes"
+  },
+  {
+    "id": "aipc01-0755",
+    "domain": "Operational Efficiency & Optimization",
+    "tag": "Domain 4",
+    "type": "multi",
+    "stem": "A company wants a Provisioned Throughput deployment in two commercial Regions and a separate AWS GovCloud (US-West) pilot. Finance proposes copying a commercial six-month base-model purchase plan to GovCloud and treating the commercial Regions as one capacity pool. Which TWO corrections are needed? (Select TWO.)",
+    "options": [
+      "Validate the supported model/context variant and provisioned capacity separately in each intended Region.",
+      "Assume a purchase in one commercial Region automatically supplies a shared multi-Region inference profile.",
+      "Use a supported custom model with a no-commitment purchase for the GovCloud (US-West) pilot.",
+      "Use the commercial base-model purchase unchanged in GovCloud because the API action has the same name.",
+      "Choose a six-month term for the GovCloud pilot to enable support for otherwise unsupported base models."
+    ],
+    "correct": [
+      0,
+      2
+    ],
+    "explanation": "Provisioned Throughput support is model- and Region-specific, so a multi-Region design needs separate eligibility and resource planning. A provisioned resource is not a cross-Region inference profile or globally shared capacity pool. The checked AWS matrix specifically limits GovCloud (US-West) Provisioned Throughput to custom models with no-commitment purchases. Contract duration does not unlock an unsupported model. These differences must be resolved before committing to a purchase.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/prov-thru-supported.html",
+    "concept": "throughput-modes"
+  },
+  {
+    "id": "aipc01-0756",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A tax assistant was fine-tuned on last year's tables. This year's tables are approved weekly, and reviewers must reconstruct which release supplied each quoted rate. The answer style is already acceptable. Which change best reduces update work while adding source lineage?",
+    "options": [
+      "Retrain weekly and record only the base-model ID because the model contains the rates.",
+      "Retrieve approved tables with release metadata and preserve returned source references with each answer.",
+      "Retrain with current rates and let generated citations stand in for preserved source releases.",
+      "Retrieve the latest table from a mutable URI and store that URI without a release identifier."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "The remaining problem is changing factual content and its provenance, rather than response style. Retrieval allows approved tables to be updated outside the model weights and can return source references. An application-maintained release identifier, linked to preserved source releases, lets reviewers reconstruct the exact evidence used. A mutable source URI alone identifies a location rather than its historical content. Retraining or generating citations without a preserved release record does not supply that missing lineage.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-retrieve-generate.html",
+    "concept": "customization-ladder"
+  },
+  {
+    "id": "aipc01-0757",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "multi",
+    "stem": "A regulated Bedrock application uses private network access and customer invocation logging to S3. Its approval checklist separately requires review of prompt exposure and retention. Which TWO findings should the checklist record accurately? (Select TWO.)",
+    "options": [
+      "Private network access makes authorization and retention controls on the S3 invocation-log bucket unnecessary.",
+      "Model providers do not have access to Bedrock deployment accounts containing customer prompts and completions.",
+      "Disabling the S3 logging configuration would establish the service-side retention terms of every model.",
+      "Customer log storage and access need their own controls, separate from model-specific service retention review.",
+      "Changing from on-demand to Provisioned Throughput automatically removes prompt and completion logging."
+    ],
+    "correct": [
+      1,
+      3
+    ],
+    "explanation": "Network isolation, provider access, customer logging, and service retention answer different control questions. AWS describes model deployment accounts as controlled by Bedrock, without provider access to customer prompts and completions there. Once the customer enables payload logging, that archive needs its own access and lifecycle controls. The model-specific service retention rules still need review independently. Neither private connectivity nor a throughput purchase makes those customer and service controls disappear.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/data-protection.html",
+    "concept": "data-protection-and-compliance"
+  },
+  {
+    "id": "aipc01-0758",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "multi",
+    "stem": "A Converse agent configures guardrailConfig and wraps the latest user text in guardContent. It also sends plain-text historical messages, tool descriptions, and toolResult blocks. The team assumes the guardrail inspected every submitted field and every generated tool argument. Which TWO changes address the actual coverage gaps? (Select TWO.)",
+    "options": [
+      "Wrap any additional message text that requires assessment in guardContent rather than assuming unwrapped text is covered.",
+      "Treat generated tool arguments as approved because guardrailConfig automatically validates toolUse.input.",
+      "Put authorization rules in tool descriptions so the guardrail enforces account permissions.",
+      "Validate tool arguments in trusted code and separately assess selected tool-result text when content screening is required.",
+      "Remove all explicit content selection and assume tool definitions and results become covered by the same guardrail."
+    ],
+    "correct": [
+      0,
+      3
+    ],
+    "explanation": "Once selected guardContent blocks are used, other message content outside those blocks is excluded from that message assessment. There is another independent limit: the Converse-integrated guardrail does not assess tool definitions, tool results, or generated tool-use arguments. Required text screening can therefore need an explicit ApplyGuardrail call, while tool authorization and argument validation remain application controls. Changing content selection does not turn the guardrail into a schema or access-control engine.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-use-converse-api.html",
+    "concept": "prompt-caching-structure-guardrails"
+  },
+  {
+    "id": "aipc01-0759",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A Step Functions task invokes Bedrock through the optimized integration. Its execution history records a retryable throttling error. The current policy retries States.ALL twelve times at a fixed interval, then fails without recording work for later recovery. The job has a two-minute deadline. Which change best meets that deadline and preserves unresolved work?",
+    "options": [
+      "Increase MaxAttempts to 100 and keep the fixed interval so all work eventually succeeds inside the same execution.",
+      "Add a Lambda wrapper with the same retry policy while leaving the state deadline and failure path unchanged.",
+      "Remove Retry and Catch, and let the caller infer failed jobs from the absence of a generated answer.",
+      "Retry the observed transient error with bounded backoff and jitter; Catch to durable recovery."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "Step Functions lets a task distinguish retriable errors and define bounded retry behavior. Matching the recorded error avoids retrying unrelated validation or permission failures, and exponential delay with jitter reduces synchronized pressure. The attempt and timeout budget must fit the two-minute objective. Once exhausted, a catcher can persist an unresolved job for a separately managed recovery path. This preserves work without promising that retries can create inference capacity or force success inside the deadline.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/step-functions/latest/dg/concepts-error-handling.html",
+    "concept": "orchestration-and-event-driven-pipelines"
+  },
+  {
+    "id": "aipc01-0760",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "multi",
+    "stem": "A search service migrates from Titan Text Embeddings V2 vectors of dimension 1024 to dimension 256. It changes only the query request and keeps the existing 1024-dimension index. A canary reports dimension mismatch errors. The team also wants an honest retrieval-quality comparison before cutover. Which TWO actions are required? (Select TWO.)",
+    "options": [
+      "Pad every new query vector with zeros and compare it against the old vectors without changing ingestion.",
+      "Create a matching 256-dimension index and re-embed the document corpus with the selected configuration.",
+      "Compare the old and new indexes on held-out queries with ground-truth relevant documents.",
+      "Rebuild a 256-dimension index but test it using the existing 1024-dimension query vectors.",
+      "Accept the new index based on training-query recall and omit the held-out retrieval comparison."
+    ],
+    "correct": [
+      1,
+      2
+    ],
+    "explanation": "Query and document vectors must use a compatible representation and index schema. Titan V2 offers multiple output sizes, but changing the query dimension does not transform previously indexed vectors. A separate re-embedded index provides a valid migration target and preserves the old version for comparison and rollback. Held-out retrieval evaluation then measures whether lower-dimensional serving still meets the use case. Testing with mismatched vectors or relying on training-query recall does not establish that acceptance.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/titan-embedding-models.html",
+    "concept": "embeddings-pipelines"
+  },
+  {
+    "id": "aipc01-0761",
+    "domain": "AI Safety, Security & Governance",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A service invokes guardrailVersion=\"3\". An administrator adds a denied topic in the working draft, tests one attack, and saves it. Production still permits that topic. The team also needs a quick rollback if benign traffic is blocked. Which release action fits?",
+    "options": [
+      "Point production permanently at DRAFT so every future edit becomes active without a release step.",
+      "Delete version 3 and expect calls naming that version to select the latest saved draft.",
+      "Create a new tested version and update application configuration, retaining version 3 for rollback.",
+      "Keep invoking version 3 and increase content-filter strength only in the saved draft."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "A numbered guardrail version is a snapshot; saving the working draft does not mutate a version already named by callers. The change must be published as a new version and the application must select it. Testing should include benign examples as well as attacks because a stronger policy can introduce false positives. Keeping the prior tested version provides a concrete rollback target. Using the mutable draft removes the controlled release boundary the team needs.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-deploy.html",
+    "concept": "guardrails-at-scale"
+  },
+  {
+    "id": "aipc01-0762",
+    "domain": "AI Safety, Security & Governance",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A prompt owner can edit a Bedrock Prompt management draft. Company policy requires an approver to review the exact evaluated prompt before production uses it. The current deployment reads whichever draft exists when it starts, and prompt owners can also change production configuration. Which control design establishes the required approval boundary?",
+    "options": [
+      "Bind approval to an evaluated static version; restrict production promotion to a release role.",
+      "Save the draft more often and let prompt owners approve their own production configuration changes.",
+      "Create a version after approval but allow an unrelated newer version to be selected during deployment.",
+      "Use the prompt name as the approval identifier and allow production to resolve its current working draft."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "Prompt versions provide static snapshots, but versioning alone is not an approval system. The customer release process must bind approval and evaluation evidence to the exact version and configuration being promoted. Separating draft editing from production promotion prevents the author from bypassing that approved reference through a configuration change. Names and drafts are mutable references, and approval of one version does not cover a later unevaluated snapshot.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management-deploy.html",
+    "concept": "iam-and-account-governance"
+  },
+  {
+    "id": "aipc01-0763",
+    "domain": "AI Safety, Security & Governance",
+    "tag": "Domain 3",
+    "type": "multi",
+    "stem": "A Bedrock runtime application in us-west-2 enables S3 invocation logging. The proposed bucket is in us-east-1, and its customer-managed KMS key policy grants encryption permissions only to the application role. Delivery fails. Which TWO destination changes address these concrete problems? (Select TWO.)",
+    "options": [
+      "Move the log destination to a bucket in the same account and Region as the logging configuration.",
+      "Grant the Bedrock service principal the documented KMS data-key permission with source constraints.",
+      "Give every application user s3:PutObject and retain the cross-Region destination.",
+      "Enable CloudTrail management events and treat those records as replacement full payload logs.",
+      "Change model throughput mode and leave both the S3 destination and KMS key policy unchanged."
+    ],
+    "correct": [
+      0,
+      1
+    ],
+    "explanation": "Bedrock invocation-log destinations must meet the documented account and Region requirements. The service delivering logs also needs the destination permissions, including the relevant KMS permission when the bucket uses SSE-KMS; application-role access alone does not authorize the service principal. Source-account and source-ARN constraints narrow that permission. Customer invocation payload logs and CloudTrail audit records serve different purposes, so enabling management-event auditing does not repair this delivery path.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-invocation-logging.html",
+    "concept": "logging-auditing-data-protection"
+  },
+  {
+    "id": "aipc01-0764",
+    "domain": "AI Safety, Security & Governance",
+    "tag": "Domain 3",
+    "type": "multi",
+    "stem": "A recruiting assistant summarizes uploaded resumes. A PDF parser exposes hidden instructions telling the assistant to rank that applicant first and email the recruiter's private notes. The current design concatenates parsed text with trusted instructions and gives the summarizer an email tool. Which TWO changes best address the trust-boundary failure? (Select TWO.)",
+    "options": [
+      "Promote parsed resume instructions to the system role so the model can resolve their precedence consistently.",
+      "Treat parsed resume text as untrusted task data and include injection cases in the summarizer's evaluation set.",
+      "Retain the email tool and rely only on detecting suspicious sentences in visible PDF text.",
+      "Remove unnecessary email capability and enforce any remaining data access in trusted application code.",
+      "Strip white font styling and treat all remaining text as authorized application instructions."
+    ],
+    "correct": [
+      1,
+      3
+    ],
+    "explanation": "The attack originates in external document content and attempts to cross from evidence into instructions and actions. Parsing makes hidden text visible to the model, but does not make it trusted. Separating that content as task data and testing adversarial cases improves handling, while removing unnecessary email capability reduces the actionable consequence. Authorization must be enforced outside the model. Visual cleanup and text screening can help, but neither establishes an authorization boundary.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-prompt-attack.html",
+    "concept": "owasp-llm-risks-agent-safety"
+  },
+  {
+    "id": "aipc01-0765",
+    "domain": "Operational Efficiency & Optimization",
+    "tag": "Domain 4",
+    "type": "multi",
+    "stem": "A supported explicit-cache model receives prompts in this order: unique request ID, 6000-token shared policy, unique question, cache checkpoint. Cache-read usage remains zero across repeated policy use. The policy exceeds the model's documented minimum, and requests occur within its supported TTL. Which TWO changes best create a reusable eligible prefix? (Select TWO.)",
+    "options": [
+      "Move the shared policy before per-request fields so the beginning of the prompt stays unchanged.",
+      "Leave the unique ID first and add more checkpoints after the unique question.",
+      "Place a supported checkpoint after the shared policy and before changing request content.",
+      "Raise max_tokens so the output becomes large enough to populate the input cache.",
+      "Remove the checkpoint and expect this explicit-cache request path to cache arbitrary repeated substrings."
+    ],
+    "correct": [
+      0,
+      2
+    ],
+    "explanation": "Explicit caching operates on eligible prompt prefixes, so a unique value at the start prevents the repeated policy from matching the old prefix. A checkpoint after the unique question also includes changing content. Reordering the stable policy first and ending its checkpoint before dynamic fields produces an eligible reusable prefix under the stated minimum and TTL conditions. Cache hits remain dependent on model and serving behavior, so the team should confirm read/write usage rather than promise every call will hit.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-caching.html",
+    "concept": "prompt-caching"
+  },
+  {
+    "id": "aipc01-0766",
+    "domain": "Operational Efficiency & Optimization",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A supported Bedrock workload requests performanceConfig.latency=\"optimized\". During a spike, response metadata reports latency=\"standard\" for many calls and billing matches standard inference. Product wants to promise the optimized latency target for every request. Which conclusion and next step are justified?",
+    "options": [
+      "The request setting guarantees optimized service, so discard the returned metadata and retain the promise.",
+      "Compute latency compliance from requested mode and exclude standard-served calls from the service objective.",
+      "Standard responses mean output quality is invalid, so retry each request until optimized is returned.",
+      "Optimized capacity can fall back to standard; measure actual served mode and latency before defining the target."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "For the documented supported path, requesting latency optimization does not guarantee every request is served in that mode. When the optimized quota is reached, Bedrock can attempt standard inference and report the actual served configuration. The observed metadata and billing are consistent with that fallback. An achievable latency objective therefore needs measurement by served mode and workload, plus an application policy for deadlines, rather than a universal promise based on the requested flag.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/latency-optimized-inference.html",
+    "concept": "latency-levers"
+  },
+  {
+    "id": "aipc01-0767",
+    "domain": "Operational Efficiency & Optimization",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A distilled email-routing student scores 98.6% overall on an untouched evaluation set. Its urgent-case recall is 81%, compared with the teacher's 97%. Urgent cases are only 2% of traffic, but the approved release floor is 95% recall. The student meets cost and latency goals. Which release decision follows the evidence?",
+    "options": [
+      "Approve full cutover because aggregate accuracy is higher than the urgent-case release floor.",
+      "Keep the gate unmet; improve the failing slice or retain an evaluated teacher path.",
+      "Remove urgent examples from evaluation because their low frequency makes them statistically irrelevant.",
+      "Run the same set repeatedly and approve the first run whose urgent recall exceeds 95%."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "Distillation targets lower serving cost and latency for a use case, but the student still has to satisfy the application's acceptance criteria. Aggregate accuracy weights common cases heavily and cannot substitute for the separately approved urgent-case recall floor. The observed 81% fails that floor despite a strong overall score. Improving the student or retaining an evaluated teacher path for the affected slice is defensible; removing failures or selecting only a favorable repeated run is not.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-distillation.html",
+    "concept": "model-distillation"
+  },
+  {
+    "id": "aipc01-0768",
+    "domain": "Operational Efficiency & Optimization",
+    "tag": "Domain 4",
+    "type": "multi",
+    "stem": "A team plans Bedrock distillation for invoice coding. Its teacher already passes acceptance tests, but the proposed dataset contains only clean invoices from one supplier. The business has a strict experiment budget and many scanned, multilingual invoices. Which TWO planning changes address the largest untested quality and cost assumptions? (Select TWO.)",
+    "options": [
+      "Assume the student matches the teacher on omitted formats because both are language models.",
+      "Ignore teacher inference charges because distillation pricing includes every possible synthesis call.",
+      "Include representative difficult formats in task data and keep an independent acceptance set.",
+      "Budget for teacher inference and synthesis as well as training and student serving before starting the job.",
+      "Measure only student token price, because lower unit price guarantees lower total experiment cost."
+    ],
+    "correct": [
+      2,
+      3
+    ],
+    "explanation": "The student is optimized for the represented use case, so clean single-supplier examples leave important production slices untested. Representative difficult examples and an independent acceptance set expose that gap before traffic moves. Bedrock documentation also calls out additional teacher-inference charges when synthesis expands training data. The business therefore needs an end-to-end experiment budget rather than a serving-token comparison alone. No job should begin merely on the assumption of universal teacher parity or zero synthesis cost.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-distillation.html",
+    "concept": "model-distillation"
+  },
+  {
+    "id": "aipc01-0769",
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "multi",
+    "stem": "A hospital is evaluating a patient-information assistant. Its release policy requires documented specialist review of rare contraindication cases and repeatable automated checks on routine cases. A team proposes replacing all specialist review with a high-scoring judge model. Which TWO changes satisfy the stated evidence requirements? (Select TWO.)",
+    "options": [
+      "Use qualified specialists with an explicit rubric for the required rare-case review.",
+      "Treat the judge model's explanation as specialist sign-off whenever its score is above threshold.",
+      "Use a representative automated evaluation set for routine regression checks and retain the required human evidence.",
+      "Limit the automated dataset to examples previously used to tune the assistant's prompt.",
+      "Approve the release when the overall average is high even if the required specialist review is missing."
+    ],
+    "correct": [
+      0,
+      2
+    ],
+    "explanation": "Bedrock offers both automated evaluation and human-worker evaluation, including domain experts. They supply different evidence. Automated checks can make routine regression detection repeatable, while the policy in this scenario specifically requires qualified review for rare contraindications. A judge model's score cannot be relabeled as that human sign-off. Representative independent cases and recorded rubric outcomes are needed to make the evidence meaningful, rather than treating an overall average as a substitute for an unmet approval requirement.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-evaluation-type-human.html",
+    "concept": "evaluation-job-types"
+  },
+  {
+    "id": "aipc01-0770",
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A prompt pull request improves average helpfulness but introduces a response containing another tenant's identifier in one adversarial test. The release pipeline currently checks only that responses parse as JSON. The team requires both pre-release quality evidence and limited exposure if an unseen regression remains. Which process fits?",
+    "options": [
+      "Merge when JSON parsing passes, then run all quality and isolation checks against full production traffic.",
+      "Gate on isolation failures; approve a tested version, then canary it with rollback criteria.",
+      "Accept the average helpfulness gain as compensation for the isolation failure, then enable production tracing.",
+      "Retry the adversarial case until it passes, deploy the draft prompt, and compare aggregate latency after launch."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "JSON validity is necessary for a structured interface but does not establish answer quality or data isolation. A known security regression must fail the pre-release gate rather than be averaged away by helpfulness. After a corrected version passes the required checks and approval, a limited rollout can detect unseen behavior while retaining rollback criteria. Prompt snapshots provide a stable release identity; the regression gate, approval, traffic allocation, and rollback policy are customer pipeline responsibilities.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management-deploy.html",
+    "concept": "prompt-regression-discipline"
+  },
+  {
+    "id": "aipc01-0771",
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "multi",
+    "stem": "A knowledge base contains the approved answer, but a test query never retrieves it. The query filter is equals(releaseYear,\"2026\"); the ingested document metadata stores releaseYear as the number 2026. A separate no-filter test in an isolated evaluation environment still misses part of the required answer. Which TWO investigations fit these separate observations? (Select TWO.)",
+    "options": [
+      "Inspect actual ingested metadata types and replay the filter with the correct value type in the isolated test.",
+      "Increase generation max_tokens and expect Retrieve to return the missing passage.",
+      "Inspect parsed chunks to see whether the required facts survived parsing and are retrievable together.",
+      "Remove tenant authorization filters from all production requests to make the missing answer visible.",
+      "Lower generation temperature and use final response style as the sole retrieval diagnostic."
+    ],
+    "correct": [
+      0,
+      2
+    ],
+    "explanation": "The typed metadata mismatch can exclude the document before ranking, so the first controlled replay should compare the query with the ingested attributes. The no-filter miss supplies evidence of an additional retrieval issue rather than proving the filter is the only cause. Inspecting parsed chunks can reveal missing or separated facts and guide a measured chunking correction. Testing in an isolated environment is important: debugging relevance does not authorize removing production access restrictions.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-config.html",
+    "concept": "debugging-agents-retrieval-latency"
+  },
+  {
+    "id": "aipc01-0772",
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A traced RAG request takes 7 seconds: retrieval 1.2, custom reranking 4.3, Bedrock invocation 0.9, and other work 0.6. Purchasing more model capacity is proposed as the first fix. The team must preserve answer relevance. Which next experiment is most justified?",
+    "options": [
+      "Benchmark faster reranking on the same relevance set, then remeasure the complete request.",
+      "Purchase Provisioned Throughput and assume it will parallelize the custom reranker and retrieval automatically.",
+      "Disable reranking immediately and approve the change based only on the shorter Bedrock invocation span.",
+      "Increase the model output allowance so model work becomes a larger share of the observed response time."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "The custom reranker accounts for most measured time, so it is the strongest initial optimization target. A bounded experiment with the same relevance benchmark tests whether reduced reranking latency preserves the requirement. End-to-end remeasurement matters because a shorter component span alone is not the user outcome. Additional model capacity does not automatically optimize custom application stages, and even removing the entire 0.9-second model span would leave most of the 7-second request.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/observability.html",
+    "concept": "debugging-agents-retrieval-latency"
+  },
+  {
+    "id": "aipc01-0773",
+    "domain": "AI Safety, Security & Governance",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A multilingual assistant uses Classic-tier content and prompt-attack filters tuned on English examples. A new market needs broader language coverage. The team can permit the documented guardrail cross-Region geography, but existing false-positive thresholds are part of its acceptance criteria. Which migration plan fits?",
+    "options": [
+      "Switch the model's language and keep Classic policy tests in English as the only acceptance evidence.",
+      "Translate all traffic to English, retain existing thresholds, and assume translation preserves every attack pattern.",
+      "Test Standard policies in each language, configure required routing, and publish a version.",
+      "Lower every filter strength in Classic and approve the market once the overall block rate falls."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "Standard tier provides broader language coverage and stronger safeguards for the relevant policies, while also using guardrail cross-Region inference. The allowed geography in the stem removes a potential routing blocker, but does not remove the need to configure it and verify permissions. A multilingual, benign-and-adversarial evaluation must establish acceptable behavior after migration. Existing English thresholds and raw block rates do not demonstrate safety and false-positive performance in the new languages.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-tiers.html",
+    "concept": "guardrails-policy-toolbox"
+  },
+  {
+    "id": "aipc01-0774",
+    "domain": "AI Safety, Security & Governance",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A team runs a Macie discovery job over an S3 archive of Bedrock invocation logs. It reports no sensitive-data findings, but discovery results show 8,000 objects excluded by the job scope and 600 objects not analyzed because of access errors. Management asks whether the entire archive is now verified free of PII. What should the team do?",
+    "options": [
+      "Approve the entire archive because no findings means every selected and excluded object was inspected.",
+      "Correct scope and access, rerun the affected objects, and report coverage and findings with their limitations.",
+      "Enable S3 Object Lock on the archive and treat immutability as confirmation that its contents contain no PII.",
+      "Disable future invocation logging and use that configuration change as retrospective validation of the archive."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "Macie distinguishes sensitive-data findings from discovery results that describe analysis, including skipped objects and errors. A job with no findings does not establish that unanalyzed objects were clean. The team must correct the exclusions and access failures where full coverage is required, then report which objects were actually analyzed. Macie is a discovery mechanism, not a universal proof of absence; immutability and future logging changes do not inspect existing content.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/macie/latest/user/discovery-jobs.html",
+    "concept": "logging-auditing-data-protection"
+  },
+  {
+    "id": "aipc01-0775",
+    "domain": "AI Safety, Security & Governance",
+    "tag": "Domain 3",
+    "type": "multi",
+    "stem": "A multi-tenant RAG wrapper catches a tenant-filter construction exception by calling Retrieve without a filter. A test then passes another tenant's text into the model. Authorization rules are also embedded in the same filter-building function. Which TWO changes establish defense in depth before content reaches generation? (Select TWO.)",
+    "options": [
+      "Ask the generation model to redact other tenants after receiving all retrieved content.",
+      "Fail closed when identity, filter construction, or authorization cannot be validated.",
+      "Add an independently governed authorization decision and enforce it on permitted resources before model context assembly.",
+      "Retry the unfiltered query and accept the first response whose answer omits tenant names.",
+      "Add a second call to the same filter function and treat identical output as independent authorization."
+    ],
+    "correct": [
+      1,
+      2
+    ],
+    "explanation": "The exception path currently widens access exactly when scoping fails. Failing closed removes that behavior. A separately governed authorization decision, enforced by trusted code before context assembly, supplies another control that does not merely repeat the same faulty filter function. Verified Permissions can evaluate principal, action, resource, and context, but the application must enforce the returned decision. Asking the model to redact data after it has already received it is too late for the stated isolation requirement.",
+    "difficulty": "hard",
+    "docUrl": "https://aws.amazon.com/blogs/architecture/secure-multi-tenant-rag-with-amazon-bedrock-and-verified-permissions/",
+    "concept": "owasp-llm-risks-agent-safety"
+  },
+  {
+    "id": "aipc01-0776",
+    "domain": "Operational Efficiency & Optimization",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A provisioned-model sizing exercise uses hypothetical measured rates of 100,000 input tokens/minute and 20,000 output tokens/minute per Model Unit. Forecast demand is 400 requests/minute, each using 100 input tokens and generating 150 output tokens. Ignore safety headroom for this calculation. What is the minimum arithmetic capacity requirement?",
+    "options": [
+      "One Model Unit, because combined demand equals the combined input and output rate of one unit.",
+      "Two Model Units, because the number of input tokens is lower than the number of output tokens.",
+      "Three Model Units, because 60,000 output tokens/minute is the binding capacity requirement.",
+      "Four Model Units, because each 100 requests/minute requires a separately purchased unit."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "The forecast is 40,000 input tokens/minute and 60,000 output tokens/minute. Capacity must satisfy both rates: the input calculation needs one unit after rounding up, while output needs three. The larger requirement governs this simplified exercise. Input headroom cannot be exchanged for output capacity by adding both numbers into a blended total. Real purchasing still needs model-specific supported rates, measured workload variation, and safety headroom; the hypothetical numbers are not an AWS price or capacity promise.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/prov-throughput.html",
+    "concept": "throughput-modes"
+  },
+  {
+    "id": "aipc01-0777",
+    "domain": "Operational Efficiency & Optimization",
+    "tag": "Domain 4",
+    "type": "multi",
+    "stem": "A service has two workloads: interactive chat with unpredictable sparse traffic and a nightly archive job processing 80,000 independent summaries due the next day. The chosen model and Region support batch inference, and a benchmark confirms the overnight job meets its completion objective. The team wants to avoid paying for idle reserved capacity. Which TWO serving choices fit? (Select TWO.)",
+    "options": [
+      "Use supported on-demand inference for chat and measure its live latency and consumption.",
+      "Use batch inference with S3 input/output for the overnight independent summaries.",
+      "Run both workloads as batch jobs addressed to the provisioned-model ARN to share reserved capacity.",
+      "Reserve continuous peak chat capacity and compare costs using assumed full utilization rather than observed arrivals.",
+      "Keep provisioned resources idle overnight and assume billing stops whenever no requests arrive."
+    ],
+    "correct": [
+      0,
+      1
+    ],
+    "explanation": "Variable on-demand use avoids reserving idle model capacity for sparse chat, subject to its measured latency and quotas. The independent overnight summaries fit asynchronous batch processing because support and completion objectives have already been checked. Provisioned Throughput has fixed hourly charges and continues billing until deletion under its applicable terms, so low utilization does not automatically make it economical. Batch completion also cannot satisfy the chat interface's interactive response requirement.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference.html",
+    "concept": "throughput-modes"
+  },
+  {
+    "id": "aipc01-0778",
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A pinned-prompt assistant has no application deployments this month, but nightly evaluation of a fixed, versioned case set shows a sustained drop in a particular answer-quality slice. New customer topics also appeared during the month. Which monitoring design best separates repeatable behavior change from changing traffic coverage?",
+    "options": [
+      "Replace the fixed set daily with random production requests and discard previous per-case results.",
+      "Keep only user satisfaction averages because a pinned application prompt prevents model behavior changes.",
+      "Enable payload logging and assume Bedrock automatically regrades all historical answers against current quality rules.",
+      "Keep fixed-set baselines, version new traffic cases separately, and investigate slice changes."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "A recurring fixed set provides comparable evidence even when there is no application deployment. Separately versioned additions from representative traffic reveal whether the existing benchmark misses emerging topics. Keeping both views avoids conflating changing test composition with changed behavior on identical cases. Slice-level outcomes and saved configuration identify where to investigate; the observed drop does not alone prove a particular provider-side cause. Invocation logging records evidence but does not automatically create this evaluation process.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/evaluation.html",
+    "concept": "reproducibility-production-monitoring"
+  },
+  {
+    "id": "aipc01-0779",
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A RAG evaluation reports high faithfulness but low context relevance. In a failed case, the question asks about leave carryover, the retrieved chunks describe office parking, and the answer accurately summarizes those parking chunks. The team must improve answers without weakening its tenant filter. Which experiment targets the demonstrated failure?",
+    "options": [
+      "Lower generation temperature and retain the same parking-only context for the leave question.",
+      "Approve the case because faithfulness proves the answer addresses the user's information need.",
+      "Remove the tenant filter in production and judge success only by whether the generated answer sounds confident.",
+      "Replay authorized leave retrieval, tune selection, and recheck relevance and correctness."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "Faithfulness measures support in the retrieved material; it does not establish that the material answers the question. Here the answer is grounded in the wrong subject, so candidate retrieval is the demonstrated problem. Controlled tests with authorized leave-policy evidence can isolate filtering, query matching, and chunking changes while preserving tenant isolation. Rechecking both context relevance and answer correctness verifies that more appropriate context actually improves the user outcome rather than merely changing one score.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-eval-llm-results.html",
+    "concept": "rag-evaluation-metrics"
   }
 ]

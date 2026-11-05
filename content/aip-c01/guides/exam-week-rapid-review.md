@@ -119,3 +119,21 @@ Use a [mock exam](/aws/aip-c01/practice?mode=mock) to identify gaps, then review
 - [Prompt caching](https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-caching.html)
 - [Inference quotas](https://docs.aws.amazon.com/bedrock/latest/userguide/quotas.html)
 - [Evaluation methods](https://docs.aws.amazon.com/bedrock/latest/userguide/evaluation.html)
+
+
+## Implementation checks before an unfamiliar mock
+
+Added 2026-11-05. Read a short configuration or log and explain the next action before looking at the choices:
+
+- [Federated access](/guides/aip-c01/federated-access-and-temporary-credentials): distinguish an IdP token, a role trust decision and temporary AWS credentials.
+- [Ingestion evidence](/guides/aip-c01/knowledge-base-ingestion-observability): locate the failed document and processing stage.
+- [Source synchronization](/guides/aip-c01/resilient-knowledge-base-synchronization): handle duplicate events, deletes and incomplete jobs.
+- [GPU serving](/guides/aip-c01/gpu-serving-and-batching): reason about context memory, batching and engine-specific controls.
+- [Asynchronous hosting](/guides/aip-c01/asynchronous-model-hosting): follow accepted work to its eventual success or failure.
+- [Guardrail diagnostics](/guides/aip-c01/guardrail-diagnostics): separate content source, policy outcome and version.
+
+Quick practice now distributes questions across exam domains rather than following raw bank size. Domain drills still focus on the selected domain, and full mocks keep their configured domain quotas. Difficulty labels describe intended reasoning demand; they are not statistically calibrated to the AWS exam.
+
+Check first-answer performance separately from improved repeat scores. A rewritten question receives a new ID; its older answer is not evidence you can solve the new scenario. Old results remain in history, while sessions using retired questions are kept out of current readiness calculations.
+
+A useful preparation checkpoint combines unfamiliar timed practice, the ability to explain rejected alternatives, coverage of every exam skill, and implementation exercises. No raw CertReps percentage converts to AWS's scaled score or guarantees a pass. See [optional resources and a readiness checklist](/guides/aip-c01/study-resources-and-readiness).

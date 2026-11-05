@@ -42,6 +42,7 @@ describe("ExamEngine resume-in-progress", () => {
     // Answer the current (Q3) question - this records against the SAME attempt id.
     const opts = screen.getAllByRole("button").filter((b) => b.className.includes("option"));
     await userEvent.click(opts[0]);
+    if (opts[0].classList.contains("multi")) await userEvent.click(opts[1]);
     await userEvent.click(screen.getByRole("button", { name: /submit answer/i }));
 
     // Review map: Q1 + Q2 restored as answered, Q2 still flagged, Q3 now answered.

@@ -68,8 +68,38 @@ export function sampleMock(bank: Question[], meta: CertMeta): Question[] {
   return shuffle(out);
 }
 
-export function sampleQuick(bank: Question[], n: number, weights?: Map<string, number>): Question[] {
-  return pickBalanced(bank, Math.min(n, bank.length), weights);
+/** Quick practice honors blueprint coverage before the approximate difficulty mix.
+ * Adaptive weights continue to rank items within each domain. A depleted domain's
+ * slots are redistributed; unmatched content is a last-resort backfill. */
+export function sampleQuick(bank: Question[], n: number, weights?: Map<string, number>, meta?: Pick<CertMeta, "domains">): Question[] {
+  const active = bank.filter(q => !q.excludedFromPractice);
+  const count = Number.isNaN(n) ? 0 : Math.max(0, Math.min(Math.floor(n), active.length));
+  if (!count) return [];
+  if (!meta) return pickBalanced(active, count, weights);
+  const groups = byDomain(active);
+  const domains = meta.domains
+    .filter(d => Number.isFinite(d.weightPct) && d.weightPct > 0 && groups[d.name]?.length)
+    .map(d => ({ name: d.name, weight: d.weightPct, pool: groups[d.name], target: 0, quota: 0 }));
+  const sum = domains.reduce((total, d) => total + d.weight, 0);
+  if (!sum) return pickBalanced(active, count, weights);
+  for (const d of domains) {
+    d.target = count * d.weight / sum;
+    d.quota = Math.min(d.pool.length, Math.floor(d.target));
+  }
+  let assigned = domains.reduce((total, d) => total + d.quota, 0);
+  while (assigned < count) {
+    const next = domains.filter(d => d.quota < d.pool.length)
+      .sort((a, b) => (b.target - b.quota) - (a.target - a.quota))[0];
+    if (!next) break;
+    next.quota++;
+    assigned++;
+  }
+  const picked = domains.flatMap(d => pickBalanced(d.pool, d.quota, weights));
+  if (picked.length < count) {
+    const chosen = new Set(picked.map(q => q.id));
+    picked.push(...pickBalanced(active.filter(q => !chosen.has(q.id)), count - picked.length, weights));
+  }
+  return shuffle(picked);
 }
 
 export function sampleDrill(bank: Question[], domain: string, n: number, weights?: Map<string, number>): Question[] {

@@ -30,6 +30,18 @@ describe("QuestionCard", () => {
     await userEvent.click(submit);
     expect(onSubmit).toHaveBeenCalledWith([2]);
   });
+  it("shows multi-answer selection progress and requires the requested pair before submitting", async () => {
+    render(<QuestionCard question={multi} graded={null} onSubmit={() => {}} attemptId={SHUFFLE_ID} vendorName="AWS" />);
+    const submit = screen.getByRole("button", { name: /submit/i });
+    expect(screen.getByText("Select TWO · 0 of 2 selected")).toBeInTheDocument();
+    await userEvent.click(screen.getByText("A opt"));
+    expect(screen.getByText("Select TWO · 1 of 2 selected")).toBeInTheDocument();
+    expect(submit).toBeDisabled();
+    await userEvent.click(screen.getByText("C opt"));
+    expect(submit).toBeEnabled();
+    await userEvent.click(screen.getByText("C opt"));
+    expect(submit).toBeDisabled();
+  });
   it("multi allows max two selections", async () => {
     const onSubmit = vi.fn();
     render(<QuestionCard question={multi} graded={null} onSubmit={onSubmit} attemptId={SHUFFLE_ID} vendorName="AWS" />);
