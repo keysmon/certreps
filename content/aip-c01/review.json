@@ -3,7 +3,7 @@
   "baselineCommit": "a9a59df4d75d3fb2cbc2a44fea164719c3f6e4b1",
   "baselineBankSha256": "4b86fbc56b0dbb54d259aa44736feb09180cd0679e51130b199da79e2b6905c2",
   "reviewedOriginalCount": 610,
-  "activeCount": 648,
+  "activeCount": 243,
   "corrections": [
     {
       "id": "aipc01-0012",

@@ -137,3 +137,7 @@ Quick practice now distributes questions across exam domains rather than followi
 Check first-answer performance separately from improved repeat scores. A rewritten question receives a new ID; its older answer is not evidence you can solve the new scenario. Old results remain in history, while sessions using retired questions are kept out of current readiness calculations.
 
 A useful preparation checkpoint combines unfamiliar timed practice, the ability to explain rejected alternatives, coverage of every exam skill, and implementation exercises. No raw CertReps percentage converts to AWS's scaled score or guarantees a pass. See [optional resources and a readiness checklist](/guides/aip-c01/study-resources-and-readiness).
+
+## Optional difficulty sets
+
+Use [Foundation](/aws/aip-c01/practice?mode=quick&level=easy) for service boundaries, [Standard](/aws/aip-c01/practice?mode=quick&level=medium) for applied scenarios, or [Challenge](/aws/aip-c01/practice?mode=quick&level=hard) for implementation diagnosis and tradeoffs. Each has 20 questions and immediate explanations. Keep [balanced quick practice](/aws/aip-c01/practice?mode=quick) for 10 mixed questions. Selected-difficulty results are practice evidence, not calibrated AWS exam predictions or full-mock readiness scores.

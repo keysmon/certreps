@@ -224,3 +224,20 @@ it("offers the matching unfinished retry when a session-scoped retry is revisite
   expect(resume.getAttribute("href")).toContain(`resume=${retry.attemptId}`);
   expect(screen.getByText(/2 of 5 answered/)).toBeInTheDocument();
 });
+
+
+describe("AIP prep set resume chooser",()=>{
+ it("does not offer a balanced session when launching Challenge",async()=>{
+  inProgress("quick",0);setParams("mode=quick&level=hard");render(<PracticeClient certId={AIP}/>);
+  expect(await screen.findByTestId("engine")).toHaveAttribute("data-resume","");
+ });
+ it("resumes a Challenge set only in the matching chooser and plain resume links still work",async()=>{
+  const {samplePrep}=await import("@/lib/prep");
+  const ids=samplePrep(getBank(AIP),"hard",getMeta()).map(q=>q.id);
+  const a=createAttempt(AIP,"quick",ids);saveAttempt(a);
+  setParams("mode=quick&level=hard");const view=render(<PracticeClient certId={AIP}/>);
+  expect(await screen.findByRole("link",{name:"Resume"})).toHaveAttribute("href",expect.stringContaining(`resume=${a.attemptId}`));
+  view.unmount();setParams("mode=quick&level=easy");render(<PracticeClient certId={AIP}/>);
+  expect(await screen.findByTestId("engine")).toHaveAttribute("data-resume","");
+ });
+});

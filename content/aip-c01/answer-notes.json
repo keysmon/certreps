@@ -1211,5 +1211,1660 @@
       "Removing authorization violates a separate requirement, and confidence is not correctness evidence.",
       "This tests the retrieval failure using authorized ground truth and verifies the resulting answer quality."
     ]
+  },
+  "aipc01-0780": {
+    "takeaway": "Choose on measured task quality, latency, and total cost rather than an unqualified model ranking.",
+    "options": [
+      "A costs 100\u00d7$0.20 +2\u00d7$0.80 =$21.60, lower than B while both meet the gates.",
+      "B costs 100\u00d7$0.08 +2\u00d7$8 =$24, so its lower input price does not give the lowest total.",
+      "This counts B input cost but omits its $16 output charge.",
+      "This counts A output cost but omits its $20 input charge."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/evaluation.html"
+      }
+    ]
+  },
+  "aipc01-0781": {
+    "takeaway": "Hierarchical chunking trades precise child matching for broader parent context at retrieval time.",
+    "options": [
+      "This is the documented child-to-parent retrieval behavior; several children can collapse into one returned parent.",
+      "This reverses the documented retrieval sequence.",
+      "Parent expansion stays within the configured hierarchy, not arbitrary neighboring documents.",
+      "Chunking and embedding happen during ingestion, before answer generation."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-chunking.html"
+      }
+    ]
+  },
+  "aipc01-0782": {
+    "takeaway": "Use incremental data-source sync for document changes; do not describe deletions as re-embedding.",
+    "options": [
+      "The sync updates changed content and removes deleted content while preserving unchanged indexed data.",
+      "A fresh data source discards the prior ingestion baseline and adds resource management.",
+      "Full deletion and reingestion repeat work for unchanged documents.",
+      "Recreating the resource repeats ingestion and setup unnecessarily."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-data-source-sync-ingest.html"
+      }
+    ]
+  },
+  "aipc01-0783": {
+    "takeaway": "Document metadata supports access scoping only when trusted application code enforces the caller-specific filter.",
+    "options": [
+      "Trusted code binds the metadata filter to actual permissions and must prevent unfiltered bypass paths.",
+      "An editable filter lets callers select unauthorized departments.",
+      "Retrieved restricted passages can reach the model; prompt instructions do not enforce access.",
+      "Hiding a selector does not constrain the API request."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-config.html"
+      }
+    ]
+  },
+  "aipc01-0784": {
+    "takeaway": "Use supervised fine-tuning to learn task behavior, tone, and formatting from labeled examples when prompting has proved insufficient; evaluate the result before release.",
+    "options": [
+      "The labeled examples teach the desired input-to-output behavior and style by updating model parameters, matching the stated need.",
+      "RAG supplies examples as inference-time context but does not train the model to follow their style consistently.",
+      "Continued pre-training targets adaptation from raw domain text, rather than directly learning the labeled input-to-output behavior available here.",
+      "More examples increase each request's context and cost; the scenario already says prompt instructions have not met the consistency requirement."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html"
+      }
+    ]
+  },
+  "aipc01-0785": {
+    "takeaway": "Customer-controlled encryption requires the applicable KMS configuration at every storage layer.",
+    "options": [
+      "The bank's required storage layers each need an applicable key configuration and working service permissions.",
+      "The independent vector store has its own encryption configuration.",
+      "Protecting source objects does not establish customer key control over the stored vector representation.",
+      "Encryption review must include the applicable ingestion/transient storage configuration as well as durable sources and vectors."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/encryption-kb.html"
+      }
+    ]
+  },
+  "aipc01-0786": {
+    "takeaway": "A HIPAA-eligible service does not make an application compliant automatically.",
+    "options": [
+      "Eligibility supports compliant use, but the customer still needs the contractual and workload controls.",
+      "Service eligibility does not certify the application.",
+      "The BAA does not implement the customer's application responsibilities.",
+      "Encryption and logging do not replace the applicable business associate agreement."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://aws.amazon.com/compliance/hipaa-eligible-services-reference/"
+      }
+    ]
+  },
+  "aipc01-0787": {
+    "takeaway": "Use Gateway semantic tool search to discover relevant tools from a large catalog.",
+    "options": [
+      "The built-in search tool finds catalog tools relevant to natural-language tasks.",
+      "Listing everything preserves the prompt-size problem.",
+      "A fixed subset can omit tools needed by new tasks.",
+      "Names alone do not supply callable parameter contracts."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/gateway-features.html"
+      }
+    ]
+  },
+  "aipc01-0788": {
+    "takeaway": "Converse reduces provider-specific message handling across supported models.",
+    "options": [
+      "Converse supplies a consistent interface; still validate model-specific settings and supported capabilities.",
+      "Native model bodies are provider-specific.",
+      "Batch jobs are asynchronous and do not solve interactive request normalization.",
+      "Inference profiles route and track usage; they do not rewrite native request schemas."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/conversation-inference.html"
+      }
+    ]
+  },
+  "aipc01-0789": {
+    "takeaway": "Keep the cached prefix stable and verify cache-read usage; eligibility does not guarantee a hit.",
+    "options": [
+      "This marks the large stable prefix while keeping changing content outside it.",
+      "A checkpoint before the guide does not cache the guide.",
+      "The full marked prefix changes with each question, reducing reuse.",
+      "Changing content at the start prevents exact prefix matching for the guide."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-caching.html"
+      }
+    ]
+  },
+  "aipc01-0790": {
+    "takeaway": "Idempotency must cover the external side effect and ambiguous failure windows, not merely one database write.",
+    "options": [
+      "Provider-level idempotency covers the external side effect; durable state and reconciliation handle uncertain outcomes.",
+      "Marking completion before the charge can report success without a payment.",
+      "A new provider key can create another real charge after the crash.",
+      "An in-memory lock is not durable across environments or retries."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_prevent_interaction_failure_idempotent.html"
+      }
+    ]
+  },
+  "aipc01-0791": {
+    "takeaway": "Normalize server-error counts by accepted invocations when the requirement is an error percentage.",
+    "options": [
+      "Average of an error-count metric is not the specified fraction of accepted requests; Invocations also excludes throttles.",
+      "The numerator and denominator implement the stated accepted-request failure percentage. Define a minimum-traffic or zero-denominator policy, and separately alarm on throttles.",
+      "A count threshold changes its effective sensitivity with traffic. Throttles are excluded from the defined accepted-request population.",
+      "This ratio concerns throttles rather than the specified server-error rate and omits the requested server-error alarm."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "Bedrock Runtime CloudWatch metrics",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/monitoring-runtime-metrics.html"
+      }
+    ]
+  },
+  "aipc01-0792": {
+    "takeaway": "Titan V2 supports 1,024, 512, and 256 dimensions; changing dimensions requires consistent reindexing and evaluation.",
+    "options": [
+      "A supported lower dimension must be used consistently; measure the resulting quality before switching.",
+      "The model's configured256-dimensional output should be generated rather than assuming manual truncation is equivalent.",
+      "Query and indexed dimensions must agree.",
+      "Reducing dimensions can change retrieval quality and ranking; it requires evaluation."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/titan-embedding-models.html"
+      }
+    ]
+  },
+  "aipc01-0793": {
+    "takeaway": "Reranking improves selection within the retrieved candidate set; it cannot recover missing candidates.",
+    "options": [
+      "Reranking scores candidates already retrieved; measure its extra cost and latency against answer-quality gains.",
+      "Mixing incompatible embedding spaces can worsen retrieval.",
+      "Sampling does not change which evidence reaches the generator.",
+      "A cache can repeat existing mistakes and does not repair candidate ordering."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/rerank.html"
+      }
+    ]
+  },
+  "aipc01-0794": {
+    "takeaway": "Model distillation trains a smaller student using a supported teacher and representative prompts.",
+    "options": [
+      "Capacity reservation does not train a smaller model.",
+      "Regional routing does not train a smaller model.",
+      "Retrieval adds external context rather than creating a student.",
+      "Distillation trains a student from the teacher behavior on representative prompts."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-distillation.html"
+      }
+    ]
+  },
+  "aipc01-0795": {
+    "takeaway": "Use configured model invocation logging for supported content capture and validate the actual logging path.",
+    "options": [
+      "Configured invocation logging provides the supported content path; permissions and retention still need validation.",
+      "API activity auditing is distinct from full model input/output content logging.",
+      "Metrics such as token counts do not preserve the prompt and completion.",
+      "Invocation logging configuration is Regional and must cover the actual invocation path."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-invocation-logging.html"
+      }
+    ]
+  },
+  "aipc01-0796": {
+    "takeaway": "Use supported batch inference for flexible bulk work while respecting job quotas and checking actual outputs.",
+    "options": [
+      "Supported batch processing fits the flexible deadline and stated prices while requiring quota-aware partitioning and completion checks.",
+      "Large archives can exceed a single file or job quota.",
+      "On-demand processing gives up the stated batch price advantage without a real-time need.",
+      "Archive size alone does not justify an extended capacity commitment."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference.html"
+      }
+    ]
+  },
+  "aipc01-0797": {
+    "takeaway": "Evaluate GraphRAG for relationship-rich retrieval rather than assuming vector proximity encodes explicit links.",
+    "options": [
+      "GraphRAG adds a graph-based retrieval approach suited to relationship-rich corpora; validate extraction and answer quality.",
+      "More candidates may help recall but do not establish correct entity relationships.",
+      "More output room cannot supply absent evidence.",
+      "Exact names do not represent multi-hop questions across different entities."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-build-graphs.html"
+      }
+    ]
+  },
+  "aipc01-0798": {
+    "takeaway": "AgentCore Gateway Lambda tool schemas can describe nested inputs; choose a target for the actual backend.",
+    "options": [
+      "Recursive property schemas are supported for Lambda targets.",
+      "The documented schema supports objects and arrays, so mandatory flattening is unnecessary.",
+      "Nested inputs alone do not require changing a Lambda target to a REST API target.",
+      "Descriptions help the model but do not replace the structured input contract."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/gateway-add-target-lambda.html"
+      }
+    ]
+  },
+  "aipc01-0799": {
+    "takeaway": "Complete Converse tool use with the assistant call and a matching user toolResult.",
+    "options": [
+      "The follow-up preserves the requested tool call and matches its result by ID.",
+      "The result must match the original toolUseId and conversation structure.",
+      "Free text discards the protocol relationship between call and result.",
+      "Replacing history loses the user request and tool-call context."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS client-side tool use",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use-client-side.html"
+      }
+    ]
+  },
+  "aipc01-0800": {
+    "takeaway": "For profile-based cost allocation, use department-tagged profiles and activate billing tags.",
+    "options": [
+      "Calls must use the tagged resource and the tags must be activated for billing analysis.",
+      "Lambda tags do not automatically reassign downstream Bedrock inference charges.",
+      "A profile not used for invocation does not attribute that invocation.",
+      "Billing tag activation cannot supply missing department tags on the invoked profile."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/inference-profiles.html"
+      }
+    ]
+  },
+  "aipc01-0801": {
+    "takeaway": "Use a circuit breaker to contain a persistent dependency failure, alongside bounded retries and timeouts.",
+    "options": [
+      "The breaker stops repeated failing calls and tests recovery before full traffic resumes.",
+      "More retries can prolong connection exhaustion.",
+      "An unbounded queue does not restore worker capacity and can exhaust memory.",
+      "Longer waits hold scarce resources for longer and can spread the impact."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/prescriptive-guidance/latest/cloud-design-patterns/circuit-breaker.html"
+      }
+    ]
+  },
+  "aipc01-0802": {
+    "takeaway": "Image-safety policies must cover the actual pixels in both directions.",
+    "options": [
+      "Image-enabled content filtering can evaluate supported input and output images; validate supported formats, Region and model integration.",
+      "Denied-topic descriptions do not substitute for visual harmful-content filtering on output pixels.",
+      "A caption can omit harmful visual content, so screening only captions leaves the images unchecked.",
+      "The input path still lacks the explicitly required independent image screen."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-mmfilter.html"
+      }
+    ]
+  },
+  "aipc01-0803": {
+    "takeaway": "SSE-KMS log delivery requires the log-writing service to use the destination KMS key, in addition to S3 write permission.",
+    "options": [
+      "The application caller is not the Bedrock service principal writing these S3 invocation logs.",
+      "SSE-KMS log delivery requires the actual Bedrock writer to generate the data key; scope the key-policy grant to the expected account and Bedrock source ARN.",
+      "Decrypt alone does not authorize encryption of newly delivered log objects.",
+      "This configures a different delivery identity; the stated destination is S3 written by Bedrock."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "Configure an SSE-KMS invocation-log destination",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-invocation-logging.html"
+      }
+    ]
+  },
+  "aipc01-0804": {
+    "takeaway": "Semantic response reuse can avoid generation for equivalent questions; prompt caching only reuses input processing.",
+    "options": [
+      "Exact-query keys miss equivalent paraphrases even after simple normalization.",
+      "Prompt caching can reduce repeated-input processing but does not serve a stored answer instead of generation.",
+      "Validated semantic matches can reuse answers; scope by authorization and source freshness, and tune the similarity threshold on representative queries.",
+      "Caching retrieval can help that stage but preserves every generation call, the cost this scenario wants to avoid."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-caching.html"
+      }
+    ]
+  },
+  "aipc01-0805": {
+    "takeaway": "An overflow architecture still needs enough capacity on each path; on-demand is not an unlimited reserve.",
+    "options": [
+      "Bring measured peak demand within available provisioned and on-demand capacity, then validate request/token limits and routing. Bounded retries and admission controls remain necessary; no mode eliminates all possible failures.",
+      "Unbounded retries amplify work and cannot turn a deficient peak quota into a verified capacity plan.",
+      "Sending overflow to already-sized baseline provisioned capacity does not create the missing on-demand headroom.",
+      "A daily average can hide the peak interval that caused the documented capacity deficiency."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "Provisioned capacity and model units",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/prov-throughput.html"
+      },
+      {
+        "label": "Cross-Region inference options",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html"
+      }
+    ]
+  },
+  "aipc01-0806": {
+    "takeaway": "Match the alarm statistic to the percentile named in the latency objective.",
+    "options": [
+      "The mean can remain healthy while the slowest requests exceed the target.",
+      "The p99 statistic directly measures the requested tail objective, subject to appropriate sample-volume handling.",
+      "Summed latency depends on traffic volume and is not a per-request percentile.",
+      "SampleCount describes measurement volume rather than response-time magnitude."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/monitoring-runtime-metrics.html"
+      }
+    ]
+  },
+  "aipc01-0807": {
+    "takeaway": "Validate the actual destination Regions of the chosen inference profile against the residency policy.",
+    "options": [
+      "The actual destination list determines where inference may run; keep the allowed set under review.",
+      "The source endpoint alone does not constrain a cross-Region profile's destinations.",
+      "Global routing is unsuitable for an EU-only boundary.",
+      "Tags support attribution and governance but do not define the destination geography."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html"
+      }
+    ]
+  },
+  "aipc01-0808": {
+    "takeaway": "Evaluate prompt-cache economics from observed reads, writes, and uncached input rather than configuration alone.",
+    "options": [
+      "Frequent prefix changes can create writes instead of reads; net savings depend on real usage and rates.",
+      "Checkpoint count does not show whether reusable content was read.",
+      "Cached input is billed under model-specific pricing.",
+      "Later requests can miss even when caching is enabled."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-caching.html"
+      }
+    ]
+  },
+  "aipc01-0809": {
+    "takeaway": "Treat grounding and relevance as separate signals when deciding whether an answer can be released.",
+    "options": [
+      "High grounding and low relevance separate source support from responsiveness.",
+      "This reverses the meanings of the two scores.",
+      "Low source support would also imply low grounding.",
+      "A low relevance score is precisely the signal that responsiveness needs investigation."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-contextual-grounding-check.html"
+      }
+    ]
+  },
+  "aipc01-0810": {
+    "takeaway": "Guardrail-tier migrations require residency review and policy evaluation, not merely a configuration change.",
+    "options": [
+      "Standard uses cross-Region inference and has different behavior; test both geography and filter performance.",
+      "Generation routing does not prove guardrail processing stays in that Region.",
+      "New tier behavior can require retuning and representative testing.",
+      "Output limits do not validate safeguard-tier geography or quality."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-tiers.html"
+      }
+    ]
+  },
+  "aipc01-0811": {
+    "takeaway": "Use Custom Model Import only after checking the trained artifacts against supported architecture and format requirements.",
+    "options": [
+      "Supported external trained weights can be imported after compatibility checks.",
+      "The external artifacts first need a supported import path; a custom deployment is not a generic S3 weight loader.",
+      "Weights are model artifacts rather than labeled examples for a fine-tuning dataset.",
+      "The Runtime modelId does not federate an arbitrary SageMaker endpoint."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-customization-import-model.html"
+      }
+    ]
+  },
+  "aipc01-0812": {
+    "takeaway": "When reusing logged teacher answers for distillation, validate the producing model against the selected teacher.",
+    "options": [
+      "Direct response reuse requires matching teacher-produced pairs and the documented dataset requirements.",
+      "Sharing a destination bucket does not make outputs from different models interchangeable.",
+      "The student is trained on teacher behavior, not required to have produced the labels.",
+      "Prompts-only and existing-response reuse are distinct supported modes."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/distillation-prepare-datasets.html"
+      }
+    ]
+  },
+  "aipc01-0813": {
+    "takeaway": "Use a custom human evaluation when the acceptance criterion requires domain-expert judgment.",
+    "options": [
+      "A human job supplies the required chosen reviewers and domain prompts for comparing the candidate outputs.",
+      "A model judge can supplement review but is not the explicitly required human clinical assessment.",
+      "Generic automated benchmarks do not satisfy this domain-specific human criterion.",
+      "Aggregate scores do not provide the concrete outputs needed for clinical comparisons."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-evaluation-jobs-management-create-human.html"
+      }
+    ]
+  },
+  "aipc01-0814": {
+    "takeaway": "Concurrency control and request/token rate control solve different limits.",
+    "options": [
+      "Concurrency limits simultaneous work; explicit rate or token budgeting controls calls over time.",
+      "Fast calls can still generate a high request rate at low concurrency.",
+      "A sequential loop can exceed a low RPM limit or a token quota.",
+      "More retries do not create quota headroom and can add load."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/scaling-throughput-best-practices.html"
+      }
+    ]
+  },
+  "aipc01-0815": {
+    "takeaway": "Stream every hop: Bedrock output, Lambda response, and the API Gateway REST integration.",
+    "options": [
+      "Both backend and integration must stream; API Gateway supports REST proxy response streaming.",
+      "A longer timeout alone does not expose partial output.",
+      "Endpoint caching requires buffering and is not supported for these streamed responses.",
+      "A shorter completion can reduce wait time but remains buffered."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/apigateway/latest/developerguide/response-streaming-lambda-configure.html"
+      }
+    ]
+  },
+  "aipc01-0816": {
+    "takeaway": "Separate logical expiry enforcement from asynchronous TTL deletion.",
+    "options": [
+      "Application expiry checks enforce the deadline while TTL handles eventual cleanup.",
+      "Expired items can remain readable until asynchronous deletion.",
+      "Read consistency does not turn TTL into a synchronous visibility filter.",
+      "Extending an already-expired session revives state that should no longer be reused."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/TTL.html"
+      }
+    ]
+  },
+  "aipc01-0817": {
+    "takeaway": "Private connectivity is not authorization: restrict endpoint principals, actions, and resources.",
+    "options": [
+      "Endpoint policies can restrict principal, action, and resource; the caller still needs appropriate IAM permission.",
+      "Ports and IPs are network controls and do not express IAM role/model authorization.",
+      "Restricting models alone does not satisfy the caller-identity requirement.",
+      "Logging detects activity but does not prevent the unauthorized request."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/vpc-interface-endpoints.html"
+      }
+    ]
+  },
+  "aipc01-0818": {
+    "takeaway": "A half-open breaker probes recovery before restoring full traffic.",
+    "options": [
+      "A half-open state tests recovery with limited exposure before restoring full traffic.",
+      "Unconditionally resuming full traffic skips the half-open recovery check.",
+      "A single successful response amid an unbounded burst does not safely establish recovery.",
+      "Dispatching work does not establish dependency health, and replaying requests may have side effects."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/prescriptive-guidance/latest/cloud-design-patterns/circuit-breaker.html"
+      }
+    ]
+  },
+  "aipc01-0819": {
+    "takeaway": "Semantic answer caches need authorization scope, freshness, and validated matching, not just vector proximity.",
+    "options": [
+      "Cache scope and freshness must be compatible before a semantic match is considered reusable.",
+      "Nearest meaning does not establish access rights or policy equivalence.",
+      "Prompt caching reuses prefix processing rather than final answers to paraphrases.",
+      "A lower threshold increases loose matches and does not repair stale sources."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/semantic-caching-overview.html"
+      },
+      {
+        "label": "AWS Bedrock retrieval configuration and filters",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-config.html"
+      }
+    ]
+  },
+  "aipc01-0820": {
+    "takeaway": "Invalidate semantic answers or scope them to the source version after knowledge changes.",
+    "options": [
+      "A lower similarity threshold makes matching looser and does not remove stale answers.",
+      "Versioning or invalidation prevents reuse of answers from the old corpus.",
+      "Longer TTL extends the stale-answer problem.",
+      "Moving the cache does not supply source-version invalidation."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/semantic-caching-overview.html"
+      }
+    ]
+  },
+  "aipc01-0821": {
+    "takeaway": "Detect mode separates policy detection from enforcement so a proposed threshold can be measured before blocking is enabled.",
+    "options": [
+      "BLOCK enforces detections and violates the non-suppression requirement.",
+      "NONE returns detection information without the blocking action; compare labeled harmful and legitimate samples to assess the strength tradeoff.",
+      "Disabled evaluation yields no measurement of the HIGH-strength detector.",
+      "Allowed does not mean safe, and this does not test the proposed stronger configuration."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "Guardrail detect mode",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-harmful-content-handling-options.html"
+      }
+    ]
+  },
+  "aipc01-0822": {
+    "takeaway": "A pre-action gate must inspect the incoming message before orchestration or tools run.",
+    "options": [
+      "The application can screen input with a configured prompt-attack policy and enforce the returned decision before acting; detection is not perfect.",
+      "Output filtering can protect a response but cannot undo a tool action already taken.",
+      "Post-tool screening acts after the action this requirement seeks to gate.",
+      "A retrospective review measures past behavior rather than preventing the current action."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-use-independent-api.html"
+      }
+    ]
+  },
+  "aipc01-0823": {
+    "takeaway": "A model-resistance evaluation must measure the model responses, separately from the external attack detector.",
+    "options": [
+      "Semantic robustness concerns response stability under perturbations, not the requested jailbreak-compliance rate.",
+      "An external filter intervention measures a separate defense; it does not establish how the underlying model would answer.",
+      "Use a custom judge metric and fixed adversarial dataset, calibrated against expert labels, to score observed refusal or compliance; record evaluator variability.",
+      "Self-ratings need not track the actual behavior and are not independent evidence of resistance."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-evaluation-custom-metrics-create-job.html"
+      }
+    ]
+  },
+  "aipc01-0824": {
+    "takeaway": "Archive storage can reduce long-retention cost when restore delays are acceptable.",
+    "options": [
+      "This meets retention and retrieval needs but pays for immediate-access storage during years of rare use.",
+      "For the stated large objects, rare access and acceptable restore delay, Deep Archive fits long retention; account for transition and retrieval charges.",
+      "Standard-IA provides quicker access than required and is not the lowest-storage-cost listed archive design.",
+      "The one-year expiry violates the stated seven-year retention period."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lifecycle-mgmt.html"
+      }
+    ]
+  },
+  "aipc01-0825": {
+    "takeaway": "A single-Region processing restriction rules out routing capacity into other Regions.",
+    "options": [
+      "Remaining on one continent does not satisfy a single-Region constraint.",
+      "Keeping logs local does not prevent global inference processing elsewhere.",
+      "Eligible quota increases or provisioned capacity preserve the required processing location; validate the measured peak and model support.",
+      "Blocking a profile destination can cause authorization failure and does not turn cross-Region routing into a supported single-Region capacity plan."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/geographic-cross-region-inference.html"
+      }
+    ]
+  },
+  "aipc01-0826": {
+    "takeaway": "A tool-span failure does not prove the backend executed; locate the failing authorization boundary before changing backend logic.",
+    "options": [
+      "The observed failure occurs before a matching function execution. Correlate spans and inspect the Gateway-to-Lambda invoke principal, action and resource policy.",
+      "A function execution role governs actions after Lambda starts; no matching invocation is observed here.",
+      "The agent already discovered and selected the tool, so discovery authorization is not the failed boundary shown.",
+      "The trace reports valid arguments and an access failure rather than a schema-validation failure."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AgentCore observability telemetry",
+        "url": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/observability.html"
+      }
+    ]
+  },
+  "aipc01-0827": {
+    "takeaway": "Semantic chunking incurs additional ingestion model processing compared with fixed-size chunking.",
+    "options": [
+      "Semantic boundary processing can add foundation-model charges during ingestion.",
+      "Vector count is relevant but does not include the extra semantic processing.",
+      "Fewer stored chunks do not by themselves establish lower total ingestion cost.",
+      "The semantic chunk boundaries are computed during ingestion, not solely during retrieval."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-chunking.html"
+      }
+    ]
+  },
+  "aipc01-0828": {
+    "takeaway": "Use instrumented execution traces to investigate observed agent behavior; do not promise access to hidden reasoning.",
+    "options": [
+      "Recorded spans expose instrumented execution paths and permitted inputs/outputs; sensitive fields require control.",
+      "API auditing does not recreate every application-level decision or tool step.",
+      "Aggregates cannot identify the sequence of calls inside one session.",
+      "Conversation memory need not contain tool timing, failures, or the complete execution path."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/observability-telemetry.html"
+      }
+    ]
+  },
+  "aipc01-0829": {
+    "takeaway": "Push to an existing API Gateway WebSocket through its Management API and connection ID.",
+    "options": [
+      "The Management API sends data to the specified established WebSocket connection.",
+      "A completed route integration response is not an ongoing callback channel.",
+      "A separate HTTP stream does not attach to that WebSocket connection.",
+      "An AppSync channel requires the clients to subscribe through the corresponding protocol; it does not reuse these connections automatically."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-how-to-call-websocket-api-connections.html"
+      }
+    ]
+  },
+  "aipc01-0830": {
+    "takeaway": "IdP integration does not replace explicit per-agent authorization.",
+    "options": [
+      "Authentication establishes identity; explicit authorization must bind that identity to the allowed agent.",
+      "A valid issuer signature does not by itself implement departmental entitlements.",
+      "UI hiding does not stop direct invocations.",
+      "User-controlled conversational state is not a trusted authorization source."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/inbound-jwt-authorizer.html"
+      }
+    ]
+  },
+  "aipc01-0831": {
+    "takeaway": "Queue buffering requires controlled draining; backoff alone is not a rate limiter.",
+    "options": [
+      "A queue absorbs bursts only when consumers respect the sustainable request and token rate.",
+      "Unbounded draining recreates the original burst.",
+      "More simultaneous calls can intensify throttling.",
+      "Retry delay does not rate-limit new requests."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/scaling-throughput-best-practices.html"
+      }
+    ]
+  },
+  "aipc01-0832": {
+    "takeaway": "Contextual grounding needs a supplied reference, query and response; the reference need not come from retrieval.",
+    "options": [
+      "The document supplies evidence, the instruction defines the task and the completed summary is the response being checked. Retrieval is unnecessary.",
+      "Using the summary as the reference reverses the evidence and candidate-response roles.",
+      "The task instruction is not the evidence source; the contract belongs in the grounding-source role.",
+      "This evaluates the instruction as a response instead of checking the proposed summary against the contract."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "Contextual grounding inputs",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-contextual-grounding-check.html"
+      }
+    ]
+  },
+  "aipc01-0833": {
+    "takeaway": "Cached S3 Bucket Keys mean subsequent object accesses need not revalidate the KMS key policy.",
+    "options": [
+      "Subsequent Bucket Key reuse need not revalidate the KMS key policy; a completed policy edit alone does not establish universal immediate revocation.",
+      "Apply a targeted S3 access restriction, contain credentials and verify the actual read path; do not rely solely on immediate KMS policy revalidation.",
+      "Changing the bucket default does not rewrite the encryption configuration or cache behavior of existing objects.",
+      "Reducing future credential lifetime leaves the current compromised access window open unless it is separately revoked or denied."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "S3 Bucket Key caching and policy checks",
+        "url": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucket-key.html"
+      }
+    ]
+  },
+  "aipc01-0834": {
+    "takeaway": "Distillation is an experiment to transfer task-specific teacher behavior, not a guarantee that a smaller model preserves quality.",
+    "options": [
+      "The supported pair and representative data make the experiment feasible; independent held-out evaluation and actual deployment economics decide whether to ship it.",
+      "Support for a training workflow does not adapt an untrained model or guarantee equal outputs.",
+      "Reusing training examples for final evaluation hides overfitting and does not establish generalization.",
+      "Streaming changes presentation of output; it does not establish student accuracy or a lower token price."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "Supported distillation pairs",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/prequisites-model-distillation.html"
+      },
+      {
+        "label": "Bedrock distillation workflow",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-distillation.html"
+      }
+    ]
+  },
+  "aipc01-0835": {
+    "takeaway": "Supported JSON Schema output and strict tool use independently constrain output structure.",
+    "options": [
+      "This is the supported direct JSON Schema output-format mechanism.",
+      "Sampling diversity does not impose a schema.",
+      "Strict tool definitions constrain tool names and inputs on supported models.",
+      "An opening brace is only prompt steering.",
+      "Plain-language JSON requests do not enforce the field schema."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/structured-output.html"
+      }
+    ]
+  },
+  "aipc01-0836": {
+    "takeaway": "Customer-controlled invocation logs and service-side retention rules are separate controls.",
+    "options": [
+      "The disabled customer logging setting addresses that archive. Model-specific service rules and any eligible ZDR arrangements must be reviewed separately, including applicable exceptions.",
+      "A no-training commitment concerns use of data, not a universal no-retention promise.",
+      "Customer bucket policies govern customer log objects, not the separate service-side abuse-detection process.",
+      "Private connectivity changes the network path; it does not establish a retention exemption."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "Bedrock abuse-detection rules",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/abuse-detection.html"
+      }
+    ]
+  },
+  "aipc01-0837": {
+    "takeaway": "Standard callback tasks wait for a task-token response without continuously running a Lambda.",
+    "options": [
+      "The task token supports an external completion callback within the configured limits.",
+      "This is a polling design, which the requirement explicitly excludes.",
+      "Ending the execution loses the requested automatic continuation after later approval.",
+      "A fixed delay does not resume promptly when the reviewer responds before it expires."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/step-functions/latest/dg/connect-to-resource.html"
+      }
+    ]
+  },
+  "aipc01-0838": {
+    "takeaway": "Condition foundation-model access on the approved inference profile while authorizing the profile resource separately.",
+    "options": [
+      "An unconditional foundation-model grant leaves direct invocation available; conditioning the profile statement also uses the key at the wrong resource evaluation.",
+      "The documented pattern conditions foundation-model permissions on InferenceProfileArn and separately allows the approved profile. Ensure no other applicable invocation grant permits a bypass.",
+      "The key is intended for foundation-model evaluation; applying it to the profile-resource Allow can deny the intended profile invocation.",
+      "Merely listing the profile does not constrain an independently unconditional foundation-model Allow."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "IAM restrictions for inference profiles",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/inference-profiles-prereq.html"
+      }
+    ]
+  },
+  "aipc01-0839": {
+    "takeaway": "Enforce tool permissions through configured AgentCore policies at the Gateway boundary.",
+    "options": [
+      "Configured policies authorize tool calls at the Gateway boundary.",
+      "A system prompt is not a deterministic access-control boundary.",
+      "Post-execution content rewriting cannot undo an unauthorized tool action.",
+      "Conversational memory does not enforce the permission."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/policy.html"
+      }
+    ]
+  },
+  "aipc01-0840": {
+    "takeaway": "Compare total fixed capacity charges with measured variable inference charges.",
+    "options": [
+      "720 hours multiplied by $20 equals $14,400; subtracting from $18,000 gives $3,600 savings. Idle hours are already included.",
+      "The on-demand estimate is not the quoted provisioned charge; calculate the hourly total.",
+      "The supplied hourly rate and hours do not yield $20,000.",
+      "$3,600 is the savings, not the provisioned capacity charge."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "Hourly provisioned charges",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/prov-throughput.html"
+      }
+    ]
+  },
+  "aipc01-0841": {
+    "takeaway": "A reranker can only select among the candidates it receives.",
+    "options": [
+      "Reranking the same restricted candidate pool cannot recover excluded passages.",
+      "A broader pool restores selection opportunities while the final-five limit controls generation context; measure retrieval quality and reranking costs.",
+      "This restores candidates but violates the five-chunk generation limit.",
+      "Parent expansion adds surrounding context for existing hits; it does not directly restore missing candidate hits."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/rerank.html"
+      }
+    ]
+  },
+  "aipc01-0842": {
+    "takeaway": "Request volume and per-request token size are separate cost drivers.",
+    "options": [
+      "With rates and average token counts fixed, tripled accepted volume supports the observed variable token-charge increase; investigate retries and sources before committing capacity.",
+      "The input average is explicitly unchanged, so larger average prompts are not supported.",
+      "The scenario excludes a rate change; do not replace observed volume evidence with an unstated price change.",
+      "Invocations counts accepted requests, not unique users, so retries or automation could increase the count."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/monitoring-runtime-metrics.html"
+      }
+    ]
+  },
+  "aipc01-0843": {
+    "takeaway": "A stable score is useful only when the cases and rubric test the actual support task.",
+    "options": [
+      "Additional unrelated examples do not fix the mismatch in task and evaluation target.",
+      "Representative support cases and a calibrated rubric test the requested behavior; ongoing human safety oversight is appropriate for this sensitive use case.",
+      "Many acceptable empathetic responses have different wording, so exact equality is an inadequate empathy measure.",
+      "Lower variability does not make an unrelated summarization benchmark valid for emotional-support quality."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/evaluation.html"
+      }
+    ]
+  },
+  "aipc01-0844": {
+    "takeaway": "Verified off-topic retrieval is a concrete upstream failure to address before interpreting downstream generation quality.",
+    "options": [
+      "Independent passage inspection and expert agreement support repairing retrieval; afterward reevaluate answer support and correctness.",
+      "Generation settings do not cause the missing passages to enter the supplied context.",
+      "Evaluator miscalibration is possible generally, but the stated agreement does not support making it the first intervention here.",
+      "A stricter response gate may block some bad answers but does not restore the missing relevant source material."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-evaluation-metrics.html"
+      }
+    ]
+  },
+  "aipc01-0845": {
+    "takeaway": "Several evaluation dimensions must be considered; judge scores are not literal event probabilities.",
+    "options": [
+      "A small faithfulness advantage does not automatically compensate for much lower correctness and retrieval relevance.",
+      "B has substantially better relevance and correctness with a small faithfulness reduction; deployment still requires the task's acceptance criteria and representative subgroup checks.",
+      "Scores below1.0do not establish equivalence; the supplied measurements differ materially.",
+      "An aggregate evaluator score is not automatically a calibrated hallucination frequency."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-evaluation-metrics.html"
+      }
+    ]
+  },
+  "aipc01-0846": {
+    "takeaway": "Failover changes the authorized resources and Region context even when application code stays the same.",
+    "options": [
+      "Inspect exact errors, model/profile availability, policy resources/conditions and provider activation status to locate the actual access prerequisite.",
+      "Blind retries cannot repair a persistent deny; verified activation pending is a separate bounded-wait case.",
+      "A request-rate quota increase addresses throughput, not an observed access denial.",
+      "Input size could produce a validation failure, but it does not explain the supplied authorization error."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html"
+      }
+    ]
+  },
+  "aipc01-0847": {
+    "takeaway": "Choose retry behavior from the failure cause, with bounded waiting for specifically verified transient states.",
+    "options": [
+      "Bounded throttling retries address transient limits; invalid input and permanent policy denies require correction. A verified pending activation can justify a bounded wait.",
+      "AccessDenied is not universally transient, so indiscriminate retries can hide a permanent authorization defect.",
+      "Identical invalid input generally remains invalid, while throttling can be transient; this reverses the relevant treatments.",
+      "A single universal retry count does not distinguish a malformed request from recoverable rate pressure or pending activation."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_InvokeModel.html"
+      }
+    ]
+  },
+  "aipc01-0848": {
+    "takeaway": "Exact historical wording comes from the preserved original, not a new generation.",
+    "options": [
+      "The recorded response provides the actual text, subject to archive integrity, completeness and access controls.",
+      "Lower supported sampling can reduce variation but does not establish byte-identical regeneration.",
+      "An output limit constrains length without preserving the original token choices.",
+      "Current generation may be useful for comparison but is not the historical answer the auditor requested."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-invocation-logging.html"
+      }
+    ]
+  },
+  "aipc01-0849": {
+    "takeaway": "Reranking metadata selection controls which attributes influence ranking; it does not replace retrieval eligibility filters.",
+    "options": [
+      "This alters candidate recall and confounds the intended audit-field experiment.",
+      "Deleting tenant metadata undermines the existing eligibility control and requires broader ingestion changes.",
+      "This removes the noisy attribute at the relevant stage without removing the tenant boundary or excluding otherwise useful documents.",
+      "This excludes documents based on an irrelevant field rather than retaining candidates and changing only ranking inputs."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "Reranking metadata selection",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_MetadataConfigurationForReranking.html"
+      },
+      {
+        "label": "Knowledge base vector search configuration",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_KnowledgeBaseVectorSearchConfiguration.html"
+      }
+    ]
+  },
+  "aipc01-0850": {
+    "takeaway": "Separate retrieval candidate breadth from the number of chunks supplied after reranking.",
+    "options": [
+      "This makes the known relevant item eligible for reranking.",
+      "This exposes the missing policy but violates the fixed 5-chunk generation budget.",
+      "This preserves the stated generation budget while testing whether reranking can promote the relevant candidate.",
+      "A stronger model can reorder only the five candidates it receives, which exclude the known policy.",
+      "This may improve answer behavior but does not make the position-19 source eligible."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "Use a reranker model",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/rerank-use.html"
+      },
+      {
+        "label": "Knowledge base vector search configuration",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_KnowledgeBaseVectorSearchConfiguration.html"
+      }
+    ]
+  },
+  "aipc01-0851": {
+    "takeaway": "Equal vector length does not establish a shared semantic coordinate system across embedding models.",
+    "options": [
+      "A measured lexical fallback could mitigate selected misses, but it does not establish a coherent B semantic index or complete the intended migration.",
+      "A coherent B/B path tests the intended migration without comparing unrelated spaces.",
+      "This leaves most documents in the old space and creates a mixed index during the transition.",
+      "Normalization and threshold calibration do not establish alignment of independently learned coordinate spaces.",
+      "Paired routing preserves the functioning space and gives the migration a reversible cutover."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "Titan Text Embeddings models",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/titan-embedding-models.html"
+      }
+    ]
+  },
+  "aipc01-0852": {
+    "takeaway": "Embedding request validation must account for independent token and character limits.",
+    "options": [
+      "An average ratio is unreliable for identifier-heavy text and does not enforce the explicit character cap.",
+      "Output dimensions affect the returned vector, not the accepted input text size.",
+      "This is a deterministic size rejection; a longer wait cannot change the submitted text length.",
+      "Titan V2 accepts up to 8,192 tokens or 50,000 characters; checking both and retaining all split pieces handles the binding character constraint."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "Titan Text Embeddings models",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/titan-embedding-models.html"
+      }
+    ]
+  },
+  "aipc01-0853": {
+    "takeaway": "Use business effective dates to select eligible historical evidence before ranking.",
+    "options": [
+      "This can select an expired policy when validity has a gap; both interval boundaries are supplied and should be enforced.",
+      "Modification time is not the business-validity interval, so the newest document can be inapplicable on the audit date.",
+      "This leaves temporal eligibility to the generator and can omit the applicable version from the candidate set.",
+      "The half-open validity interval selects the applicable version and retains the access boundary."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "Configure knowledge base queries and generation",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-config.html"
+      }
+    ]
+  },
+  "aipc01-0854": {
+    "takeaway": "Hierarchical retrieval can collapse multiple child hits into fewer parent results.",
+    "options": [
+      "More child retrieval may find more parents, but this does not establish that the original three-parent response lost data.",
+      "This assertion ignores that numberOfResults applies to child matches and final results can collapse by parent.",
+      "The requested count applies to child retrieval; shared parents can reduce the final response count without losing the represented matches.",
+      "This changes retrieval semantics without first validating the observed parent coverage."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "Configure knowledge base queries and generation",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-config.html"
+      }
+    ]
+  },
+  "aipc01-0855": {
+    "takeaway": "Language generation capability and cross-language embedding retrieval are separate concerns.",
+    "options": [
+      "This removes the failing workflow from acceptance instead of measuring it.",
+      "Rewriting may help some cases, but without the failing-slice evaluation it does not establish resolution of the cross-language gap.",
+      "A paired embedding experiment measures whether the replacement space improves the affected language slices.",
+      "This can improve answer language but does not repair the Japanese-query retrieval gap.",
+      "Query translation is a feasible alternative whose semantic fidelity must be measured."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "Titan Text Embeddings models",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/titan-embedding-models.html"
+      }
+    ]
+  },
+  "aipc01-0856": {
+    "takeaway": "When component queries find evidence that a composite query misses, test decomposition and its full-path tradeoffs.",
+    "options": [
+      "The change is useful only if it improves evidence coverage and still meets the serving objective.",
+      "Decomposition can issue smaller subqueries that match the separate evidence requirements; its effect must be evaluated.",
+      "Formatting training does not make the demonstrated B evidence available to the model.",
+      "Returning more of the same candidate set does not address the observed missing subject.",
+      "Additional context capacity does not supply the omitted B sources."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "Configure knowledge base queries and generation",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-config.html"
+      }
+    ]
+  },
+  "aipc01-0857": {
+    "takeaway": "When invoking a managed prompt version, respect which configuration belongs to the prompt resource.",
+    "options": [
+      "This field is also prohibited with a managed prompt ARN and cannot provide an override bypass.",
+      "Converse disallows these overrides when modelId is a prompt ARN; the versioned resource supplies them.",
+      "Direct invocation can work but no longer executes the claimed reviewable prompt resource.",
+      "Creating another draft does not change the request-field restrictions for the versioned prompt invocation."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "Converse API reference",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html"
+      }
+    ]
+  },
+  "aipc01-0858": {
+    "takeaway": "Return-control results must be correlated with the action that the agent actually requested.",
+    "options": [
+      "This preserves the action-group identity required by the return-control protocol.",
+      "A renamed deployment identifier is not the action-group identity returned for the pending invocation.",
+      "Business idempotency identifiers may also be useful but cannot replace the agent protocol correlation identifier.",
+      "Transport request correlation does not replace the outstanding agent invocation identifier.",
+      "This associates the result with the outstanding invocation."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "Return control to the agent developer",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/agents-returncontrol.html"
+      }
+    ]
+  },
+  "aipc01-0859": {
+    "takeaway": "Handle return-control continuation and a new user instruction as distinct protocol events.",
+    "options": [
+      "This can process the new request but abandons the outstanding continuation and useful conversation context.",
+      "When return-control results are supplied, inputText is ignored; a separate request preserves the new user turn.",
+      "This repeats completed work and loses correlation rather than sequencing the new user request.",
+      "Attributes provide turn context but do not establish that the ignored inputText has been processed as a separate user request."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "InvokeAgent API reference",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeAgent.html"
+      },
+      {
+        "label": "Return control to the agent developer",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/agents-returncontrol.html"
+      }
+    ]
+  },
+  "aipc01-0860": {
+    "takeaway": "A successful backend call still needs the action-group Lambda response contract.",
+    "options": [
+      "Serialization alone does not supply the required action-group envelope and operation metadata.",
+      "The API-schema action group expects this envelope and serialization rather than an API Gateway proxy response.",
+      "The configured action group uses an API schema, which requires its corresponding response structure.",
+      "The domain payload still needs the action-group wrapper and explicit operation identification."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "Agent action-group Lambda contract",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/agents-lambda.html"
+      }
+    ]
+  },
+  "aipc01-0861": {
+    "takeaway": "Use the function action-group response state that lets the agent seek missing information.",
+    "options": [
+      "This converts an unresolved ambiguity into an apparently successful operation on the wrong possible location.",
+      "REPROMPT returns information to the model for another attempt rather than treating the dependency as failed.",
+      "The agent can interpret empty inventory as a real business result instead of asking for the missing location.",
+      "The missing city will remain missing; retries of the same ambiguous input do not solicit clarification."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "Agent action-group Lambda contract",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/agents-lambda.html"
+      }
+    ]
+  },
+  "aipc01-0862": {
+    "takeaway": "Choose attributes according to their session or turn lifetime, and verify identity outside model context.",
+    "options": [
+      "Prompt-session attributes intentionally apply to one invocation turn.",
+      "Model-generated prose is not a reliable persistent store for verified application context.",
+      "Session attributes are the supported mechanism for context across turns in an unexpired session.",
+      "This prevents the new request from receiving the intended session continuity.",
+      "Session attributes persist; they do not provide the locale's required one-turn lifetime."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "Control agent session context",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/agents-session-state.html"
+      }
+    ]
+  },
+  "aipc01-0863": {
+    "takeaway": "Tool execution results should retain their structured correlation with the assistant tool request.",
+    "options": [
+      "The result must identify the tool request it satisfies; a fresh ID does not do so.",
+      "The model conversation also needs the corresponding assistant tool-use message.",
+      "This retains conversation text but still omits the structured result-to-request correlation.",
+      "The assistant message plus the matching toolResult supplies the protocol link needed for the next model response."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "Client-side tool use",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use-client-side.html"
+      },
+      {
+        "label": "Converse API reference",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html"
+      }
+    ]
+  },
+  "aipc01-0864": {
+    "takeaway": "Prompt substitution and invocation metadata have different roles; preserve prompt-version evidence.",
+    "options": [
+      "The prompt configuration under test differs even if the model is identical.",
+      "promptVariables is the request map for values used by the managed prompt.",
+      "Additional messages do not populate the named template variable.",
+      "This loses the version distinction needed to interpret the requested comparison.",
+      "Version-specific records make the comparison interpretable even when the underlying model is unchanged."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "Converse API reference",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html"
+      }
+    ]
+  },
+  "aipc01-0865": {
+    "takeaway": "Use the service-generated RAG session identifier and bind its application mapping to the correct user.",
+    "options": [
+      "This gives up the conversation state the application is required to preserve.",
+      "RetrieveAndGenerate generates the first identifier; an application-generated initial ID is not the supported contract.",
+      "A user-scoped server mapping prevents accidental reuse of another conversation identifier.",
+      "The API requires the returned identifier for subsequent conversational requests.",
+      "Different users and conversations would still share state even if the tenant matches."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "RetrieveAndGenerate API reference",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_RetrieveAndGenerate.html"
+      }
+    ]
+  },
+  "aipc01-0866": {
+    "takeaway": "Streamed tool arguments are incremental data, not independently executable operations.",
+    "options": [
+      "An early parseable fragment is not proof that the tool content block is complete.",
+      "Assembly at the tool-content-block boundary preserves the complete request and avoids per-fragment execution.",
+      "Multiple tool/text blocks require separate correlation; a global concatenation can merge unrelated payloads.",
+      "Partial JSON is expected, so this turns normal streaming into avoidable retries without fixing assembly."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "Converse streaming event contract",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/conversation-inference.html"
+      },
+      {
+        "label": "Converse API reference",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html"
+      }
+    ]
+  },
+  "aipc01-0867": {
+    "takeaway": "Enforcement requires both the approved guardrail/version condition and coverage that cannot be bypassed by another allow.",
+    "options": [
+      "An applicable explicit deny prevents a separate broad allow from authorizing missing or different guardrail use.",
+      "Permission to call a guardrail does not require every inference call to include it.",
+      "Converse and streaming authorization use the underlying inference IAM actions, so leaving the streaming action open leaves a bypass.",
+      "The condition supports the guardrail ARN with a version suffix, distinguishing version 7 from other versions.",
+      "An additional conditional allow does not cancel the already effective unconditional allow."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "Enforce specific guardrails in inference",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-permissions-id.html"
+      },
+      {
+        "label": "Converse API reference",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html"
+      }
+    ]
+  },
+  "aipc01-0868": {
+    "takeaway": "A failed assessment supplies no evidence that content passed the required check.",
+    "options": [
+      "Deferred checking violates the stated pre-display requirement regardless of model confidence.",
+      "Changing the content source neither fixes the dependency failure nor provides a completed output assessment.",
+      "An earlier decision on different content does not assess the new draft.",
+      "This prevents infrastructure failure from being mistaken for a successful policy result.",
+      "The bounded attempt respects the allowed wait; the fixed fallback avoids displaying an unassessed generated draft."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "Guardrails with Converse",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-use-converse-api.html"
+      },
+      {
+        "label": "Contextual grounding checks",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-contextual-grounding-check.html"
+      },
+      {
+        "label": "ApplyGuardrail API response and errors",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ApplyGuardrail.html"
+      }
+    ]
+  },
+  "aipc01-0869": {
+    "takeaway": "Grounding validation needs an independent reference source rather than the candidate answer itself.",
+    "options": [
+      "A paraphrase can preserve the same unsupported claims and does not provide an independent source.",
+      "Including the draft can make invented statements appear in their own supposed supporting reference.",
+      "A question is not the independent factual source needed to support the answer.",
+      "The source, query, and candidate response serve distinct roles in grounding and relevance checks.",
+      "A stricter threshold cannot restore independence of a reference that contains the candidate's own unsupported claims."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "Contextual grounding checks",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-contextual-grounding-check.html"
+      }
+    ]
+  },
+  "aipc01-0870": {
+    "takeaway": "Retrieved content may inform an answer but must not grant authority for side effects.",
+    "options": [
+      "Helpful prompt guidance is not an enforceable boundary when the test already shows adversarial document influence.",
+      "Trusted business checks contain the impact of a model following injected instructions.",
+      "A parameter-bound confirmation prevents an informational question from silently becoming a refund action; backend policy checks still apply.",
+      "Syntactic validity does not establish permission or user intent.",
+      "Document occurrence is not verified user permission or an intentional refund request."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "Guardrails with Converse",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-use-converse-api.html"
+      },
+      {
+        "label": "Agent action-group Lambda contract",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/agents-lambda.html"
+      }
+    ]
+  },
+  "aipc01-0871": {
+    "takeaway": "Output masking and diagnostic trace sanitization are separate responsibilities.",
+    "options": [
+      "The trace may carry original model output and detected values even when the displayed output is masked.",
+      "Changing the production control is unnecessary when assessment actions already provide the required distinction.",
+      "The stop reason alone does not distinguish these outcomes; assessment actions provide that detail.",
+      "This discards useful masked responses and does not distinguish the outcomes requested by operators.",
+      "The diagnostic stream remains a separate exposure of original sensitive values."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "Guardrails with Converse",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-use-converse-api.html"
+      }
+    ]
+  },
+  "aipc01-0872": {
+    "takeaway": "Cached generated content must satisfy current access and evidence-validity rules before it is served.",
+    "options": [
+      "Similarity does not establish current entitlement; this retains the bypass before live retrieval.",
+      "Users in one tenant can have different project entitlements, and revocation remains unhandled.",
+      "Evidence revisions can invalidate an answer even when its question and user scope appear unchanged.",
+      "This limits duration but still permits the demonstrated unauthorized response during the TTL.",
+      "The cache hit precedes retrieval, so its own validity decision must account for current permissions."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "Configure knowledge base queries and generation",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-config.html"
+      }
+    ]
+  },
+  "aipc01-0873": {
+    "takeaway": "Capacity planning must follow the embedding API's quota dimension rather than the generation model's token dashboard.",
+    "options": [
+      "More unsmoothed callers can intensify the downstream request-rate bottleneck.",
+      "This targets a different model and quota from the throttled calls.",
+      "Chunk size changes request count and retrieval granularity, so the operational alternative needs a quality comparison.",
+      "Smaller vectors do not reduce the number of embedding requests made each minute.",
+      "The documented Titan embedding quota is request-based, matching the observed fourfold request increase."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "Titan Text Embeddings models",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/titan-embedding-models.html"
+      }
+    ]
+  },
+  "aipc01-0874": {
+    "takeaway": "Cache economics depend on observed reuse within the cache lifetime and distinct write/read prices.",
+    "options": [
+      "This ignores the higher stated cache-write charge.",
+      "With expiration before each request, $0.0125 exceeds the $0.010 uncached prefix charge and there are no observed reads to offset it.",
+      "The calculation covers only the prefix; unchanged costs must remain in the total comparison.",
+      "The stated 20-minute idle gap exceeds the specified cache lifetime.",
+      "One write plus five reads is $0.0125 + 5 \u00d7 $0.001; compare it with 6 \u00d7 $0.010 for the same prefix."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "Prompt caching",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-caching.html"
+      }
+    ]
+  },
+  "aipc01-0875": {
+    "takeaway": "Use the tested candidate reduction as a bounded optimization, then verify whole-path effects.",
+    "options": [
+      "This retains the demonstrated quality gate and checks actual cost and user-facing outcomes.",
+      "The stated release gates and measured cost objective still need bounded whole-path verification.",
+      "The reported experiment compared candidate breadth with reranking enabled, not a raw-retrieval alternative.",
+      "This changes generation cost and context composition beyond the configuration actually evaluated."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "Use a reranker model",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/rerank-use.html"
+      }
+    ]
+  },
+  "aipc01-0876": {
+    "takeaway": "Accurate selected citations do not establish adequate support across the answer.",
+    "options": [
+      "This can raise apparent citation frequency while lowering precision; claim-level correctness still matters.",
+      "The metrics expose a real tradeoff; claim-level review tests whether the prompt can preserve both requirements.",
+      "This changes the evidence requirement rather than meeting support for all material claims.",
+      "The unchanged answer length and large coverage drop show why omitting the metric hides a material regression."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "RAG evaluation metric definitions",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-eval-llm-results.html"
+      }
+    ]
+  },
+  "aipc01-0877": {
+    "takeaway": "An improved average does not resolve a critical-slice regression or identify its cause.",
+    "options": [
+      "Those cases become tuning data; a retained independent evaluation is needed for the final claim.",
+      "The release gate should protect the affected policy workflow and rollback to a coherent configuration.",
+      "This ignores the observed critical-slice regression and removes the stated rollback asset too soon.",
+      "Controlled replay makes the separate retrieval and generation changes interpretable.",
+      "This creates a query/index embedding mismatch rather than a coherent rollback."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "RAG evaluation metric definitions",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-eval-llm-results.html"
+      },
+      {
+        "label": "Titan Text Embeddings models",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/titan-embedding-models.html"
+      }
+    ]
+  },
+  "aipc01-0878": {
+    "takeaway": "Use ingestion provenance and a coherent-space retrieval replay to isolate model-version contamination.",
+    "options": [
+      "A mismatch tied to updated documents is direct evidence to investigate in the affected indexing path.",
+      "The generator can pass with supplied evidence while live retrieval remains broken.",
+      "Broader retrieval can mask some symptoms, but equal shape does not prove compatibility or test the provenance hypothesis.",
+      "A controlled re-embedding experiment tests the hypothesis without rewriting the live corpus first.",
+      "A scalar threshold does not establish alignment of model coordinate spaces, and unchanged documents miss the affected slice."
+    ],
+    "reviewedOn": "2026-11-05",
+    "sources": [
+      {
+        "label": "Titan Text Embeddings models",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/titan-embedding-models.html"
+      }
+    ]
   }
 }

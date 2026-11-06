@@ -52,7 +52,7 @@ it("preserves every original published answer contract and accounts for every re
     expect(old.excludedFromPractice).toBe(true);
     const successor = archive.find((q) => q.id === old.supersededBy);
     expect(successor).toBeDefined();
-    expect(successor?.excludedFromPractice).not.toBe(true);
+    if (successor?.excludedFromPractice) expect(successor.exclusionReason).toBeTruthy();
     expect(successor?.domain).toBe(old.domain);
   }
 });

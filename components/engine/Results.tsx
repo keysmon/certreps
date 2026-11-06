@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import type { Attempt, CertMeta, Question } from "@/lib/types";
 import { FirstAnswerPerformance } from "@/components/FirstAnswerPerformance";
 import { AnswerLearning } from "./AnswerLearning";
+import { prepLevel, PREP_LABELS } from "@/lib/prep";
 import { gradeAttempt } from "@/lib/scoring";
 import { HEAVY_PAUSE_THRESHOLD, domainVerdict, type Verdict } from "@/lib/readiness";
 import { VENDORS } from "@/components/ui/VendorDot";
@@ -36,6 +37,7 @@ export function answerLine(indices: number[], options: string[], perm: number[])
 }
 
 export function Results({ attempt, questions, meta }: { attempt: Attempt; questions: Question[]; meta: CertMeta }) {
+  const level = prepLevel(attempt, questions);
   const g = gradeAttempt(attempt, questions);
   const passed = g.pct >= meta.passLinePct;
 
@@ -52,7 +54,7 @@ export function Results({ attempt, questions, meta }: { attempt: Attempt; questi
   const needsPractice = [...domainRows].filter(d => d.pct < meta.passLinePct).sort((a, b) => a.pct - b.pct).slice(0, 2);
   const drillHref = (name: string) => `${practicePath(meta)}?mode=drill&domain=${encodeURIComponent(name)}`;
   const isDrill = attempt.mode === "drill";
-  const sessionLabel = isDrill ? "Domain drill result" : attempt.mode === "quick" ? "Quick practice result" : attempt.mode === "retry" ? "Missed-question retry result" : attempt.reveal ? "Untimed study result" : "Full mock result";
+  const sessionLabel = isDrill ? "Domain drill result" : attempt.mode === "quick" ? (level ? `${PREP_LABELS[level]} prep result` : "Quick practice result") : attempt.mode === "retry" ? "Missed-question retry result" : attempt.reveal ? "Untimed study result" : "Full mock result";
   const targetLabel = meta.passLineOfficial === false ? "Study target" : "Practice target";
   const headline = passed ? `${targetLabel} met for this session.` : `Below your ${targetLabel.toLowerCase()} for this session.`;
   const missed = questions.filter(q => !attempt.results[q.id]?.correct);
@@ -111,6 +113,8 @@ export function Results({ attempt, questions, meta }: { attempt: Attempt; questi
         {retryCount > 0 && <a className="btn btn-ghost" href={`${practicePath(meta)}?mode=retry&from=${encodeURIComponent(attempt.attemptId)}`}>Retry {retryCount} missed {retryCount === 1 ? "question" : "questions"}</a>}
       </div>
       {wrongCount > 0 && <p className="result-note">Missed questions include incorrect and unanswered questions. Retry includes only active questions from this session.</p>}
+
+      {level && <p className="result-note">{PREP_LABELS[level]} is an independent difficulty label. This 20-question result is separate from full-mock readiness. <a href={`${practicePath(meta)}?mode=quick&level=${level}`}>Try another {PREP_LABELS[level].toLowerCase()} set</a>.</p>}
 
       <FirstAnswerPerformance meta={meta} attempt={attempt} />
       {!isDrill && domainRows.length > 0 && <div className="panel result-breakdown"><DomainBars title="Performance by domain" rows={domainRows} /></div>}

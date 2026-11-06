@@ -14,6 +14,18 @@ Third-party resources can complement this path:
 
 These links are resources, not endorsements of every answer or claims that a vendor's difficulty is equivalent to AWS. Their private question banks and labs have not been independently audited by CertReps. No purchase is needed to use CertReps' written exercises.
 
+## Choose the practice demand
+
+Keep [balanced quick practice](/aws/aip-c01/practice?mode=quick) for a mixed 10-question review, or choose an optional 20-question set:
+
+- [Foundation](/aws/aip-c01/practice?mode=quick&level=easy): core concepts and service boundaries.
+- [Standard](/aws/aip-c01/practice?mode=quick&level=medium): apply a concept to a constrained scenario.
+- [Challenge](/aws/aip-c01/practice?mode=quick&level=hard): diagnose evidence, compare configurations and reason through tradeoffs.
+
+Each set gives explanations after each answer and samples across the exam domains within the chosen difficulty. Unseen and previously missed questions receive more weight; repeats remain possible. Your saved question set keeps its level when resumed. These 20-question sets do not contribute to full-mock readiness. Difficulty labels describe intended reasoning demand; they have not been calibrated against AWS exam statistics.
+
+For deeper study, explain why the strongest alternative fails before revealing feedback. If the question is familiar, change one constraint and work out whether the answer should change. Then use a full mixed mock for timing and an unfamiliar official practice resource for a separate benchmark.
+
 ## Check your reasoning
 
 Before relying on a practice score, ask:

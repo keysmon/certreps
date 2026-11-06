@@ -19,7 +19,7 @@ describe("learning content contracts",()=>{
  });
  it("curated notes cover active canonical options and preserve the original concept breadth",()=>{
  const bank=getCert("aip-c01")!.bank;const concepts=new Set<string>();expect(Object.keys(notes).length).toBeGreaterThanOrEqual(30);
- for(const id of Object.keys(notes)){const q=bank.find(q=>q.id===id)!;expect(q).toBeDefined();expect(q.excludedFromPractice).not.toBe(true);const note=getAnswerNote("aip-c01",id)!;expect(note.options).toHaveLength(q.options.length);for(const rationale of note.options)expect(rationale.length).toBeGreaterThan(30);concepts.add(q.concept!);}
+ for(const id of Object.keys(notes)){const q=bank.find(q=>q.id===id)!;expect(q).toBeDefined();/* Historical notes remain available when an item is retired. */const note=getAnswerNote("aip-c01",id)!;expect(note.options).toHaveLength(q.options.length);for(const rationale of note.options)expect(rationale.length).toBeGreaterThan(30);if(!q.excludedFromPractice)concepts.add(q.concept!);}
  expect(concepts.size).toBeGreaterThanOrEqual(30);expect(getAnswerNote("nca-genl",Object.keys(notes)[0])).toBeUndefined();expect(getAnswerNote("aip-c01","__proto__")).toBeUndefined();
  });
 });

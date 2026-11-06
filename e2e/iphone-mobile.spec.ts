@@ -143,7 +143,9 @@ test("phone keyboard certification switcher remains visible with compact chrome"
 
 test("long service actions wrap in narrow phone answer review", async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 568 });
-  const q = getPracticeBank().find(q => JSON.stringify(q).includes("bedrock:InvokeModelWithResponseStream"))!;
+  const longestToken = (q: (ReturnType<typeof getPracticeBank>)[number]) => Math.max(...q.options.flatMap(o => o.split(/\s+/).map(token => token.length)));
+  const q = getPracticeBank().reduce((a,b) => longestToken(a) > longestToken(b) ? a : b);
+  expect(longestToken(q)).toBeGreaterThan(50);
   expect(q).toBeDefined();
   await page.goto("/aws/aip-c01");
   await page.evaluate(questionId => localStorage.setItem("certreps.attempts.v1", JSON.stringify([{
@@ -199,3 +201,23 @@ for (const viewport of [{width:375,height:667},{width:430,height:932},{width:932
   }
  });
 }
+
+
+for(const width of [375,430])test(`Challenge prep selection, resume and results on ${width}px phone`,async({page})=>{
+ await page.setViewportSize({width,height:932});
+ await page.goto("/aws/aip-c01");await page.getByText("Choose a difficulty / 20-question prep",{exact:true}).click();
+ const launch=page.getByRole("link",{name:"Challenge / 20 Q",exact:true});
+ expect((await launch.boundingBox())!.height).toBeGreaterThanOrEqual(44);await launch.click();
+ await expect(page.getByRole("heading",{name:"Challenge prep."})).toBeVisible();
+ for(let i=0;i<20;i++){
+  await expect(page.getByRole("button",{name:"Submit answer",exact:true})).toBeInViewport();
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  await chooseFirstAnswer(page);await page.getByRole("button",{name:"Submit answer",exact:true}).click();
+  if(i===19)await page.getByRole("button",{name:"See results",exact:true}).click();
+  else await page.getByRole("button",{name:/next question/i}).click();
+ }
+ await expect(page.getByRole("region",{name:"Challenge prep result"})).toBeVisible();
+ await expect(page.getByRole("link",{name:"Try another challenge set"})).toHaveAttribute("href","/aws/aip-c01/practice?mode=quick&level=hard");
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+ if(width===430)await page.screenshot({path:"/tmp/certreps-mobile-challenge-results.png",fullPage:true});
+});

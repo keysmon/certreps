@@ -2,6 +2,7 @@
 import { useEffect, useState, type CSSProperties } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
+import { PREP_LABELS } from "@/lib/prep";
 import { ScoreRing } from "@/components/ui/ScoreRing";
 import { useAttemptRevision } from "@/lib/useAttemptRevision";
 import { domainReadiness, domainPracticeProgress, progressView } from "@/lib/progress-view";
@@ -119,6 +120,11 @@ export function PathToReady({
               {domainsOpen ? "Hide domains ▴" : "Or pick a specific domain ▾"}
             </button>
           </div>
+          {certId === "aip-c01" && <details className="prep-levels">
+            <summary>Choose a difficulty / 20-question prep</summary>
+            <p>Optional sets with instant explanations: Foundation checks core concepts, Standard applies them, and Challenge focuses on implementation and tradeoffs. These are independent labels, not calibrated AWS exam levels.</p>
+            <div className="learning-actions">{(["easy", "medium", "hard"] as const).map(level => <Link className="btn btn-ghost" key={level} href={`${base}?mode=quick&level=${level}`}>{PREP_LABELS[level]} / 20 Q</Link>)}</div>
+          </details>}
           {resumeLine && <p className="cd-resume-line">{resumeLine}</p>}
           {extras.length > 0 && (
             <ul className="cd-resume-more">

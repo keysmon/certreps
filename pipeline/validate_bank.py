@@ -45,6 +45,32 @@ def doc_re(vendor_slug):
     return re.compile(r"^https://(" + "|".join(re.escape(h) for h in hosts) + r")/")
 
 
+def validate_supersessions(data):
+    """Links describe published history, including successors retired by later reviews.
+    Targets must remain in the same archive/domain; active sampling is a separate gate.
+    """
+    by_id = {q.get("id"): q for q in data}
+    errors = []
+    for q in data:
+        if not q.get("supersededBy"):
+            continue
+        qid = q.get("id")
+        target = by_id.get(q["supersededBy"])
+        if not q.get("excludedFromPractice") or not target or target.get("domain") != q.get("domain"):
+            errors.append(f"{qid}: replacement must exist in the same domain and predecessor must be retired")
+            continue
+        seen = {qid}
+        current = q
+        while current.get("supersededBy"):
+            successor_id = current["supersededBy"]
+            if successor_id in seen:
+                errors.append(f"{qid}: replacement chain contains a cycle")
+                break
+            seen.add(successor_id)
+            current = by_id.get(successor_id, {})
+    return errors
+
+
 def validate_cert(cert_id):
     """Validate one cert's bank. Returns (question_count, [error strings])."""
     cert_dir = os.path.join(CONTENT, cert_id)
@@ -97,17 +123,13 @@ def validate_cert(cert_id):
         if len(set(opts)) != len(opts): errors.append(f"{loc}: duplicate option text")
         blob = q.get("stem", "") + "".join(opts) + q.get("explanation", "")
         if any(ord(ch) > 127 for ch in blob): errors.append(f"{loc}: non-ASCII")
-    by_id = {q.get("id"): q for q in data}
     for q in data:
         qid = q.get("id")
         if "excludedFromPractice" in q and not isinstance(q["excludedFromPractice"], bool):
             errors.append(f"{qid}: excludedFromPractice must be boolean")
         if q.get("excludedFromPractice") and not q.get("exclusionReason", "").strip():
             errors.append(f"{qid}: exclusion requires a reason")
-        if q.get("supersededBy"):
-            successor = by_id.get(q["supersededBy"])
-            if not q.get("excludedFromPractice") or not successor or successor.get("excludedFromPractice") or successor.get("domain") != q.get("domain"):
-                errors.append(f"{qid}: replacement must be an active question in the same domain")
+    errors.extend(validate_supersessions(data))
     for domain in meta.get("domains", []):
         active = sum(q.get("domain") == domain["name"] and not q.get("excludedFromPractice") for q in data)
         if active < domain.get("mockCount", 0):

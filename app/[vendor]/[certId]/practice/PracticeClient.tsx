@@ -7,7 +7,8 @@ import { getMeta, getBank, isResumableAttempt } from "@/lib/bank";
 import { practicePath, resumeParams } from "@/lib/routes";
 import { attemptLabel } from "@/lib/labels";
 import { listInProgress, discardAttempt, getAttempt } from "@/lib/storage";
-import type { Attempt, CertMeta, Mode } from "@/lib/types";
+import { prepLevel, requestedPrepLevel, PREP_LABELS } from "@/lib/prep";
+import type { Attempt, CertMeta, Mode, Difficulty } from "@/lib/types";
 
 const MODES: Mode[] = ["quick", "drill", "mock", "retry"];
 // Glyph via fromCharCode (ASCII-source convention, see the engine + detail page).
@@ -31,19 +32,21 @@ export function PracticeClient({ certId }: { certId: string }) {
   const resume = params.get("resume") ?? undefined;
   const retryFrom = mode === "retry" ? params.get("from") ?? undefined : undefined;
   const reveal = mode === "mock" && params.get("reveal") === "1";
+  const level = requestedPrepLevel(certId, mode, params.get("level"));
 
   // A Start fresh decision belongs only to the current URL context. Reset the gate before
   // mounting another mode/domain/study session so it cannot orphan that session's saved attempt.
-  return <PracticeSession key={JSON.stringify([certId, mode, domain, resume, reveal, retryFrom])} certId={certId} mode={mode} domain={domain} resume={resume} reveal={reveal} retryFrom={retryFrom} />;
+  return <PracticeSession key={JSON.stringify([certId, mode, domain, resume, reveal, retryFrom, level])} certId={certId} mode={mode} domain={domain} resume={resume} reveal={reveal} retryFrom={retryFrom} level={level} />;
 }
 
-function PracticeSession({ certId, mode, domain, resume, reveal, retryFrom }: {
+function PracticeSession({ certId, mode, domain, resume, reveal, retryFrom, level }: {
   certId: string;
   mode: Mode;
   domain?: string;
   resume?: string;
   reveal: boolean;
   retryFrom?: string;
+  level?: Difficulty;
 }) {
   // Interstitial gate (SSR-safe): the in-progress lookup reads localStorage, so it runs in an effect
   // (never in render or a useState initializer - the hydration lesson) and the first paint is the
@@ -64,23 +67,25 @@ function PracticeSession({ certId, mode, domain, resume, reveal, retryFrom }: {
       : [];
     const match = listInProgress(certId).find(
       (a) => isResumableAttempt(a, bank, { certId, mode, domain, reveal }) &&
+        (mode !== "quick" || prepLevel(a, bank) === level) &&
         (!retryFrom || (a.questionIds.length === retryIds.length && a.questionIds.every((id, i) => id === retryIds[i]))),
     );
     setInProgress(match ?? null);
     setChecked(true);
-  }, [certId, mode, domain, reveal, resume, retryFrom]);
+  }, [certId, mode, domain, reveal, resume, retryFrom, level]);
 
   // Engine contract preserved: key by mode+domain+reveal+resume so a changed resume id (or a switch
   // between exam and study runs) forces a clean remount.
   const engine = (resumeId?: string) => (
     <ExamEngine
-      key={`${mode}-${domain ?? ""}-${reveal ? "r" : ""}-${resumeId ?? ""}`}
+      key={`${mode}-${domain ?? ""}-${reveal ? "r" : ""}-${resumeId ?? ""}-${level ?? ""}`}
       certId={certId}
       mode={mode}
       domain={domain}
       reveal={reveal}
       resumeAttemptId={resumeId}
       retryFrom={retryFrom}
+      level={level}
     />
   );
 
@@ -128,7 +133,8 @@ function PracticeInterstitial({
   // question now carries a legitimate empty-chosen row, which must not inflate "n of m answered".
   const answered = Object.values(attempt.results).filter((r) => r.chosen.length > 0).length;
   const total = attempt.questionIds.length;
-  const label = attemptLabel(attempt.mode, attempt.reveal);
+  const level = prepLevel(attempt, getBank(meta.certId));
+  const label = level ? `${PREP_LABELS[level]} prep` : attemptLabel(attempt.mode, attempt.reveal);
 
   const resumeHref = `${practicePath(meta)}?${resumeParams(attempt)}`;
 

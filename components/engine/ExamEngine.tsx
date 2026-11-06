@@ -1,9 +1,10 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { Attempt, Mode, Question } from "@/lib/types";
+import type { Attempt, Mode, Question, Difficulty } from "@/lib/types";
 import { getBank, getPracticeBank, getMeta, isResumableAttempt } from "@/lib/bank";
 import { sampleDrill, sampleMock, sampleQuick, questionsByIds } from "@/lib/sampler";
 import { createAttempt, saveAttempt, recordResult, finishAttempt, missedQuestionIds, listAttempts, getAttempt, saveProgress } from "@/lib/storage";
+import { prepLevel, PREP_LABELS, samplePrep } from "@/lib/prep";
 import { buildWeights } from "@/lib/adaptive";
 import { isCorrect } from "@/lib/scoring";
 import { QuestionCard } from "./QuestionCard";
@@ -22,7 +23,7 @@ const PROGRESS_PERSIST_MS = 10_000;
 const MIDDOT = String.fromCharCode(183); // U+00B7 middle dot - mode-note separator
 const TIMES = String.fromCharCode(10005); // U+2715 multiplication x - exit affordance
 
-export function ExamEngine({ certId, mode, domain, resumeAttemptId, reveal, retryFrom }: { certId?: string; mode: Mode; domain?: string; resumeAttemptId?: string; reveal?: boolean; retryFrom?: string }) {
+export function ExamEngine({ certId, mode, domain, resumeAttemptId, reveal, retryFrom, level }: { certId?: string; mode: Mode; domain?: string; resumeAttemptId?: string; reveal?: boolean; retryFrom?: string; level?: Difficulty }) {
   const bank = getPracticeBank(certId);
   const meta = getMeta(certId);
   const isMock = mode === "mock";
@@ -82,7 +83,7 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId, reveal, retr
 
     const stored = resumeAttemptId ? getAttempt(resumeAttemptId) : null;
     const resumed = stored?.finishedAt === null ? stored : null;
-    if (resumed && !isResumableAttempt(resumed, getBank(meta.certId), { certId: meta.certId, mode, domain, reveal })) {
+    if (resumed && (!isResumableAttempt(resumed, getBank(meta.certId), { certId: meta.certId, mode, domain, reveal }) || (level && prepLevel(resumed, getBank(meta.certId)) !== level))) {
       if (isResumableAttempt(resumed, getBank(meta.certId))) {
         setMismatchedResume(resumed);
       } else {
@@ -104,7 +105,9 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId, reveal, retr
     const sampled: Question[] = resumed
       ? questionsByIds(bank, resumed.questionIds)
       : mode === "quick"
-      ? sampleQuick(bank, QUICK_N, buildWeights(listAttempts(meta.certId), bank), meta)
+      ? level
+        ? samplePrep(bank, level, meta, buildWeights(listAttempts(meta.certId), bank))
+        : sampleQuick(bank, QUICK_N, buildWeights(listAttempts(meta.certId), bank), meta)
       : mode === "drill" && domain
       ? sampleDrill(bank, domain, DRILL_N, buildWeights(listAttempts(meta.certId), bank))
       : mode === "retry"
@@ -247,6 +250,7 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId, reveal, retr
     const query = new URLSearchParams({ mode });
     if (domain) query.set("domain", domain);
     if (reveal) query.set("reveal", "1");
+    if (level) query.set("level", level);
     return (
       <div className="stage">
         <h2>{mismatchedResume ? "This link does not match the saved session" : "This session needs a fresh question set"}</h2>
@@ -285,6 +289,8 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId, reveal, retr
     );
   }
 
+  const currentLevel = attemptRef.current ? prepLevel(attemptRef.current, bank) : undefined;
+  const prepTitle = currentLevel ? `${PREP_LABELS[currentLevel]} prep` : undefined;
   const g = isMock && !reveal ? null : graded[q.id] ?? null;
   // Seeds QuestionCard's attempt-stable option shuffle. attemptRef.current is set by the init effect
   // whenever questions were sampled, so it is non-null on every path that reaches this render (the
@@ -312,7 +318,7 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId, reveal, retr
     ? `Domain drill ${MIDDOT} instant feedback`
     : mode === "retry"
     ? `${retryFrom ? "Retry session misses" : "Retry all previous misses"} ${MIDDOT} instant feedback`
-    : `Quick drill ${MIDDOT} instant feedback`;
+    : `${prepTitle ?? "Quick drill"} ${MIDDOT} instant feedback`;
 
   // Contract C1a (Task 13 review): the exam bar (switcher + progress + Timer) is hoisted above the
   // phase switch so the sealed countdown NEVER unmounts between the question and review phases - it
@@ -414,7 +420,7 @@ export function ExamEngine({ certId, mode, domain, resumeAttemptId, reveal, retr
                 across a submit so the recorded choice stays visible and EDITABLE (initialChosen
                 pre-fills on a re-visit). Practice: the card re-renders into its read-only graded
                 state when `graded` is set - no remount needed. */}
-            <div className="practice-heading" ref={questionHeadingRef}><h1 tabIndex={-1}>{mode === "mock" ? (reveal ? "Study run." : "Full mock.") : mode === "drill" ? "Domain drill." : mode === "retry" ? "Retry missed questions." : "Quick practice."}</h1><span className="practice-number" aria-hidden="true">{String(index + 1).padStart(2, "0")}<small>/{questions.length}</small></span></div>
+            <div className="practice-heading" ref={questionHeadingRef}><h1 tabIndex={-1}>{mode === "mock" ? (reveal ? "Study run." : "Full mock.") : mode === "drill" ? "Domain drill." : mode === "retry" ? "Retry missed questions." : prepTitle ? `${prepTitle}.` : "Quick practice."}</h1><span className="practice-number" aria-hidden="true">{String(index + 1).padStart(2, "0")}<small>/{questions.length}</small></span></div>
             <QuestionCard
               key={q.id}
               question={q}
