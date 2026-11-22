@@ -1,5 +1,6 @@
 import { chooseFirstAnswer } from "./answer-helpers";
 import {test,expect} from "@playwright/test";
+import {getPracticeBank} from "../lib/bank";
 import {listCerts} from "../lib/certs";
 test("all 15 optional curricula and their available guides are reachable",async({page})=>{
  await page.goto("/learn");await expect(page.getByRole("heading",{name:"Learn at your pace."})).toBeVisible();await expect(page.getByRole("link",{name:"Explore curriculum",exact:true})).toHaveCount(15);
@@ -13,5 +14,10 @@ test("learning stays optional and a graded lesson preserves the current practice
  await page.goto("/aws/aip-c01/practice?mode=quick");await expect(page.locator(".qstem")).toBeVisible();await expect(page.locator(".lesson-link")).toHaveCount(0);const stem=await page.locator(".qstem").innerText();await chooseFirstAnswer(page);await page.getByRole("button",{name:"Submit answer",exact:true}).click();await expect(page.locator(".lesson-link")).toBeVisible();const popupPromise=context.waitForEvent("page");await page.locator(".lesson-link").click();const popup=await popupPromise;await popup.waitForLoadState();await expect(popup.locator(".guide h1")).toBeVisible();await expect(page.locator(".qstem")).toHaveText(stem);await popup.close();
 });
 test("timed mock has no lesson or answer hints before final submission",async({page})=>{
- await page.goto("/aws/aip-c01/practice?mode=mock");await chooseFirstAnswer(page);await page.getByRole("button",{name:"Submit answer",exact:true}).click();await expect(page.locator(".answer-learning")).toHaveCount(0);await page.getByRole("button",{name:"Review & submit"}).click();await page.getByRole("button",{name:"Submit exam",exact:true}).click();await page.getByText("Review answers",{exact:true}).click();const firstReview=page.locator(".recap-item").first();if(await firstReview.getAttribute("open")===null)await firstReview.locator("summary").click();await expect(firstReview.locator(".lesson-link")).toBeVisible();
+ const q=getPracticeBank().find(q=>q.id==="aipc01-0879")!;
+ await page.goto("/aws/aip-c01");
+ await page.evaluate(id=>localStorage.setItem("certreps.attempts.v1",JSON.stringify([{attemptId:"sealed-lesson",certId:"aip-c01",mode:"mock",questionIds:[id],results:{},startedAt:Date.now(),finishedAt:null,elapsedSec:0,pauseCount:0}])),q.id);
+ await page.goto("/aws/aip-c01/practice?mode=mock&resume=sealed-lesson");
+ for(const i of q.correct)await page.locator("button.option").filter({hasText:q.options[i]}).click();
+ await page.getByRole("button",{name:"Submit answer",exact:true}).click();await expect(page.locator(".answer-learning")).toHaveCount(0);await page.getByRole("button",{name:"Review & submit"}).click();await page.getByRole("button",{name:"Submit exam",exact:true}).click();await page.getByText("Review answers",{exact:true}).click();const firstReview=page.locator(".recap-item").first();if(await firstReview.getAttribute("open")===null)await firstReview.locator(":scope > summary").click();await expect(firstReview.locator(".lesson-link")).toBeVisible();
 });
