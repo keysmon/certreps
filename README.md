@@ -48,3 +48,7 @@ backfill from remaining active content. Full-mock quotas are unchanged.
 Reviewed the remaining 548 active legacy questions. 69 were replaced with new IDs; 435 repeated, cued or unresolved items were retired from new practice, while their published answers and historical notes remain available. Added 30 original implementation/diagnosis challenges. The resulting active bank has 243 questions; the archive has 878. `content/aip-c01/bank-audit-2026-11-05.json` records every decision and source evidence.
 
 AIP quick practice optionally accepts `level=easy|medium|hard` for 20-question Foundation, Standard or Challenge sets. Each samples only that difficulty across the exam blueprint and uses existing adaptive weights. Balanced quick practice remains 10 questions; the timed 75-question mock is unchanged. Prep-set identity is derived from its 20 immutable question IDs, so existing storage/cloud row formats and plain resume links work unchanged. Retired-ID sessions prompt a fresh set; completed results remain reviewable. These levels are independent learning aids, not calibrated AWS exam predictions.
+
+### AIP-C01 breadth expansion (2026-11-22)
+
+Added 86 original questions and five optional lessons covering data services, agent evaluation, SageMaker lifecycle, developer tooling and vector-store architecture. There are 329 active questions and 964 archived records. The 20-task coverage map provides concrete practice evidence and scope notes, not exhaustive skill certification or an exam prediction. All published records and prior results are preserved.

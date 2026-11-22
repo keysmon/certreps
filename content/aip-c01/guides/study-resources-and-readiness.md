@@ -38,3 +38,14 @@ Before relying on a practice score, ask:
 6. Have I checked current AWS documentation for model-, Region- or version-dependent claims?
 
 Use first-answer performance and domain coverage together. A small denominator gives limited evidence; repeated questions can improve recall without demonstrating transfer to a new scenario. Difficulty labels and the study target are local learning aids. A high score, including a perfect score, cannot promise an AWS pass or be converted into its scaled result.
+
+
+## Coverage follow-up / 2026-11-22
+
+Use the optional [task coverage map](/guides/aip-c01/coverage-map) to see example questions and lessons across the current exam tasks. It is a study aid, not a completion requirement.
+
+- [Data services and multimodal pipelines](/guides/aip-c01/data-services-and-multimodal-pipelines)
+- [Agent evaluation and quality gates](/guides/aip-c01/agent-evaluation-and-quality-gates)
+- [Sagemaker model lifecycle](/guides/aip-c01/sagemaker-model-lifecycle)
+- [Developer tooling and delivery](/guides/aip-c01/developer-tooling-and-delivery)
+- [Vector store architecture](/guides/aip-c01/vector-store-architecture)

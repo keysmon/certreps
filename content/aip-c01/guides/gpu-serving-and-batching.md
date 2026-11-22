@@ -27,3 +27,8 @@ Build an offline experiment table with three candidate configurations. Change on
 - A larger batch is always cheaper per successful request: false; consider latency, failures and utilization.
 
 Sources: [SageMaker inference optimization](https://docs.aws.amazon.com/sagemaker/latest/dg/inference-cost-optimization.html), [AWS LMI/vLLM deployment example](https://aws.amazon.com/blogs/machine-learning/accelerating-llm-inference-with-post-training-weight-and-activation-using-awq-and-gptq-on-amazon-sagemaker-ai/).
+
+
+## Coverage follow-up / 2026-11-22
+
+Use the optional [task coverage map](/guides/aip-c01/coverage-map) to see example questions and lessons across the current exam tasks. It is a study aid, not a completion requirement.

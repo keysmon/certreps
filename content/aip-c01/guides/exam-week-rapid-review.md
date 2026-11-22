@@ -141,3 +141,14 @@ A useful preparation checkpoint combines unfamiliar timed practice, the ability 
 ## Optional difficulty sets
 
 Use [Foundation](/aws/aip-c01/practice?mode=quick&level=easy) for service boundaries, [Standard](/aws/aip-c01/practice?mode=quick&level=medium) for applied scenarios, or [Challenge](/aws/aip-c01/practice?mode=quick&level=hard) for implementation diagnosis and tradeoffs. Each has 20 questions and immediate explanations. Keep [balanced quick practice](/aws/aip-c01/practice?mode=quick) for 10 mixed questions. Selected-difficulty results are practice evidence, not calibrated AWS exam predictions or full-mock readiness scores.
+
+
+## Coverage follow-up / 2026-11-22
+
+Use the optional [task coverage map](/guides/aip-c01/coverage-map) to see example questions and lessons across the current exam tasks. It is a study aid, not a completion requirement.
+
+- [Data services and multimodal pipelines](/guides/aip-c01/data-services-and-multimodal-pipelines)
+- [Agent evaluation and quality gates](/guides/aip-c01/agent-evaluation-and-quality-gates)
+- [Sagemaker model lifecycle](/guides/aip-c01/sagemaker-model-lifecycle)
+- [Developer tooling and delivery](/guides/aip-c01/developer-tooling-and-delivery)
+- [Vector store architecture](/guides/aip-c01/vector-store-architecture)

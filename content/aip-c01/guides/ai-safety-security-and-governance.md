@@ -100,3 +100,11 @@ The following optional lessons were added and reviewed on 2026-11-05. Use them t
 
 - [Review trust and authorization boundaries](/guides/aip-c01/federated-access-and-temporary-credentials).
 - [Investigate policy outcomes without weakening controls](/guides/aip-c01/guardrail-diagnostics).
+
+
+## Coverage follow-up / 2026-11-22
+
+Use the optional [task coverage map](/guides/aip-c01/coverage-map) to see example questions and lessons across the current exam tasks. It is a study aid, not a completion requirement.
+
+- [Data services and multimodal pipelines](/guides/aip-c01/data-services-and-multimodal-pipelines)
+- [Agent evaluation and quality gates](/guides/aip-c01/agent-evaluation-and-quality-gates)

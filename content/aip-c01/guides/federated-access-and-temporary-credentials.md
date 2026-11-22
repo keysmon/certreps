@@ -25,3 +25,8 @@ On paper, trace a fictional contractor portal from corporate sign-in through cre
 - Should every federation failure be solved by adding another IAM user? No; preserve temporary sessions and investigate the failed boundary.
 
 Sources: [Cognito identity pools](https://docs.aws.amazon.com/cognito/latest/developerguide/getting-started-with-identity-pools.html), [IAM federation](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers.html).
+
+
+## Coverage follow-up / 2026-11-22
+
+Use the optional [task coverage map](/guides/aip-c01/coverage-map) to see example questions and lessons across the current exam tasks. It is a study aid, not a completion requirement.

@@ -25,3 +25,8 @@ Build an offline diagnostic table with columns for request ID, guardrail version
 - Should detailed traces be logged without access controls? No; restrict access and retention for sensitive diagnostic material.
 
 Sources: [Guardrail testing and traces](https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-test.html), [Converse API](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html), [ApplyGuardrail API](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ApplyGuardrail.html).
+
+
+## Coverage follow-up / 2026-11-22
+
+Use the optional [task coverage map](/guides/aip-c01/coverage-map) to see example questions and lessons across the current exam tasks. It is a study aid, not a completion requirement.

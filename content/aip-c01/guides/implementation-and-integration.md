@@ -109,3 +109,11 @@ The following optional lessons were added and reviewed on 2026-11-05. Use them t
 - [Choose an asynchronous hosting contract](/guides/aip-c01/asynchronous-model-hosting).
 
 For AgentCore, separate framework code from the Runtime hosting contract. Current Python direct-code deployment requires a compatible entrypoint and dependencies. The Runtime SDK can provide the service wrapper; a custom server must implement the required invocation and health endpoints. Pin the deployment method and toolkit version rather than mixing commands from different generations. See [AWS Python direct-code deployment](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-get-started-code-deploy-python.html).
+
+
+## Coverage follow-up / 2026-11-22
+
+Use the optional [task coverage map](/guides/aip-c01/coverage-map) to see example questions and lessons across the current exam tasks. It is a study aid, not a completion requirement.
+
+- [Developer tooling and delivery](/guides/aip-c01/developer-tooling-and-delivery)
+- [Sagemaker model lifecycle](/guides/aip-c01/sagemaker-model-lifecycle)

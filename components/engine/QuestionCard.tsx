@@ -2,6 +2,7 @@
 import { useMemo, useState } from "react";
 import type { Question } from "@/lib/types";
 import { optionPermutation } from "@/lib/permute";
+import { sourceForQuestion } from "@/lib/learning";
 import { AnswerLearning } from "./AnswerLearning";
 import { ReportProblem } from "@/components/ReportProblem";
 import "./engine.css";
@@ -104,7 +105,7 @@ export function QuestionCard({
           <p className="verdict">{graded.correct ? `${CHECK} Correct` : `${CROSS} Not quite`}</p>
           {/* Safe: trusted build-time content from our own pipeline (<b>/<em> only), never user input. */}
           <AnswerLearning question={question} certId={certId} vendorSlug={vendorSlug} attemptId={attemptId} chosen={graded.chosen} />
-          <a className="doclink" href={question.docUrl} target="_blank" rel="noopener noreferrer">
+          <a className="doclink" href={sourceForQuestion(question)} target="_blank" rel="noopener noreferrer">
             Read the {vendorName} docs {String.fromCharCode(8594)}
           </a>
           <div style={{ marginTop: 12 }}>

@@ -25,3 +25,8 @@ Draw states for accepted, pending, running, complete, retryable failure and term
 - Can dead-lettered work be ignored once the queue is empty? No; it remains unprocessed work requiring a visible recovery path.
 
 Sources: [Synchronize a data source](https://docs.aws.amazon.com/bedrock/latest/userguide/kb-data-source-sync-ingest.html), [S3 notification semantics](https://docs.aws.amazon.com/AmazonS3/latest/userguide/notification-how-to-event-types-and-destinations.html).
+
+
+## Coverage follow-up / 2026-11-22
+
+Use the optional [task coverage map](/guides/aip-c01/coverage-map) to see example questions and lessons across the current exam tasks. It is a study aid, not a completion requirement.

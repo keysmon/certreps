@@ -110,3 +110,11 @@ The following optional lessons were added and reviewed on 2026-11-05. Use them t
 
 - [Diagnose document ingestion](/guides/aip-c01/knowledge-base-ingestion-observability).
 - [Inspect guardrail evaluation evidence](/guides/aip-c01/guardrail-diagnostics).
+
+
+## Coverage follow-up / 2026-11-22
+
+Use the optional [task coverage map](/guides/aip-c01/coverage-map) to see example questions and lessons across the current exam tasks. It is a study aid, not a completion requirement.
+
+- [Agent evaluation and quality gates](/guides/aip-c01/agent-evaluation-and-quality-gates)
+- [Developer tooling and delivery](/guides/aip-c01/developer-tooling-and-delivery)

@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { Attempt, CertMeta, Question } from "@/lib/types";
 import { FirstAnswerPerformance } from "@/components/FirstAnswerPerformance";
+import { sourceForQuestion } from "@/lib/learning";
 import { AnswerLearning } from "./AnswerLearning";
 import { prepLevel, PREP_LABELS } from "@/lib/prep";
 import { gradeAttempt } from "@/lib/scoring";
@@ -203,7 +204,7 @@ export function Results({ attempt, questions, meta }: { attempt: Attempt; questi
                     <p className="muted">Archived question: excluded from new practice after review. {q.exclusionReason}</p>
                   )}
                   <AnswerLearning question={q} certId={meta.certId} vendorSlug={meta.vendorSlug} attemptId={attempt.attemptId} chosen={chosen} className="recap-explain" showCorrect={false} />
-                  <a className="doclink" href={q.docUrl} target="_blank" rel="noopener noreferrer">
+                  <a className="doclink" href={sourceForQuestion(q)} target="_blank" rel="noopener noreferrer">
                     Read the {VENDORS[meta.vendorSlug]?.n ?? meta.vendor} docs {ARROW}
                   </a>
                 </div>

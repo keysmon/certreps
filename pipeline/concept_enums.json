@@ -6,7 +6,13 @@
     "retrieval-quality-and-access-control",
     "customization-ladder",
     "data-protection-and-compliance",
-    "knowledge-base-document-lifecycle"
+    "knowledge-base-document-lifecycle",
+    "data-quality-validation",
+    "multimodal-preprocessing",
+    "input-schema-and-provenance",
+    "sagemaker-model-lifecycle",
+    "genai-architecture-design",
+    "vector-store-architecture"
   ],
   "Implementation & Integration": [
     "converse-api-tool-use-structured-output",
@@ -17,7 +23,9 @@
     "resilience-throttling-failure",
     "embeddings-pipelines",
     "enterprise-identity-federation",
-    "asynchronous-model-hosting"
+    "asynchronous-model-hosting",
+    "sagemaker-model-lifecycle",
+    "developer-tooling-and-delivery"
   ],
   "AI Safety, Security & Governance": [
     "guardrails-policy-toolbox",
@@ -25,7 +33,11 @@
     "iam-and-account-governance",
     "logging-auditing-data-protection",
     "owasp-llm-risks-agent-safety",
-    "provenance-bias-compliance-evidence"
+    "provenance-bias-compliance-evidence",
+    "evaluation-datasets-and-judges",
+    "agent-evaluation-and-quality-gates",
+    "evaluation-experiments-and-feedback",
+    "sagemaker-model-lifecycle"
   ],
   "Operational Efficiency & Optimization": [
     "prompt-caching",
@@ -33,7 +45,8 @@
     "latency-levers",
     "cost-monitoring-control",
     "model-distillation",
-    "gpu-serving-configuration"
+    "gpu-serving-configuration",
+    "sagemaker-model-lifecycle"
   ],
   "Testing, Validation & Troubleshooting": [
     "evaluation-job-types",
@@ -43,6 +56,10 @@
     "debugging-agents-retrieval-latency",
     "reproducibility-production-monitoring",
     "knowledge-base-ingestion-observability",
-    "guardrail-diagnostics"
+    "guardrail-diagnostics",
+    "agent-evaluation-and-quality-gates",
+    "evaluation-experiments-and-feedback",
+    "evaluation-datasets-and-judges",
+    "sagemaker-model-lifecycle"
   ]
 }

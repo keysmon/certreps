@@ -1215,8 +1215,8 @@
   "aipc01-0780": {
     "takeaway": "Choose on measured task quality, latency, and total cost rather than an unqualified model ranking.",
     "options": [
-      "A costs 100\u00d7$0.20 +2\u00d7$0.80 =$21.60, lower than B while both meet the gates.",
-      "B costs 100\u00d7$0.08 +2\u00d7$8 =$24, so its lower input price does not give the lowest total.",
+      "A costs 100×$0.20 +2×$0.80 =$21.60, lower than B while both meet the gates.",
+      "B costs 100×$0.08 +2×$8 =$24, so its lower input price does not give the lowest total.",
       "This counts B input cost but omits its $16 output charge.",
       "This counts A output cost but omits its $20 input charge."
     ],
@@ -2787,7 +2787,7 @@
       "With expiration before each request, $0.0125 exceeds the $0.010 uncached prefix charge and there are no observed reads to offset it.",
       "The calculation covers only the prefix; unchanged costs must remain in the total comparison.",
       "The stated 20-minute idle gap exceeds the specified cache lifetime.",
-      "One write plus five reads is $0.0125 + 5 \u00d7 $0.001; compare it with 6 \u00d7 $0.010 for the same prefix."
+      "One write plus five reads is $0.0125 + 5 × $0.001; compare it with 6 × $0.010 for the same prefix."
     ],
     "reviewedOn": "2026-11-05",
     "sources": [
@@ -2864,6 +2864,1623 @@
       {
         "label": "Titan Text Embeddings models",
         "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/titan-embedding-models.html"
+      }
+    ]
+  },
+  "aipc01-0879": {
+    "takeaway": "Use explicit table-quality rules before the catalog becomes model input. Extraction and sensitive-data discovery address different checks.",
+    "options": [
+      "Transformation completion alone does not establish that the required ID and price checks passed.",
+      "Glue Data Quality evaluates table rules that can gate publication.",
+      "Sensitive-data discovery does not establish product completeness or price validity.",
+      "Post-publication reporting cannot prevent invalid catalog context from reaching the assistant."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "AWS Glue Data Quality",
+        "url": "https://docs.aws.amazon.com/glue/latest/dg/glue-data-quality.html"
+      }
+    ]
+  },
+  "aipc01-0880": {
+    "takeaway": "Textract extracts text and document structures from scans, supplying the textual input needed by later normalization.",
+    "options": [
+      "Named entities omit the full text and table structure required by the existing normalizer.",
+      "A summary can omit rows and fields needed for faithful form normalization.",
+      "Document analysis supplies text and tables for subsequent preparation.",
+      "Discarding table relationships loses part of the input representation required by the scenario."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "Textract input quality and confidence",
+        "url": "https://docs.aws.amazon.com/textract/latest/dg/textract-best-practices.html"
+      }
+    ]
+  },
+  "aipc01-0881": {
+    "takeaway": "Data Wrangler in SageMaker Canvas supports visual exploration and reusable transformations for preparation workflows.",
+    "options": [
+      "Canvas provides the current Data Wrangler experience, including reports and flows.",
+      "Scheduled validation can enforce checks, but it does not provide the requested visual exploration and preparation flow.",
+      "Document extraction blueprints do not provide the requested tabular exploration and transformation experience.",
+      "Sensitive-data findings do not expose the requested preparation distributions or define a reusable transformation flow."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "Data Wrangler in Canvas",
+        "url": "https://docs.aws.amazon.com/sagemaker/latest/dg/canvas-data-prep.html"
+      }
+    ]
+  },
+  "aipc01-0882": {
+    "takeaway": "Speech transcription produces text for the text-only model; transcript validation remains a separate step.",
+    "options": [
+      "Text entity extraction is not speech recognition on raw audio.",
+      "Security findings are not transcripts of spoken content.",
+      "OCR processes documents rather than call audio.",
+      "Transcribe supplies the spoken text; validation checks its suitability before inference."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "Transcribe language identification",
+        "url": "https://docs.aws.amazon.com/transcribe/latest/dg/lang-id.html"
+      }
+    ]
+  },
+  "aipc01-0883": {
+    "takeaway": "Quality evaluation must be connected to an enforcement action. Configure failure before target loading for mandatory quality failures.",
+    "options": [
+      "More evaluation coverage does not change the publication action.",
+      "An alert after publication misses the required prevention boundary.",
+      "Glue exposes a fail-without-loading-target-data action for this gate.",
+      "Model inference cannot substitute for preventing publication of invalid inputs."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "Glue ETL quality outputs and actions",
+        "url": "https://docs.aws.amazon.com/glue/latest/dg/tutorial-data-quality.html"
+      }
+    ]
+  },
+  "aipc01-0884": {
+    "takeaway": "BDA provides multimodal extraction through one interface; document blueprints define application-specific invoice fields.",
+    "options": [
+      "Projects organize processing configuration for the supported modalities.",
+      "Sensitive-data identifiers do not supply this combined business extraction interface.",
+      "Treating binary files as unlabeled text discards their modality and violates the text-input assumption.",
+      "A document blueprint specifies the invoice information to extract.",
+      "A tabular quality report does not extract meaning from the source images and clips."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "Bedrock Data Automation overview",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/bda.html"
+      },
+      {
+        "label": "BDA custom output and blueprints",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/bda-custom-output-idp.html"
+      }
+    ]
+  },
+  "aipc01-0885": {
+    "takeaway": "Validate and serialize the input for the selected inference contract. Valid business data alone does not establish a valid model request.",
+    "options": [
+      "The adapter must satisfy API fields and supported model content requirements.",
+      "Sampling controls affect generation, not request-body compatibility.",
+      "Retrieval ranking cannot repair the malformed model request.",
+      "A deterministic contract mismatch will recur without changing the payload."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "InvokeModel native request body contract",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_InvokeModel.html"
+      },
+      {
+        "label": "Converse request contract",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html"
+      }
+    ]
+  },
+  "aipc01-0886": {
+    "takeaway": "Macie supports S3 sensitive-data discovery. Comprehend PII detection can locate text spans for a separate derivative-redaction workflow.",
+    "options": [
+      "A document-level presence result does not locate the spans that the derivative-redaction step needs.",
+      "Macie provides discovery findings on stored S3 data.",
+      "A discovery finding reports detected sensitive data; it is not a sanitized copy of the source document.",
+      "Supported text PII detection supplies entity locations to the redaction step.",
+      "Discovery findings do not establish that a separate extraction service produced a redacted derivative."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "Macie discovery and findings",
+        "url": "https://docs.aws.amazon.com/macie/latest/user/what-is-macie.html"
+      },
+      {
+        "label": "Comprehend entity scores and offsets",
+        "url": "https://docs.aws.amazon.com/comprehend/latest/dg/how-pii.html"
+      }
+    ]
+  },
+  "aipc01-0887": {
+    "takeaway": "Comprehend entity detection supplies linguistic entity types and confidence scores for text enrichment.",
+    "options": [
+      "Key phrases do not supply the distinct person, organization, date, and location types required here.",
+      "Language identification does not annotate the requested entity types in the report.",
+      "The requested organizations, dates, and locations are general entity annotations and are not equivalent to a PII-only result set.",
+      "Entity detection returns the structured annotations the enrichment step needs."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "Comprehend entity extraction",
+        "url": "https://docs.aws.amazon.com/comprehend/latest/dg/how-entities.html"
+      }
+    ]
+  },
+  "aipc01-0888": {
+    "takeaway": "Bind derived records to stable source identity and processing versions so that reviewers can reconstruct which evidence and transformations produced a value.",
+    "options": [
+      "A generated summary is a derivative and cannot replace its original evidence.",
+      "Stable source identity distinguishes document versions even when object names are reused.",
+      "Completion time does not identify the input bytes or processing configuration.",
+      "Completion ordering does not establish original evidence identity.",
+      "Configuration versions explain why the same source can produce different derived values."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "BDA asynchronous API workflow",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/bda-using-api.html"
+      },
+      {
+        "label": "AIP-C01 Domain 1 tasks and skills",
+        "url": "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain1.html"
+      }
+    ]
+  },
+  "aipc01-0889": {
+    "takeaway": "Gate high-impact fields independently and route uncertain values for review; a document average can hide an unsafe payment field.",
+    "options": [
+      "Many high-confidence description tokens can mask one uncertain financial field.",
+      "Field-level thresholds align review with the cost of a specific error.",
+      "Rejecting harmless description uncertainty consumes capacity without prioritizing payment risk.",
+      "A plausible guess lacks the required verification for an uncertain payment destination."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "Textract input quality and confidence",
+        "url": "https://docs.aws.amazon.com/textract/latest/dg/textract-best-practices.html"
+      }
+    ]
+  },
+  "aipc01-0890": {
+    "takeaway": "Use row-level outcomes for supported checks and retain failed records with reasons in quarantine for controlled correction and replay.",
+    "options": [
+      "Row outcomes can identify specific failures for rules that support this granularity.",
+      "Publishing invalid records violates the preparation boundary.",
+      "Quarantine preserves the evidence and failure information needed for correction.",
+      "Deletion prevents the required correction and replay path.",
+      "An aggregate score does not identify specific failing rows."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "Glue ETL quality outputs and actions",
+        "url": "https://docs.aws.amazon.com/glue/latest/dg/tutorial-data-quality.html"
+      },
+      {
+        "label": "DQDL semantics and row evaluation",
+        "url": "https://docs.aws.amazon.com/glue/latest/dg/dqdl.html"
+      }
+    ]
+  },
+  "aipc01-0891": {
+    "takeaway": "A percentage of passing rules does not encode business criticality. A mandatory eligibility constraint must independently gate release.",
+    "options": [
+      "The aggregate target can pass while the required rights constraint fails.",
+      "Changing the denominator does not establish rights for the affected data.",
+      "An aggregate score does not identify eligible rights-cleared records; guessed row removal does not satisfy the mandatory condition.",
+      "A mandatory rule directly enforces the stated release condition."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "AWS Glue Data Quality",
+        "url": "https://docs.aws.amazon.com/glue/latest/dg/glue-data-quality.html"
+      }
+    ]
+  },
+  "aipc01-0892": {
+    "takeaway": "Streaming language identification cannot be combined with built-in redaction. Use a compatible separate privacy stage and enforce its completion before summarization.",
+    "options": [
+      "The API requires one language selection mode; combining these modes is invalid.",
+      "Separating the incompatible features preserves the language-identification requirement.",
+      "Streaming multi-language identification requires language options.",
+      "A privacy boundary is effective only if downstream access waits for it to pass.",
+      "Backoff does not resolve a documented feature incompatibility."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "StartStreamTranscription API",
+        "url": "https://docs.aws.amazon.com/transcribe/latest/APIReference/API_streaming_StartStreamTranscription.html"
+      },
+      {
+        "label": "Transcribe streaming language identification",
+        "url": "https://docs.aws.amazon.com/transcribe/latest/dg/lang-id-stream.html"
+      }
+    ]
+  },
+  "aipc01-0893": {
+    "takeaway": "Entity offsets refer to the analyzed document. Mask that exact text or redetect after a text-changing transform, preserving the processing lineage.",
+    "options": [
+      "Keeping analysis and masking on the same text version prevents offset drift and supports traceability.",
+      "Normalization changes character positions; the earlier detections must remain bound to the analyzed text version.",
+      "Splitting rewritten text cannot reconstruct how arbitrary edits changed the original character spans.",
+      "The summary has different text positions, and masking it does not sanitize the rewritten transcript."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "Comprehend entity scores and offsets",
+        "url": "https://docs.aws.amazon.com/comprehend/latest/dg/how-pii.html"
+      }
+    ]
+  },
+  "aipc01-0894": {
+    "takeaway": "Language support is feature-specific. Route supported PII languages explicitly and hold other text until a validated privacy path completes.",
+    "options": [
+      "Different operations can have different language coverage.",
+      "Successful general entity extraction is not a PII assessment.",
+      "Explicit routing ties privacy processing to its documented input support.",
+      "General entity confidence does not establish PII coverage for that language.",
+      "Holding unsupported inputs prevents an unassessed privacy path from silently passing."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "Comprehend PII languages and operations",
+        "url": "https://docs.aws.amazon.com/comprehend/latest/dg/pii.html"
+      },
+      {
+        "label": "Comprehend entity extraction",
+        "url": "https://docs.aws.amazon.com/comprehend/latest/dg/how-entities.html"
+      }
+    ]
+  },
+  "aipc01-0895": {
+    "takeaway": "Non-null and nonblank are different requirements. Normalize whitespace and explicitly validate semantic blanks without corrupting valid string identifiers.",
+    "options": [
+      "CSV string blanks can be empty strings, so non-null alone is insufficient.",
+      "Valid identifiers may contain letters or significant leading zeros; casting changes their meaning.",
+      "The extra predicate checks the missing business constraint while retaining string IDs.",
+      "A stricter score cannot detect values that the existing predicates accept."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "IsComplete and CSV null behavior",
+        "url": "https://docs.aws.amazon.com/glue/latest/dg/dqdl-rule-types-IsComplete.html"
+      }
+    ]
+  },
+  "aipc01-0896": {
+    "takeaway": "Batch-level and row-level checks answer different questions. Individually valid rows can belong to an incomplete delivery that must remain blocked.",
+    "options": [
+      "A row can be valid even when required rows are missing from the batch.",
+      "The pass rate concerns delivered rows, not whether all expected rows arrived.",
+      "A dataset rule need not identify one bad record to be meaningful.",
+      "Holding the batch enforces the supplier-delivery requirement.",
+      "Removing batch rules would eliminate coverage of missing-delivery failures."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "Glue ETL quality outputs and actions",
+        "url": "https://docs.aws.amazon.com/glue/latest/dg/tutorial-data-quality.html"
+      }
+    ]
+  },
+  "aipc01-0897": {
+    "takeaway": "Compare source-verified field accuracy and operational review needs under the same input contract. A valid schema or managed interface does not establish semantic correctness.",
+    "options": [
+      "Latency matters, but the known critical-field disagreement needs evaluation before the pipeline choice and publication policy are defensible.",
+      "Representative, field-level evidence captures the actual disagreement and review cost.",
+      "A document-wide confidence average can hide the specific total-amount errors that matter to this business schema.",
+      "A numeric value can satisfy the schema while being the wrong amount."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "Bedrock Data Automation overview",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/bda.html"
+      },
+      {
+        "label": "Textract input quality and confidence",
+        "url": "https://docs.aws.amazon.com/textract/latest/dg/textract-best-practices.html"
+      },
+      {
+        "label": "BDA custom output and blueprints",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/bda-custom-output-idp.html"
+      }
+    ]
+  },
+  "aipc01-0898": {
+    "takeaway": "An asynchronous invocation identifier tracks submitted work. Publish only validated completed output, and retain source and processing-version linkage across replay attempts.",
+    "options": [
+      "Submission acceptance does not establish completion or a usable extraction.",
+      "Deleting tracking removes the evidence needed to reconcile asynchronous results.",
+      "A terminal-success check plus output validation prevents the demonstrated empty-result publication.",
+      "Source and configuration lineage distinguish the original attempt from a revised replay.",
+      "A timeout does not establish that an empty extraction accurately represents the document."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "BDA asynchronous API workflow",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/bda-using-api.html"
+      }
+    ]
+  },
+  "aipc01-0899": {
+    "takeaway": "Bedrock evaluation covers model or RAG assessment; AgentCore online evaluation assesses sampled live agent interactions.",
+    "options": [
+      "Matches the two assessment targets.",
+      "Reverses the relevant capabilities.",
+      "Fluency does not establish tool correctness.",
+      "One Evaluate request does not create a continuous monitor."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "Amazon Bedrock evaluations",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/evaluation.html"
+      },
+      {
+        "label": "AgentCore evaluation types",
+        "url": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/evaluations-types.html"
+      }
+    ]
+  },
+  "aipc01-0900": {
+    "takeaway": "Tool parameter accuracy assesses whether argument values follow the preceding context and tool schema.",
+    "options": [
+      "Measures session goals rather than isolating arguments.",
+      "Targets tool choice rather than argument provenance.",
+      "Directly targets the invented date.",
+      "Conciseness measures response brevity; it does not assess whether tool arguments are supported by the user or tool context."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "Built-in evaluator prompt templates",
+        "url": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/prompt-templates-builtin.html"
+      }
+    ]
+  },
+  "aipc01-0901": {
+    "takeaway": "Link feedback to the affected response and configuration so review can lead to testable improvements.",
+    "options": [
+      "Totals hide the examples and configuration needed for diagnosis.",
+      "Preserves the evidence needed to investigate patterns.",
+      "Ratings need interpretation and do not require automatic retraining.",
+      "Traffic volume does not measure user satisfaction."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "Collect and monitor user feedback",
+        "url": "https://docs.aws.amazon.com/wellarchitected/latest/generative-ai-lens/genops01-bp02.html"
+      }
+    ]
+  },
+  "aipc01-0902": {
+    "takeaway": "A span represents an operation; a trace groups an interaction and a session groups conversation activity.",
+    "options": [
+      "A session can contain multiple interactions.",
+      "A configuration selects evaluation behavior.",
+      "A deployment can serve many sessions.",
+      "A tool operation is represented by a span."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "AgentCore Evaluate API",
+        "url": "https://docs.aws.amazon.com/cli/latest/reference/bedrock-agentcore/evaluate.html"
+      }
+    ]
+  },
+  "aipc01-0903": {
+    "takeaway": "Provide session spans as input and use spanIds to select tool targets. IDs alone do not retrieve the telemetry.",
+    "options": [
+      "Supplies the actual evaluation input.",
+      "Selects the required tool operations.",
+      "The low-level request requires spans rather than fetching by ID.",
+      "evaluationTarget is a union; select a single target key.",
+      "A continuous configuration is unnecessary for this CI assessment."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "AgentCore Evaluate API",
+        "url": "https://docs.aws.amazon.com/cli/latest/reference/bedrock-agentcore/evaluate.html"
+      },
+      {
+        "label": "Getting started with on-demand evaluation",
+        "url": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/getting-started-on-demand.html"
+      }
+    ]
+  },
+  "aipc01-0904": {
+    "takeaway": "CreateOnlineEvaluationConfig supports enableOnCreate=false to create the configuration with execution disabled.",
+    "options": [
+      "Enabling execution contradicts the required paused state.",
+      "Creates the configuration without processing traces.",
+      "Evaluate is not the configuration lifecycle API.",
+      "Filtering known sessions does not establish a paused execution state."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "Create online evaluation",
+        "url": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/create-online-evaluations.html"
+      }
+    ]
+  },
+  "aipc01-0905": {
+    "takeaway": "Calibrate a versioned judge against expert judgments; repeated or stricter scoring alone does not correct a biased rubric.",
+    "options": [
+      "Changes a threshold without fixing the length preference.",
+      "Checks agreement with specialists across the dialect and length slices showing bias.",
+      "Makes calibration and subsequent comparisons attributable.",
+      "Removes the independent reference needed to detect the bias.",
+      "Repeated agreement can reproduce the same systematic error."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "Quality and reliability evaluation",
+        "url": "https://docs.aws.amazon.com/prescriptive-guidance/latest/gen-ai-lifecycle-operational-excellence/dev-experimenting-quality.html"
+      },
+      {
+        "label": "AIP-C01 responsible AI task",
+        "url": "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain3.html"
+      }
+    ]
+  },
+  "aipc01-0906": {
+    "takeaway": "Critical slices need explicit quality thresholds and sufficient evaluation coverage alongside aggregate results.",
+    "options": [
+      "The average hides a material regression.",
+      "Other capabilities still require evaluation.",
+      "Makes the critical regression visible and actionable.",
+      "Removing the difficult slice conceals the failure."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "Periodic functional evaluation",
+        "url": "https://docs.aws.amazon.com/wellarchitected/latest/generative-ai-lens/genops01-bp01.html"
+      }
+    ]
+  },
+  "aipc01-0907": {
+    "takeaway": "An untouched holdout limits selection leakage, and a common recorded protocol makes the final comparison interpretable.",
+    "options": [
+      "Repeated tuning on the final benchmark makes selection optimistic.",
+      "Provides cases not used to select the prompt.",
+      "Controls the comparison conditions.",
+      "Different rubrics confound the scores.",
+      "Asymmetric generation selection biases the comparison."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "Evaluation experimentation loops",
+        "url": "https://docs.aws.amazon.com/prescriptive-guidance/latest/gen-ai-lifecycle-operational-excellence/dev-experimenting-experimentation-loops.html"
+      },
+      {
+        "label": "Periodic functional evaluation",
+        "url": "https://docs.aws.amazon.com/wellarchitected/latest/generative-ai-lens/genops01-bp01.html"
+      }
+    ]
+  },
+  "aipc01-0908": {
+    "takeaway": "Ground truth success assertions let a session evaluation check the required outcomes and behavior.",
+    "options": [
+      "Good prose does not establish approval.",
+      "A matching completion message does not establish that the required approval occurred.",
+      "Tool count cannot establish the required approval.",
+      "Directly encodes the missing approval requirement."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "Ground truth evaluations",
+        "url": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/ground-truth-evaluations.html"
+      },
+      {
+        "label": "AIP-C01 responsible AI task",
+        "url": "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain3.html"
+      }
+    ]
+  },
+  "aipc01-0909": {
+    "takeaway": "Use query-to-evidence labels and retrieval measurements to assess retrieval separately from answer generation.",
+    "options": [
+      "Directly tests retrieved evidence and retrieval performance.",
+      "Changing generators introduces another cause of score differences.",
+      "Fluency can remain high with irrelevant evidence.",
+      "Index size does not measure relevant-evidence retrieval."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "Amazon Bedrock evaluations",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/evaluation.html"
+      },
+      {
+        "label": "Periodic functional evaluation",
+        "url": "https://docs.aws.amazon.com/wellarchitected/latest/generative-ai-lens/genops01-bp01.html"
+      }
+    ]
+  },
+  "aipc01-0910": {
+    "takeaway": "Report verified outcomes and the full cost of producing them; activity alone does not establish value.",
+    "options": [
+      "Invocation volume is activity without success or cost context.",
+      "Shows whether the workflow achieves the desired outcome.",
+      "Relates spending to successful work and includes failure overhead.",
+      "Collector utilization does not establish customer resolution.",
+      "Cost per invocation can fall while more attempts fail to resolve the customer issue."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "Agent workflow KPIs",
+        "url": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops05-bp04.html"
+      }
+    ]
+  },
+  "aipc01-0911": {
+    "takeaway": "Wait for required telemetry within a bound and distinguish unscorable input from an observed behavioral failure.",
+    "options": [
+      "Addresses the demonstrated ingestion delay.",
+      "Prevents missing evidence from being mislabeled as agent behavior.",
+      "Conflates telemetry availability with task performance.",
+      "A matching answer cannot reconstruct the missing tool actions.",
+      "Mixing sessions fabricates a trajectory."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "Getting started with on-demand evaluation",
+        "url": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/getting-started-on-demand.html"
+      },
+      {
+        "label": "AgentCore Evaluate API",
+        "url": "https://docs.aws.amazon.com/cli/latest/reference/bedrock-agentcore/evaluate.html"
+      }
+    ]
+  },
+  "aipc01-0912": {
+    "takeaway": "Correct local tool behavior does not establish that the full session achieved its required outcome.",
+    "options": [
+      "The requested purchase remains incomplete.",
+      "Arguments can be correct while the workflow is incomplete.",
+      "Uses an outcome-level check for the unmet goal.",
+      "A composite of local signals can still miss the absent purchase."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "Built-in evaluator prompt templates",
+        "url": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/prompt-templates-builtin.html"
+      },
+      {
+        "label": "Ground truth evaluations",
+        "url": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/ground-truth-evaluations.html"
+      }
+    ]
+  },
+  "aipc01-0913": {
+    "takeaway": "Use comparable within-slice evidence and validate the judge across languages before interpreting fairness differences.",
+    "options": [
+      "Separates prompt performance from language-mix differences.",
+      "Tests whether the evaluator itself mismeasures a language group.",
+      "An aggregate can conceal subgroup harm.",
+      "Mismatched populations confound the comparison.",
+      "Removing analysis dimensions can hide disparities."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "Periodic functional evaluation",
+        "url": "https://docs.aws.amazon.com/wellarchitected/latest/generative-ai-lens/genops01-bp01.html"
+      },
+      {
+        "label": "Quality and reliability evaluation",
+        "url": "https://docs.aws.amazon.com/prescriptive-guidance/latest/gen-ai-lifecycle-operational-excellence/dev-experimenting-quality.html"
+      },
+      {
+        "label": "AIP-C01 responsible AI task",
+        "url": "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain3.html"
+      }
+    ]
+  },
+  "aipc01-0914": {
+    "takeaway": "Combine semantic output checks with deterministic workflow invariants and controlled rollout criteria.",
+    "options": [
+      "Accepts valid wording while checking the consequential side effect.",
+      "Text matching does not directly test duplicate actions.",
+      "Similar text can accompany duplicate bookings.",
+      "Health checks do not validate business behavior, and promotion lacks a quality gate."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "Multi-layered agent testing",
+        "url": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops06-bp01.html"
+      },
+      {
+        "label": "Risk-tiered validation workflows",
+        "url": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops06-bp03.html"
+      }
+    ]
+  },
+  "aipc01-0915": {
+    "takeaway": "Under the stated one-attempt design, divide total model spend by verified resolutions and account for remaining human work.",
+    "options": [
+      "Ignores the lower resolution rate.",
+      "0.08/0.80=0.10 and 0.06/0.50=0.12; A also has fewer unresolved cases.",
+      "Cost per failure is not the requested outcome metric.",
+      "A quality floor does not establish equal cost or outcomes."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "Agent workflow KPIs",
+        "url": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops05-bp04.html"
+      },
+      {
+        "label": "Evaluate ongoing agent performance",
+        "url": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops06-bp02.html"
+      }
+    ]
+  },
+  "aipc01-0916": {
+    "takeaway": "Batch evaluation can discover existing sessions from CloudWatch Logs with session or time-range filters, without invoking the agent.",
+    "options": [
+      "Online evaluation is continuous live monitoring, not this historical discovery job.",
+      "Evaluate consumes supplied session spans.",
+      "Reinvocation violates the requirement to score existing sessions only.",
+      "Matches managed session discovery for historical records."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "Start batch evaluation",
+        "url": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/batch-evaluations-start.html"
+      },
+      {
+        "label": "Batch evaluation results",
+        "url": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/batch-evaluations-results.html"
+      }
+    ]
+  },
+  "aipc01-0917": {
+    "takeaway": "Job success does not guarantee every evaluator scored every session; required evaluation coverage must be checked explicitly.",
+    "options": [
+      "Overall completion can coexist with per-evaluator failures.",
+      "Coverage fraction is not a statistical confidence score or policy compliance.",
+      "Addresses the missing required evidence.",
+      "Malformed telemetry is not evidence of 100 behavioral mistakes."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "Batch evaluation results",
+        "url": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/batch-evaluations-results.html"
+      }
+    ]
+  },
+  "aipc01-0918": {
+    "takeaway": "Minimize captured sensitive content while preserving evaluation evidence, and protect retained traces and results throughout their lifecycle.",
+    "options": [
+      "Preserves the stated evaluation needs while removing unnecessary content.",
+      "Limits who can access the retained data and for how long.",
+      "Encryption does not eliminate unnecessary collection or broad-access risk.",
+      "Unselective removal can destroy evidence needed by the evaluator.",
+      "Renaming objects leaves sensitive content exposed."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "AgentCore data protection",
+        "url": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/data-protection.html"
+      },
+      {
+        "label": "Multi-layered agent testing",
+        "url": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops06-bp01.html"
+      }
+    ]
+  },
+  "aipc01-0919": {
+    "takeaway": "Use SageMaker AI when deployment requires control over the inference container and serving resources beyond the available Bedrock options.",
+    "options": [
+      "The stem states that the required runtime is unsupported by the available Bedrock options.",
+      "EC2 can run containers but requires the team to implement the model-serving platform it wants managed.",
+      "Correct. Managed hosting supports control of the model-serving container and endpoint resources.",
+      "ECS can host containers but requires more serving-platform operation than the requested managed model-hosting option."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "AWS Bedrock or SageMaker AI decision guide",
+        "url": "https://docs.aws.amazon.com/decision-guides/latest/decision-guides/bedrock-or-sagemaker.html"
+      }
+    ]
+  },
+  "aipc01-0920": {
+    "takeaway": "A Model Group organizes related model versions; each version can carry metadata and a distinct approval state.",
+    "options": [
+      "The execution graph describes workflow steps; it does not replace the requested version and approval catalog.",
+      "Correct. The group collects related versions and their lifecycle metadata.",
+      "A latest-only governance record does not provide three separately managed model versions and approval states.",
+      "Experiments records runs and metrics; Model Registry is the deployment-oriented version and approval catalog."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "SageMaker Model Registry",
+        "url": "https://docs.aws.amazon.com/sagemaker/latest/dg/model-registry.html"
+      }
+    ]
+  },
+  "aipc01-0921": {
+    "takeaway": "Use a Model Card to communicate intended use, risk, limitations, and evaluation evidence throughout a model lifecycle.",
+    "options": [
+      "Run comparisons support experiment analysis but do not provide the requested curated governance record.",
+      "Lineage describes provenance relationships rather than the full intended-use, risk, and evaluation narrative.",
+      "Approval records a lifecycle decision but does not contain the requested intended-use and risk documentation.",
+      "Correct. Model Cards document intended use, risks, and evaluation information."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "SageMaker Model Cards",
+        "url": "https://docs.aws.amazon.com/sagemaker/latest/dg/model-cards.html"
+      }
+    ]
+  },
+  "aipc01-0922": {
+    "takeaway": "Choose a managed Bedrock API when the supported model meets requirements and direct control of the serving runtime is unnecessary.",
+    "options": [
+      "Self-managed hosting increases infrastructure responsibility.",
+      "Correct. Managed model APIs fit the stated operational preference.",
+      "Custom hosting introduces work without a stated runtime requirement.",
+      "Registry approval does not execute inference."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "AWS Bedrock or SageMaker AI decision guide",
+        "url": "https://docs.aws.amazon.com/decision-guides/latest/decision-guides/bedrock-or-sagemaker.html"
+      }
+    ]
+  },
+  "aipc01-0923": {
+    "takeaway": "Approval is a lifecycle signal. Deployment requires a configured workflow or explicit deployment action; some SageMaker project templates provide that integration.",
+    "options": [
+      "Rejection alone is not an endpoint shutdown or update operation.",
+      "Automatic deployment depends on configured integration, absent here.",
+      "Matching names does not establish a deployment workflow.",
+      "Correct. Approval metadata alone does not provision or update an endpoint in this setup."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "Update model approval status",
+        "url": "https://docs.aws.amazon.com/sagemaker/latest/dg/model-registry-approve.html"
+      },
+      {
+        "label": "Deploy a registered model",
+        "url": "https://docs.aws.amazon.com/sagemaker/latest/dg/model-registry-deploy.html"
+      }
+    ]
+  },
+  "aipc01-0924": {
+    "takeaway": "A condition step can inspect evaluation results and select the registration branch. Make evaluation a dependency of the gate.",
+    "options": [
+      "This permits failed versions to pass the stated registration boundary.",
+      "Documentation after deployment does not gate an earlier pipeline step.",
+      "Correct. The dependency and branch implement an explicit quality gate.",
+      "Without the dependency and conditional branch, registration can occur before the result is known."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "Define a pipeline",
+        "url": "https://docs.aws.amazon.com/sagemaker/latest/dg/define-pipeline.html"
+      }
+    ]
+  },
+  "aipc01-0925": {
+    "takeaway": "Combine technical lineage with a Model Card: provenance and intended-use documentation answer different audit questions.",
+    "options": [
+      "A reused name alone loses the link to the release evidence.",
+      "Correct. A model card supplies the governance interpretation.",
+      "Instance count does not identify source data or intended use.",
+      "A health check proves neither provenance nor approved uses.",
+      "Correct. Lineage supplies technical provenance."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "Pipeline lineage",
+        "url": "https://docs.aws.amazon.com/sagemaker/latest/dg/pipelines-lineage-tracking.html"
+      },
+      {
+        "label": "SageMaker Model Cards",
+        "url": "https://docs.aws.amazon.com/sagemaker/latest/dg/model-cards.html"
+      }
+    ]
+  },
+  "aipc01-0926": {
+    "takeaway": "Operational drift signals and semantic quality evidence are complementary. Arbitrary generated text needs task-appropriate evaluation rather than assuming tabular monitors measure factuality.",
+    "options": [
+      "A nontoxic answer can still contain unsupported factual claims.",
+      "Length monitoring can detect shifts but cannot establish whether claims are supported by evidence.",
+      "Operational baselines are useful but cannot establish the semantic correctness of advice.",
+      "Correct. Text semantics require a suitable evaluation procedure.",
+      "Correct. Grounding must be measured with an appropriate quality evaluation."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "Model Monitor limitations",
+        "url": "https://docs.aws.amazon.com/sagemaker/latest/dg/model-monitor.html"
+      },
+      {
+        "label": "Foundation model evaluation options",
+        "url": "https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-foundation-model-evaluate-get-started.html"
+      }
+    ]
+  },
+  "aipc01-0927": {
+    "takeaway": "Shadow testing compares a candidate with live request copies while production remains the source of caller responses.",
+    "options": [
+      "Correct. The candidate receives copied requests while the production variant supplies caller responses.",
+      "A canary exposes some callers to candidate responses.",
+      "A linear rollout also changes which model answers callers.",
+      "This exposes all callers immediately and lacks the requested parallel comparison."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "Shadow tests and exclusions",
+        "url": "https://docs.aws.amazon.com/sagemaker/latest/dg/shadow-tests.html"
+      }
+    ]
+  },
+  "aipc01-0928": {
+    "takeaway": "Check each feature separately: asynchronous inference is within deployment-guardrail scope but is excluded from native shadow tests.",
+    "options": [
+      "A name change cannot remove an endpoint-type exclusion.",
+      "Correct. Shadow-testing support differs from deployment-guardrail support.",
+      "The features have separate compatibility rules.",
+      "Correct. Asynchronous inference is explicitly within deployment-guardrail scope.",
+      "The current guardrail documentation explicitly includes it."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "Deployment guardrails",
+        "url": "https://docs.aws.amazon.com/sagemaker/latest/dg/deployment-guardrails.html"
+      },
+      {
+        "label": "Shadow tests and exclusions",
+        "url": "https://docs.aws.amazon.com/sagemaker/latest/dg/shadow-tests.html"
+      }
+    ]
+  },
+  "aipc01-0929": {
+    "takeaway": "Auto-rollback needs configured CloudWatch alarms and permission to inspect them. Canary traffic shifting alone does not define a latency failure condition.",
+    "options": [
+      "Data capture and longer observation do not supply the alarm condition required for auto-rollback.",
+      "Creating alarms alone does not connect them to this deployment auto-rollback mechanism.",
+      "Correct. Auto-rollback requires alarm configuration and the documented permission.",
+      "The documented cloudwatch:DescribeAlarms permission is required to inspect the specified alarms."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "Auto-rollback configuration",
+        "url": "https://docs.aws.amazon.com/sagemaker/latest/dg/deployment-guardrails-configuration.html"
+      }
+    ]
+  },
+  "aipc01-0930": {
+    "takeaway": "Rollback restores a compatible serving bundle, including tokenization and runtime behavior. Preserve stable release references and test the complete previous bundle.",
+    "options": [
+      "Correct. This tests the actual rollback target rather than isolated weights.",
+      "Parameter count does not specify vocabulary or runtime compatibility.",
+      "Correct. The manifest identifies the complete compatible serving bundle.",
+      "This makes the release reference ambiguous and can destroy rollback content.",
+      "The removed configuration may be required to load and interpret those weights."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "AWS example: package model and tokenizer for inference",
+        "url": "https://aws.amazon.com/blogs/machine-learning/exploring-summarization-options-for-healthcare-with-amazon-sagemaker/"
+      },
+      {
+        "label": "UpdateEndpoint API",
+        "url": "https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_UpdateEndpoint.html"
+      }
+    ]
+  },
+  "aipc01-0931": {
+    "takeaway": "Check feature exclusions before selecting a rollout. Marketplace containers do not support the requested deployment guardrails even when approval and capacity checks pass.",
+    "options": [
+      "Matching names and alarms are necessary in supported cases, but cannot override this exclusion.",
+      "Entitlement permits use of the product but does not remove the Marketplace-container guardrail exclusion.",
+      "Correct. Approval and capacity do not remove the Marketplace-container exclusion.",
+      "The documented Marketplace-container exclusion also applies to rolling deployment guardrails."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "Deployment guardrail exclusions",
+        "url": "https://docs.aws.amazon.com/sagemaker/latest/dg/deployment-guardrails-exclusions.html"
+      }
+    ]
+  },
+  "aipc01-0932": {
+    "takeaway": "A registry approval is distinct from authorization to fetch serving artifacts and images or use their encryption key. Validate the entire cross-account access path.",
+    "options": [
+      "Owning copied documentation does not grant source-resource access.",
+      "Correct. Package visibility does not grant artifact or image access.",
+      "Package visibility is insufficient for separate S3, ECR, and encryption-key access.",
+      "Correct. Encrypted artifact access also depends on key authorization.",
+      "SageMaker API permissions alone cannot supply the missing cross-account artifact and key access."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "Deploy a registered model",
+        "url": "https://docs.aws.amazon.com/sagemaker/latest/dg/model-registry-deploy.html"
+      },
+      {
+        "label": "SageMaker service authorization",
+        "url": "https://docs.aws.amazon.com/service-authorization/latest/reference/list_sagemaker.html"
+      }
+    ]
+  },
+  "aipc01-0933": {
+    "takeaway": "For compatible large endpoints, rolling deployments can reduce additional fleet capacity requirements while retaining incremental rollout and alarm-based protection.",
+    "options": [
+      "Shadow testing compares copied requests; it is not an incremental promotion mechanism.",
+      "Provisioned fleet capacity is required even when little traffic reaches it.",
+      "A full blue/green deployment provisions the new fleet; low initial traffic does not eliminate that requirement.",
+      "Correct. Rolling deployment reduces extra capacity requirements by updating in batches."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "Rolling deployments",
+        "url": "https://docs.aws.amazon.com/sagemaker/latest/dg/deployment-guardrails-rolling.html"
+      },
+      {
+        "label": "Blue/green deployments",
+        "url": "https://docs.aws.amazon.com/sagemaker/latest/dg/deployment-guardrails-blue-green.html"
+      }
+    ]
+  },
+  "aipc01-0934": {
+    "takeaway": "Promotion must satisfy both operational and semantic quality gates. A successful shadow test cannot override a failed use-case-specific content evaluation.",
+    "options": [
+      "Correct. The release decision and fix need traceable quality evidence.",
+      "Correct. Operational success does not satisfy the failed content requirement.",
+      "A longer operational observation period does not resolve semantic failures.",
+      "Shadow testing does not establish semantic correctness from operational metrics.",
+      "The explicitly failed regulated category must gate promotion before users receive candidate output."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "Shadow tests and exclusions",
+        "url": "https://docs.aws.amazon.com/sagemaker/latest/dg/shadow-tests.html"
+      },
+      {
+        "label": "Foundation model evaluation options",
+        "url": "https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-foundation-model-evaluate-get-started.html"
+      }
+    ]
+  },
+  "aipc01-0935": {
+    "takeaway": "Artifact retirement must consider active deployments and retained rollback bundles. A non-serving version can still be needed for recovery.",
+    "options": [
+      "Metadata and reports do not preserve the serving files needed within the rollback window.",
+      "The artifact retention rule can break the required 30-day recovery guarantee.",
+      "Correct. The retained release is a real dependency even when not currently serving.",
+      "The new tokenizer can be incompatible with the retained model."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "Delete endpoints and resources",
+        "url": "https://docs.aws.amazon.com/sagemaker/latest/dg/realtime-endpoints-delete-resources.html"
+      },
+      {
+        "label": "AWS example: package model and tokenizer for inference",
+        "url": "https://aws.amazon.com/blogs/machine-learning/exploring-summarization-options-for-healthcare-with-amazon-sagemaker/"
+      }
+    ]
+  },
+  "aipc01-0936": {
+    "takeaway": "Retirement has separate serving, metadata, artifact, and identity actions. Verify resource deletion and apply retention and dependency checks to customer-owned assets.",
+    "options": [
+      "DeleteModel removes the SageMaker model entry only.",
+      "Correct. Metadata deletion is not artifact or identity cleanup.",
+      "The API deletes only the configuration, not the endpoint.",
+      "Correct. Removing catalog metadata alone does not stop endpoint capacity.",
+      "AWS warns against deleting a configuration while its endpoint is live or being updated; deletion is not a shutdown signal."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "Delete endpoints and resources",
+        "url": "https://docs.aws.amazon.com/sagemaker/latest/dg/realtime-endpoints-delete-resources.html"
+      },
+      {
+        "label": "DeleteEndpointConfig API",
+        "url": "https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DeleteEndpointConfig.html"
+      }
+    ]
+  },
+  "aipc01-0937": {
+    "takeaway": "Current availability matters when choosing monitoring. New customers need an alternative to Model Monitor and explicit task-specific FM quality measurements.",
+    "options": [
+      "Approval does not observe subsequent production quality changes.",
+      "Adding a factuality evaluator addresses quality measurement, but Model Monitor is closed to new customers.",
+      "Correct. Model Monitor is closed to new customers, and semantic quality needs task-specific evaluation.",
+      "CloudWatch can monitor operations, but successful invocations cannot establish semantic quality."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "Model Monitor availability change",
+        "url": "https://docs.aws.amazon.com/sagemaker/latest/dg/model-monitor-availability-change.html"
+      },
+      {
+        "label": "Foundation model evaluation options",
+        "url": "https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-foundation-model-evaluate-get-started.html"
+      }
+    ]
+  },
+  "aipc01-0938": {
+    "takeaway": "Bind a release to its exact package version and verify the endpoint transition before cleanup. Preserve configurations and assets required by active operations or rollback.",
+    "options": [
+      "Correct. A stable version reference prevents a later registration from changing the deployment target.",
+      "AWS instructs users not to delete configurations in use during endpoint operations.",
+      "This can deploy a different candidate from the approved release.",
+      "Correct. An accepted update request does not establish completion or safe deletion.",
+      "Creating the model object precedes endpoint deployment and does not establish the update outcome."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "SageMaker Model Registry",
+        "url": "https://docs.aws.amazon.com/sagemaker/latest/dg/model-registry.html"
+      },
+      {
+        "label": "UpdateEndpoint API",
+        "url": "https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_UpdateEndpoint.html"
+      },
+      {
+        "label": "DeleteEndpointConfig API",
+        "url": "https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DeleteEndpointConfig.html"
+      }
+    ]
+  },
+  "aipc01-0939": {
+    "takeaway": "Verify what an automated review actually inspected before interpreting its findings.",
+    "options": [
+      "The documented default prioritizes active-file changes; an explicit broader request and review of exclusions are needed.",
+      "Q applies filtering and does not establish complete coverage of all files or languages by default.",
+      "A local IDE review does not discover and audit every deployed Lambda revision automatically.",
+      "The active supported source changes are relevant review input, not just the dependency manifests."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/code-reviews.html"
+      }
+    ]
+  },
+  "aipc01-0940": {
+    "takeaway": "Generated tests need meaningful assertions over the real behavior they claim to verify.",
+    "options": [
+      "Changing test names adds no exercised parsing behavior.",
+      "Executing the implementation on representative fixtures tests the actual contract and failure paths.",
+      "Assistant confidence does not independently exercise the parser.",
+      "Coverage percentages alone can hide mocks that bypass the changed behavior."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/code-reviews.html"
+      },
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain2.html"
+      }
+    ]
+  },
+  "aipc01-0941": {
+    "takeaway": "Separate source-analysis findings from behavioral and deployment evidence.",
+    "options": [
+      "Review filtering and scope mean an empty result cannot establish full repository coverage.",
+      "Behavioral tests provide evidence beyond source-code issue detection.",
+      "Repeating the same filtered analysis does not add execution evidence for the untested cases.",
+      "A broader static review is useful but does not execute stream assembly and invalid-input paths.",
+      "Static complexity does not establish that the expected content blocks and errors are handled correctly."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/code-reviews.html"
+      },
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain2.html"
+      }
+    ]
+  },
+  "aipc01-0942": {
+    "takeaway": "Place required release approval at the boundary it must control.",
+    "options": [
+      "An approval action stops execution until an authorized decision permits continuation.",
+      "A post-deployment message cannot prevent the release that required prior approval.",
+      "Prompt content is not an authorized pipeline approval action.",
+      "Build duration and successful compilation do not implement human approval."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/codepipeline/latest/userguide/approvals.html"
+      }
+    ]
+  },
+  "aipc01-0943": {
+    "takeaway": "Validate both structural and business constraints before deploying routing configuration.",
+    "options": [
+      "JSON Schema validates structural constraints for free-form configuration.",
+      "A Lambda validator can implement application-specific semantic checks against the approved set.",
+      "Operational latency is observed after use and does not parse or validate the proposed configuration schema.",
+      "An instruction does not enforce validation of the configuration deployment.",
+      "Retention controls do not verify structure or model eligibility."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-creating-configuration-and-profile-validators.html"
+      }
+    ]
+  },
+  "aipc01-0944": {
+    "takeaway": "A monitored alarm needs working permissions and enabled actions to serve as a rollback guard.",
+    "options": [
+      "AppConfig does not automatically roll back when actions on the associated alarm have been disabled.",
+      "The observed monitoring authorization error must also be resolved so the configured alarm can be inspected.",
+      "More time does not restore disabled actions or missing monitoring permission.",
+      "Descriptive text does not repair the effective alarm-action and authorization boundaries.",
+      "A different unrelated signal avoids the intended failure detection rather than repairing it."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/appconfig/latest/userguide/monitoring-deployments.html"
+      }
+    ]
+  },
+  "aipc01-0945": {
+    "takeaway": "Approval must identify the exact artifacts and configuration that will reach production.",
+    "options": [
+      "The deploy can receive different artifacts from those reviewed.",
+      "An immutable release manifest ties tests, approval and deployment to the same versions.",
+      "Compiling again does not pin the changed prompt or establish equivalence to the approved artifact.",
+      "A pipeline name does not identify the exact approved execution and content."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/codepipeline/latest/userguide/approvals.html"
+      },
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain2.html"
+      }
+    ]
+  },
+  "aipc01-0946": {
+    "takeaway": "Keep versioned, compatible release and recovery targets for GenAI changes.",
+    "options": [
+      "This identifies the whole released behavior, including the retrieval dependencies.",
+      "Compatibility and rollback checks make the previous configuration a usable recovery target.",
+      "An unversioned excerpt does not reconstruct the code and retrieval configuration.",
+      "An operational chart without version identity does not specify a recovery target.",
+      "Reconstructing configuration from memory is not reproducible rollback evidence."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain2.html"
+      },
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/codepipeline/latest/userguide/approvals.html"
+      }
+    ]
+  },
+  "aipc01-0947": {
+    "takeaway": "Use an explicit tool protocol and access boundary for existing enterprise operations.",
+    "options": [
+      "Gateway converts supported backends into managed agent-accessible tools while providing authentication capabilities.",
+      "A model invocation endpoint does not by itself expose the existing application operations.",
+      "A document link is not the tool protocol and invocation contract.",
+      "A resource identifier alone does not provide a validated, callable tool definition."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/gateway.html"
+      }
+    ]
+  },
+  "aipc01-0948": {
+    "takeaway": "Tool content is input data; it cannot grant business authority.",
+    "options": [
+      "Authentication of a connection does not make returned document instructions authoritative.",
+      "Trusted authorization and the approved task remain necessary for side effects.",
+      "Confidence does not confer permission or user intent.",
+      "Similarity expresses retrieval relevance, not authorization to act."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/gateway.html"
+      },
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain2.html"
+      }
+    ]
+  },
+  "aipc01-0949": {
+    "takeaway": "Version tool contracts and preserve verified identifier semantics during client migrations.",
+    "options": [
+      "Preserves existing clients while making the new meaning explicit and testable.",
+      "Breaks the required 24-hour compatibility window.",
+      "Treats distinct identifier meanings as interchangeable without a verified mapping.",
+      "A server cache change cannot guarantee every cached client updates or translates the identifier correctly."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/gateway.html"
+      },
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain2.html"
+      }
+    ]
+  },
+  "aipc01-0950": {
+    "takeaway": "Choose MCP hosting according to runtime and state requirements, not a universal service preference.",
+    "options": [
+      "A bounded stateless lookup fits Lambda execution limits and avoids maintaining a long-running server.",
+      "ECS can host the uninterrupted process while its network, state and recovery boundaries remain explicit.",
+      "External checkpoints preserve data but cannot keep the same in-process connection alive beyond invocation limits.",
+      "Reusing an identifier does not preserve the required uninterrupted process or live connection.",
+      "An API contract does not execute the lookup backend; the request needs an actual implementation."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain2.html"
+      }
+    ]
+  },
+  "aipc01-0951": {
+    "takeaway": "Select coordination structure from the required control and aggregation behavior.",
+    "options": [
+      "Explicit coordination and controlled action execution match the required division of responsibility.",
+      "Independent side effects contradict the requested coordination boundary.",
+      "Tool discovery alone does not combine and evaluate specialist work.",
+      "Shared text does not implement delegation, result aggregation or authorization."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain2.html"
+      }
+    ]
+  },
+  "aipc01-0952": {
+    "takeaway": "Control whole-workflow progress and resource budgets across agent handoffs.",
+    "options": [
+      "An end-to-end budget bounds the overall execution even when each local operation succeeds.",
+      "Goal and loop-state checks address the absence of useful progress.",
+      "The loop consists of successful handoffs, so per-tool failure retries do not bound it.",
+      "More simultaneous specialists do not establish convergence or a global cost boundary.",
+      "Resetting budgets permits an unbounded total across locally bounded calls."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain2.html"
+      }
+    ]
+  },
+  "aipc01-0953": {
+    "takeaway": "Separate dynamic provider selection from tested protocol adapters.",
+    "options": [
+      "Configuration can choose among tested implementations without pretending their native contracts are identical.",
+      "A routing choice does not normalize incompatible provider formats.",
+      "Executing arbitrary configuration code bypasses the controlled adapter deployment boundary.",
+      "A label change does not implement routing."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain2.html"
+      },
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/appconfig/latest/userguide/"
+      }
+    ]
+  },
+  "aipc01-0954": {
+    "takeaway": "Interpret a validation result within the boundary it actually tests.",
+    "options": [
+      "A failed validator blocks this proposed configuration; it is not production quality evidence.",
+      "Configuration structure validation does not evaluate the model output.",
+      "Rejecting one proposal does not establish universal optimality of the previous version.",
+      "Pre-deployment rejection is not a successful rollout."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-creating-configuration-and-profile-validators.html"
+      }
+    ]
+  },
+  "aipc01-0955": {
+    "takeaway": "Infrastructure generation does not replace review of the permissions it will create.",
+    "options": [
+      "Separate scoped roles enforce the intended build/deploy trust boundary.",
+      "Comments do not remove effective permissions from the build job.",
+      "A name convention without policy enforcement does not restrict the principal.",
+      "Generated infrastructure still creates real IAM permissions that must be reviewed."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain2.html"
+      }
+    ]
+  },
+  "aipc01-0956": {
+    "takeaway": "Combine code tests, permission review and a controlled real-path check for tool integrations.",
+    "options": [
+      "Policy review examines the authorization effects that mocks do not execute.",
+      "This exercises the intended identity and actual service boundary without an irreversible business action.",
+      "A more privileged test principal can succeed while the intended runtime role still fails.",
+      "Serialization tests can be useful but these mocks continue to bypass the relevant authorization boundary.",
+      "A permission result for a different policy/resource does not validate the proposed release."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/code-reviews.html"
+      },
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain2.html"
+      }
+    ]
+  },
+  "aipc01-0957": {
+    "takeaway": "Use measured proof-of-concept evidence before standardizing a GenAI architecture.",
+    "options": [
+      "A common workload and explicit goals make the comparison interpretable and the standardization decision reviewable.",
+      "Model size is not evidence that the application meets the stated goals.",
+      "Different workloads confound the architecture comparison.",
+      "One success does not establish the agreed quality, latency and cost requirements."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain1.html"
+      }
+    ]
+  },
+  "aipc01-0958": {
+    "takeaway": "Standardize control contracts while preserving tested provider-specific integration behavior.",
+    "options": [
+      "Shared cross-cutting controls can coexist with explicit tested provider differences.",
+      "The shared native payload and status-only checks do not establish compatible provider semantics.",
+      "Prompt-level tenant instructions do not enforce the trusted cross-provider authorization contract.",
+      "Central authorization is useful, but inconsistent response contracts still break the required reusable gateway interface."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain1.html"
+      },
+      {
+        "label": "AWS documentation",
+        "url": "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain2.html"
+      }
+    ]
+  },
+  "aipc01-0959": {
+    "takeaway": "An existing search-oriented architecture with independent scaling can add a compatible vector index. A requirement for live relational joins would favor a different integration boundary.",
+    "options": [
+      "Search indexing does not justify relocating the independent transactional system.",
+      "This preserves the established search boundary and its required search features.",
+      "SQL joins are not required by this retrieval path; the proposed reason does not follow from the constraints.",
+      "Nightly export plus request-time full-corpus ranking does not meet the stated independently scaled search architecture."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "Knowledge Base vector store configuration",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup.html"
+      },
+      {
+        "label": "Aurora PostgreSQL vector integration",
+        "url": "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraPostgreSQL.VectorDB.html"
+      },
+      {
+        "label": "OpenSearch Service search architecture",
+        "url": "https://docs.aws.amazon.com/opensearch-service/latest/developerguide/what-is.html"
+      }
+    ]
+  },
+  "aipc01-0960": {
+    "takeaway": "Backend filter support is part of the index contract. Materialize the required classification family and use a supported equality filter before returning chunks.",
+    "options": [
+      "Increasing unrestricted results does not enforce classification scope.",
+      "Prompt instructions cannot replace the required retrieval restriction.",
+      "A normalized family attribute expresses the scope using an eligible filter.",
+      "An unsupported operator is a compatibility problem rather than a transient shortage of results."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "Metadata filtering eligibility",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-config.html"
+      }
+    ]
+  },
+  "aipc01-0961": {
+    "takeaway": "Ingestion uses the role already bound to the knowledge base. Scope that role to intended sources and control who can redirect or start ingestion.",
+    "options": [
+      "Data-source management can cause ingestion through the bound role even without direct source read permission.",
+      "Narrow service-role access removes unintended source locations from the ingestion boundary.",
+      "Privileged source-management controls reduce the ability to redirect a powerful connector.",
+      "Expanding direct access does not remove the overbroad ingestion permission.",
+      "These data-source and ingestion actions do not pass a role, so that check is not the protection described."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "Knowledge Base service role scope",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-permissions.html"
+      }
+    ]
+  },
+  "aipc01-0962": {
+    "takeaway": "Aurora metadata filtering needs a mapped metadata representation. A configured custom JSONB column and its index can hold the source attributes without one column per attribute.",
+    "options": [
+      "This supplies the explicitly mapped custom metadata representation and index required by the integration.",
+      "Without the custom field, the table must already contain appropriately typed attribute columns before ingestion.",
+      "Text similarity does not implement the required exact metadata predicates.",
+      "An unconfigured column name does not establish the knowledge base field mapping."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "Knowledge Base vector store configuration",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup.html"
+      },
+      {
+        "label": "Metadata filtering eligibility",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-config.html"
+      },
+      {
+        "label": "Knowledge Base source synchronization",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-data-source-sync-ingest.html"
+      }
+    ]
+  },
+  "aipc01-0963": {
+    "takeaway": "Match domain indexing and routing to the observed access pattern, then validate shard and capacity choices on the real mixed workload. More shards are not automatically faster.",
+    "options": [
+      "Idle-query results do not show whether the demonstrated ingestion interference is resolved; replica changes need the affected workload test.",
+      "The legal-only result does not establish engineering latency or performance under the mixed workload that failed.",
+      "Domain separation matches the measured independent access pattern and permits focused capacity management.",
+      "Concurrent-load validation checks whether the candidate layout fixes the demonstrated contention.",
+      "An unmeasured maximum contradicts the observed overhead and provides no target-latency evidence."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "OpenSearch shard planning",
+        "url": "https://docs.aws.amazon.com/opensearch-service/latest/developerguide/bp-sharding.html"
+      },
+      {
+        "label": "AIP-C01 vector-store skills",
+        "url": "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain1.html"
+      }
+    ]
+  },
+  "aipc01-0964": {
+    "takeaway": "A storage migration must reconcile source changes and backend metadata semantics. Promote a coherent validated retrieval configuration and retain a usable rollback path.",
+    "options": [
+      "Equal counts can hide stale documents, missing updates, and mismatched metadata.",
+      "Delta and deletion reconciliation plus filter validation address the mutable-source and backend-contract risks.",
+      "An explicit old configuration and coordinated promotion preserve a meaningful recovery path.",
+      "A static snapshot benchmark does not resolve the known changes and deletions that occur during migration.",
+      "Matching dimensions do not establish freshness, compatible filters, or correct field mappings."
+    ],
+    "reviewedOn": "2026-11-22",
+    "sources": [
+      {
+        "label": "Knowledge Base source synchronization",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-data-source-sync-ingest.html"
+      },
+      {
+        "label": "Knowledge Base vector store configuration",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup.html"
+      },
+      {
+        "label": "Metadata filtering eligibility",
+        "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-config.html"
       }
     ]
   }

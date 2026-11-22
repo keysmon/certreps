@@ -1,0 +1,1055 @@
+{
+  "reviewedOn": "2026-11-22",
+  "baselineRevision": "e8749d4bb2ee38af29b6f52b50c14260b822cf0e",
+  "baselineCount": 878,
+  "baselineSha256": "16ff6397e9538e16fb997beaae2d6bf7856f6ae5862b6d1154b5c11e13a293f1",
+  "addedIds": [
+    "aipc01-0879",
+    "aipc01-0880",
+    "aipc01-0881",
+    "aipc01-0882",
+    "aipc01-0883",
+    "aipc01-0884",
+    "aipc01-0885",
+    "aipc01-0886",
+    "aipc01-0887",
+    "aipc01-0888",
+    "aipc01-0889",
+    "aipc01-0890",
+    "aipc01-0891",
+    "aipc01-0892",
+    "aipc01-0893",
+    "aipc01-0894",
+    "aipc01-0895",
+    "aipc01-0896",
+    "aipc01-0897",
+    "aipc01-0898",
+    "aipc01-0899",
+    "aipc01-0900",
+    "aipc01-0901",
+    "aipc01-0902",
+    "aipc01-0903",
+    "aipc01-0904",
+    "aipc01-0905",
+    "aipc01-0906",
+    "aipc01-0907",
+    "aipc01-0908",
+    "aipc01-0909",
+    "aipc01-0910",
+    "aipc01-0911",
+    "aipc01-0912",
+    "aipc01-0913",
+    "aipc01-0914",
+    "aipc01-0915",
+    "aipc01-0916",
+    "aipc01-0917",
+    "aipc01-0918",
+    "aipc01-0919",
+    "aipc01-0920",
+    "aipc01-0921",
+    "aipc01-0922",
+    "aipc01-0923",
+    "aipc01-0924",
+    "aipc01-0925",
+    "aipc01-0926",
+    "aipc01-0927",
+    "aipc01-0928",
+    "aipc01-0929",
+    "aipc01-0930",
+    "aipc01-0931",
+    "aipc01-0932",
+    "aipc01-0933",
+    "aipc01-0934",
+    "aipc01-0935",
+    "aipc01-0936",
+    "aipc01-0937",
+    "aipc01-0938",
+    "aipc01-0939",
+    "aipc01-0940",
+    "aipc01-0941",
+    "aipc01-0942",
+    "aipc01-0943",
+    "aipc01-0944",
+    "aipc01-0945",
+    "aipc01-0946",
+    "aipc01-0947",
+    "aipc01-0948",
+    "aipc01-0949",
+    "aipc01-0950",
+    "aipc01-0951",
+    "aipc01-0952",
+    "aipc01-0953",
+    "aipc01-0954",
+    "aipc01-0955",
+    "aipc01-0956",
+    "aipc01-0957",
+    "aipc01-0958",
+    "aipc01-0959",
+    "aipc01-0960",
+    "aipc01-0961",
+    "aipc01-0962",
+    "aipc01-0963",
+    "aipc01-0964"
+  ],
+  "lessonSlugs": [
+    "data-services-and-multimodal-pipelines",
+    "agent-evaluation-and-quality-gates",
+    "sagemaker-model-lifecycle",
+    "developer-tooling-and-delivery",
+    "vector-store-architecture"
+  ],
+  "evidence": {
+    "aipc01-0879": {
+      "sources": [
+        "https://docs.aws.amazon.com/glue/latest/dg/glue-data-quality.html"
+      ],
+      "taskRefs": [
+        "1.3"
+      ],
+      "lessonSlug": "data-services-and-multimodal-pipelines",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0880": {
+      "sources": [
+        "https://docs.aws.amazon.com/textract/latest/dg/textract-best-practices.html"
+      ],
+      "taskRefs": [
+        "1.3"
+      ],
+      "lessonSlug": "data-services-and-multimodal-pipelines",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0881": {
+      "sources": [
+        "https://docs.aws.amazon.com/sagemaker/latest/dg/canvas-data-prep.html"
+      ],
+      "taskRefs": [
+        "1.3"
+      ],
+      "lessonSlug": "data-services-and-multimodal-pipelines",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0882": {
+      "sources": [
+        "https://docs.aws.amazon.com/transcribe/latest/dg/lang-id.html"
+      ],
+      "taskRefs": [
+        "1.3"
+      ],
+      "lessonSlug": "data-services-and-multimodal-pipelines",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0883": {
+      "sources": [
+        "https://docs.aws.amazon.com/glue/latest/dg/tutorial-data-quality.html"
+      ],
+      "taskRefs": [
+        "1.3"
+      ],
+      "lessonSlug": "data-services-and-multimodal-pipelines",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0884": {
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/bda.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/bda-custom-output-idp.html"
+      ],
+      "taskRefs": [
+        "1.3"
+      ],
+      "lessonSlug": "data-services-and-multimodal-pipelines",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0885": {
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_InvokeModel.html",
+        "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html"
+      ],
+      "taskRefs": [
+        "1.3"
+      ],
+      "lessonSlug": "data-services-and-multimodal-pipelines",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0886": {
+      "sources": [
+        "https://docs.aws.amazon.com/macie/latest/user/what-is-macie.html",
+        "https://docs.aws.amazon.com/comprehend/latest/dg/how-pii.html"
+      ],
+      "taskRefs": [
+        "1.3"
+      ],
+      "lessonSlug": "data-services-and-multimodal-pipelines",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0887": {
+      "sources": [
+        "https://docs.aws.amazon.com/comprehend/latest/dg/how-entities.html"
+      ],
+      "taskRefs": [
+        "1.3"
+      ],
+      "lessonSlug": "data-services-and-multimodal-pipelines",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0888": {
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/bda-using-api.html",
+        "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain1.html"
+      ],
+      "taskRefs": [
+        "1.3"
+      ],
+      "lessonSlug": "data-services-and-multimodal-pipelines",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0889": {
+      "sources": [
+        "https://docs.aws.amazon.com/textract/latest/dg/textract-best-practices.html"
+      ],
+      "taskRefs": [
+        "1.3"
+      ],
+      "lessonSlug": "data-services-and-multimodal-pipelines",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0890": {
+      "sources": [
+        "https://docs.aws.amazon.com/glue/latest/dg/tutorial-data-quality.html",
+        "https://docs.aws.amazon.com/glue/latest/dg/dqdl.html"
+      ],
+      "taskRefs": [
+        "1.3"
+      ],
+      "lessonSlug": "data-services-and-multimodal-pipelines",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0891": {
+      "sources": [
+        "https://docs.aws.amazon.com/glue/latest/dg/glue-data-quality.html"
+      ],
+      "taskRefs": [
+        "1.3"
+      ],
+      "lessonSlug": "data-services-and-multimodal-pipelines",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0892": {
+      "sources": [
+        "https://docs.aws.amazon.com/transcribe/latest/APIReference/API_streaming_StartStreamTranscription.html",
+        "https://docs.aws.amazon.com/transcribe/latest/dg/lang-id-stream.html"
+      ],
+      "taskRefs": [
+        "1.3"
+      ],
+      "lessonSlug": "data-services-and-multimodal-pipelines",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0893": {
+      "sources": [
+        "https://docs.aws.amazon.com/comprehend/latest/dg/how-pii.html"
+      ],
+      "taskRefs": [
+        "1.3"
+      ],
+      "lessonSlug": "data-services-and-multimodal-pipelines",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0894": {
+      "sources": [
+        "https://docs.aws.amazon.com/comprehend/latest/dg/pii.html",
+        "https://docs.aws.amazon.com/comprehend/latest/dg/how-entities.html"
+      ],
+      "taskRefs": [
+        "1.3"
+      ],
+      "lessonSlug": "data-services-and-multimodal-pipelines",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0895": {
+      "sources": [
+        "https://docs.aws.amazon.com/glue/latest/dg/dqdl-rule-types-IsComplete.html"
+      ],
+      "taskRefs": [
+        "1.3"
+      ],
+      "lessonSlug": "data-services-and-multimodal-pipelines",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0896": {
+      "sources": [
+        "https://docs.aws.amazon.com/glue/latest/dg/tutorial-data-quality.html"
+      ],
+      "taskRefs": [
+        "1.3"
+      ],
+      "lessonSlug": "data-services-and-multimodal-pipelines",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0897": {
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/bda.html",
+        "https://docs.aws.amazon.com/textract/latest/dg/textract-best-practices.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/bda-custom-output-idp.html"
+      ],
+      "taskRefs": [
+        "1.3"
+      ],
+      "lessonSlug": "data-services-and-multimodal-pipelines",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0898": {
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/bda-using-api.html"
+      ],
+      "taskRefs": [
+        "1.3"
+      ],
+      "lessonSlug": "data-services-and-multimodal-pipelines",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0899": {
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/evaluation.html",
+        "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/evaluations-types.html"
+      ],
+      "taskRefs": [
+        "5.1"
+      ],
+      "lessonSlug": "agent-evaluation-and-quality-gates",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0900": {
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/prompt-templates-builtin.html"
+      ],
+      "taskRefs": [
+        "5.1"
+      ],
+      "lessonSlug": "agent-evaluation-and-quality-gates",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0901": {
+      "sources": [
+        "https://docs.aws.amazon.com/wellarchitected/latest/generative-ai-lens/genops01-bp02.html"
+      ],
+      "taskRefs": [
+        "5.1"
+      ],
+      "lessonSlug": "agent-evaluation-and-quality-gates",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0902": {
+      "sources": [
+        "https://docs.aws.amazon.com/cli/latest/reference/bedrock-agentcore/evaluate.html"
+      ],
+      "taskRefs": [
+        "5.1"
+      ],
+      "lessonSlug": "agent-evaluation-and-quality-gates",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0903": {
+      "sources": [
+        "https://docs.aws.amazon.com/cli/latest/reference/bedrock-agentcore/evaluate.html",
+        "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/getting-started-on-demand.html"
+      ],
+      "taskRefs": [
+        "5.1"
+      ],
+      "lessonSlug": "agent-evaluation-and-quality-gates",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0904": {
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/create-online-evaluations.html"
+      ],
+      "taskRefs": [
+        "5.1"
+      ],
+      "lessonSlug": "agent-evaluation-and-quality-gates",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0905": {
+      "sources": [
+        "https://docs.aws.amazon.com/prescriptive-guidance/latest/gen-ai-lifecycle-operational-excellence/dev-experimenting-quality.html",
+        "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain3.html"
+      ],
+      "taskRefs": [
+        "3.4",
+        "5.1"
+      ],
+      "lessonSlug": "agent-evaluation-and-quality-gates",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0906": {
+      "sources": [
+        "https://docs.aws.amazon.com/wellarchitected/latest/generative-ai-lens/genops01-bp01.html"
+      ],
+      "taskRefs": [
+        "5.1"
+      ],
+      "lessonSlug": "agent-evaluation-and-quality-gates",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0907": {
+      "sources": [
+        "https://docs.aws.amazon.com/prescriptive-guidance/latest/gen-ai-lifecycle-operational-excellence/dev-experimenting-experimentation-loops.html",
+        "https://docs.aws.amazon.com/wellarchitected/latest/generative-ai-lens/genops01-bp01.html"
+      ],
+      "taskRefs": [
+        "5.1"
+      ],
+      "lessonSlug": "agent-evaluation-and-quality-gates",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0908": {
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/ground-truth-evaluations.html",
+        "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain3.html"
+      ],
+      "taskRefs": [
+        "3.4",
+        "5.1"
+      ],
+      "lessonSlug": "agent-evaluation-and-quality-gates",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0909": {
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/evaluation.html",
+        "https://docs.aws.amazon.com/wellarchitected/latest/generative-ai-lens/genops01-bp01.html"
+      ],
+      "taskRefs": [
+        "5.1"
+      ],
+      "lessonSlug": "agent-evaluation-and-quality-gates",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0910": {
+      "sources": [
+        "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops05-bp04.html"
+      ],
+      "taskRefs": [
+        "5.1"
+      ],
+      "lessonSlug": "agent-evaluation-and-quality-gates",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0911": {
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/getting-started-on-demand.html",
+        "https://docs.aws.amazon.com/cli/latest/reference/bedrock-agentcore/evaluate.html"
+      ],
+      "taskRefs": [
+        "5.1"
+      ],
+      "lessonSlug": "agent-evaluation-and-quality-gates",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0912": {
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/prompt-templates-builtin.html",
+        "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/ground-truth-evaluations.html"
+      ],
+      "taskRefs": [
+        "5.1"
+      ],
+      "lessonSlug": "agent-evaluation-and-quality-gates",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0913": {
+      "sources": [
+        "https://docs.aws.amazon.com/wellarchitected/latest/generative-ai-lens/genops01-bp01.html",
+        "https://docs.aws.amazon.com/prescriptive-guidance/latest/gen-ai-lifecycle-operational-excellence/dev-experimenting-quality.html",
+        "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain3.html"
+      ],
+      "taskRefs": [
+        "3.4",
+        "5.1"
+      ],
+      "lessonSlug": "agent-evaluation-and-quality-gates",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0914": {
+      "sources": [
+        "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops06-bp01.html",
+        "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops06-bp03.html"
+      ],
+      "taskRefs": [
+        "5.1"
+      ],
+      "lessonSlug": "agent-evaluation-and-quality-gates",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0915": {
+      "sources": [
+        "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops05-bp04.html",
+        "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops06-bp02.html"
+      ],
+      "taskRefs": [
+        "5.1"
+      ],
+      "lessonSlug": "agent-evaluation-and-quality-gates",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0916": {
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/batch-evaluations-start.html",
+        "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/batch-evaluations-results.html"
+      ],
+      "taskRefs": [
+        "5.1"
+      ],
+      "lessonSlug": "agent-evaluation-and-quality-gates",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0917": {
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/batch-evaluations-results.html"
+      ],
+      "taskRefs": [
+        "5.1"
+      ],
+      "lessonSlug": "agent-evaluation-and-quality-gates",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0918": {
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/data-protection.html",
+        "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops06-bp01.html"
+      ],
+      "taskRefs": [
+        "5.1"
+      ],
+      "lessonSlug": "agent-evaluation-and-quality-gates",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0919": {
+      "sources": [
+        "https://docs.aws.amazon.com/decision-guides/latest/decision-guides/bedrock-or-sagemaker.html"
+      ],
+      "taskRefs": [
+        "1.2"
+      ],
+      "lessonSlug": "sagemaker-model-lifecycle",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0920": {
+      "sources": [
+        "https://docs.aws.amazon.com/sagemaker/latest/dg/model-registry.html"
+      ],
+      "taskRefs": [
+        "1.2"
+      ],
+      "lessonSlug": "sagemaker-model-lifecycle",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0921": {
+      "sources": [
+        "https://docs.aws.amazon.com/sagemaker/latest/dg/model-cards.html"
+      ],
+      "taskRefs": [
+        "3.3"
+      ],
+      "lessonSlug": "sagemaker-model-lifecycle",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0922": {
+      "sources": [
+        "https://docs.aws.amazon.com/decision-guides/latest/decision-guides/bedrock-or-sagemaker.html"
+      ],
+      "taskRefs": [
+        "2.2"
+      ],
+      "lessonSlug": "sagemaker-model-lifecycle",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0923": {
+      "sources": [
+        "https://docs.aws.amazon.com/sagemaker/latest/dg/model-registry-approve.html",
+        "https://docs.aws.amazon.com/sagemaker/latest/dg/model-registry-deploy.html"
+      ],
+      "taskRefs": [
+        "1.2"
+      ],
+      "lessonSlug": "sagemaker-model-lifecycle",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0924": {
+      "sources": [
+        "https://docs.aws.amazon.com/sagemaker/latest/dg/define-pipeline.html"
+      ],
+      "taskRefs": [
+        "1.2"
+      ],
+      "lessonSlug": "sagemaker-model-lifecycle",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0925": {
+      "sources": [
+        "https://docs.aws.amazon.com/sagemaker/latest/dg/pipelines-lineage-tracking.html",
+        "https://docs.aws.amazon.com/sagemaker/latest/dg/model-cards.html"
+      ],
+      "taskRefs": [
+        "3.3"
+      ],
+      "lessonSlug": "sagemaker-model-lifecycle",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0926": {
+      "sources": [
+        "https://docs.aws.amazon.com/sagemaker/latest/dg/model-monitor.html",
+        "https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-foundation-model-evaluate-get-started.html"
+      ],
+      "taskRefs": [
+        "5.1"
+      ],
+      "lessonSlug": "sagemaker-model-lifecycle",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0927": {
+      "sources": [
+        "https://docs.aws.amazon.com/sagemaker/latest/dg/shadow-tests.html"
+      ],
+      "taskRefs": [
+        "5.1"
+      ],
+      "lessonSlug": "sagemaker-model-lifecycle",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0928": {
+      "sources": [
+        "https://docs.aws.amazon.com/sagemaker/latest/dg/deployment-guardrails.html",
+        "https://docs.aws.amazon.com/sagemaker/latest/dg/shadow-tests.html"
+      ],
+      "taskRefs": [
+        "2.2"
+      ],
+      "lessonSlug": "sagemaker-model-lifecycle",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0929": {
+      "sources": [
+        "https://docs.aws.amazon.com/sagemaker/latest/dg/deployment-guardrails-configuration.html"
+      ],
+      "taskRefs": [
+        "4.3"
+      ],
+      "lessonSlug": "sagemaker-model-lifecycle",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0930": {
+      "sources": [
+        "https://aws.amazon.com/blogs/machine-learning/exploring-summarization-options-for-healthcare-with-amazon-sagemaker/",
+        "https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_UpdateEndpoint.html"
+      ],
+      "taskRefs": [
+        "1.2"
+      ],
+      "lessonSlug": "sagemaker-model-lifecycle",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0931": {
+      "sources": [
+        "https://docs.aws.amazon.com/sagemaker/latest/dg/deployment-guardrails-exclusions.html"
+      ],
+      "taskRefs": [
+        "2.2"
+      ],
+      "lessonSlug": "sagemaker-model-lifecycle",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0932": {
+      "sources": [
+        "https://docs.aws.amazon.com/sagemaker/latest/dg/model-registry-deploy.html",
+        "https://docs.aws.amazon.com/service-authorization/latest/reference/list_sagemaker.html"
+      ],
+      "taskRefs": [
+        "1.2"
+      ],
+      "lessonSlug": "sagemaker-model-lifecycle",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0933": {
+      "sources": [
+        "https://docs.aws.amazon.com/sagemaker/latest/dg/deployment-guardrails-rolling.html",
+        "https://docs.aws.amazon.com/sagemaker/latest/dg/deployment-guardrails-blue-green.html"
+      ],
+      "taskRefs": [
+        "2.2"
+      ],
+      "lessonSlug": "sagemaker-model-lifecycle",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0934": {
+      "sources": [
+        "https://docs.aws.amazon.com/sagemaker/latest/dg/shadow-tests.html",
+        "https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-foundation-model-evaluate-get-started.html"
+      ],
+      "taskRefs": [
+        "5.1"
+      ],
+      "lessonSlug": "sagemaker-model-lifecycle",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0935": {
+      "sources": [
+        "https://docs.aws.amazon.com/sagemaker/latest/dg/realtime-endpoints-delete-resources.html",
+        "https://aws.amazon.com/blogs/machine-learning/exploring-summarization-options-for-healthcare-with-amazon-sagemaker/"
+      ],
+      "taskRefs": [
+        "1.2"
+      ],
+      "lessonSlug": "sagemaker-model-lifecycle",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0936": {
+      "sources": [
+        "https://docs.aws.amazon.com/sagemaker/latest/dg/realtime-endpoints-delete-resources.html",
+        "https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DeleteEndpointConfig.html"
+      ],
+      "taskRefs": [
+        "3.2"
+      ],
+      "lessonSlug": "sagemaker-model-lifecycle",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0937": {
+      "sources": [
+        "https://docs.aws.amazon.com/sagemaker/latest/dg/model-monitor-availability-change.html",
+        "https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-foundation-model-evaluate-get-started.html"
+      ],
+      "taskRefs": [
+        "4.3"
+      ],
+      "lessonSlug": "sagemaker-model-lifecycle",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0938": {
+      "sources": [
+        "https://docs.aws.amazon.com/sagemaker/latest/dg/model-registry.html",
+        "https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_UpdateEndpoint.html",
+        "https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DeleteEndpointConfig.html"
+      ],
+      "taskRefs": [
+        "1.2"
+      ],
+      "lessonSlug": "sagemaker-model-lifecycle",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0939": {
+      "sources": [
+        "https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/code-reviews.html"
+      ],
+      "taskRefs": [
+        "2.5"
+      ],
+      "lessonSlug": "developer-tooling-and-delivery",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0940": {
+      "sources": [
+        "https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/code-reviews.html",
+        "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain2.html"
+      ],
+      "taskRefs": [
+        "2.5"
+      ],
+      "lessonSlug": "developer-tooling-and-delivery",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0941": {
+      "sources": [
+        "https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/code-reviews.html",
+        "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain2.html"
+      ],
+      "taskRefs": [
+        "2.5"
+      ],
+      "lessonSlug": "developer-tooling-and-delivery",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0942": {
+      "sources": [
+        "https://docs.aws.amazon.com/codepipeline/latest/userguide/approvals.html"
+      ],
+      "taskRefs": [
+        "2.3"
+      ],
+      "lessonSlug": "developer-tooling-and-delivery",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0943": {
+      "sources": [
+        "https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-creating-configuration-and-profile-validators.html"
+      ],
+      "taskRefs": [
+        "2.3"
+      ],
+      "lessonSlug": "developer-tooling-and-delivery",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0944": {
+      "sources": [
+        "https://docs.aws.amazon.com/appconfig/latest/userguide/monitoring-deployments.html"
+      ],
+      "taskRefs": [
+        "2.3"
+      ],
+      "lessonSlug": "developer-tooling-and-delivery",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0945": {
+      "sources": [
+        "https://docs.aws.amazon.com/codepipeline/latest/userguide/approvals.html",
+        "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain2.html"
+      ],
+      "taskRefs": [
+        "2.3"
+      ],
+      "lessonSlug": "developer-tooling-and-delivery",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0946": {
+      "sources": [
+        "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain2.html",
+        "https://docs.aws.amazon.com/codepipeline/latest/userguide/approvals.html"
+      ],
+      "taskRefs": [
+        "2.3"
+      ],
+      "lessonSlug": "developer-tooling-and-delivery",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0947": {
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/gateway.html"
+      ],
+      "taskRefs": [
+        "2.1"
+      ],
+      "lessonSlug": "developer-tooling-and-delivery",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0948": {
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/gateway.html",
+        "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain2.html"
+      ],
+      "taskRefs": [
+        "2.1"
+      ],
+      "lessonSlug": "developer-tooling-and-delivery",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0949": {
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/gateway.html",
+        "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain2.html"
+      ],
+      "taskRefs": [
+        "2.1"
+      ],
+      "lessonSlug": "developer-tooling-and-delivery",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0950": {
+      "sources": [
+        "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain2.html"
+      ],
+      "taskRefs": [
+        "2.1"
+      ],
+      "lessonSlug": "developer-tooling-and-delivery",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0951": {
+      "sources": [
+        "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain2.html"
+      ],
+      "taskRefs": [
+        "2.1"
+      ],
+      "lessonSlug": "developer-tooling-and-delivery",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0952": {
+      "sources": [
+        "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain2.html"
+      ],
+      "taskRefs": [
+        "2.1"
+      ],
+      "lessonSlug": "developer-tooling-and-delivery",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0953": {
+      "sources": [
+        "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain2.html",
+        "https://docs.aws.amazon.com/appconfig/latest/userguide/"
+      ],
+      "taskRefs": [
+        "1.2",
+        "2.4"
+      ],
+      "lessonSlug": "developer-tooling-and-delivery",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0954": {
+      "sources": [
+        "https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-creating-configuration-and-profile-validators.html"
+      ],
+      "taskRefs": [
+        "2.3"
+      ],
+      "lessonSlug": "developer-tooling-and-delivery",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0955": {
+      "sources": [
+        "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain2.html"
+      ],
+      "taskRefs": [
+        "2.3"
+      ],
+      "lessonSlug": "developer-tooling-and-delivery",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0956": {
+      "sources": [
+        "https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/code-reviews.html",
+        "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain2.html"
+      ],
+      "taskRefs": [
+        "2.3",
+        "2.5"
+      ],
+      "lessonSlug": "developer-tooling-and-delivery",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0957": {
+      "sources": [
+        "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain1.html"
+      ],
+      "taskRefs": [
+        "1.1"
+      ],
+      "lessonSlug": "developer-tooling-and-delivery",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0958": {
+      "sources": [
+        "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain1.html",
+        "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain2.html"
+      ],
+      "taskRefs": [
+        "1.1",
+        "2.3"
+      ],
+      "lessonSlug": "developer-tooling-and-delivery",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0959": {
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup.html",
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraPostgreSQL.VectorDB.html",
+        "https://docs.aws.amazon.com/opensearch-service/latest/developerguide/what-is.html"
+      ],
+      "taskRefs": [
+        "1.4"
+      ],
+      "lessonSlug": "vector-store-architecture",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0960": {
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-config.html"
+      ],
+      "taskRefs": [
+        "1.4"
+      ],
+      "lessonSlug": "vector-store-architecture",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0961": {
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-permissions.html"
+      ],
+      "taskRefs": [
+        "1.4"
+      ],
+      "lessonSlug": "vector-store-architecture",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0962": {
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-config.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-data-source-sync-ingest.html"
+      ],
+      "taskRefs": [
+        "1.4"
+      ],
+      "lessonSlug": "vector-store-architecture",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0963": {
+      "sources": [
+        "https://docs.aws.amazon.com/opensearch-service/latest/developerguide/bp-sharding.html",
+        "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain1.html"
+      ],
+      "taskRefs": [
+        "1.4"
+      ],
+      "lessonSlug": "vector-store-architecture",
+      "reviewedOn": "2026-11-22"
+    },
+    "aipc01-0964": {
+      "sources": [
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-data-source-sync-ingest.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup.html",
+        "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-config.html"
+      ],
+      "taskRefs": [
+        "1.4"
+      ],
+      "lessonSlug": "vector-store-architecture",
+      "reviewedOn": "2026-11-22"
+    }
+  },
+  "packages": {
+    "data": {
+      "questionsSha256": "9bf18e1021beef21c66c541137baf6bf1393e15c8b59b83f07cdc8b373720c5f",
+      "notesSha256": "890ce0c02c953baf3179627f0b547a0f7c0ac3db4d7191a6884f238071dacbbb",
+      "lessonSha256": "589d4131b669fe7deb48c5a566d721b811581b119d41fe801cb91e5991da2c3c"
+    },
+    "evaluation": {
+      "questionsSha256": "a4a0561e3e4396aa2256cd4bfd7f3d3fcc708aa5d2235f0f36d1b27fd6d8e9e3",
+      "notesSha256": "881d265194bbfe1c1cf608e2f355b8701b00a7a05022390f8e8260d5ebf68fd2",
+      "lessonSha256": "ae5641decda802e03631c000d53edb052b06d0dac22d5321e1dfd8cdb2965da7"
+    },
+    "lifecycle": {
+      "questionsSha256": "e2579fb1dfde7c0b23bb34d63565ef4a7102572ee89aeebc05bcd91073d0a1b3",
+      "notesSha256": "5343783fd243ba6da5f9c6567a284854d3d0bae82159388dd0fda1cc32f8880e",
+      "lessonSha256": "c80fd7f0ac98aa30b872aa92e420d80437f9be61201b9aa51262466b2fc0892e"
+    },
+    "tooling": {
+      "questionsSha256": "5502215b4c98fa34f2e54dbc49445fe56b180623cb2c4b317077a57a1f98c6ad",
+      "notesSha256": "b98d23c156d4eb6416a4fe0b812edb40a5345edd479379c52b1917d1052aa7a0",
+      "lessonSha256": "921952a85aedf5a7e99e16c00c5eb8c1e3242fbf643d3bb78c5ebbad0e521418"
+    },
+    "vector": {
+      "questionsSha256": "684e189a7dd19421a5e787f64ec6fb71455e5bd036bc9df8e2adfac3c9c8bc81",
+      "notesSha256": "7fc3ddfa82998de0688bac8d7a88c88675c48ab7dc397fa92374045a871b15e3",
+      "lessonSha256": "2ffd35acbfe00b6ae13b8643feef4911dfab43637b420208dbec5092a5290a73"
+    }
+  },
+  "limitations": [
+    "Content and peer reviews are documentation-based AI reviews, not independent human or live AWS execution verification.",
+    "Task mapping provides inspectable examples, not proof of complete coverage of every skill or an exam-pass guarantee.",
+    "Difficulty reflects intended reasoning demand, not AWS exam calibration."
+  ],
+  "activeCount": 329,
+  "archiveCount": 964
+}

@@ -15,7 +15,7 @@ describe("complete remaining AIP bank audit",()=>{
  });
  it("accounts for all 548 remaining items and every exclusion/replacement",()=>{
   expect(audit.reviewed).toHaveLength(548);expect(new Set(audit.reviewed.map(q=>q.id)).size).toBe(548);
-  expect(active).toHaveLength(audit.activeCount);
+  expect(active.filter(q=>Number(q.id.split("-").at(-1))<=audit.archiveCount)).toHaveLength(audit.activeCount);
   for(const row of audit.reviewed){
    const original=bank.find(q=>q.id===row.id)!;expect(original).toBeDefined();
    if(row.decision==="retain")expect(original.excludedFromPractice).not.toBe(true);

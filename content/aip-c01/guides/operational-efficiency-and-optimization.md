@@ -102,3 +102,11 @@ The following optional lessons were added and reviewed on 2026-11-05. Use them t
 
 - [Right-size GPU serving and batching](/guides/aip-c01/gpu-serving-and-batching).
 - [Compare queue latency and idle capacity](/guides/aip-c01/asynchronous-model-hosting).
+
+
+## Coverage follow-up / 2026-11-22
+
+Use the optional [task coverage map](/guides/aip-c01/coverage-map) to see example questions and lessons across the current exam tasks. It is a study aid, not a completion requirement.
+
+- [Sagemaker model lifecycle](/guides/aip-c01/sagemaker-model-lifecycle)
+- [Developer tooling and delivery](/guides/aip-c01/developer-tooling-and-delivery)

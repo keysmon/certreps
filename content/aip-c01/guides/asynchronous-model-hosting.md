@@ -25,3 +25,8 @@ Compare four fictional workloads: an interactive chat, a GPU image job with a se
 - Does the word serverless alone prove an option supports the required GPU workload? No; check the specific hosting product and exclusions.
 
 Sources: [Asynchronous Inference](https://docs.aws.amazon.com/sagemaker/latest/dg/async-inference.html), [InvokeEndpointAsync API](https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_runtime_InvokeEndpointAsync.html).
+
+
+## Coverage follow-up / 2026-11-22
+
+Use the optional [task coverage map](/guides/aip-c01/coverage-map) to see example questions and lessons across the current exam tasks. It is a study aid, not a completion requirement.

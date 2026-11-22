@@ -10,6 +10,18 @@ export function getAnswerNote(certId: string | undefined, questionId: string): {
   return certId === "aip-c01" && Object.hasOwn(notes, questionId) ? (notes as Record<string, {takeaway: string; options: string[]}>)[questionId] : undefined;
 }
 const implementationLessons: Record<string, string> = {
+  "data-quality-validation": "data-services-and-multimodal-pipelines",
+  "multimodal-preprocessing": "data-services-and-multimodal-pipelines",
+  "input-schema-and-provenance": "data-services-and-multimodal-pipelines",
+  "evaluation-job-types": "agent-evaluation-and-quality-gates",
+  "agent-evaluation-and-quality-gates": "agent-evaluation-and-quality-gates",
+  "evaluation-experiments-and-feedback": "agent-evaluation-and-quality-gates",
+  "evaluation-datasets-and-judges": "agent-evaluation-and-quality-gates",
+  "rag-evaluation-metrics": "agent-evaluation-and-quality-gates",
+  "sagemaker-model-lifecycle": "sagemaker-model-lifecycle",
+  "developer-tooling-and-delivery": "developer-tooling-and-delivery",
+  "genai-architecture-design": "developer-tooling-and-delivery",
+  "vector-store-architecture": "vector-store-architecture",
   "enterprise-identity-federation": "federated-access-and-temporary-credentials",
   "knowledge-base-ingestion-observability": "knowledge-base-ingestion-observability",
   "knowledge-base-document-lifecycle": "resilient-knowledge-base-synchronization",
@@ -25,4 +37,11 @@ export function lessonForQuestion(certId: string, vendorSlug: string, question: 
   const index = curriculum?.modules.findIndex(m => m.domain === question.domain) ?? -1;
   const module = index >= 0 ? curriculum?.modules[index] : undefined;
   return module?.guideSlug ? {href: `/guides/${certId}/${module.guideSlug}`, label: "Read the related lesson"} : {href: `/${vendorSlug}/${certId}/learn${index >= 0 ? `#domain-${index + 1}` : ""}`, label: "Explore the topic outline"};
+}
+
+/** Resolve moved documentation without changing published question records. */
+export function sourceForQuestion(question: Pick<Question, "docUrl">): string {
+  return question.docUrl === "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_prevent_interaction_failure_idempotent.html"
+    ? "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel04-bp04.html"
+    : question.docUrl;
 }

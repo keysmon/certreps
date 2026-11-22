@@ -25,3 +25,8 @@ Create a small offline evidence sheet for three fictional documents: one indexed
 - A changed chunk size is the first response to every ingestion failure: false; read the actual failure evidence first.
 
 Sources: [Knowledge Base ingestion logging](https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-bases-logging.html), [CloudTrail audit events](https://docs.aws.amazon.com/bedrock/latest/userguide/logging-using-cloudtrail.html).
+
+
+## Coverage follow-up / 2026-11-22
+
+Use the optional [task coverage map](/guides/aip-c01/coverage-map) to see example questions and lessons across the current exam tasks. It is a study aid, not a completion requirement.

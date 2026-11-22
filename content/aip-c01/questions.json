@@ -19319,5 +19319,1791 @@
     "difficulty": "hard",
     "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/titan-embedding-models.html",
     "concept": "debugging-agents-retrieval-latency"
+  },
+  {
+    "id": "aipc01-0879",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A product assistant receives a nightly catalog table. The pipeline must reject missing product IDs and detect invalid prices before preparing model context. The records are already structured. Which approach best matches this validation step?",
+    "options": [
+      "Use a Data Wrangler transformation flow and publish whenever transformation completes.",
+      "Use AWS Glue Data Quality rules before publishing the prepared catalog.",
+      "Use Amazon Macie findings as the sole catalog publication gate.",
+      "Publish the catalog first and run Glue quality checks for a weekly report."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "Use explicit table-quality rules before the catalog becomes model input. Extraction and sensitive-data discovery address different checks. Glue Data Quality evaluates table rules that can gate publication.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/glue/latest/dg/glue-data-quality.html",
+    "concept": "data-quality-validation"
+  },
+  {
+    "id": "aipc01-0880",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A claims application already has a validated text-normalization component. Its new input is scanned claim forms, and it needs the printed text and table structure before normalization. Which processing step should the team add?",
+    "options": [
+      "Use Comprehend entity extraction after OCR and retain only the named entities.",
+      "Use a document summarization step and retain only the generated summary.",
+      "Use Amazon Textract document analysis before normalization.",
+      "Use text-only OCR output and discard the document table relationships."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "Textract extracts text and document structures from scans, supplying the textual input needed by later normalization. Document analysis supplies text and tables for subsequent preparation.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/textract/latest/dg/textract-best-practices.html",
+    "concept": "multimodal-preprocessing"
+  },
+  {
+    "id": "aipc01-0881",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "Analysts need to inspect missing values, compare distributions, and build a reusable visual preparation flow for tabular data used in a GenAI application. They want the current Data Wrangler experience. Which choice fits?",
+    "options": [
+      "Use Data Wrangler in Amazon SageMaker Canvas to inspect and transform the data.",
+      "Use scheduled Glue quality rules as the entire interactive exploration interface.",
+      "Use BDA document blueprints as the entire tabular preparation interface.",
+      "Use Macie security findings as the entire distribution and transformation report."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "Data Wrangler in SageMaker Canvas supports visual exploration and reusable transformations for preparation workflows. Canvas provides the current Data Wrangler experience, including reports and flows.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/canvas-data-prep.html",
+    "concept": "data-quality-validation"
+  },
+  {
+    "id": "aipc01-0882",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A support team has recordings of calls and wants to provide their spoken content to a text-only summarization model. It does not need image analysis. Which preprocessing path fits?",
+    "options": [
+      "Extract entities from the audio bytes with Amazon Comprehend, then summarize.",
+      "Inspect the audio objects with Amazon Macie, then summarize the findings.",
+      "Extract text with Amazon Textract, then summarize the returned blocks.",
+      "Transcribe the recordings with Amazon Transcribe, then validate the transcripts."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "Speech transcription produces text for the text-only model; transcript validation remains a separate step. Transcribe supplies the spoken text; validation checks its suitability before inference.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/transcribe/latest/dg/lang-id.html",
+    "concept": "multimodal-preprocessing"
+  },
+  {
+    "id": "aipc01-0883",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A team enables AWS Glue Data Quality on a catalog ETL job. A required rule fails, but the job still publishes data to the model-input location. The team must prevent publication when a mandatory rule fails. What should change?",
+    "options": [
+      "Increase the number of sampled catalog rows and retain the current failure action.",
+      "Treat successful ETL completion as sufficient and alert on the quality score later.",
+      "Configure a failure action that stops the job before loading target data.",
+      "Increase model context length so missing catalog values are easier to infer."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "Quality evaluation must be connected to an enforcement action. Configure failure before target loading for mandatory quality failures. Glue exposes a fail-without-loading-target-data action for this gate.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/glue/latest/dg/tutorial-data-quality.html",
+    "concept": "data-quality-validation"
+  },
+  {
+    "id": "aipc01-0884",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "multi",
+    "stem": "A supplier sends invoices, product images, and inspection clips. A team wants one managed extraction interface and also needs named business fields from invoices. Which TWO choices fit this requirement? (Select TWO.)",
+    "options": [
+      "Use a Bedrock Data Automation project to configure modality-specific processing.",
+      "Use Macie custom data identifiers to generate invoice totals and video scene summaries.",
+      "Use only a text model and pass every file as an unlabeled text string.",
+      "Configure a document blueprint for the invoice fields needed by the application.",
+      "Use a Data Wrangler missing-value report as the image and video extraction result."
+    ],
+    "correct": [
+      0,
+      3
+    ],
+    "explanation": "BDA provides multimodal extraction through one interface; document blueprints define application-specific invoice fields. Projects organize processing configuration for the supported modalities. A document blueprint specifies the invoice information to extract.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/bda.html",
+    "concept": "multimodal-preprocessing"
+  },
+  {
+    "id": "aipc01-0885",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A preprocessing service produces the right fields, but a Bedrock call fails before inference after the team swaps models. The adapter still emits the previous model's native request body. Which fix most directly addresses this failure?",
+    "options": [
+      "Revise the adapter to validate and serialize the input against the selected API and model contract.",
+      "Lower temperature and keep sending the previous native body.",
+      "Add a semantic reranker before sending the previous native body.",
+      "Retry the previous body until the selected model accepts it."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "Validate and serialize the input for the selected inference contract. Valid business data alone does not establish a valid model request. The adapter must satisfy API fields and supported model content requirements.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_InvokeModel.html",
+    "concept": "input-schema-and-provenance"
+  },
+  {
+    "id": "aipc01-0886",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "multi",
+    "stem": "A supplier knowledge pipeline stores documents in S3. Security needs discovery of sensitive stored data, while the extraction service needs PII spans in supported English text to create a redacted derivative. Which TWO choices fit these different steps? (Select TWO.)",
+    "options": [
+      "Use a document-level PII-presence classification as the complete span map for redaction.",
+      "Use Amazon Macie to discover and report sensitive data in the S3 corpus.",
+      "Use the Macie finding report itself as the redacted derivative for model ingestion.",
+      "Use Comprehend PII detection to locate spans for controlled redaction.",
+      "Treat the absence of a Macie finding as confirmation that the extraction service redacted its text."
+    ],
+    "correct": [
+      1,
+      3
+    ],
+    "explanation": "Macie supports S3 sensitive-data discovery. Comprehend PII detection can locate text spans for a separate derivative-redaction workflow. Macie provides discovery findings on stored S3 data. Supported text PII detection supplies entity locations to the redaction step.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/macie/latest/user/what-is-macie.html",
+    "concept": "data-quality-validation"
+  },
+  {
+    "id": "aipc01-0887",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A text-enrichment job tags people, organizations, dates, and locations in English maintenance reports before preparing model context. It needs typed entities and confidence, rather than a general summary or an S3 security finding. Which approach fits?",
+    "options": [
+      "Use Comprehend key phrase detection and treat every phrase as the same entity type.",
+      "Use Comprehend dominant-language detection as the full enrichment result.",
+      "Use only PII detection results as the complete general-purpose entity enrichment.",
+      "Use Comprehend entity detection and retain entity types and scores."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "Comprehend entity detection supplies linguistic entity types and confidence scores for text enrichment. Entity detection returns the structured annotations the enrichment step needs.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/comprehend/latest/dg/how-entities.html",
+    "concept": "multimodal-preprocessing"
+  },
+  {
+    "id": "aipc01-0888",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "multi",
+    "stem": "A document extraction pipeline is rerun after normalization rules change. Reviewers must identify the original evidence for each extracted field and distinguish old results from new results. Which TWO metadata choices best support this? (Select TWO.)",
+    "options": [
+      "Replace the source reference with the generated summary to simplify tracing.",
+      "Record the immutable source object version or content hash with the derived record.",
+      "Use only the wall-clock completion time as the unique source identity.",
+      "Treat the most recently completed extraction as the original source.",
+      "Record the extractor and normalization configuration version for each result."
+    ],
+    "correct": [
+      1,
+      4
+    ],
+    "explanation": "Bind derived records to stable source identity and processing versions so that reviewers can reconstruct which evidence and transformations produced a value. Stable source identity distinguishes document versions even when object names are reused. Configuration versions explain why the same source can produce different derived values.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/bda-using-api.html",
+    "concept": "input-schema-and-provenance"
+  },
+  {
+    "id": "aipc01-0889",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A Textract-based reimbursement workflow can tolerate minor transcription errors in descriptions but cannot automatically pay an uncertain bank-account field. Review capacity is limited. Which policy best meets these constraints?",
+    "options": [
+      "Average confidence across the document and pay whenever that average is high.",
+      "Use risk-specific field thresholds and send uncertain payment fields to human review.",
+      "Reject every document containing any low-confidence description word.",
+      "Ask the summarization model to choose the most likely account number without review."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "Gate high-impact fields independently and route uncertain values for review; a document average can hide an unsafe payment field. Field-level thresholds align review with the cost of a specific error.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/textract/latest/dg/textract-best-practices.html",
+    "concept": "data-quality-validation"
+  },
+  {
+    "id": "aipc01-0890",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "multi",
+    "stem": "A Glue pipeline finds invalid records while preparing a model-input table. Valid records may proceed, but invalid records must remain available for correction and later replay. Which TWO changes implement this policy? (Select TWO.)",
+    "options": [
+      "Use supported row-level quality outcomes to separate records that fail the required checks.",
+      "Write all records to the serving location and let retrieval filter them later.",
+      "Write failed records and failure reasons to a separate controlled quarantine location.",
+      "Delete failed records immediately so retries cannot encounter them.",
+      "Use only the aggregate quality score to infer which individual records failed."
+    ],
+    "correct": [
+      0,
+      2
+    ],
+    "explanation": "Use row-level outcomes for supported checks and retain failed records with reasons in quarantine for controlled correction and replay. Row outcomes can identify specific failures for rules that support this granularity. Quarantine preserves the evidence and failure information needed for correction.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/glue/latest/dg/tutorial-data-quality.html",
+    "concept": "data-quality-validation"
+  },
+  {
+    "id": "aipc01-0891",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A catalog gate reports 99% of Glue quality rules passing. The one failed rule requires every offered product to have a source-rights identifier. Most passing rules check optional descriptive fields. The pipeline must publish only rights-cleared catalog data. Which release policy is appropriate?",
+    "options": [
+      "Publish because the aggregate quality score exceeds the general 95% target.",
+      "Add more optional-field checks so the failed rule has less weight in the score.",
+      "Publish after quarantining rows guessed to be responsible for the aggregate score reduction.",
+      "Block publication on the mandatory rights rule regardless of aggregate score."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "A percentage of passing rules does not encode business criticality. A mandatory eligibility constraint must independently gate release. A mandatory rule directly enforces the stated release condition.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/glue/latest/dg/glue-data-quality.html",
+    "concept": "data-quality-validation"
+  },
+  {
+    "id": "aipc01-0892",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "multi",
+    "stem": "A bilingual live-call assistant uses Transcribe streaming multi-language identification. The proposed request also enables built-in PII redaction. Raw transcripts must remain inaccessible to the summarizer until a compatible privacy step succeeds. Which TWO changes are required? (Select TWO.)",
+    "options": [
+      "Send both IdentifyMultipleLanguages and a fixed LanguageCode for the same stream.",
+      "Keep multi-language identification and move redaction into a separate supported processing stage.",
+      "Remove language options so the stream detects every language without configuration.",
+      "Gate summarizer access on successful completion of the privacy stage.",
+      "Retry the combined language-identification and redaction request with exponential backoff."
+    ],
+    "correct": [
+      1,
+      3
+    ],
+    "explanation": "Streaming language identification cannot be combined with built-in redaction. Use a compatible separate privacy stage and enforce its completion before summarization. Separating the incompatible features preserves the language-identification requirement. A privacy boundary is effective only if downstream access waits for it to pass.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/transcribe/latest/APIReference/API_streaming_StartStreamTranscription.html",
+    "concept": "multimodal-preprocessing"
+  },
+  {
+    "id": "aipc01-0893",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A Comprehend PII pass returns offsets into an English transcript. Before masking, another component normalizes whitespace and rewrites punctuation. The service then applies the original offsets to the rewritten text, exposing some names. Which correction best preserves both safe masking and reproducible evidence?",
+    "options": [
+      "Apply offsets to the exact analyzed text; version any later normalization and preserve source linkage.",
+      "Normalize whitespace first, then apply the previously returned offsets to the cleaned transcript.",
+      "Convert the returned character offsets into word positions after splitting the rewritten transcript.",
+      "Mask the generated summary using the transcript offsets and keep the rewritten transcript unchanged."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "Entity offsets refer to the analyzed document. Mask that exact text or redetect after a text-changing transform, preserving the processing lineage. Keeping analysis and masking on the same text version prevents offset drift and supports traceability.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/comprehend/latest/dg/how-pii.html",
+    "concept": "input-schema-and-provenance"
+  },
+  {
+    "id": "aipc01-0894",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "multi",
+    "stem": "A preprocessing team supports a mix of languages. Comprehend detects ordinary entities successfully in several languages, so an engineer proposes using its PII API as the only privacy gate for every transcript. The documented PII feature supports English and Spanish. Which TWO controls address the actual gap? (Select TWO.)",
+    "options": [
+      "Assume ordinary entity extraction and PII detection share identical language coverage.",
+      "Treat a successful ordinary entity response as evidence that the privacy check passed.",
+      "Route English and Spanish text through the supported PII workflow and track the detected language.",
+      "Publish unsupported-language transcripts when their ordinary entity scores are high.",
+      "Hold unsupported-language text for a validated alternative privacy path before publication."
+    ],
+    "correct": [
+      2,
+      4
+    ],
+    "explanation": "Language support is feature-specific. Route supported PII languages explicitly and hold other text until a validated privacy path completes. Explicit routing ties privacy processing to its documented input support. Holding unsupported inputs prevents an unassessed privacy path from silently passing.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/comprehend/latest/dg/pii.html",
+    "concept": "multimodal-preprocessing"
+  },
+  {
+    "id": "aipc01-0895",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A CSV catalog requires nonblank supplier IDs. Glue IsComplete passes after import, but string IDs containing empty strings still reach model input. The team must preserve valid identifiers and reject semantic blanks. What is the best correction?",
+    "options": [
+      "Keep only the non-null check because passing IsComplete proves IDs are meaningful.",
+      "Cast all IDs to integers so every nonnumeric identifier becomes null.",
+      "Normalize whitespace and add an explicit nonblank-value check alongside the null check.",
+      "Increase the aggregate passing-score target without changing the evaluated predicates."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "Non-null and nonblank are different requirements. Normalize whitespace and explicitly validate semantic blanks without corrupting valid string identifiers. The extra predicate checks the missing business constraint while retaining string IDs.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/glue/latest/dg/dqdl-rule-types-IsComplete.html",
+    "concept": "data-quality-validation"
+  },
+  {
+    "id": "aipc01-0896",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "multi",
+    "stem": "A Glue ETL run fails a RowCount rule because a supplier delivered half the expected catalog. All supported per-record checks pass. Engineers propose publishing every row marked Passed and ignoring the dataset failure. Which TWO responses correctly address the discrepancy? (Select TWO.)",
+    "options": [
+      "Recognize that passing row outcomes do not override a failed dataset-level completeness gate.",
+      "Recalculate the row pass rate and publish if it is 100%.",
+      "Declare RowCount broken because no single offending record was identified.",
+      "Hold the batch until the missing-delivery condition is resolved or explicitly approved.",
+      "Remove dataset-level rules whenever row-level output is enabled."
+    ],
+    "correct": [
+      0,
+      3
+    ],
+    "explanation": "Batch-level and row-level checks answer different questions. Individually valid rows can belong to an incomplete delivery that must remain blocked. A row can be valid even when required rows are missing from the batch. Holding the batch enforces the supplier-delivery requirement.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/glue/latest/dg/tutorial-data-quality.html",
+    "concept": "data-quality-validation"
+  },
+  {
+    "id": "aipc01-0897",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A claims team compares two extraction designs on supported PDFs. One uses Textract plus custom normalization; the other uses BDA document blueprints. Both must produce the same business schema. The BDA prototype uses less orchestration, but its total-amount field sometimes disagrees with reviewed source values. Which next step best supports a defensible choice?",
+    "options": [
+      "Choose the BDA prototype based only on lower measured latency and address extraction disagreements later.",
+      "Evaluate field accuracy and review workload on representative claims before selecting and gating the pipeline.",
+      "Choose whichever design has the higher average extraction confidence across the whole document.",
+      "Keep only syntactic JSON validation because schema conformity proves the amounts are correct."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "Compare source-verified field accuracy and operational review needs under the same input contract. A valid schema or managed interface does not establish semantic correctness. Representative, field-level evidence captures the actual disagreement and review cost.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/bda.html",
+    "concept": "multimodal-preprocessing"
+  },
+  {
+    "id": "aipc01-0898",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "multi",
+    "stem": "A BDA document pipeline starts asynchronous processing when an S3 upload arrives. The dispatcher records the returned invocation ARN as success and immediately publishes an empty extraction to the assistant index. Failed attempts are later replayed after a blueprint revision. Which TWO changes prevent premature publication and make the replay auditable? (Select TWO.)",
+    "options": [
+      "Publish when the start request returns an invocation ARN because processing has completed.",
+      "Remove the job tracking record after submission so later events cannot duplicate it.",
+      "Retrieve terminal processing status and validate the produced output before publication.",
+      "Preserve source identity, invocation tracking, and the effective blueprint version for each attempt.",
+      "Reuse an empty placeholder result as the final extraction when polling takes longer than expected."
+    ],
+    "correct": [
+      2,
+      3
+    ],
+    "explanation": "An asynchronous invocation identifier tracks submitted work. Publish only validated completed output, and retain source and processing-version linkage across replay attempts. A terminal-success check plus output validation prevents the demonstrated empty-result publication. Source and configuration lineage distinguish the original attempt from a revised replay.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/bda-using-api.html",
+    "concept": "input-schema-and-provenance"
+  },
+  {
+    "id": "aipc01-0899",
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A team needs one assessment of model responses on a prompt dataset and a separate continuous assessment of a deployed agent's tool use. Which pairing fits?",
+    "options": [
+      "Use Bedrock model evaluation for responses and AgentCore online evaluation for live agent traces.",
+      "Use AgentCore online evaluation for responses and Bedrock model evaluation for live agent traces.",
+      "Use Bedrock model evaluation for both, with tool success inferred from response fluency.",
+      "Use AgentCore on-demand evaluation for both, with a single call monitoring future sessions."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "Bedrock evaluation covers model or RAG assessment; AgentCore online evaluation assesses sampled live agent interactions. Matches the two assessment targets.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/evaluation.html",
+    "concept": "evaluation-job-types"
+  },
+  {
+    "id": "aipc01-0900",
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A booking agent calls the correct reservation tool but supplies a date absent from the user request and prior tool results. Which built-in evaluator most directly targets this defect?",
+    "options": [
+      "Builtin.GoalSuccessRate",
+      "Builtin.ToolSelectionAccuracy",
+      "Builtin.ToolParameterAccuracy",
+      "Builtin.Conciseness"
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "Tool parameter accuracy assesses whether argument values follow the preceding context and tool schema. Directly targets the invented date.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/prompt-templates-builtin.html",
+    "concept": "agent-evaluation-and-quality-gates"
+  },
+  {
+    "id": "aipc01-0901",
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A support assistant receives thumbs-down ratings, but engineers cannot identify the affected outputs or deployed prompt. Which change makes the feedback actionable?",
+    "options": [
+      "Keep a daily rating total and inspect the next release if it declines.",
+      "Associate feedback with response IDs and configuration versions, then review recurring issues.",
+      "Treat each negative rating as a factual error and automatically retrain nightly.",
+      "Replace ratings with invocation counts to remove subjective feedback."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "Link feedback to the affected response and configuration so review can lead to testable improvements. Preserves the evidence needed to investigate patterns.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/wellarchitected/latest/generative-ai-lens/genops01-bp02.html",
+    "concept": "evaluation-experiments-and-feedback"
+  },
+  {
+    "id": "aipc01-0902",
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "In AgentCore evaluation telemetry, which boundary represents an individual operation such as a tool call?",
+    "options": [
+      "The complete session",
+      "The evaluator configuration",
+      "The deployment version",
+      "A span within a trace"
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "A span represents an operation; a trace groups an interaction and a session groups conversation activity. A tool operation is represented by a span.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/cli/latest/reference/bedrock-agentcore/evaluate.html",
+    "concept": "agent-evaluation-and-quality-gates"
+  },
+  {
+    "id": "aipc01-0903",
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "multi",
+    "stem": "A CI job has collected the complete telemetry for one failed agent session. It must evaluate two specific tool calls through the low-level AgentCore Evaluate API. Which TWO request elements fit? (Choose TWO.)",
+    "options": [
+      "Send evaluationInput.sessionSpans containing the collected session records.",
+      "Set evaluationTarget.spanIds to the two tool span IDs.",
+      "Send sessionId alone and rely on Evaluate to retrieve CloudWatch logs.",
+      "Set evaluationTarget.traceIds and spanIds together to narrow the scope.",
+      "Create an enabled online evaluation configuration for each tool call."
+    ],
+    "correct": [
+      0,
+      1
+    ],
+    "explanation": "Provide session spans as input and use spanIds to select tool targets. IDs alone do not retrieve the telemetry. Supplies the actual evaluation input. Selects the required tool operations.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/cli/latest/reference/bedrock-agentcore/evaluate.html",
+    "concept": "agent-evaluation-and-quality-gates"
+  },
+  {
+    "id": "aipc01-0904",
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A team must create a continuous live-traffic evaluator now, but keep it paused until an approved launch window. The service role and data source are ready. Which creation setting meets this requirement?",
+    "options": [
+      "Set enableOnCreate=true and omit evaluators until launch.",
+      "Set enableOnCreate=false and enable execution at launch.",
+      "Call Evaluate with an empty sessionSpans list until launch.",
+      "Create the configuration with enableOnCreate=true and a sampling rule that excludes known sessions."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "CreateOnlineEvaluationConfig supports enableOnCreate=false to create the configuration with execution disabled. Creates the configuration without processing traces.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/create-online-evaluations.html",
+    "concept": "agent-evaluation-and-quality-gates"
+  },
+  {
+    "id": "aipc01-0905",
+    "domain": "AI Safety, Security & Governance",
+    "tag": "Domain 3",
+    "type": "multi",
+    "stem": "A judge model rewards long answers and systematically underrates correct answers written in a regional dialect. Specialists find both effects in labeled cases. The team wants fair release scores. Which TWO actions best improve the evaluator? (Choose TWO.)",
+    "options": [
+      "Raise the passing score until the longest outputs fail.",
+      "Validate the rubric against held-out specialist judgments across dialect and answer-length slices.",
+      "Version the judge prompt and model and investigate disagreements before using the gate.",
+      "Use the candidate model to grade its own outputs without external labels.",
+      "Repeat the existing judge ten times and treat agreement as proof of accuracy."
+    ],
+    "correct": [
+      1,
+      2
+    ],
+    "explanation": "Calibrate a versioned judge against expert judgments; repeated or stricter scoring alone does not correct a biased rubric. Checks agreement with specialists across the dialect and length slices showing bias. Makes calibration and subsequent comparisons attributable.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/prescriptive-guidance/latest/gen-ai-lifecycle-operational-excellence/dev-experimenting-quality.html",
+    "concept": "evaluation-datasets-and-judges"
+  },
+  {
+    "id": "aipc01-0906",
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A new assistant improves aggregate accuracy from 89% to 92%. Rare cancellation requests fall from 85% to 60% and are business critical. Which reporting and gate design fits?",
+    "options": [
+      "Accept because aggregate accuracy exceeds the old version by three points.",
+      "Report only the cancellation metric until it recovers.",
+      "Require aggregate and critical-slice thresholds, with case counts for each slice.",
+      "Reweight production traffic so cancellations disappear from the benchmark."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "Critical slices need explicit quality thresholds and sufficient evaluation coverage alongside aggregate results. Makes the critical regression visible and actionable.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/wellarchitected/latest/generative-ai-lens/genops01-bp01.html",
+    "concept": "evaluation-datasets-and-judges"
+  },
+  {
+    "id": "aipc01-0907",
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "multi",
+    "stem": "An engineer has tuned a prompt on 120 labeled cases and repeatedly selected the highest-scoring variant. Which TWO practices provide a more credible final comparison with the baseline? (Choose TWO.)",
+    "options": [
+      "Use the same 120 cases as the only final release evidence.",
+      "Freeze a separate representative holdout before final selection.",
+      "Run baseline and candidate under the same recorded evaluation configuration.",
+      "Change the judge rubric independently for each prompt to match its style.",
+      "Report the candidate's best generation and the baseline's first generation."
+    ],
+    "correct": [
+      1,
+      2
+    ],
+    "explanation": "An untouched holdout limits selection leakage, and a common recorded protocol makes the final comparison interpretable. Provides cases not used to select the prompt. Controls the comparison conditions.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/prescriptive-guidance/latest/gen-ai-lifecycle-operational-excellence/dev-experimenting-experimentation-loops.html",
+    "concept": "evaluation-experiments-and-feedback"
+  },
+  {
+    "id": "aipc01-0908",
+    "domain": "AI Safety, Security & Governance",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A claims agent says a refund was completed, but organizational AI policy requires approval before a refund and the agent skipped that step. The benchmark has explicit session-level success assertions. Which evaluation design most directly checks policy-compliant behavior?",
+    "options": [
+      "Grade only the grammatical quality of the completion message.",
+      "Compare only the final refund confirmation with a reference response.",
+      "Count all tool calls and pass sessions with at least three.",
+      "Provide session assertions as ground truth and evaluate goal completion against them."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "Ground truth success assertions let a session evaluation check the required outcomes and behavior. Directly encodes the missing approval requirement.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/ground-truth-evaluations.html",
+    "concept": "agent-evaluation-and-quality-gates"
+  },
+  {
+    "id": "aipc01-0909",
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A team wants to compare retrievers without allowing generation-model behavior to mask retrieval failures. Which test design best isolates the retrieval component?",
+    "options": [
+      "Evaluate fixed queries against labeled relevant passages and record retrieval relevance and latency.",
+      "Grade full generated answers while allowing a different model for each retriever.",
+      "Measure answer fluency after each retriever supplies its top document.",
+      "Choose the retriever with the smallest vector index and infer recall from storage size."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "Use query-to-evidence labels and retrieval measurements to assess retrieval separately from answer generation. Directly tests retrieved evidence and retrieval performance.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/evaluation.html",
+    "concept": "rag-evaluation-metrics"
+  },
+  {
+    "id": "aipc01-0910",
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "multi",
+    "stem": "A steering group asks whether an agent saves money while resolving customer issues. Which TWO dashboard metrics most directly connect quality and economics to that decision? (Choose TWO.)",
+    "options": [
+      "Total model invocation count without outcome labels.",
+      "Verified resolution rate by workflow and release version.",
+      "Cost per verified resolved task, including failed attempts.",
+      "Average CPU utilization of the feedback collector.",
+      "Mean model cost per invocation, without a resolved-outcome denominator."
+    ],
+    "correct": [
+      1,
+      2
+    ],
+    "explanation": "Report verified outcomes and the full cost of producing them; activity alone does not establish value. Shows whether the workflow achieves the desired outcome. Relates spending to successful work and includes failure overhead.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops05-bp04.html",
+    "concept": "evaluation-experiments-and-feedback"
+  },
+  {
+    "id": "aipc01-0911",
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "multi",
+    "stem": "A pipeline invokes an instrumented agent and immediately queries logs. It finds the final response but no earlier tool spans, then records a low task score as a regression. The same session has complete spans several minutes later. Which TWO changes make the gate defensible? (Choose TWO.)",
+    "options": [
+      "Add a bounded telemetry-ingestion wait and confirm required session records are available before evaluation.",
+      "Mark incomplete telemetry as an evaluation failure requiring retry or investigation, separate from agent quality.",
+      "Assign a zero task score whenever any span is temporarily absent.",
+      "Evaluate the final response alone and declare tool behavior equivalent if the answer matches.",
+      "Combine spans from the previous successful session to complete the missing history."
+    ],
+    "correct": [
+      0,
+      1
+    ],
+    "explanation": "Wait for required telemetry within a bound and distinguish unscorable input from an observed behavioral failure. Addresses the demonstrated ingestion delay. Prevents missing evidence from being mislabeled as agent behavior.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/getting-started-on-demand.html",
+    "concept": "agent-evaluation-and-quality-gates"
+  },
+  {
+    "id": "aipc01-0912",
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A procurement agent chooses the appropriate lookup tool with schema-valid arguments copied correctly from context. It then stops after the lookup, although the user requested a completed purchase and the sandbox contains the required purchase tool. Tool selection and parameter scores are high. Which conclusion and next evaluation are best?",
+    "options": [
+      "The workflow succeeded because both tool-level scores passed; next test response style.",
+      "The parameter evaluator is defective; replace it with schema validation only.",
+      "The tool scores can be valid; assess session goals and required purchase behavior separately.",
+      "Average the two passing tool scores with response fluency to establish completion."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "Correct local tool behavior does not establish that the full session achieved its required outcome. Uses an outcome-level check for the unmet goal.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/prompt-templates-builtin.html",
+    "concept": "agent-evaluation-and-quality-gates"
+  },
+  {
+    "id": "aipc01-0913",
+    "domain": "AI Safety, Security & Governance",
+    "tag": "Domain 3",
+    "type": "multi",
+    "stem": "A benefits assistant uses one of two prompts. The candidate improves overall judged accuracy, but non-native-language users report more wrong eligibility decisions. Traffic allocation also differs by language. Which TWO checks best evaluate fairness without confusing population mix with prompt effects? (Choose TWO.)",
+    "options": [
+      "Compare baseline and candidate within language slices using the same eligibility rubric and adequate labeled cases.",
+      "Audit judge agreement with qualified reviewers in each affected language.",
+      "Conclude the candidate is fair because its overall accuracy is higher.",
+      "Compare only the candidate's largest language group with the baseline's overall score.",
+      "Remove language metadata before analysis so disparities cannot influence decisions."
+    ],
+    "correct": [
+      0,
+      1
+    ],
+    "explanation": "Use comparable within-slice evidence and validate the judge across languages before interpreting fairness differences. Separates prompt performance from language-mix differences. Tests whether the evaluator itself mismeasures a language group.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/wellarchitected/latest/generative-ai-lens/genops01-bp01.html",
+    "concept": "evaluation-experiments-and-feedback"
+  },
+  {
+    "id": "aipc01-0914",
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A model update changes the wording of valid appointment confirmations. Exact-string tests fail, yet a pilot also shows occasional duplicate bookings. The team needs a release gate that accepts harmless variation and rejects harmful actions. Which design best fits?",
+    "options": [
+      "Use semantic checks for confirmations and sandbox workflow assertions for one booking, plus rollout rollback criteria.",
+      "Keep exact-string checks and pass if most confirmations match the old wording.",
+      "Use a semantic similarity threshold on final responses as the only deployment gate.",
+      "Use API health checks plus a canary; investigate duplicates after full promotion."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "Combine semantic output checks with deterministic workflow invariants and controlled rollout criteria. Accepts valid wording while checking the consequential side effect.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops06-bp01.html",
+    "concept": "agent-evaluation-and-quality-gates"
+  },
+  {
+    "id": "aipc01-0915",
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A service compares models on the same 2,000 workflows. Both meet its latency and quality floors. A costs $0.08 per attempt and resolves 80% of tasks; B costs $0.06 per attempt and resolves 50%. Each task gets one attempt, unresolved tasks require identical human work, and higher automated resolution is preferred. Which recommendation follows from these measurements?",
+    "options": [
+      "Choose B because a cheaper attempt necessarily produces cheaper resolved work.",
+      "Choose A: its model cost per resolved task is $0.10 versus $0.12, and it leaves fewer tasks for humans.",
+      "Choose B because cost divided by failed-task rate is lower.",
+      "Declare the models economically equivalent because both meet the quality floor."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "Under the stated one-attempt design, divide total model spend by verified resolutions and account for remaining human work. 0.08/0.80=0.10 and 0.06/0.50=0.12; A also has fewer unresolved cases.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops05-bp04.html",
+    "concept": "evaluation-experiments-and-feedback"
+  },
+  {
+    "id": "aipc01-0916",
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A team must score many historical sessions already in CloudWatch without invoking the agent again. It wants the managed service to discover sessions in a fixed time window and run the job. Which approach fits the current documented capabilities?",
+    "options": [
+      "Create an online configuration and assume its first run replays every historical session.",
+      "Send only a log-group name to the low-level Evaluate API and request automatic discovery.",
+      "Use the on-demand dataset runner to invoke all historical user prompts again.",
+      "Start a batch evaluation with the CloudWatch Logs source and time-range filters."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "Batch evaluation can discover existing sessions from CloudWatch Logs with session or time-range filters, without invoking the agent. Matches managed session discovery for historical records.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/batch-evaluations-start.html",
+    "concept": "agent-evaluation-and-quality-gates"
+  },
+  {
+    "id": "aipc01-0917",
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A batch evaluation job succeeds overall. Its summary lists 500 sessions, but a critical custom evaluator has 100 failed evaluations due to malformed spans. The 400 scored sessions pass. The release policy requires this evaluator on every benchmark session. Which conclusion is justified?",
+    "options": [
+      "The gate passes because the service job status is successful.",
+      "The gate passes with an 80% confidence score derived from scoring coverage.",
+      "The gate lacks required coverage; fix or recover the failures and rerun the affected evaluations.",
+      "The gate fails on 100 observed agent mistakes and should trigger prompt retraining."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "Job success does not guarantee every evaluator scored every session; required evaluation coverage must be checked explicitly. Addresses the missing required evidence.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/batch-evaluations-results.html",
+    "concept": "evaluation-datasets-and-judges"
+  },
+  {
+    "id": "aipc01-0918",
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "multi",
+    "stem": "A healthcare workflow evaluation needs tool names, ordering, status, and stable case correlation, but does not need raw patient identifiers or authorization headers. Engineers propose copying full production traces into a shared benchmark bucket. Which TWO controls best preserve useful evidence while reducing exposure? (Choose TWO.)",
+    "options": [
+      "Redact unnecessary sensitive fields before exporting, preserving required trace relationships and safe case IDs.",
+      "Restrict benchmark and result access, encrypt storage, and enforce an approved retention period.",
+      "Keep all raw headers because encrypted storage makes them safe for every evaluator.",
+      "Replace every tool input and result with one constant string, regardless of the rubric.",
+      "Publish traces under pseudonymous object names while retaining identifiers in the contents."
+    ],
+    "correct": [
+      0,
+      1
+    ],
+    "explanation": "Minimize captured sensitive content while preserving evaluation evidence, and protect retained traces and results throughout their lifecycle. Preserves the stated evaluation needs while removing unnecessary content. Limits who can access the retained data and for how long.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/data-protection.html",
+    "concept": "agent-evaluation-and-quality-gates"
+  },
+  {
+    "id": "aipc01-0919",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A company must host a fine-tuned open-weight FM in its own inference container and choose serving instances. It wants managed model hosting rather than building a serving platform. The runtime is unsupported by its available Bedrock options. Which approach best fits?",
+    "options": [
+      "Invoke the FM through a standard Amazon Bedrock managed-model API.",
+      "Run the container on a self-managed EC2 Auto Scaling group.",
+      "Amazon SageMaker AI managed endpoints.",
+      "Deploy and operate the model-serving service on Amazon ECS."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "Use SageMaker AI when deployment requires control over the inference container and serving resources beyond the available Bedrock options. Correct. Managed hosting supports control of the model-serving container and endpoint resources.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/decision-guides/latest/decision-guides/bedrock-or-sagemaker.html",
+    "concept": "sagemaker-model-lifecycle"
+  },
+  {
+    "id": "aipc01-0920",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A team has three releases of a customized FM and needs a catalog of their evaluation metadata and approval states. Which SageMaker AI design is most appropriate?",
+    "options": [
+      "One Pipelines execution graph with no registered model versions.",
+      "One Model Registry Model Group containing three model versions.",
+      "One Model Card containing only the latest release description.",
+      "One SageMaker Experiments experiment containing three runs, used as the approval catalog."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "A Model Group organizes related model versions; each version can carry metadata and a distinct approval state. Correct. The group collects related versions and their lifecycle metadata.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/model-registry.html",
+    "concept": "sagemaker-model-lifecycle"
+  },
+  {
+    "id": "aipc01-0921",
+    "domain": "AI Safety, Security & Governance",
+    "tag": "Domain 3",
+    "type": "single",
+    "stem": "A risk team needs one shareable record explaining a model's intended uses, unsupported uses, risk rating, and evaluation observations. Which SageMaker AI capability is designed for this record?",
+    "options": [
+      "A SageMaker Experiments run comparison alone.",
+      "A SageMaker lineage graph alone.",
+      "A SageMaker Model Registry approval status alone.",
+      "A Model Card."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "Use a Model Card to communicate intended use, risk, limitations, and evaluation evidence throughout a model lifecycle. Correct. Model Cards document intended use, risks, and evaluation information.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/model-cards.html",
+    "concept": "sagemaker-model-lifecycle"
+  },
+  {
+    "id": "aipc01-0922",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A team already obtains acceptable results from a supported Bedrock FM. It wants API inference with minimal responsibility for model-serving infrastructure and has no requirement for a custom runtime. Which approach best fits?",
+    "options": [
+      "Run the FM on self-managed EC2 instances.",
+      "Invoke the supported FM through Amazon Bedrock.",
+      "Build a custom SageMaker inference container before using the same FM.",
+      "Create a Model Registry version and treat its approval status as an inference API."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "Choose a managed Bedrock API when the supported model meets requirements and direct control of the serving runtime is unnecessary. Correct. Managed model APIs fit the stated operational preference.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/decision-guides/latest/decision-guides/bedrock-or-sagemaker.html",
+    "concept": "sagemaker-model-lifecycle"
+  },
+  {
+    "id": "aipc01-0923",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A developer changes a registered FM version to Approved. This account has no deployment project, event rule, or custom release automation. The production endpoint still serves the old release. What should the team do?",
+    "options": [
+      "Set the old release to Rejected and assume its serving instances stop immediately.",
+      "Wait for Model Registry to replace every endpoint in the account automatically.",
+      "Change the Model Group name to the endpoint name.",
+      "Deploy the approved package through an authorized release workflow and verify the resulting endpoint."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "Approval is a lifecycle signal. Deployment requires a configured workflow or explicit deployment action; some SageMaker project templates provide that integration. Correct. Approval metadata alone does not provision or update an endpoint in this setup.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/model-registry-approve.html",
+    "concept": "sagemaker-model-lifecycle"
+  },
+  {
+    "id": "aipc01-0924",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A release pipeline evaluates a packaged FM with a fixed regression suite. Versions failing the quality threshold must never reach the registration step. Which implementation best fits?",
+    "options": [
+      "Register every version as Approved, then attach the report later.",
+      "Create a Model Card after deployment and rely on its risk rating to stop registration.",
+      "Write evaluation metrics to a report and use a Pipelines condition step to run registration only on the passing branch.",
+      "Put evaluation and registration in independent parallel branches."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "A condition step can inspect evaluation results and select the registration branch. Make evaluation a dependency of the gate. Correct. The dependency and branch implement an explicit quality gate.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/define-pipeline.html",
+    "concept": "sagemaker-model-lifecycle"
+  },
+  {
+    "id": "aipc01-0925",
+    "domain": "AI Safety, Security & Governance",
+    "tag": "Domain 3",
+    "type": "multi",
+    "stem": "An auditor asks which dataset and pipeline execution produced a deployed customized FM, and what uses the team approved. Which TWO records address these different needs? (Select TWO.)",
+    "options": [
+      "An endpoint name reused for every release with no version mapping.",
+      "A Model Card documenting intended uses and evaluation limitations.",
+      "Only the current endpoint instance count.",
+      "Only a successful HTTP health check from the container.",
+      "A lineage record linking the package to its pipeline steps and artifact locations."
+    ],
+    "correct": [
+      1,
+      4
+    ],
+    "explanation": "Combine technical lineage with a Model Card: provenance and intended-use documentation answer different audit questions. Correct. A model card supplies the governance interpretation. Correct. Lineage supplies technical provenance.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/pipelines-lineage-tracking.html",
+    "concept": "sagemaker-model-lifecycle"
+  },
+  {
+    "id": "aipc01-0926",
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "multi",
+    "stem": "An existing Model Monitor customer hosts a text-generating FM. The team wants drift alerts and evidence that generated advice remains factually grounded. Which TWO statements are correct? (Select TWO.)",
+    "options": [
+      "Use only a toxicity evaluator and treat its passing score as evidence of factual grounding.",
+      "Enable data capture and compare response-length distributions as the sole factual-grounding gate.",
+      "Use only endpoint latency and error-rate baselines to determine whether advice remains factually grounded.",
+      "Built-in Model Monitor statistics operate on tabular data and do not by themselves assess the factual grounding of arbitrary generated text.",
+      "Add a task-specific evaluation of sampled responses against trusted evidence, with its own quality metrics."
+    ],
+    "correct": [
+      3,
+      4
+    ],
+    "explanation": "Operational drift signals and semantic quality evidence are complementary. Arbitrary generated text needs task-appropriate evaluation rather than assuming tabular monitors measure factuality. Correct. Text semantics require a suitable evaluation procedure. Correct. Grounding must be measured with an appropriate quality evaluation.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/model-monitor.html",
+    "concept": "sagemaker-model-lifecycle"
+  },
+  {
+    "id": "aipc01-0927",
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "single",
+    "stem": "A supported real-time SageMaker endpoint serves a production FM. A candidate has passed offline quality tests. The team wants to measure latency and errors under copied live requests while every caller still receives the production response. Which mechanism best fits?",
+    "options": [
+      "A SageMaker shadow test.",
+      "A canary rollout sending 10% of caller responses from the candidate.",
+      "A linear rollout increasing candidate traffic every five minutes.",
+      "An all-at-once endpoint update with no baking period."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "Shadow testing compares a candidate with live request copies while production remains the source of caller responses. Correct. The candidate receives copied requests while the production variant supplies caller responses.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/shadow-tests.html",
+    "concept": "sagemaker-model-lifecycle"
+  },
+  {
+    "id": "aipc01-0928",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "multi",
+    "stem": "A team uses a SageMaker asynchronous inference endpoint with no other excluded features. It wants a safer model update and also proposes a native SageMaker shadow test. Which TWO conclusions follow from current documentation? (Select TWO.)",
+    "options": [
+      "Renaming the variant removes the asynchronous shadow-test exclusion.",
+      "Native SageMaker shadow tests exclude asynchronous inference.",
+      "A successful blue/green configuration proves native shadow testing is also supported.",
+      "Deployment guardrails can apply to asynchronous endpoints, subject to the documented feature exclusions.",
+      "Asynchronous inference is categorically excluded from all deployment guardrails."
+    ],
+    "correct": [
+      1,
+      3
+    ],
+    "explanation": "Check each feature separately: asynchronous inference is within deployment-guardrail scope but is excluded from native shadow tests. Correct. Shadow-testing support differs from deployment-guardrail support. Correct. Asynchronous inference is explicitly within deployment-guardrail scope.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/deployment-guardrails.html",
+    "concept": "sagemaker-model-lifecycle"
+  },
+  {
+    "id": "aipc01-0929",
+    "domain": "Operational Efficiency & Optimization",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A supported endpoint uses a canary deployment, but the deployment configuration references no CloudWatch alarms. The team expects automatic rollback when model latency rises during baking. What is missing?",
+    "options": [
+      "Enable endpoint data capture and extend the baking period without defining any rollback alarms.",
+      "Create latency alarms in CloudWatch but omit them from the deployment auto-rollback configuration.",
+      "Create suitable CloudWatch alarms, reference them in the auto-rollback configuration, and allow the execution role to describe those alarms.",
+      "Reference latency alarms but deny the execution role permission to describe them."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "Auto-rollback needs configured CloudWatch alarms and permission to inspect them. Canary traffic shifting alone does not define a latency failure condition. Correct. Auto-rollback requires alarm configuration and the documented permission.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/deployment-guardrails-configuration.html",
+    "concept": "sagemaker-model-lifecycle"
+  },
+  {
+    "id": "aipc01-0930",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "multi",
+    "stem": "A fine-tuned FM rollback failed because the old weights were loaded with the new tokenizer and inference code. Which TWO release practices directly prevent recurrence? (Select TWO.)",
+    "options": [
+      "Validate the previous complete bundle before restoring traffic to it.",
+      "Record only the parameter count because it determines tokenizer compatibility.",
+      "Retain a release manifest binding the weights, tokenizer, inference code, and exact container image reference tested together.",
+      "Overwrite the old artifact path with new files while keeping its old release label.",
+      "Keep the old weights but delete all associated configuration files."
+    ],
+    "correct": [
+      0,
+      2
+    ],
+    "explanation": "Rollback restores a compatible serving bundle, including tokenization and runtime behavior. Preserve stable release references and test the complete previous bundle. Correct. This tests the actual rollback target rather than isolated weights. Correct. The manifest identifies the complete compatible serving bundle.",
+    "difficulty": "medium",
+    "docUrl": "https://aws.amazon.com/blogs/machine-learning/exploring-summarization-options-for-healthcare-with-amazon-sagemaker/",
+    "concept": "sagemaker-model-lifecycle"
+  },
+  {
+    "id": "aipc01-0931",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A production endpoint uses a Marketplace inference container. A release engineer proposes canary traffic shifting with a final baking period and automatic rollback. The model package is approved and capacity is sufficient. Which decision is best?",
+    "options": [
+      "Keep the same variant name and add latency alarms; those prerequisites override the Marketplace-container exclusion.",
+      "Proceed with canary and alarms after confirming that Marketplace entitlement is active; entitlement also enables the requested guardrails.",
+      "Treat the container feature as a compatibility blocker and design another tested rollout path; current guardrails fall back to all-at-once without a final baking period for this exclusion.",
+      "Use a rolling deployment with small batches because the Marketplace exclusion applies only to blue/green traffic shifting."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "Check feature exclusions before selecting a rollout. Marketplace containers do not support the requested deployment guardrails even when approval and capacity checks pass. Correct. Approval and capacity do not remove the Marketplace-container exclusion.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/deployment-guardrails-exclusions.html",
+    "concept": "sagemaker-model-lifecycle"
+  },
+  {
+    "id": "aipc01-0932",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "multi",
+    "stem": "A central registry shares an approved FM with a production account. Production can describe the package, but deployment fails reading its encrypted S3 artifacts and private ECR image. Which TWO changes address the missing access without treating approval as authorization? (Select TWO.)",
+    "options": [
+      "Copy the Model Card and evaluation report into production; their ownership authorizes the deployment role to fetch source artifacts.",
+      "Grant the intended production execution identity the required S3 and ECR access using the appropriate identity and cross-account resource policies.",
+      "Approve the package and grant only DescribeModelPackage in the production account; package access includes its referenced files.",
+      "Authorize required use of the artifact encryption KMS key for that identity.",
+      "Grant broad SageMaker API permissions only and leave the S3, ECR, and KMS resource policies unchanged."
+    ],
+    "correct": [
+      1,
+      3
+    ],
+    "explanation": "A registry approval is distinct from authorization to fetch serving artifacts and images or use their encryption key. Validate the entire cross-account access path. Correct. Package visibility does not grant artifact or image access. Correct. Encrypted artifact access also depends on key authorization.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/model-registry-deploy.html",
+    "concept": "sagemaker-model-lifecycle"
+  },
+  {
+    "id": "aipc01-0933",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A large, single-variant real-time endpoint passes the rolling-deployment compatibility checks. The account cannot accommodate a full second fleet, but it can support incremental replacement batches and rollback capacity. The team requires monitored gradual rollout. Which approach best fits?",
+    "options": [
+      "Use a shadow test to replace the production fleet one batch at a time, automatically returning candidate responses after each comparison.",
+      "Use blue/green with a full second fleet and assume low traffic removes its capacity requirement.",
+      "Choose blue/green canary with one small green fleet and assume SageMaker will never need full green capacity before promotion.",
+      "Use a rolling deployment with a supported batch size, CloudWatch alarms, and a tested rollback plan."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "For compatible large endpoints, rolling deployments can reduce additional fleet capacity requirements while retaining incremental rollout and alarm-based protection. Correct. Rolling deployment reduces extra capacity requirements by updating in batches.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/deployment-guardrails-rolling.html",
+    "concept": "sagemaker-model-lifecycle"
+  },
+  {
+    "id": "aipc01-0934",
+    "domain": "Testing, Validation & Troubleshooting",
+    "tag": "Domain 5",
+    "type": "multi",
+    "stem": "A candidate FM has normal latency and no invocation errors in a shadow test, but an offline review finds unsupported claims in a regulated advice category. The team must avoid exposing that regression. Which TWO actions should gate promotion? (Select TWO.)",
+    "options": [
+      "Attach the failing evaluation evidence to the release record and rerun the affected regression suite after remediation.",
+      "Keep the candidate out of serving traffic until the defined semantic quality threshold passes on the regulated category.",
+      "Increase the baking period and require zero invocation errors, then waive the failed advice-category evaluation.",
+      "Promote because shadow testing guarantees factual accuracy when error rate is zero.",
+      "Promote only after latency and throughput match production, postponing advice-category retesting until the next scheduled review."
+    ],
+    "correct": [
+      0,
+      1
+    ],
+    "explanation": "Promotion must satisfy both operational and semantic quality gates. A successful shadow test cannot override a failed use-case-specific content evaluation. Correct. The release decision and fix need traceable quality evidence. Correct. Operational success does not satisfy the failed content requirement.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/shadow-tests.html",
+    "concept": "sagemaker-model-lifecycle"
+  },
+  {
+    "id": "aipc01-0935",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "Release 12 is now serving successfully, and release 11 must remain recoverable for 30 days. A cleanup job proposes deleting every S3 object and ECR image not referenced by the current endpoint configuration. Which policy best satisfies both retirement and rollback requirements?",
+    "options": [
+      "Retain the old package metadata and evaluation report, but delete the old image and artifacts because production no longer references them.",
+      "Keep every endpoint configuration for 30 days, while applying a seven-day deletion rule to all noncurrent S3 artifacts.",
+      "Compute dependencies across active and retained rollback releases, preserve their complete bundles, and delete only unreferenced assets after retention checks.",
+      "Retain the old weights and container image, but delete the old tokenizer because release 12 already has a tokenizer."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "Artifact retirement must consider active deployments and retained rollback bundles. A non-serving version can still be needed for recovery. Correct. The retained release is a real dependency even when not currently serving.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/realtime-endpoints-delete-resources.html",
+    "concept": "sagemaker-model-lifecycle"
+  },
+  {
+    "id": "aipc01-0936",
+    "domain": "AI Safety, Security & Governance",
+    "tag": "Domain 3",
+    "type": "multi",
+    "stem": "An endpoint is being retired. Security requires removal of customer-owned model files after retention expires, while finance requires stopping serving charges. Which TWO statements should guide the runbook? (Select TWO.)",
+    "options": [
+      "DeleteModel automatically deletes its S3 artifacts, ECR image, and IAM role.",
+      "Separately inventory and remove eligible model artifacts and inference code; DeleteModel does not remove those files or the execution role.",
+      "DeleteEndpointConfig automatically deletes every endpoint created from it.",
+      "Delete the endpoint to release its serving resources, then verify the endpoint deletion completed.",
+      "Delete the endpoint configuration first while the endpoint is still live, using loss of its configuration as the signal to delete the endpoint."
+    ],
+    "correct": [
+      1,
+      3
+    ],
+    "explanation": "Retirement has separate serving, metadata, artifact, and identity actions. Verify resource deletion and apply retention and dependency checks to customer-owned assets. Correct. Metadata deletion is not artifact or identity cleanup. Correct. Removing catalog metadata alone does not stop endpoint capacity.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/realtime-endpoints-delete-resources.html",
+    "concept": "sagemaker-model-lifecycle"
+  },
+  {
+    "id": "aipc01-0937",
+    "domain": "Operational Efficiency & Optimization",
+    "tag": "Domain 4",
+    "type": "single",
+    "stem": "A new AWS customer is designing FM production monitoring in November 2026. An old design mandates adopting SageMaker Model Monitor and assumes it scores every generated answer for factuality. Which revision is best?",
+    "options": [
+      "Use a predeployment evaluation and registry approval as the sole ongoing quality signal.",
+      "Adopt Model Monitor and add a separate factuality evaluator.",
+      "Choose available operational monitoring and add explicit FM quality evaluation.",
+      "Use CloudWatch operational alarms as the sole quality gate."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "Current availability matters when choosing monitoring. New customers need an alternative to Model Monitor and explicit task-specific FM quality measurements. Correct. Model Monitor is closed to new customers, and semantic quality needs task-specific evaluation.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/model-monitor-availability-change.html",
+    "concept": "sagemaker-model-lifecycle"
+  },
+  {
+    "id": "aipc01-0938",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "multi",
+    "stem": "A pipeline registers version 24 and an approval event starts its release. Before deployment finishes, another candidate becomes the latest version in the group. The workflow also wants to delete the previous endpoint configuration immediately after sending UpdateEndpoint. Which TWO changes improve release correctness? (Select TWO.)",
+    "options": [
+      "Pass and validate the exact approved package ARN throughout deployment instead of resolving the group's latest version later.",
+      "Delete the previous configuration as soon as UpdateEndpoint returns, even while the endpoint is Updating.",
+      "Resolve latest at every workflow step so all steps automatically use whichever candidate was most recently registered.",
+      "Wait for the endpoint update outcome and preserve configurations still in use or needed for rollback before cleanup.",
+      "Wait until CreateModel succeeds, then treat the endpoint release as complete and delete its previous configuration."
+    ],
+    "correct": [
+      0,
+      3
+    ],
+    "explanation": "Bind a release to its exact package version and verify the endpoint transition before cleanup. Preserve configurations and assets required by active operations or rollback. Correct. A stable version reference prevents a later registration from changing the deployment target. Correct. An accepted update request does not establish completion or safe deletion.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/sagemaker/latest/dg/model-registry.html",
+    "concept": "sagemaker-model-lifecycle"
+  },
+  {
+    "id": "aipc01-0939",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A developer asks Amazon Q Developer in an IDE to review changes while one modified supported source file is active. The team intends to inspect other changed files too. What review scope should it verify before relying on the results?",
+    "options": [
+      "The default request covers the active file changes; request and verify the additional project scope.",
+      "The default request covers every repository file, including excluded test code and unsupported languages.",
+      "The default request covers every deployed Lambda version associated with the local repository.",
+      "The default request covers only dependency manifests, regardless of the active source file."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "Verify what an automated review actually inspected before interpreting its findings. The documented default prioritizes active-file changes; an explicit broader request and review of exclusions are needed.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/code-reviews.html",
+    "concept": "developer-tooling-and-delivery"
+  },
+  {
+    "id": "aipc01-0940",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "Amazon Q Developer proposes a refactor of a Bedrock response parser and generates tests that all pass. The tests replace the parser with a mock returning the expected answer. Which change most improves evidence that the refactor preserves behavior?",
+    "options": [
+      "Run the same mocked tests with more random test names.",
+      "Run the real parser against captured, sanitized response fixtures, including errors and truncated streams.",
+      "Ask Q to restate its confidence and retain the generated tests unchanged.",
+      "Compare only generated test coverage percentages before and after the refactor."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "Generated tests need meaningful assertions over the real behavior they claim to verify. Executing the implementation on representative fixtures tests the actual contract and failure paths.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/code-reviews.html",
+    "concept": "developer-tooling-and-delivery"
+  },
+  {
+    "id": "aipc01-0941",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "multi",
+    "stem": "A Q Developer IDE review reports no findings for a change that adds a supported production parser and modifies a large test fixture. The engineer concludes that all repository code and the GenAI output behavior are safe. Which TWO follow-up checks address the missing evidence? (Select TWO.)",
+    "options": [
+      "Confirm which changes and file types were included in the review.",
+      "Run output-contract and adversarial fixture checks against the changed parser.",
+      "Repeat the same active-file review and use two clean results as a complete test of excluded fixtures.",
+      "Run a broader source review and treat its findings alone as evidence of streamed response behavior.",
+      "Compare static complexity of the parser and use unchanged complexity as the output-contract gate."
+    ],
+    "correct": [
+      0,
+      1
+    ],
+    "explanation": "Separate source-analysis findings from behavioral and deployment evidence. Review filtering and scope mean an empty result cannot establish full repository coverage. Behavioral tests provide evidence beyond source-code issue detection.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/code-reviews.html",
+    "concept": "developer-tooling-and-delivery"
+  },
+  {
+    "id": "aipc01-0942",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A CodePipeline release already passed automated checks. The organization requires an authorized reviewer to approve the release before production deployment. Which pipeline design supplies that control?",
+    "options": [
+      "Put a manual approval action before the production deploy stage.",
+      "Send an informational email after production deployment completes.",
+      "Require a comment in the generated prompt text and deploy immediately.",
+      "Add a longer build timeout and use successful compilation as approval."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "Place required release approval at the boundary it must control. An approval action stops execution until an authorized decision permits continuation.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/codepipeline/latest/userguide/approvals.html",
+    "concept": "developer-tooling-and-delivery"
+  },
+  {
+    "id": "aipc01-0943",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "multi",
+    "stem": "An AppConfig free-form routing document must have valid JSON structure and refer only to an approved model/profile list maintained by the platform. Which TWO validation controls fit these distinct checks? (Select TWO.)",
+    "options": [
+      "A JSON Schema validator for the document structure.",
+      "A Lambda validator for the approved model/profile rule.",
+      "A production latency alarm as the only pre-deployment schema check.",
+      "A prompt instruction asking callers to use valid JSON.",
+      "An S3 lifecycle rule that eventually deletes older configuration versions."
+    ],
+    "correct": [
+      0,
+      1
+    ],
+    "explanation": "Validate both structural and business constraints before deploying routing configuration. JSON Schema validates structural constraints for free-form configuration. A Lambda validator can implement application-specific semantic checks against the approved set.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-creating-configuration-and-profile-validators.html",
+    "concept": "developer-tooling-and-delivery"
+  },
+  {
+    "id": "aipc01-0944",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "multi",
+    "stem": "An AppConfig canary rollout references a latency alarm. The alarm enters ALARM, its actions are disabled, and monitoring records also show AccessDenied for DescribeAlarms using the monitor role. Which TWO repairs restore the intended documented rollback prerequisites? (Select TWO.)",
+    "options": [
+      "Enable the associated alarm actions for the rollout.",
+      "Repair the monitor-role permission to inspect the configured alarm.",
+      "Keep the disabled alarm and monitor role unchanged but extend the bake period.",
+      "Replace the alarm description and redeploy the same configuration version.",
+      "Use an unrelated healthy alarm to avoid the monitoring authorization error."
+    ],
+    "correct": [
+      0,
+      1
+    ],
+    "explanation": "A monitored alarm needs working permissions and enabled actions to serve as a rollback guard. AppConfig does not automatically roll back when actions on the associated alarm have been disabled. The observed monitoring authorization error must also be resolved so the configured alarm can be inspected.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/appconfig/latest/userguide/monitoring-deployments.html",
+    "concept": "developer-tooling-and-delivery"
+  },
+  {
+    "id": "aipc01-0945",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A regulated GenAI release passes tests against prompt version 12 and container digest A. A reviewer approves it, but the deploy stage resolves mutable labels latest-prompt and latest-container after another build moves both labels. Which design best binds approval to the tested release?",
+    "options": [
+      "Keep the approval stage and resolve both mutable labels at deployment time.",
+      "Approve a manifest of immutable prompt, container and dependency versions, and deploy that same manifest.",
+      "Re-run compilation after approval but keep the prompt label mutable.",
+      "Record only the pipeline name and use its most recent artifact from any execution."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "Approval must identify the exact artifacts and configuration that will reach production. An immutable release manifest ties tests, approval and deployment to the same versions.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/codepipeline/latest/userguide/approvals.html",
+    "concept": "developer-tooling-and-delivery"
+  },
+  {
+    "id": "aipc01-0946",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "multi",
+    "stem": "A new RAG release changes application code and prompt templates but uses the existing query encoder/index pair. Operations needs an auditable rollback plan. Which TWO artifacts are most useful? (Select TWO.)",
+    "options": [
+      "A versioned release manifest that includes the tested code, prompt and retrieval configuration.",
+      "A tested previous compatible manifest plus acceptance checks for the rollback.",
+      "Only the newest prompt text pasted into an operations chat.",
+      "Only an average latency screenshot with no configuration identity.",
+      "A plan to regenerate the old prompt from memory if the new release fails."
+    ],
+    "correct": [
+      0,
+      1
+    ],
+    "explanation": "Keep versioned, compatible release and recovery targets for GenAI changes. This identifies the whole released behavior, including the retrieval dependencies. Compatibility and rollback checks make the previous configuration a usable recovery target.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain2.html",
+    "concept": "developer-tooling-and-delivery"
+  },
+  {
+    "id": "aipc01-0947",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A platform has several existing Lambda operations and OpenAPI-described APIs. It wants agents to discover and invoke them through a managed MCP-compatible interface with authentication. Which starting point fits that requirement?",
+    "options": [
+      "Create AgentCore Gateway targets for the supported backends and configure their tool contracts and access controls.",
+      "Expose only the model inference endpoint and expect it to discover every backend operation automatically.",
+      "Publish the APIs as plain document links and assume they become callable MCP tools.",
+      "Put Lambda function ARNs into user messages and treat them as executable tool schemas."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "Use an explicit tool protocol and access boundary for existing enterprise operations. Gateway converts supported backends into managed agent-accessible tools while providing authentication capabilities.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/gateway.html",
+    "concept": "developer-tooling-and-delivery"
+  },
+  {
+    "id": "aipc01-0948",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "An MCP tool returns invoice text that says to call a separate refund tool. The user asked only for an invoice summary, and the current identity lacks refund permission. Which boundary should decide whether a refund can execute?",
+    "options": [
+      "The tool-returned prose, because it came from an authenticated connection.",
+      "The trusted execution authorization and user-approved operation scope.",
+      "The model confidence score for its interpretation of the invoice.",
+      "The retrieval similarity score assigned to the invoice."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "Tool content is input data; it cannot grant business authority. Trusted authorization and the approved task remain necessary for side effects.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/gateway.html",
+    "concept": "developer-tooling-and-delivery"
+  },
+  {
+    "id": "aipc01-0949",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "An MCP backend renames required argument customerId to accountId and changes its meaning from a local customer key to a canonical account key. Some clients cannot refresh their cached schemas for 24 hours. The service must keep those clients working while new clients migrate, without guessing mappings. Which rollout best meets these constraints?",
+    "options": [
+      "Publish a versioned contract, keep the old version with an explicit verified mapping during migration, and retire it after clients move.",
+      "Rename the field immediately and reject all old clients until their cached schemas refresh.",
+      "Accept either field name but forward its value unchanged to the new implementation.",
+      "Invalidate only the server schema cache and rely on model descriptions to update every remote client."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "Version tool contracts and preserve verified identifier semantics during client migrations. Preserves existing clients while making the new meaning explicit and testable.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/gateway.html",
+    "concept": "developer-tooling-and-delivery"
+  },
+  {
+    "id": "aipc01-0950",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "multi",
+    "stem": "A new platform wants minimal infrastructure for short stateless MCP lookups. A second MCP backend requires an uninterrupted in-process connection for 25 minutes, and cannot resume it after a process restart. Which TWO hosting decisions fit these different runtime requirements? (Select TWO.)",
+    "options": [
+      "Host the bounded lookup in Lambda with a validated MCP-compatible integration.",
+      "Host the persistent MCP process in ECS with explicit connection and recovery design.",
+      "Keep the persistent process in Lambda and checkpoint to DynamoDB when each invocation approaches its limit.",
+      "Restart the persistent process every ten minutes in Lambda and reuse the previous connection identifier.",
+      "Host only the lookup schema in API Gateway and treat that as execution of the lookup implementation."
+    ],
+    "correct": [
+      0,
+      1
+    ],
+    "explanation": "Choose MCP hosting according to runtime and state requirements, not a universal service preference. A bounded stateless lookup fits Lambda execution limits and avoids maintaining a long-running server. ECS can host the uninterrupted process while its network, state and recovery boundaries remain explicit.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain2.html",
+    "concept": "developer-tooling-and-delivery"
+  },
+  {
+    "id": "aipc01-0951",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A GenAI workflow needs a central coordinator to delegate research to specialist agents, compare their results and decide the final answer. The specialists must not independently commit business actions. Which orchestration pattern best expresses this?",
+    "options": [
+      "A supervisor/coordinator pattern with explicit specialist interfaces and a trusted final action boundary.",
+      "A peer broadcast in which every specialist executes all proposed business actions.",
+      "A tool catalog listing without an orchestration or final decision step.",
+      "A single shared chat buffer treated as proof that delegation and action control occurred."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "Select coordination structure from the required control and aggregation behavior. Explicit coordination and controlled action execution match the required division of responsibility.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain2.html",
+    "concept": "developer-tooling-and-delivery"
+  },
+  {
+    "id": "aipc01-0952",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "multi",
+    "stem": "A Strands-based research workflow alternates between two agents that repeatedly ask each other to reconsider. Every tool call succeeds, but request cost and elapsed time grow without a useful answer. Which TWO controls address this orchestration failure? (Select TWO.)",
+    "options": [
+      "Enforce a request-wide step/token/time budget with a defined escalation or fallback.",
+      "Define completion criteria and detect repeated unproductive state transitions.",
+      "Limit retries for each individual tool call while leaving successful agent handoffs unbounded.",
+      "Increase specialist concurrency while retaining the same delegation and completion rules.",
+      "Reset token and step accounting at every handoff to keep each specialist within a local limit."
+    ],
+    "correct": [
+      0,
+      1
+    ],
+    "explanation": "Control whole-workflow progress and resource budgets across agent handoffs. An end-to-end budget bounds the overall execution even when each local operation succeeds. Goal and loop-state checks address the absence of useful progress.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain2.html",
+    "concept": "developer-tooling-and-delivery"
+  },
+  {
+    "id": "aipc01-0953",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A GenAI gateway must change between two already supported model providers without redeploying application code. The providers use different native request formats, and their quality acceptance tests already exist. Which design supports a controlled switch?",
+    "options": [
+      "Put eligible provider routing in versioned AppConfig configuration and retain tested provider adapters in application code.",
+      "Put only a provider name in configuration and forward one unchanged native payload to both providers.",
+      "Put provider-specific code into a configuration string and execute it without an application release.",
+      "Change the deployment label while leaving all requests hardwired to the original provider."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "Separate dynamic provider selection from tested protocol adapters. Configuration can choose among tested implementations without pretending their native contracts are identical.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain2.html",
+    "concept": "developer-tooling-and-delivery"
+  },
+  {
+    "id": "aipc01-0954",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "A free-form AppConfig routing configuration has an invalid JSON shape that a configured validator rejects before deployment. What evidence does that rejection provide?",
+    "options": [
+      "The proposed configuration failed its validation gate and should not be released in that form.",
+      "The production model has passed all application quality and fairness checks.",
+      "The previous configuration has been proven optimal for every future workload.",
+      "The new provider has been deployed and its production latency has improved."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "Interpret a validation result within the boundary it actually tests. A failed validator blocks this proposed configuration; it is not production quality evidence.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-creating-configuration-and-profile-validators.html",
+    "concept": "developer-tooling-and-delivery"
+  },
+  {
+    "id": "aipc01-0955",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "single",
+    "stem": "CDK templates generate dev and production GenAI stacks. A generated policy gives the build job production deployment rights and model invocation rights for every account. Only a separate release role should deploy production. Which revision best fits the stated boundary?",
+    "options": [
+      "Separate build and release roles, restrict their actions/resources, and verify the synthesized policies before deployment.",
+      "Keep the broad build role and add a comment naming the intended release role.",
+      "Use a production stack name prefix as the only restriction on build permissions.",
+      "Retain broad permissions because infrastructure generated by CDK does not require IAM review."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "Infrastructure generation does not replace review of the permissions it will create. Separate scoped roles enforce the intended build/deploy trust boundary.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain2.html",
+    "concept": "developer-tooling-and-delivery"
+  },
+  {
+    "id": "aipc01-0956",
+    "domain": "Implementation & Integration",
+    "tag": "Domain 2",
+    "type": "multi",
+    "stem": "A Q-assisted change modifies a Bedrock tool adapter and its IAM policy. Unit tests mock the AWS call and pass. Which TWO additional checks best address deployment risks before release? (Select TWO.)",
+    "options": [
+      "Review the effective principal/action/resource and deny boundaries in the proposed policy.",
+      "Run a controlled integration check with the intended role against a non-destructive tool path and inspect its correlated outcome.",
+      "Run the same integration check only as a test administrator and treat its success as proof of the intended role.",
+      "Run unit fixtures against the real serializer but mock both signing and the backend authorization response.",
+      "Test an earlier policy with a differently scoped resource ARN and carry that permission result into this release."
+    ],
+    "correct": [
+      0,
+      1
+    ],
+    "explanation": "Combine code tests, permission review and a controlled real-path check for tool integrations. Policy review examines the authorization effects that mocks do not execute. This exercises the intended identity and actual service boundary without an irreversible business action.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/code-reviews.html",
+    "concept": "developer-tooling-and-delivery"
+  },
+  {
+    "id": "aipc01-0957",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A team wants to validate a document assistant before standardizing it for several business units. It has a fixed representative dataset and agreed quality, p95 latency and cost-per-completed-task targets. Which proof-of-concept result best supports the architecture decision?",
+    "options": [
+      "Compare candidate configurations against the same targets and dataset, record tradeoffs and failure cases, then standardize the selected reusable components.",
+      "Select the largest model from its specification sheet and skip workload measurements.",
+      "Compare one candidate on short public documents and another on long private documents without noting the workload difference.",
+      "Standardize the first demo that answers one question correctly and postpone the agreed acceptance checks."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "Use measured proof-of-concept evidence before standardizing a GenAI architecture. A common workload and explicit goals make the comparison interpretable and the standardization decision reviewable.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain1.html",
+    "concept": "genai-architecture-design"
+  },
+  {
+    "id": "aipc01-0958",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "Three teams build GenAI gateways for different providers. Each needs common tenant authorization, trace correlation and request-budget enforcement, but provider request formats differ. Which component design best supports consistency without assuming identical provider behavior? All callers require one documented response envelope across providers.",
+    "options": [
+      "A shared policy and observability contract with provider adapters and contract tests for each supported capability.",
+      "A shared provider-native body serializer and only HTTP-status assertions for every downstream model.",
+      "Provider-specific request adapters with tenant checks implemented only in each model prompt.",
+      "A common authorization service with provider responses returned unnormalized to callers requiring one response contract."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "Standardize control contracts while preserving tested provider-specific integration behavior. Shared cross-cutting controls can coexist with explicit tested provider differences.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01-domain1.html",
+    "concept": "genai-architecture-design"
+  },
+  {
+    "id": "aipc01-0959",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A product-discovery application already operates an OpenSearch search domain. It needs independently scaled document search, aggregations, and vector ranking. Live order joins remain in a separate transactional API and are not part of retrieval. Which architecture best matches these boundaries?",
+    "options": [
+      "Move all order processing into the search index so every subsystem shares one store.",
+      "Extend the existing OpenSearch search architecture with a compatible vector index.",
+      "Move retrieval into Aurora solely because vector search always requires transactional SQL joins.",
+      "Export search documents nightly and use the order API to rank every document at request time."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "An existing search-oriented architecture with independent scaling can add a compatible vector index. A requirement for live relational joins would favor a different integration boundary. This preserves the established search boundary and its required search features.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup.html",
+    "concept": "vector-store-architecture"
+  },
+  {
+    "id": "aipc01-0960",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A Bedrock Knowledge Base using an S3 Vectors backend must filter documents by a classification code prefix. The application sends startsWith, but that backend does not support the operator. Classification codes can be normalized during ingestion. Which change preserves the intended scope without assuming a backend capability?",
+    "options": [
+      "Increase the result limit and omit the classification restriction.",
+      "Move the prefix condition into the generation prompt after retrieving unrestricted chunks.",
+      "Store an explicit classification-family attribute and use a supported equality filter.",
+      "Keep startsWith and retry the same query until enough matching results appear."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "Backend filter support is part of the index contract. Materialize the required classification family and use a supported equality filter before returning chunks. A normalized family attribute expresses the scope using an eligible filter.",
+    "difficulty": "easy",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-config.html",
+    "concept": "vector-store-architecture"
+  },
+  {
+    "id": "aipc01-0961",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "multi",
+    "stem": "An S3 data-source administrator can update a Bedrock Knowledge Base data source and start ingestion. The knowledge base service role can read both an approved manuals prefix and an unrelated confidential prefix in the same bucket. The administrator lacks direct S3 read access. Which TWO controls address this integration risk? (Select TWO.)",
+    "options": [
+      "Assume the administrator cannot ingest the confidential prefix because direct S3 access is absent.",
+      "Limit the knowledge base service role to the approved source locations.",
+      "Treat data-source update and ingestion-management permissions as privileged operations.",
+      "Grant the administrator direct S3 access so its permissions match the service role.",
+      "Rely on iam:PassRole to be checked on every StartIngestionJob request."
+    ],
+    "correct": [
+      1,
+      2
+    ],
+    "explanation": "Ingestion uses the role already bound to the knowledge base. Scope that role to intended sources and control who can redirect or start ingestion. Narrow service-role access removes unintended source locations from the ingestion boundary. Privileged source-management controls reduce the ability to redirect a powerful connector.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-permissions.html",
+    "concept": "vector-store-architecture"
+  },
+  {
+    "id": "aipc01-0962",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "single",
+    "stem": "A team is preparing an Aurora table for a new Bedrock Knowledge Base. The documents include department and approval-date metadata files. The table has no per-attribute columns and no custom metadata column. Queries must filter both fields after ingestion. Which schema preparation should the team complete before creating the knowledge base?",
+    "options": [
+      "Add a custom JSONB metadata column, configure its field mapping, and create its required index.",
+      "Leave the schema unchanged because the metadata sidecar creates arbitrary relational columns automatically.",
+      "Append the metadata only to chunk text and rely on vector similarity to enforce exact department scope.",
+      "Create a JSONB column without configuring it and expect ingestion to discover its purpose from its name."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "Aurora metadata filtering needs a mapped metadata representation. A configured custom JSONB column and its index can hold the source attributes without one column per attribute. This supplies the explicitly mapped custom metadata representation and index required by the integration.",
+    "difficulty": "medium",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup.html",
+    "concept": "vector-store-architecture"
+  },
+  {
+    "id": "aipc01-0963",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "multi",
+    "stem": "A fictional OpenSearch load test finds that one mixed-domain index misses its retrieval latency target during engineering-document ingestion. Queries are always scoped to either engineering or legal. Legal traffic meets its target when tested alone. Additional tests show that many tiny shards increase coordination overhead, while a moderate shard layout meets the engineering target on the proposed capacity. Which TWO changes best follow from this evidence? (Select TWO.)",
+    "options": [
+      "Increase replicas and approve the change using idle-query latency without concurrent ingestion.",
+      "Retain the shared index and approve it using only the successful legal-domain isolated test.",
+      "Use separate domain indexes with trusted domain routing for these scoped queries.",
+      "Validate the measured moderate shard layout under concurrent ingestion and query load before rollout.",
+      "Select the largest possible shard count without repeating the mixed-workload benchmark."
+    ],
+    "correct": [
+      2,
+      3
+    ],
+    "explanation": "Match domain indexing and routing to the observed access pattern, then validate shard and capacity choices on the real mixed workload. More shards are not automatically faster. Domain separation matches the measured independent access pattern and permits focused capacity management. Concurrent-load validation checks whether the candidate layout fixes the demonstrated contention.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/opensearch-service/latest/developerguide/bp-sharding.html",
+    "concept": "vector-store-architecture"
+  },
+  {
+    "id": "aipc01-0964",
+    "domain": "Foundation Model Integration & Compliance",
+    "tag": "Domain 1",
+    "type": "multi",
+    "stem": "A knowledge service moves from one vector-store backend to another while keeping the same embedding configuration. A full copy finishes at noon, but sources continue to change and delete documents. Metadata mappings differ between backends. The team needs a coherent cutover with rollback, rather than just shape-compatible vectors. Which TWO release steps are required? (Select TWO.)",
+    "options": [
+      "Cut over when vector counts match, even if deleted source documents still exist in the target.",
+      "Reconcile changes and deletions after the copy watermark and verify target metadata/filter behavior.",
+      "Retain the old retrieval configuration for rollback and promote the validated target configuration together.",
+      "Benchmark the static copied snapshot and defer source-deletion reconciliation until after promotion.",
+      "Switch only the store endpoint and assume identical vector dimensions establish complete equivalence."
+    ],
+    "correct": [
+      1,
+      2
+    ],
+    "explanation": "A storage migration must reconcile source changes and backend metadata semantics. Promote a coherent validated retrieval configuration and retain a usable rollback path. Delta and deletion reconciliation plus filter validation address the mutable-source and backend-contract risks. An explicit old configuration and coordinated promotion preserve a meaningful recovery path.",
+    "difficulty": "hard",
+    "docUrl": "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-data-source-sync-ingest.html",
+    "concept": "vector-store-architecture"
   }
 ]

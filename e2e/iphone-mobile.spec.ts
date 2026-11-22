@@ -1,3 +1,4 @@
+import release from "../content/aip-c01/coverage-release-2026-11-22.json";
 import { chooseFirstAnswer } from "./answer-helpers";
 import { test, expect } from "@playwright/test";
 import { getPracticeBank } from "../lib/bank";
@@ -220,4 +221,28 @@ for(const width of [375,430])test(`Challenge prep selection, resume and results 
  await expect(page.getByRole("link",{name:"Try another challenge set"})).toHaveAttribute("href","/aws/aip-c01/practice?mode=quick&level=hard");
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
  if(width===430)await page.screenshot({path:"/tmp/certreps-mobile-challenge-results.png",fullPage:true});
+});
+
+
+for(const width of [320,430])test(`coverage lessons and long new answers fit ${width}px phone`,async({page})=>{
+ await page.setViewportSize({width,height:932});
+ for(const slug of ["coverage-map",...release.lessonSlugs]){
+  await page.goto(`/guides/aip-c01/${slug}`);await expect(page.locator("article.guide h1")).toBeVisible();
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),slug).toBe(true);
+  for(const table of await page.getByRole("region",{name:"Comparison table",exact:true}).all()){
+   expect(await table.getAttribute("tabindex")).toBe("0");
+   const box=await table.boundingBox();expect(box!.width).toBeLessThanOrEqual(width);
+  }
+ }
+ const newQs=getPracticeBank().filter(q=>release.addedIds.includes(q.id));
+ for(const type of ["single","multi"]){
+  const q=newQs.filter(q=>q.type===type).sort((a,b)=>b.options.join("").length-a.options.join("").length)[0];
+  await page.evaluate(id=>localStorage.setItem("certreps.attempts.v1",JSON.stringify([{attemptId:"mobile-coverage",certId:"aip-c01",mode:"quick",questionIds:[id],results:{},startedAt:Date.now(),finishedAt:null,elapsedSec:0,pauseCount:0}])),q.id);
+  await page.goto("/aws/aip-c01/practice?mode=quick&resume=mobile-coverage");await expect(page.locator(".qstem")).toHaveText(q.stem);
+  const submit=page.getByRole("button",{name:"Submit answer",exact:true});await expect(submit).toBeInViewport();
+  for(const i of q.correct)await page.locator("button.option").filter({hasText:q.options[i]}).click();
+  await submit.click();await page.locator(".answer-learning summary").click();
+  await expect(page.locator(".answer-learning li")).toHaveCount(q.options.length);
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+ }
 });
